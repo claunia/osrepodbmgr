@@ -38,13 +38,30 @@ public partial class MainWindow : Window
     Thread thdHashFiles;
     Thread thdCheckFiles;
     Thread thdAddFiles;
+    Thread thdPackFiles;
     bool stopped;
     ListStore view;
 
     public MainWindow() : base(WindowType.Toplevel)
     {
         Build();
+
         Core.InitDB();
+
+        CellRendererText filenameCell = new CellRendererText();
+        CellRendererText hashCell = new CellRendererText();
+        CellRendererToggle dbCell = new CellRendererToggle();
+
+        TreeViewColumn filenameColumn = new TreeViewColumn("Path", filenameCell, "text", 0, "background", 3, "foreground", 4);
+        TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 1, "background", 3, "foreground", 4);
+        TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell, "active", 2);
+
+        view = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string));
+
+        treeFiles.Model = view;
+        treeFiles.AppendColumn(filenameColumn);
+        treeFiles.AppendColumn(hashColumn);
+        treeFiles.AppendColumn(dbColumn);
     }
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
@@ -194,21 +211,6 @@ public partial class MainWindow : Window
 
             prgProgress.Visible = true;
 
-            CellRendererText filenameCell = new CellRendererText();
-            CellRendererText hashCell = new CellRendererText();
-            CellRendererToggle dbCell = new CellRendererToggle();
-
-            TreeViewColumn filenameColumn = new TreeViewColumn("Path", filenameCell, "text", 0, "background", 3, "foreground", 4);
-            TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 1, "background", 3, "foreground", 4);
-            TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell, "active", 2);
-
-            view = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string));
-
-            treeFiles.Model = view;
-            treeFiles.AppendColumn(filenameColumn);
-            treeFiles.AppendColumn(hashColumn);
-            treeFiles.AppendColumn(dbColumn);
-
             thdCheckFiles = new Thread(Core.CheckDbForFiles);
             Core.Failed += ChkFilesFailed;
             Core.Finished += ChkFilesFinished;
@@ -241,11 +243,7 @@ public partial class MainWindow : Window
             Core.AddEntry -= AddFile;
             thdHashFiles = null;
             if(view != null)
-            {
                 view.Clear();
-                treeFiles.Model = null;
-                view = null;
-            }
         });
     }
 
@@ -269,6 +267,7 @@ public partial class MainWindow : Window
             btnSettings.Sensitive = true;
             btnAdd.Visible = true;
             btnPack.Visible = true;
+            btnPack.Sensitive = true;
 
             txtFormat.IsEditable = true;
             txtMachine.IsEditable = true;
@@ -317,11 +316,7 @@ public partial class MainWindow : Window
         btnPack.Visible = false;
         btnClose.Visible = false;
         if(view != null)
-        {
             view.Clear();
-            treeFiles.Model = null;
-            view = null;
-        }
         txtFormat.IsEditable = false;
         txtMachine.IsEditable = false;
         txtProduct.IsEditable = false;
@@ -425,11 +420,7 @@ public partial class MainWindow : Window
         Core.Finished -= FindFilesFinished;
         btnStop.Visible = false;
         if(view != null)
-        {
             view.Clear();
-            treeFiles.Model = null;
-            view = null;
-        }
     }
 
     protected void OnBtnAddClicked(object sender, EventArgs e)
@@ -472,8 +463,8 @@ public partial class MainWindow : Window
         MainClass.dbInfo.update = chkUpdate.Active;
         MainClass.dbInfo.upgrade = chkUpgrade.Active;
 
-        thdHashFiles = new Thread(Core.AddFilesToDb);
-        thdHashFiles.Start();
+        thdAddFiles = new Thread(Core.AddFilesToDb);
+        thdAddFiles.Start();
     }
 
     public void AddFilesToDbFinished()
@@ -528,5 +519,121 @@ public partial class MainWindow : Window
     {
         frmSettings _frmSettings = new frmSettings();
         _frmSettings.Show();
+    }
+
+    protected void OnBtnPackClicked(object sender, EventArgs e)
+    {
+        btnAdd.Sensitive = false;
+        btnPack.Sensitive = false;
+        btnClose.Sensitive = false;
+        prgProgress.Visible = true;
+        prgProgress2.Visible = true;
+        lblProgress.Visible = true;
+        lblProgress2.Visible = true;
+        txtFormat.IsEditable = false;
+        txtMachine.IsEditable = false;
+        txtProduct.IsEditable = false;
+        txtVersion.IsEditable = false;
+        txtLanguages.IsEditable = false;
+        txtDeveloper.IsEditable = false;
+        txtDescription.IsEditable = false;
+        txtArchitecture.IsEditable = false;
+        chkOem.Sensitive = false;
+        chkFiles.Sensitive = false;
+        chkUpdate.Sensitive = false;
+        chkUpgrade.Sensitive = false;
+        chkNetinstall.Sensitive = false;
+        chkSource.Sensitive = false;
+
+        Core.UpdateProgress += UpdateProgress;
+        Core.UpdateProgress2 += UpdateProgress2;
+        Core.FinishedWithText += PackFilesFinished;
+        Core.Failed += PackFilesFailed;
+
+        MainClass.dbInfo.architecture = txtArchitecture.Text;
+        MainClass.dbInfo.description = txtDescription.Text;
+        MainClass.dbInfo.developer = txtDeveloper.Text;
+        MainClass.dbInfo.format = txtFormat.Text;
+        MainClass.dbInfo.languages = txtLanguages.Text;
+        MainClass.dbInfo.machine = txtMachine.Text;
+        MainClass.dbInfo.product = txtProduct.Text;
+        MainClass.dbInfo.version = txtVersion.Text;
+        MainClass.dbInfo.files = chkFiles.Active;
+        MainClass.dbInfo.netinstall = chkNetinstall.Active;
+        MainClass.dbInfo.oem = chkOem.Active;
+        MainClass.dbInfo.source = chkSource.Active;
+        MainClass.dbInfo.update = chkUpdate.Active;
+        MainClass.dbInfo.upgrade = chkUpgrade.Active;
+
+        thdPackFiles = new Thread(Core.CompressFiles);
+        thdPackFiles.Start();
+    }
+
+    public void PackFilesFinished(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(thdPackFiles != null)
+                thdPackFiles.Abort();
+
+            Core.UpdateProgress -= UpdateProgress;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            Core.FinishedWithText -= PackFilesFinished;
+            Core.Failed -= PackFilesFailed;
+
+            prgProgress.Visible = false;
+            prgProgress2.Visible = false;
+            lblProgress.Visible = false;
+            lblProgress2.Visible = false;
+            btnPack.Sensitive = false;
+            btnClose.Sensitive = true;
+
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Correctly packed to " + text);
+            dlgMsg.Run();
+            dlgMsg.Destroy();
+        });
+    }
+
+    public void PackFilesFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+
+            if(thdPackFiles != null)
+                thdPackFiles.Abort();
+
+            Core.UpdateProgress -= UpdateProgress;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            Core.FinishedWithText -= PackFilesFinished;
+            Core.Failed -= PackFilesFailed;
+
+            btnAdd.Sensitive = true;
+            btnPack.Sensitive = true;
+            btnClose.Sensitive = true;
+            prgProgress.Visible = false;
+            prgProgress2.Visible = false;
+            lblProgress.Visible = false;
+            lblProgress2.Visible = false;
+            txtFormat.IsEditable = true;
+            txtMachine.IsEditable = true;
+            txtProduct.IsEditable = true;
+            txtVersion.IsEditable = true;
+            txtLanguages.IsEditable = true;
+            txtDeveloper.IsEditable = true;
+            txtDescription.IsEditable = true;
+            txtArchitecture.IsEditable = true;
+            chkOem.Sensitive = true;
+            chkFiles.Sensitive = true;
+            chkUpdate.Sensitive = true;
+            chkUpgrade.Sensitive = true;
+            chkNetinstall.Sensitive = true;
+            chkSource.Sensitive = true;
+        });
     }
 }

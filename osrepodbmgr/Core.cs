@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Ionic.Zip;
 
 namespace osrepodbmgr
 {
@@ -41,15 +42,20 @@ namespace osrepodbmgr
         public delegate void UpdateProgress2Delegate(string text, string inner, long current, long maximum);
         public delegate void FailedDelegate(string text);
         public delegate void FinishedWithoutErrorDelegate();
+        public delegate void FinishedWithTextDelegate(string text);
         public delegate void AddEntryDelegate(string filename, string hash, bool known);
 
         public static event UpdateProgressDelegate UpdateProgress;
         public static event UpdateProgress2Delegate UpdateProgress2;
         public static event FailedDelegate Failed;
         public static event FinishedWithoutErrorDelegate Finished;
+        public static event FinishedWithTextDelegate FinishedWithText;
         public static event AddEntryDelegate AddEntry;
 
         static DBCore dbCore;
+
+        static int zipCounter;
+        static string zipCurrentEntryName;
 
         public static void FindFiles()
         {
@@ -269,6 +275,199 @@ namespace osrepodbmgr
         {
             if(dbCore != null)
                 dbCore.CloseDB();
+        }
+
+        public static void CompressFiles()
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.developer))
+                {
+                    if(Failed != null)
+                        Failed("Developer cannot be empty");
+                    return;
+                }
+
+                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.product))
+                {
+                    if(Failed != null)
+                        Failed("Product cannot be empty");
+                    return;
+                }
+
+                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.version))
+                {
+                    if(Failed != null)
+                        Failed("Version cannot be empty");
+                    return;
+                }
+
+                // Check if repository folder exists
+                string destinationFolder = Settings.Current.RepositoryPath;
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                // Check if developer folder exists
+                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.developer);
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                // Check if product folder exists
+                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.product);
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                // Check if version folder exists
+                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.version);
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.languages))
+                {
+                    // Check if languages folder exists
+                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.languages);
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.architecture))
+                {
+                    // Check if architecture folder exists
+                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.architecture);
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+                if(MainClass.dbInfo.oem)
+                {
+                    // Check if oem folder exists
+                    destinationFolder = Path.Combine(destinationFolder, "oem");
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.machine))
+                {
+                    // Check if architecture folder exists
+                    destinationFolder = Path.Combine(destinationFolder, "for " + MainClass.dbInfo.machine);
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+
+                string destinationFile = "";
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.format))
+                    destinationFile += "[" + MainClass.dbInfo.format + "]";
+                if(MainClass.dbInfo.files)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "files";
+                }
+                if(MainClass.dbInfo.netinstall)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "netinstall";
+                }
+                if(MainClass.dbInfo.source)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "source";
+                }
+                if(MainClass.dbInfo.update)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "update";
+                }
+                if(MainClass.dbInfo.upgrade)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "upgrade";
+                }
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.description))
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += MainClass.dbInfo.description;
+                }
+                else if(destinationFile == "")
+                {
+                    destinationFile = "archive";
+                }
+
+                string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
+                if(File.Exists(destination))
+                {
+                    if(Failed != null)
+                        Failed("File already exists");
+                    return;
+                }
+
+                ZipFile zf = new ZipFile(destination);
+                zf.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                zf.CompressionMethod = CompressionMethod.Deflate;
+                zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
+
+                int counter = 0;
+                foreach(string file in MainClass.files)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress("Choosing files...", file, counter, MainClass.files.Count);
+
+                    //FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+                    FileInfo fi = new FileInfo(file);
+
+                    ZipEntry ze = zf.AddFile(file);
+                    ze.AccessedTime = fi.LastAccessTimeUtc;
+                    ze.Attributes = fi.Attributes;
+                    ze.CreationTime = fi.CreationTimeUtc;
+                    ze.EmitTimesInUnixFormatWhenSaving = true;
+                    ze.LastModified = fi.LastWriteTimeUtc;
+                    ze.FileName = file.Substring(MainClass.path.Length + 1);
+
+                    //fs.Close();
+
+                    if(file == "metadata.json")
+                        File.Copy(file, Path.Combine(destinationFolder, destinationFile) + ".json");
+                    if(file == "metadata.xml")
+                        File.Copy(file, Path.Combine(destinationFolder, destinationFile) + ".xml");
+                    counter++;
+                }
+
+                zipCounter = 0;
+                zipCurrentEntryName = "";
+                zf.SaveProgress += Zf_SaveProgress;
+                if(UpdateProgress != null)
+                    UpdateProgress(null, "Saving...", 0, 0);
+                zf.Save();
+            }
+            catch(Exception ex)
+            {
+                if(System.Diagnostics.Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+            if(Finished != null)
+                Finished();
+        }
+
+        static void Zf_SaveProgress(object sender, SaveProgressEventArgs e)
+        {
+            if(e.CurrentEntry != null && e.CurrentEntry.FileName != zipCurrentEntryName)
+            {
+                zipCurrentEntryName = e.CurrentEntry.FileName;
+                zipCounter++;
+            }
+
+            if(UpdateProgress != null && e.CurrentEntry != null)
+                UpdateProgress("Compressing...", e.CurrentEntry.FileName, zipCounter, e.EntriesTotal);
+            if(UpdateProgress2 != null)
+                UpdateProgress2(string.Format("{0:P}", e.BytesTransferred / (double)e.TotalBytesToTransfer),
+                                string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
+                                e.BytesTransferred, e.TotalBytesToTransfer);
+
+            System.Console.WriteLine("{0}", e.EventType);
+            if(e.EventType == ZipProgressEventType.Error_Saving && Failed != null)
+                Failed("Failed compression");
+            if(e.EventType == ZipProgressEventType.Saving_Completed && FinishedWithText != null)
+                FinishedWithText(e.ArchiveName);
         }
     }
 }

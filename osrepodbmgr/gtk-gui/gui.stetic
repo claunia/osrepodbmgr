@@ -9,7 +9,7 @@
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="771 544">
     <property name="MemberName" />
-    <property name="Title" translatable="yes">MainWindow</property>
+    <property name="Title" translatable="yes">OS Repository DB Manager</property>
     <property name="WindowPosition">CenterOnParent</property>
     <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
@@ -606,12 +606,12 @@
               <widget class="Gtk.Button" id="btnPack">
                 <property name="MemberName" />
                 <property name="Visible">False</property>
-                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-save Menu</property>
                 <property name="Label" translatable="yes">_Pack...</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnBtnPackClicked" />
               </widget>
               <packing>
                 <property name="PackType">End</property>

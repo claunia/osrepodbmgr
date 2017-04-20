@@ -1,6 +1,16 @@
 2017-04-20  Natalia Portillo  <claunia@claunia.com>
 
 	* Core.cs:
+	* MainWindow.cs:
+	* packages.config:
+	* gtk-gui/gui.stetic:
+	* osrepodbmgr.csproj:
+	* gtk-gui/MainWindow.cs:
+	  Added support for packing.
+
+2017-04-20  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
 	* Schema.cs:
 	* SQLite.cs:
 	* DBCore.cs:

@@ -112,7 +112,7 @@ public partial class MainWindow
 		global::Stetic.Gui.Initialize(this);
 		// Widget MainWindow
 		this.Name = "MainWindow";
-		this.Title = global::Mono.Unix.Catalog.GetString("MainWindow");
+		this.Title = global::Mono.Unix.Catalog.GetString("OS Repository DB Manager");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child MainWindow.Gtk.Container+ContainerChild
 		this.vbox1 = new global::Gtk.VBox();
@@ -557,7 +557,6 @@ public partial class MainWindow
 		w47.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnPack = new global::Gtk.Button();
-		this.btnPack.Sensitive = false;
 		this.btnPack.CanFocus = true;
 		this.btnPack.Name = "btnPack";
 		this.btnPack.UseUnderline = true;
@@ -654,6 +653,7 @@ public partial class MainWindow
 		this.btnStop.Clicked += new global::System.EventHandler(this.OnBtnStopClicked);
 		this.btnFolder.Clicked += new global::System.EventHandler(this.OnBtnFolderClicked);
 		this.btnAdd.Clicked += new global::System.EventHandler(this.OnBtnAddClicked);
+		this.btnPack.Clicked += new global::System.EventHandler(this.OnBtnPackClicked);
 		this.btnClose.Clicked += new global::System.EventHandler(this.OnBtnCloseClicked);
 		this.btnHelp.Clicked += new global::System.EventHandler(this.OnBtnHelpClicked);
 		this.btnSettings.Clicked += new global::System.EventHandler(this.OnBtnSettingsClicked);

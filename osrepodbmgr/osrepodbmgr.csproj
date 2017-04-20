@@ -56,6 +56,9 @@
     <Reference Include="plist-cil">
       <HintPath>..\packages\plist-cil.1.15.0\lib\net40\plist-cil.dll</HintPath>
     </Reference>
+    <Reference Include="DotNetZip">
+      <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
