@@ -1,0 +1,532 @@
+﻿//
+//  Author:
+//    Natalia Portillo claunia@claunia.com
+//
+//  Copyright (c) 2017, © Claunia.com
+//
+//  All rights reserved.
+//
+//  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in
+//       the documentation and/or other materials provided with the distribution.
+//     * Neither the name of the [ORGANIZATION] nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+//  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+//  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+//  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+//  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+//  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+//  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+//  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+using System;
+using System.Threading;
+using Gtk;
+using osrepodbmgr;
+using System.Collections.Generic;
+
+public partial class MainWindow : Window
+{
+    Thread thdPulseProgress;
+    Thread thdFindFiles;
+    Thread thdHashFiles;
+    Thread thdCheckFiles;
+    Thread thdAddFiles;
+    bool stopped;
+    ListStore view;
+
+    public MainWindow() : base(WindowType.Toplevel)
+    {
+        Build();
+        Core.InitDB();
+    }
+
+    protected void OnDeleteEvent(object sender, DeleteEventArgs a)
+    {
+        if(btnStop.Visible)
+            OnBtnStopClicked(sender, a);
+        if(btnClose.Sensitive)
+            OnBtnCloseClicked(sender, a);
+
+        Application.Quit();
+        a.RetVal = true;
+    }
+
+    protected void OnBtnHelpClicked(object sender, EventArgs e)
+    {
+        frmHelp _help = new frmHelp();
+        _help.Show();
+    }
+
+    protected void OnBtnFolderClicked(object sender, EventArgs e)
+    {
+        FileChooserDialog dlgFolder = new FileChooserDialog("Open folder", this, FileChooserAction.SelectFolder,
+                                                             "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
+        dlgFolder.SelectMultiple = false;
+
+        if(dlgFolder.Run() == (int)ResponseType.Accept)
+        {
+            stopped = false;
+            lblProgress.Text = "Finding files";
+            lblProgress.Visible = true;
+            prgProgress.Visible = true;
+            btnExit.Sensitive = false;
+            btnFolder.Visible = false;
+            btnArchive.Visible = false;
+            btnSettings.Sensitive = false;
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+
+            thdFindFiles = new Thread(Core.FindFiles);
+            MainClass.path = dlgFolder.Filename;
+            Core.Failed += FindFilesFailed;
+            Core.Finished += FindFilesFinished;
+            btnStop.Visible = true;
+            thdPulseProgress.Start();
+            thdFindFiles.Start();
+        }
+
+        dlgFolder.Destroy();
+    }
+
+    void FindFilesFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
+            lblProgress.Visible = false;
+            prgProgress.Visible = false;
+            btnExit.Sensitive = true;
+            btnFolder.Visible = true;
+            btnArchive.Visible = true;
+            btnSettings.Sensitive = true;
+            Core.Failed -= FindFilesFailed;
+            Core.Finished -= FindFilesFinished;
+            thdFindFiles = null;
+        });
+    }
+
+    void FindFilesFinished()
+    {
+        Application.Invoke(delegate
+        {
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
+
+            Core.Failed -= FindFilesFailed;
+            Core.Finished -= FindFilesFinished;
+
+            lblProgress.Visible = true;
+            prgProgress.Visible = true;
+            lblProgress2.Visible = true;
+            prgProgress2.Visible = true;
+
+            thdFindFiles = null;
+            thdHashFiles = new Thread(Core.HashFiles);
+            Core.Failed += HashFilesFailed;
+            Core.Finished += HashFilesFinished;
+            Core.UpdateProgress += UpdateProgress;
+            Core.UpdateProgress2 += UpdateProgress2;
+            thdHashFiles.Start();
+        });
+    }
+
+    void HashFilesFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+            lblProgress.Visible = false;
+            prgProgress.Visible = false;
+            lblProgress2.Visible = false;
+            prgProgress2.Visible = false;
+            Core.Failed -= HashFilesFailed;
+            Core.Finished -= HashFilesFinished;
+            Core.UpdateProgress -= UpdateProgress;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            btnExit.Sensitive = true;
+            btnFolder.Visible = true;
+            btnArchive.Visible = true;
+            btnSettings.Sensitive = true;
+            thdHashFiles = null;
+        });
+    }
+
+    void HashFilesFinished()
+    {
+        Application.Invoke(delegate
+        {
+            lblProgress.Visible = false;
+            prgProgress.Visible = false;
+            lblProgress.Visible = false;
+            prgProgress.Visible = false;
+            lblProgress2.Visible = false;
+            prgProgress2.Visible = false;
+            Core.Failed -= HashFilesFailed;
+            Core.Finished -= HashFilesFinished;
+            Core.UpdateProgress -= UpdateProgress;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            thdHashFiles = null;
+
+            prgProgress.Visible = true;
+
+            CellRendererText filenameCell = new CellRendererText();
+            CellRendererText hashCell = new CellRendererText();
+            CellRendererToggle dbCell = new CellRendererToggle();
+
+            TreeViewColumn filenameColumn = new TreeViewColumn("Path", filenameCell, "text", 0, "background", 3, "foreground", 4);
+            TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 1, "background", 3, "foreground", 4);
+            TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell, "active", 2);
+
+            view = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string));
+
+            treeFiles.Model = view;
+            treeFiles.AppendColumn(filenameColumn);
+            treeFiles.AppendColumn(hashColumn);
+            treeFiles.AppendColumn(dbColumn);
+
+            thdCheckFiles = new Thread(Core.CheckDbForFiles);
+            Core.Failed += ChkFilesFailed;
+            Core.Finished += ChkFilesFinished;
+            Core.UpdateProgress += UpdateProgress;
+            Core.AddEntry += AddFile;
+            btnAdd.Sensitive = false;
+            thdCheckFiles.Start();
+        });
+    }
+
+    void ChkFilesFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+            if(thdCheckFiles != null)
+                thdCheckFiles.Abort();
+            prgProgress.Visible = false;
+            btnStop.Visible = false;
+            btnClose.Visible = true;
+            btnExit.Sensitive = true;
+            Core.Failed -= ChkFilesFailed;
+            Core.Finished -= ChkFilesFinished;
+            Core.UpdateProgress -= UpdateProgress;
+            Core.AddEntry -= AddFile;
+            thdHashFiles = null;
+            if(view != null)
+            {
+                view.Clear();
+                treeFiles.Model = null;
+                view = null;
+            }
+        });
+    }
+
+    void ChkFilesFinished()
+    {
+        Application.Invoke(delegate
+        {
+            if(thdCheckFiles != null)
+                thdCheckFiles.Abort();
+
+            Core.Failed -= ChkFilesFailed;
+            Core.Finished -= ChkFilesFinished;
+            Core.UpdateProgress -= UpdateProgress;
+            Core.AddEntry -= AddFile;
+
+            thdHashFiles = null;
+            prgProgress.Visible = false;
+            btnStop.Visible = false;
+            btnClose.Visible = true;
+            btnExit.Sensitive = true;
+            btnSettings.Sensitive = true;
+            btnAdd.Visible = true;
+            btnPack.Visible = true;
+
+            txtFormat.IsEditable = true;
+            txtMachine.IsEditable = true;
+            txtProduct.IsEditable = true;
+            txtVersion.IsEditable = true;
+            txtLanguages.IsEditable = true;
+            txtDeveloper.IsEditable = true;
+            txtDescription.IsEditable = true;
+            txtArchitecture.IsEditable = true;
+            chkOem.Sensitive = true;
+            chkFiles.Sensitive = true;
+            chkUpdate.Sensitive = true;
+            chkUpgrade.Sensitive = true;
+            chkNetinstall.Sensitive = true;
+            chkSource.Sensitive = true;
+        });
+    }
+
+    void AddFile(string filename, string hash, bool known)
+    {
+        Application.Invoke(delegate
+        {
+            string color = known ? "green" : "red";
+            view.AppendValues(filename, hash, known, color, "black");
+            btnAdd.Sensitive |= !known;
+        });
+    }
+
+    protected void OnBtnExitClicked(object sender, EventArgs e)
+    {
+        if(btnClose.Sensitive)
+            OnBtnCloseClicked(sender, e);
+
+        Application.Quit();
+    }
+
+    protected void OnBtnCloseClicked(object sender, EventArgs e)
+    {
+        btnFolder.Visible = true;
+        btnArchive.Visible = true;
+        MainClass.path = "";
+        MainClass.files = null;
+        MainClass.hashes = null;
+        btnStop.Visible = false;
+        btnAdd.Visible = false;
+        btnPack.Visible = false;
+        btnClose.Visible = false;
+        if(view != null)
+        {
+            view.Clear();
+            treeFiles.Model = null;
+            view = null;
+        }
+        txtFormat.IsEditable = false;
+        txtMachine.IsEditable = false;
+        txtProduct.IsEditable = false;
+        txtVersion.IsEditable = false;
+        txtLanguages.IsEditable = false;
+        txtDeveloper.IsEditable = false;
+        txtDescription.IsEditable = false;
+        txtArchitecture.IsEditable = false;
+        chkOem.Sensitive = false;
+        chkFiles.Sensitive = false;
+        chkUpdate.Sensitive = false;
+        chkUpgrade.Sensitive = false;
+        chkNetinstall.Sensitive = false;
+        chkSource.Sensitive = false;
+        txtFormat.Text = "";
+        txtMachine.Text = "";
+        txtProduct.Text = "";
+        txtVersion.Text = "";
+        txtLanguages.Text = "";
+        txtDeveloper.Text = "";
+        txtDescription.Text = "";
+        txtArchitecture.Text = "";
+        chkOem.Active = false;
+        chkFiles.Active = false;
+        chkUpdate.Active = false;
+        chkUpgrade.Active = false;
+        chkNetinstall.Active = false;
+        chkSource.Active = false;
+    }
+
+    public void UpdateProgress(string text, string inner, long current, long maximum)
+    {
+        Application.Invoke(delegate
+        {
+            lblProgress.Text = text;
+            prgProgress.Text = inner;
+            if(maximum > 0)
+                prgProgress.Fraction = current / (double)maximum;
+            else
+                prgProgress.Pulse();
+        });
+    }
+
+    public void UpdateProgress2(string text, string inner, long current, long maximum)
+    {
+        Application.Invoke(delegate
+        {
+            lblProgress2.Text = text;
+            prgProgress2.Text = inner;
+            if(maximum > 0)
+                prgProgress2.Fraction = current / (double)maximum;
+            else
+                prgProgress2.Pulse();
+        });
+    }
+
+    protected void OnBtnStopClicked(object sender, EventArgs e)
+    {
+        stopped = true;
+
+        if(thdPulseProgress != null)
+        {
+            thdPulseProgress.Abort();
+            thdPulseProgress = null;
+        }
+        if(thdFindFiles != null)
+        {
+            thdFindFiles.Abort();
+            thdFindFiles = null;
+        }
+        if(thdHashFiles != null)
+        {
+            thdHashFiles.Abort();
+            thdHashFiles = null;
+        }
+        if(thdCheckFiles != null)
+        {
+            thdCheckFiles.Abort();
+            thdCheckFiles = null;
+        }
+
+        lblProgress.Visible = false;
+        prgProgress.Visible = false;
+        lblProgress2.Visible = false;
+        prgProgress2.Visible = false;
+        Core.Failed -= HashFilesFailed;
+        Core.Finished -= HashFilesFinished;
+        Core.UpdateProgress -= UpdateProgress;
+        Core.UpdateProgress2 -= UpdateProgress2;
+        btnExit.Sensitive = true;
+        btnFolder.Visible = true;
+        btnArchive.Visible = true;
+        btnSettings.Sensitive = true;
+        lblProgress.Visible = false;
+        prgProgress.Visible = false;
+        btnExit.Sensitive = true;
+        btnFolder.Visible = true;
+        btnArchive.Visible = true;
+        btnSettings.Sensitive = true;
+        Core.Failed -= FindFilesFailed;
+        Core.Finished -= FindFilesFinished;
+        btnStop.Visible = false;
+        if(view != null)
+        {
+            view.Clear();
+            treeFiles.Model = null;
+            view = null;
+        }
+    }
+
+    protected void OnBtnAddClicked(object sender, EventArgs e)
+    {
+        btnAdd.Sensitive = false;
+        btnPack.Sensitive = false;
+        btnClose.Sensitive = false;
+        prgProgress.Visible = true;
+        txtFormat.IsEditable = false;
+        txtMachine.IsEditable = false;
+        txtProduct.IsEditable = false;
+        txtVersion.IsEditable = false;
+        txtLanguages.IsEditable = false;
+        txtDeveloper.IsEditable = false;
+        txtDescription.IsEditable = false;
+        txtArchitecture.IsEditable = false;
+        chkOem.Sensitive = false;
+        chkFiles.Sensitive = false;
+        chkUpdate.Sensitive = false;
+        chkUpgrade.Sensitive = false;
+        chkNetinstall.Sensitive = false;
+        chkSource.Sensitive = false;
+
+        Core.UpdateProgress += UpdateProgress;
+        Core.Finished += AddFilesToDbFinished;
+        Core.Failed += AddFilesToDbFailed;
+
+        MainClass.dbInfo.architecture = txtArchitecture.Text;
+        MainClass.dbInfo.description = txtDescription.Text;
+        MainClass.dbInfo.developer = txtDeveloper.Text;
+        MainClass.dbInfo.format = txtFormat.Text;
+        MainClass.dbInfo.languages = txtLanguages.Text;
+        MainClass.dbInfo.machine = txtMachine.Text;
+        MainClass.dbInfo.product = txtProduct.Text;
+        MainClass.dbInfo.version = txtVersion.Text;
+        MainClass.dbInfo.files = chkFiles.Active;
+        MainClass.dbInfo.netinstall = chkNetinstall.Active;
+        MainClass.dbInfo.oem = chkOem.Active;
+        MainClass.dbInfo.source = chkSource.Active;
+        MainClass.dbInfo.update = chkUpdate.Active;
+        MainClass.dbInfo.upgrade = chkUpgrade.Active;
+
+        thdHashFiles = new Thread(Core.AddFilesToDb);
+        thdHashFiles.Start();
+    }
+
+    public void AddFilesToDbFinished()
+    {
+        Application.Invoke(delegate
+        {
+            if(thdAddFiles != null)
+                thdAddFiles.Abort();
+
+            Core.UpdateProgress -= UpdateProgress;
+            Core.Finished -= AddFilesToDbFinished;
+            Core.Failed -= AddFilesToDbFailed;
+
+            long counter = 0;
+            view.Clear();
+            foreach(KeyValuePair<string, string> kvp in MainClass.hashes)
+            {
+                UpdateProgress(null, "Updating table", counter, MainClass.hashes.Count);
+                view.AppendValues(kvp.Key, kvp.Value, true, "green", "black");
+                counter++;
+            }
+
+            prgProgress.Visible = false;
+            btnPack.Sensitive = true;
+            btnClose.Sensitive = true;
+        });
+    }
+
+    public void AddFilesToDbFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+
+            if(thdAddFiles != null)
+                thdAddFiles.Abort();
+
+            Core.UpdateProgress -= UpdateProgress;
+            Core.Finished -= AddFilesToDbFinished;
+            Core.Failed -= AddFilesToDbFailed;
+
+            ChkFilesFinished();
+        });
+    }
+
+    protected void OnBtnSettingsClicked(object sender, EventArgs e)
+    {
+        frmSettings _frmSettings = new frmSettings();
+        _frmSettings.Show();
+    }
+}

@@ -1,0 +1,252 @@
+﻿//
+//  Author:
+//    Natalia Portillo claunia@claunia.com
+//
+//  Copyright (c) 2017, © Claunia.com
+//
+//  All rights reserved.
+//
+//  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in
+//       the documentation and/or other materials provided with the distribution.
+//     * Neither the name of the [ORGANIZATION] nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+//  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+//  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+//  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+//  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+//  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+//  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+//  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+using System;
+using System.Collections.Generic;
+using System.Data;
+
+namespace osrepodbmgr
+{
+    public struct DBEntry
+    {
+        public string developer;
+        public string product;
+        public string version;
+        public string languages;
+        public string architecture;
+        public string machine;
+        public string format;
+        public string description;
+        public bool oem;
+        public bool upgrade;
+        public bool update;
+        public bool source;
+        public bool files;
+        public bool netinstall;
+    }
+
+    public class DBEntries
+    {
+        readonly IDbConnection dbCon;
+        readonly DBCore dbCore;
+
+        public DBEntries(IDbConnection connection, DBCore core)
+        {
+            dbCon = connection;
+            dbCore = core;
+        }
+
+        public bool GetAllOSes(out List<DBEntry> entries)
+        {
+            entries = new List<DBEntry>();
+
+            const string sql = "SELECT * from oses";
+
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dbcmd.CommandText = sql;
+            DataSet dataSet = new DataSet();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                DBEntry fEntry = new DBEntry();
+                fEntry.developer = dRow["name"].ToString();
+                fEntry.product = dRow["founded"].ToString();
+                fEntry.version = dRow["website"].ToString();
+                fEntry.languages = dRow["twitter"].ToString();
+                fEntry.architecture = dRow["facebook"].ToString();
+                fEntry.machine = dRow["sold"].ToString();
+                fEntry.format = dRow["sold_to"].ToString();
+                fEntry.description = dRow["address"].ToString();
+                fEntry.oem = bool.Parse(dRow["city"].ToString());
+                fEntry.upgrade = bool.Parse(dRow["province"].ToString());
+                fEntry.update = bool.Parse(dRow["postal_code"].ToString());
+                fEntry.source = bool.Parse(dRow["country"].ToString());
+                fEntry.files = bool.Parse(dRow["city"].ToString());
+                fEntry.netinstall = bool.Parse(dRow["city"].ToString());
+                entries.Add(fEntry);
+            }
+
+            return true;
+        }
+
+        IDbCommand GetOSCommand(DBEntry entry)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+            IDbDataParameter param2 = dbcmd.CreateParameter();
+            IDbDataParameter param3 = dbcmd.CreateParameter();
+            IDbDataParameter param4 = dbcmd.CreateParameter();
+            IDbDataParameter param5 = dbcmd.CreateParameter();
+            IDbDataParameter param6 = dbcmd.CreateParameter();
+            IDbDataParameter param7 = dbcmd.CreateParameter();
+            IDbDataParameter param8 = dbcmd.CreateParameter();
+            IDbDataParameter param9 = dbcmd.CreateParameter();
+            IDbDataParameter param10 = dbcmd.CreateParameter();
+            IDbDataParameter param11 = dbcmd.CreateParameter();
+            IDbDataParameter param12 = dbcmd.CreateParameter();
+            IDbDataParameter param13 = dbcmd.CreateParameter();
+            IDbDataParameter param14 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@developer";
+            param2.ParameterName = "@product";
+            param3.ParameterName = "@version";
+            param4.ParameterName = "@languages";
+            param5.ParameterName = "@architecture";
+            param6.ParameterName = "@machine";
+            param7.ParameterName = "@format";
+            param8.ParameterName = "@description";
+            param9.ParameterName = "@oem";
+            param10.ParameterName = "@upgrade";
+            param11.ParameterName = "@update";
+            param12.ParameterName = "@source";
+            param13.ParameterName = "@files";
+            param14.ParameterName = "@netinstall";
+
+            param1.DbType = DbType.String;
+            param2.DbType = DbType.String;
+            param3.DbType = DbType.String;
+            param4.DbType = DbType.String;
+            param5.DbType = DbType.String;
+            param7.DbType = DbType.String;
+            param8.DbType = DbType.String;
+            param9.DbType = DbType.Boolean;
+            param10.DbType = DbType.Boolean;
+            param11.DbType = DbType.Boolean;
+            param12.DbType = DbType.Boolean;
+            param13.DbType = DbType.Boolean;
+            param14.DbType = DbType.Boolean;
+
+            param1.Value = entry.developer;
+            param2.Value = entry.product;
+            param3.Value = entry.version;
+            param4.Value = entry.languages;
+            param5.Value = entry.architecture;
+            param6.Value = entry.machine;
+            param7.Value = entry.format;
+            param8.Value = entry.description;
+            param9.Value = entry.oem;
+            param10.Value = entry.upgrade;
+            param11.Value = entry.update;
+            param12.Value = entry.source;
+            param13.Value = entry.files;
+            param14.Value = entry.netinstall;
+
+            dbcmd.Parameters.Add(param1);
+            dbcmd.Parameters.Add(param2);
+            dbcmd.Parameters.Add(param3);
+            dbcmd.Parameters.Add(param4);
+            dbcmd.Parameters.Add(param5);
+            dbcmd.Parameters.Add(param6);
+            dbcmd.Parameters.Add(param7);
+            dbcmd.Parameters.Add(param8);
+            dbcmd.Parameters.Add(param9);
+            dbcmd.Parameters.Add(param10);
+            dbcmd.Parameters.Add(param11);
+            dbcmd.Parameters.Add(param12);
+            dbcmd.Parameters.Add(param13);
+            dbcmd.Parameters.Add(param14);
+
+            return dbcmd;
+        }
+
+        public bool AddOS(DBEntry entry)
+        {
+            IDbCommand dbcmd = GetOSCommand(entry);
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            const string sql = "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall)" +
+                " VALUES (@developer, @product, @version, @languages, @architecture, @machine, @format, @description, @oem, @upgrade, @update, @source, @files, @netinstall)";
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
+
+        public bool AddFile(string hash)
+        {
+            Console.WriteLine("Adding {0}", hash);
+            IDbCommand dbcmd = dbCon.CreateCommand();
+
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@hash";
+
+            param1.DbType = DbType.String;
+
+            param1.Value = hash;
+
+            dbcmd.Parameters.Add(param1);
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            const string sql = "INSERT INTO files (sha256) VALUES (@hash)";
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
+
+        public bool ExistsFile(string hash)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@hash";
+            param1.DbType = DbType.String;
+            param1.Value = hash;
+            dbcmd.Parameters.Add(param1);
+            dbcmd.CommandText = "SELECT * FROM files WHERE sha256 = @hash";
+            DataSet dataSet = new DataSet();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+

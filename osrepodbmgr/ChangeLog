@@ -1,0 +1,25 @@
+2017-04-20  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
+	* Schema.cs:
+	* SQLite.cs:
+	* DBCore.cs:
+	* frmHelp.cs:
+	* Program.cs:
+	* DetectOS.cs:
+	* Settings.cs:
+	* DBEntries.cs:
+	* PlatformID.cs:
+	* MainWindow.cs:
+	* frmSettings.cs:
+	* packages.config:
+	* SHA256Context.cs:
+	* osrepodbmgr.csproj:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/generated.cs:
+	* gtk-gui/MainWindow.cs:
+	* Properties/AssemblyInfo.cs:
+	* gtk-gui/osrepodbmgr.frmHelp.cs:
+	* gtk-gui/osrepodbmgr.frmSettings.cs:
+	  Initial version.
+
