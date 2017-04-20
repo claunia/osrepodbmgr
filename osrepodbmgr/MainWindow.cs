@@ -26,10 +26,10 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 using osrepodbmgr;
-using System.Collections.Generic;
 
 public partial class MainWindow : Window
 {
@@ -48,6 +48,9 @@ public partial class MainWindow : Window
 
         Core.InitDB();
 
+        MainClass.UnarChangeStatus += UnarChangeStatus;
+        MainClass.CheckUnar();
+
         CellRendererText filenameCell = new CellRendererText();
         CellRendererText hashCell = new CellRendererText();
         CellRendererToggle dbCell = new CellRendererToggle();
@@ -62,6 +65,14 @@ public partial class MainWindow : Window
         treeFiles.AppendColumn(filenameColumn);
         treeFiles.AppendColumn(hashColumn);
         treeFiles.AppendColumn(dbColumn);
+    }
+
+    void UnarChangeStatus()
+    {
+        Application.Invoke(delegate
+        {
+            btnArchive.Sensitive = MainClass.unarUsable;
+        });
     }
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)

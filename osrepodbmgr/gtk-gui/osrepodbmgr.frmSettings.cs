@@ -38,6 +38,8 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnUnar;
 
+		private global::Gtk.Label lblUnarVersion;
+
 		private global::Gtk.HBox hbox18;
 
 		private global::Gtk.Button btnCancel;
@@ -220,6 +222,15 @@ namespace osrepodbmgr
 			w20.Expand = false;
 			w20.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
+			this.lblUnarVersion = new global::Gtk.Label();
+			this.lblUnarVersion.Name = "lblUnarVersion";
+			this.lblUnarVersion.LabelProp = global::Mono.Unix.Catalog.GetString("label1");
+			this.vbox5.Add(this.lblUnarVersion);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.lblUnarVersion]));
+			w21.Position = 4;
+			w21.Expand = false;
+			w21.Fill = false;
+			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox18 = new global::Gtk.HBox();
 			this.hbox18.Name = "hbox18";
 			this.hbox18.Spacing = 6;
@@ -231,10 +242,10 @@ namespace osrepodbmgr
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = "gtk-cancel";
 			this.hbox18.Add(this.btnCancel);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
-			w21.Position = 0;
-			w21.Expand = false;
-			w21.Fill = false;
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
+			w22.Position = 0;
+			w22.Expand = false;
+			w22.Fill = false;
 			// Container child hbox18.Gtk.Box+BoxChild
 			this.btnApply = new global::Gtk.Button();
 			this.btnApply.CanFocus = true;
@@ -243,23 +254,24 @@ namespace osrepodbmgr
 			this.btnApply.UseUnderline = true;
 			this.btnApply.Label = "gtk-apply";
 			this.hbox18.Add(this.btnApply);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
-			w22.PackType = ((global::Gtk.PackType)(1));
-			w22.Position = 1;
-			w22.Expand = false;
-			w22.Fill = false;
-			this.vbox5.Add(this.hbox18);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox18]));
-			w23.Position = 4;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
+			w23.PackType = ((global::Gtk.PackType)(1));
+			w23.Position = 1;
 			w23.Expand = false;
 			w23.Fill = false;
+			this.vbox5.Add(this.hbox18);
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox18]));
+			w24.Position = 5;
+			w24.Expand = false;
+			w24.Fill = false;
 			this.Add(this.vbox5);
 			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 400;
-			this.DefaultHeight = 194;
+			this.DefaultHeight = 210;
+			this.lblUnarVersion.Hide();
 			this.Show();
 			this.btnDatabase.Clicked += new global::System.EventHandler(this.OnBtnDatabaseClicked);
 			this.btnRepository.Clicked += new global::System.EventHandler(this.OnBtnRepositoryClicked);

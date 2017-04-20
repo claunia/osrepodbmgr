@@ -26,12 +26,16 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.IO;
+using System.Threading;
 using Gtk;
 
 namespace osrepodbmgr
 {
     public partial class frmSettings : Window
     {
+        string oldUnarPath;
+
         public frmSettings() :
                 base(WindowType.Toplevel)
         {
@@ -40,6 +44,9 @@ namespace osrepodbmgr
             txtUnar.Text = osrepodbmgr.Settings.Current.UnArchiverPath;
             txtDatabase.Text = osrepodbmgr.Settings.Current.DatabasePath;
             txtRepository.Text = osrepodbmgr.Settings.Current.RepositoryPath;
+
+            if(!string.IsNullOrWhiteSpace(txtUnar.Text))
+                CheckUnar();
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -57,6 +64,7 @@ namespace osrepodbmgr
             osrepodbmgr.Settings.SaveSettings();
             Core.CloseDB();
             Core.InitDB();
+            MainClass.CheckUnar();
             Destroy();
         }
 
@@ -67,10 +75,11 @@ namespace osrepodbmgr
             dlgFile.SelectMultiple = false;
             dlgFile.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
 
-            // TODO: Check it is really unarchiver
             if(dlgFile.Run() == (int)ResponseType.Accept)
             {
                 txtUnar.Text = dlgFile.Filename;
+                lblUnarVersion.Visible = false;
+                CheckUnar();
             }
 
             dlgFile.Destroy();
@@ -98,7 +107,6 @@ namespace osrepodbmgr
             dlgFolder.SelectMultiple = false;
             dlgFolder.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 
-            // TODO: Check it is really unarchiver
             if(dlgFolder.Run() == (int)ResponseType.Accept)
             {
                 txtRepository.Text = dlgFolder.Filename;
@@ -115,10 +123,9 @@ namespace osrepodbmgr
             dlgFile.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             dlgFile.SetFilename("osrepodbmgr.db");
 
-            // TODO: Check it is really unarchiver
             if(dlgFile.Run() == (int)ResponseType.Accept)
             {
-                if(System.IO.File.Exists(dlgFile.Filename))
+                if(File.Exists(dlgFile.Filename))
                 {
                     DBCore _dbCore = new SQLite();
                     bool notDb = false;
@@ -170,6 +177,48 @@ namespace osrepodbmgr
             }
 
             dlgFile.Destroy();
+        }
+
+        void CheckUnar()
+        {
+            Core.FinishedWithText += CheckUnarFinished;
+            Core.Failed += CheckUnarFailed;
+
+            oldUnarPath = osrepodbmgr.Settings.Current.UnArchiverPath;
+            osrepodbmgr.Settings.Current.UnArchiverPath = txtUnar.Text;
+            Thread thdCheckUnar = new Thread(Core.CheckUnar);
+            thdCheckUnar.Start();
+        }
+
+        void CheckUnarFinished(string text)
+        {
+            Application.Invoke(delegate
+            {
+                Core.FinishedWithText -= CheckUnarFinished;
+                Core.Failed -= CheckUnarFailed;
+
+                lblUnarVersion.Text = text;
+                lblUnarVersion.Visible = true;
+                osrepodbmgr.Settings.Current.UnArchiverPath = oldUnarPath;
+            });
+        }
+
+        void CheckUnarFailed(string text)
+        {
+            Application.Invoke(delegate
+            {
+                Core.FinishedWithText -= CheckUnarFinished;
+                Core.Failed -= CheckUnarFailed;
+
+                if(string.IsNullOrWhiteSpace(oldUnarPath))
+                    txtUnar.Text = "";
+                else
+                    txtUnar.Text = oldUnarPath;
+                osrepodbmgr.Settings.Current.UnArchiverPath = oldUnarPath;
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            });
         }
     }
 }

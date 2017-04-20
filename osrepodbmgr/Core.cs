@@ -27,6 +27,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Ionic.Zip;
@@ -80,7 +81,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
@@ -140,7 +141,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
@@ -167,7 +168,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
@@ -199,7 +200,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
@@ -264,7 +265,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
@@ -439,7 +440,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
@@ -463,11 +464,106 @@ namespace osrepodbmgr
                                 string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
                                 e.BytesTransferred, e.TotalBytesToTransfer);
 
-            System.Console.WriteLine("{0}", e.EventType);
+            Console.WriteLine("{0}", e.EventType);
             if(e.EventType == ZipProgressEventType.Error_Saving && Failed != null)
                 Failed("Failed compression");
             if(e.EventType == ZipProgressEventType.Saving_Completed && FinishedWithText != null)
                 FinishedWithText(e.ArchiveName);
+        }
+
+        public static void CheckUnar()
+        {
+            if(string.IsNullOrWhiteSpace(Settings.Current.UnArchiverPath))
+            {
+                if(Failed != null)
+                    Failed("unar path is not set.");
+                return;
+            }
+
+            string unarFolder = Path.GetDirectoryName(Settings.Current.UnArchiverPath);
+            string extension = Path.GetExtension(Settings.Current.UnArchiverPath);
+            string unarfilename = Path.GetFileNameWithoutExtension(Settings.Current.UnArchiverPath);
+            string lsarfilename = unarfilename.Replace("unar", "lsar");
+            string unarPath = Path.Combine(unarFolder, unarfilename + extension);
+            string lsarPath = Path.Combine(unarFolder, lsarfilename + extension);
+
+            if(!File.Exists(unarPath))
+            {
+                if(Failed != null)
+                    Failed(string.Format("Cannot find unar executable at {0}.", unarPath));
+                return;
+            }
+
+            if(!File.Exists(lsarPath))
+            {
+                if(Failed != null)
+                    Failed("Cannot find unar executable.");
+                return;
+            }
+
+            string unarOut, lsarOut;
+
+            try
+            {
+                Process unarProcess = new Process();
+                unarProcess.StartInfo.FileName = unarPath;
+                unarProcess.StartInfo.CreateNoWindow = true;
+                unarProcess.StartInfo.RedirectStandardOutput = true;
+                unarProcess.StartInfo.UseShellExecute = false;
+                unarProcess.Start();
+                unarProcess.WaitForExit();
+                unarOut = unarProcess.StandardOutput.ReadToEnd();
+            }
+            catch
+            {
+                if(Failed != null)
+                    Failed("Cannot run unar.");
+                return;
+            }
+
+            try
+            {
+                Process lsarProcess = new Process();
+                lsarProcess.StartInfo.FileName = lsarPath;
+                lsarProcess.StartInfo.CreateNoWindow = true;
+                lsarProcess.StartInfo.RedirectStandardOutput = true;
+                lsarProcess.StartInfo.UseShellExecute = false;
+                lsarProcess.Start();
+                lsarProcess.WaitForExit();
+                lsarOut = lsarProcess.StandardOutput.ReadToEnd();
+            }
+            catch
+            {
+                if(Failed != null)
+                    Failed("Cannot run lsar.");
+                return;
+            }
+
+            if(!unarOut.StartsWith("unar ", StringComparison.CurrentCulture))
+            {
+                if(Failed != null)
+                    Failed("Not the correct unar executable");
+                return;
+            }
+
+            if(!lsarOut.StartsWith("lsar ", StringComparison.CurrentCulture))
+            {
+                if(Failed != null)
+                    Failed("Not the correct unar executable");
+                return;
+            }
+
+            Process versionProcess = new Process();
+            versionProcess.StartInfo.FileName = unarPath;
+            versionProcess.StartInfo.CreateNoWindow = true;
+            versionProcess.StartInfo.RedirectStandardOutput = true;
+            versionProcess.StartInfo.UseShellExecute = false;
+            versionProcess.StartInfo.Arguments = "-v";
+            versionProcess.Start();
+            versionProcess.WaitForExit();
+
+            if(FinishedWithText != null)
+                FinishedWithText(versionProcess.StandardOutput.ReadToEnd().TrimEnd(new char[] { '\n' }));
         }
     }
 }

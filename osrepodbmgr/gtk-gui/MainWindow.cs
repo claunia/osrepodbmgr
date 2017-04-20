@@ -587,6 +587,7 @@ public partial class MainWindow
 		w51.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnArchive = new global::Gtk.Button();
+		this.btnArchive.Sensitive = false;
 		this.btnArchive.CanFocus = true;
 		this.btnArchive.Name = "btnArchive";
 		this.btnArchive.UseUnderline = true;

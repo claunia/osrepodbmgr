@@ -1,6 +1,17 @@
 2017-04-20  Natalia Portillo  <claunia@claunia.com>
 
 	* Core.cs:
+	* Program.cs:
+	* MainWindow.cs:
+	* frmSettings.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/MainWindow.cs:
+	* gtk-gui/osrepodbmgr.frmSettings.cs:
+	  Detect and check unar and lsar runnability.
+
+2017-04-20  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
 	* MainWindow.cs:
 	* packages.config:
 	* gtk-gui/gui.stetic:

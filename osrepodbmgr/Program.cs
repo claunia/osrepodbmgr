@@ -26,6 +26,7 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System.Collections.Generic;
+using System.Threading;
 using Gtk;
 
 namespace osrepodbmgr
@@ -36,14 +37,41 @@ namespace osrepodbmgr
         public static Dictionary<string, string> hashes;
         public static string path;
         public static DBEntry dbInfo;
+        public static bool unarUsable;
+        public delegate void UnarChangeStatusDelegate();
+        public static event UnarChangeStatusDelegate UnarChangeStatus;
 
         public static void Main(string[] args)
         {
             Settings.LoadSettings();
+            CheckUnar();
             Application.Init();
             MainWindow win = new MainWindow();
             win.Show();
             Application.Run();
+        }
+
+        public static void CheckUnar()
+        {
+            Core.Finished += CheckUnarFinished;
+            Core.Failed += CheckUnarFailed;
+
+            Thread thdCheckUnar = new Thread(Core.CheckUnar);
+            thdCheckUnar.Start();
+        }
+
+        static void CheckUnarFinished()
+        {
+            unarUsable = true;
+            if(UnarChangeStatus != null)
+                UnarChangeStatus();
+        }
+
+        static void CheckUnarFailed(string text)
+        {
+            unarUsable = false;
+            if(UnarChangeStatus != null)
+                UnarChangeStatus();
         }
     }
 }
