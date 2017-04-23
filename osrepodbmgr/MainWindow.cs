@@ -39,6 +39,9 @@ public partial class MainWindow : Window
     Thread thdCheckFiles;
     Thread thdAddFiles;
     Thread thdPackFiles;
+    Thread thdOpenArchive;
+    Thread thdExtractArchive;
+    Thread thdRemoveTemp;
     bool stopped;
     ListStore view;
 
@@ -356,6 +359,25 @@ public partial class MainWindow : Window
         chkUpgrade.Active = false;
         chkNetinstall.Active = false;
         chkSource.Active = false;
+
+        if(MainClass.tmpFolder != null)
+        {
+            btnStop.Visible = false;
+            prgProgress.Visible = true;
+            prgProgress.Text = "Removing temporary files";
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+            Core.Failed += RemoveTempFilesFailed;
+            Core.Finished += RemoveTempFilesFinished;
+            thdRemoveTemp = new Thread(Core.RemoveTempFolder);
+            thdRemoveTemp.Start();
+        }
     }
 
     public void UpdateProgress(string text, string inner, long current, long maximum)
@@ -393,30 +415,76 @@ public partial class MainWindow : Window
             thdPulseProgress.Abort();
             thdPulseProgress = null;
         }
+
         if(thdFindFiles != null)
         {
             thdFindFiles.Abort();
             thdFindFiles = null;
         }
+
         if(thdHashFiles != null)
         {
             thdHashFiles.Abort();
             thdHashFiles = null;
         }
+
         if(thdCheckFiles != null)
         {
             thdCheckFiles.Abort();
             thdCheckFiles = null;
         }
 
+        if(thdAddFiles != null)
+        {
+            thdAddFiles.Abort();
+            thdAddFiles = null;
+        }
+
+        if(thdPackFiles != null)
+        {
+            thdPackFiles.Abort();
+            thdPackFiles = null;
+        }
+
+        if(thdOpenArchive != null)
+        {
+            thdOpenArchive.Abort();
+            thdOpenArchive = null;
+        }
+
+        if(MainClass.unarProcess != null)
+        {
+            MainClass.unarProcess.Kill();
+            MainClass.unarProcess = null;
+        }
+
+        if(MainClass.tmpFolder != null)
+        {
+            btnStop.Visible = false;
+            prgProgress.Text = "Removing temporary files";
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+            Core.Failed += RemoveTempFilesFailed;
+            Core.Finished += RemoveTempFilesFinished;
+            thdRemoveTemp = new Thread(Core.RemoveTempFolder);
+            thdRemoveTemp.Start();
+        }
+        else
+            RestoreUI();
+    }
+
+    public void RestoreUI()
+    {
         lblProgress.Visible = false;
         prgProgress.Visible = false;
         lblProgress2.Visible = false;
         prgProgress2.Visible = false;
-        Core.Failed -= HashFilesFailed;
-        Core.Finished -= HashFilesFinished;
-        Core.UpdateProgress -= UpdateProgress;
-        Core.UpdateProgress2 -= UpdateProgress2;
         btnExit.Sensitive = true;
         btnFolder.Visible = true;
         btnArchive.Visible = true;
@@ -428,10 +496,63 @@ public partial class MainWindow : Window
         btnArchive.Visible = true;
         btnSettings.Sensitive = true;
         Core.Failed -= FindFilesFailed;
+        Core.Failed -= HashFilesFailed;
+        Core.Failed -= ChkFilesFailed;
+        Core.Failed -= OpenArchiveFailed;
+        Core.Failed -= AddFilesToDbFailed;
+        Core.Failed -= PackFilesFailed;
+        Core.Failed -= ExtractArchiveFailed;
+        Core.Failed -= RemoveTempFilesFailed;
         Core.Finished -= FindFilesFinished;
+        Core.Finished -= HashFilesFinished;
+        Core.Finished -= ChkFilesFinished;
+        Core.Finished -= OpenArchiveFinished;
+        Core.Finished -= AddFilesToDbFinished;
+        Core.Finished -= ExtractArchiveFinished;
+        Core.Finished -= RemoveTempFilesFinished;
+        Core.FinishedWithText -= PackFilesFinished;
+        Core.UpdateProgress -= UpdateProgress;
+        Core.UpdateProgress2 -= UpdateProgress2;
         btnStop.Visible = false;
         if(view != null)
             view.Clear();
+    }
+
+    public void RemoveTempFilesFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+            dlgMsg.Run();
+            dlgMsg.Destroy();
+            if(thdPulseProgress != null)
+            {
+                thdPulseProgress.Abort();
+                thdPulseProgress = null;
+            }
+            Core.Failed -= RemoveTempFilesFailed;
+            Core.Finished -= RemoveTempFilesFinished;
+            MainClass.path = null;
+            MainClass.tmpFolder = null;
+            RestoreUI();
+        });
+    }
+
+    public void RemoveTempFilesFinished()
+    {
+        Application.Invoke(delegate
+        {
+            if(thdPulseProgress != null)
+            {
+                thdPulseProgress.Abort();
+                thdPulseProgress = null;
+            }
+            Core.Failed -= RemoveTempFilesFailed;
+            Core.Finished -= RemoveTempFilesFinished;
+            MainClass.path = null;
+            MainClass.tmpFolder = null;
+            RestoreUI();
+        });
     }
 
     protected void OnBtnAddClicked(object sender, EventArgs e)
@@ -576,8 +697,29 @@ public partial class MainWindow : Window
         MainClass.dbInfo.update = chkUpdate.Active;
         MainClass.dbInfo.upgrade = chkUpgrade.Active;
 
-        thdPackFiles = new Thread(Core.CompressFiles);
-        thdPackFiles.Start();
+        if(!string.IsNullOrEmpty(MainClass.tmpFolder) && MainClass.copyArchive)
+        {
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+            Core.UpdateProgress -= UpdateProgress;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            prgProgress.Text = "Copying archive as is.";
+            prgProgress2.Visible = false;
+            lblProgress2.Visible = false;
+            thdPackFiles = new Thread(Core.CopyArchive);
+            thdPackFiles.Start();
+        }
+        else
+        {
+            thdPackFiles = new Thread(Core.CompressFiles);
+            thdPackFiles.Start();
+        }
     }
 
     public void PackFilesFinished(string text)
@@ -645,6 +787,184 @@ public partial class MainWindow : Window
             chkUpgrade.Sensitive = true;
             chkNetinstall.Sensitive = true;
             chkSource.Sensitive = true;
+        });
+    }
+
+    protected void OnBtnArchiveClicked(object sender, EventArgs e)
+    {
+        if(!MainClass.unarUsable)
+        {
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot open archives without a working unar installation.");
+            dlgMsg.Run();
+            dlgMsg.Destroy();
+            return;
+        }
+
+        FileChooserDialog dlgFolder = new FileChooserDialog("Open archive", this, FileChooserAction.Open,
+                                                     "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
+        dlgFolder.SelectMultiple = false;
+
+        if(dlgFolder.Run() == (int)ResponseType.Accept)
+        {
+            stopped = false;
+            prgProgress.Text = "Opening archive";
+            lblProgress.Visible = false;
+            prgProgress.Visible = true;
+            btnExit.Sensitive = false;
+            btnFolder.Visible = false;
+            btnArchive.Visible = false;
+            btnSettings.Sensitive = false;
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+
+            thdOpenArchive = new Thread(Core.OpenArchive);
+            MainClass.path = dlgFolder.Filename;
+            Core.Failed += OpenArchiveFailed;
+            Core.Finished += OpenArchiveFinished;
+            btnStop.Visible = true;
+            thdPulseProgress.Start();
+            thdOpenArchive.Start();
+        }
+
+        dlgFolder.Destroy();
+    }
+
+    public void OpenArchiveFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
+            lblProgress.Visible = false;
+            prgProgress.Visible = false;
+            btnExit.Sensitive = true;
+            btnFolder.Visible = true;
+            btnArchive.Visible = true;
+            btnSettings.Sensitive = true;
+            Core.Failed -= OpenArchiveFailed;
+            Core.Finished -= OpenArchiveFinished;
+            thdOpenArchive = null;
+        });
+    }
+
+    public void OpenArchiveFinished()
+    {
+        Application.Invoke(delegate
+        {
+            stopped = false;
+            prgProgress.Text = "Extracting archive";
+            lblProgress.Visible = false;
+            prgProgress.Visible = true;
+            prgProgress2.Visible = true;
+            btnExit.Sensitive = false;
+            btnFolder.Visible = false;
+            btnArchive.Visible = false;
+            btnSettings.Sensitive = false;
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+            Core.Failed -= OpenArchiveFailed;
+            Core.Finished -= OpenArchiveFinished;
+            thdOpenArchive = null;
+            Core.Failed += ExtractArchiveFailed;
+            Core.Finished += ExtractArchiveFinished;
+            Core.UpdateProgress2 += UpdateProgress2;
+            thdExtractArchive = new Thread(Core.ExtractArchive);
+            thdExtractArchive.Start();
+        });
+    }
+
+    public void ExtractArchiveFailed(string text)
+    {
+        Application.Invoke(delegate
+        {
+            if(!stopped)
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+            }
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
+            lblProgress.Visible = false;
+            prgProgress2.Visible = false;
+            btnExit.Sensitive = true;
+            btnFolder.Visible = true;
+            btnArchive.Visible = true;
+            btnSettings.Sensitive = true;
+            Core.Failed -= ExtractArchiveFailed;
+            Core.Finished -= ExtractArchiveFinished;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            thdExtractArchive = null;
+            if(MainClass.tmpFolder != null)
+            {
+                btnStop.Visible = false;
+                prgProgress.Text = "Removing temporary files";
+                thdPulseProgress = new Thread(() =>
+                {
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(10);
+                });
+                Core.Failed += RemoveTempFilesFailed;
+                Core.Finished += RemoveTempFilesFinished;
+                thdRemoveTemp = new Thread(Core.RemoveTempFolder);
+                thdRemoveTemp.Start();
+            }
+        });
+    }
+
+    public void ExtractArchiveFinished()
+    {
+        Application.Invoke(delegate
+        {
+            if(thdExtractArchive != null)
+                thdExtractArchive.Abort();
+            stopped = false;
+            lblProgress.Text = "Finding files";
+            lblProgress.Visible = true;
+            prgProgress.Visible = true;
+            btnExit.Sensitive = false;
+            btnFolder.Visible = false;
+            btnArchive.Visible = false;
+            btnSettings.Sensitive = false;
+            Core.Failed -= ExtractArchiveFailed;
+            Core.Finished -= ExtractArchiveFinished;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            thdPulseProgress = new Thread(() =>
+            {
+                Application.Invoke(delegate
+                {
+                    prgProgress.Pulse();
+                });
+                Thread.Sleep(10);
+            });
+
+            thdFindFiles = new Thread(Core.FindFiles);
+            Core.Failed += FindFilesFailed;
+            Core.Finished += FindFilesFinished;
+            btnStop.Visible = true;
+            thdPulseProgress.Start();
+            thdFindFiles.Start();
         });
     }
 }

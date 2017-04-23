@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Ionic.Zip;
+using Newtonsoft.Json;
 
 namespace osrepodbmgr
 {
@@ -60,13 +61,20 @@ namespace osrepodbmgr
 
         public static void FindFiles()
         {
-            if(string.IsNullOrEmpty(MainClass.path))
+            string filesPath;
+
+            if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
+                filesPath = MainClass.tmpFolder;
+            else
+                filesPath = MainClass.path;
+
+            if(string.IsNullOrEmpty(filesPath))
             {
                 if(Failed != null)
                     Failed("Path is null or empty");
             }
 
-            if(!Directory.Exists(MainClass.path))
+            if(!Directory.Exists(filesPath))
             {
                 if(Failed != null)
                     Failed("Directory not found");
@@ -74,7 +82,7 @@ namespace osrepodbmgr
 
             try
             {
-                MainClass.files = new List<string>(Directory.EnumerateFiles(MainClass.path, "*", SearchOption.AllDirectories));
+                MainClass.files = new List<string>(Directory.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories));
                 MainClass.files.Sort();
                 if(Finished != null)
                     Finished();
@@ -96,7 +104,14 @@ namespace osrepodbmgr
                 long counter = 1;
                 foreach(string file in MainClass.files)
                 {
-                    string relpath = file.Substring(MainClass.path.Length + 1);
+                    string filesPath;
+
+                    if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
+                        filesPath = MainClass.tmpFolder;
+                    else
+                        filesPath = MainClass.path;
+                    
+                    string relpath = file.Substring(filesPath.Length + 1);
                     if(UpdateProgress != null)
                         UpdateProgress(string.Format("Hashing file {0} of {1}", counter, MainClass.files.Count), null, counter, MainClass.files.Count);
                     FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
@@ -405,6 +420,13 @@ namespace osrepodbmgr
                 zf.CompressionMethod = CompressionMethod.Deflate;
                 zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
 
+                string filesPath;
+
+                if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
+                    filesPath = MainClass.tmpFolder;
+                else
+                    filesPath = MainClass.path;
+
                 int counter = 0;
                 foreach(string file in MainClass.files)
                 {
@@ -420,7 +442,7 @@ namespace osrepodbmgr
                     ze.CreationTime = fi.CreationTimeUtc;
                     ze.EmitTimesInUnixFormatWhenSaving = true;
                     ze.LastModified = fi.LastWriteTimeUtc;
-                    ze.FileName = file.Substring(MainClass.path.Length + 1);
+                    ze.FileName = file.Substring(filesPath.Length + 1);
 
                     //fs.Close();
 
@@ -564,6 +586,312 @@ namespace osrepodbmgr
 
             if(FinishedWithText != null)
                 FinishedWithText(versionProcess.StandardOutput.ReadToEnd().TrimEnd(new char[] { '\n' }));
+        }
+
+        public static void OpenArchive()
+        {
+            if(!MainClass.unarUsable)
+            {
+                if(Failed != null)
+                    Failed("The UnArchiver is not correctly installed");
+                return;
+            }
+
+            if(!File.Exists(MainClass.path))
+            {
+                if(Failed != null)
+                    Failed("Specified file cannot be found");
+                return;
+            }
+
+            try
+            {
+                string unarFolder = Path.GetDirectoryName(Settings.Current.UnArchiverPath);
+                string extension = Path.GetExtension(Settings.Current.UnArchiverPath);
+                string unarfilename = Path.GetFileNameWithoutExtension(Settings.Current.UnArchiverPath);
+                string lsarfilename = unarfilename.Replace("unar", "lsar");
+                string lsarPath = Path.Combine(unarFolder, lsarfilename + extension);
+
+                Process lsarProcess = new Process();
+                lsarProcess.StartInfo.FileName = lsarPath;
+                lsarProcess.StartInfo.CreateNoWindow = true;
+                lsarProcess.StartInfo.RedirectStandardOutput = true;
+                lsarProcess.StartInfo.UseShellExecute = false;
+                lsarProcess.StartInfo.Arguments = string.Format("-j \"\"\"{0}\"\"\"", MainClass.path);
+                lsarProcess.Start();
+                string lsarOutput = lsarProcess.StandardOutput.ReadToEnd();
+                lsarProcess.WaitForExit();
+
+                long counter = 0;
+                string format = null;
+                JsonTextReader jsReader = new JsonTextReader(new StringReader(lsarOutput));
+                while(jsReader.Read())
+                {
+                    if(jsReader.TokenType == JsonToken.PropertyName && jsReader.Value != null && jsReader.Value.ToString() == "XADFileName")
+                        counter++;
+                    else if(jsReader.TokenType == JsonToken.PropertyName && jsReader.Value != null && jsReader.Value.ToString() == "lsarFormatName")
+                    {
+                        jsReader.Read();
+                        if(jsReader.TokenType == JsonToken.String && jsReader.Value != null)
+                            format = jsReader.Value.ToString();
+                    }
+                }
+
+                // TODO: Check if ZIP file contains Mac OS X metadata
+                MainClass.copyArchive = false;
+                MainClass.archiveFormat = format;
+                MainClass.noFilesInArchive = counter;
+
+                if(string.IsNullOrEmpty(format))
+                {
+                    if(Failed != null)
+                        Failed("File not recognized as an archive");
+                    return;
+                }
+
+                if(counter == 0)
+                {
+                    if(Failed != null)
+                        Failed("Archive contains no files");
+                    return;
+                }
+
+                if(Finished != null)
+                    Finished();
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
+        public static void ExtractArchive()
+        {
+            if(!MainClass.unarUsable)
+            {
+                if(Failed != null)
+                    Failed("The UnArchiver is not correctly installed");
+                return;
+            }
+
+            if(!File.Exists(MainClass.path))
+            {
+                if(Failed != null)
+                    Failed("Specified file cannot be found");
+                return;
+            }
+
+            if(!Directory.Exists(Settings.Current.TemporaryFolder))
+            {
+                if(Failed != null)
+                    Failed("Temporary folder cannot be found");
+                return;
+            }
+
+            string tmpFolder = Path.Combine(Settings.Current.TemporaryFolder, Path.GetRandomFileName());
+
+            try
+            {
+                Directory.CreateDirectory(tmpFolder);
+            }
+            catch(Exception)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed("Cannot create temporary folder");
+            }
+
+            try
+            {
+                MainClass.unarProcess = new Process();
+                MainClass.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
+                MainClass.unarProcess.StartInfo.CreateNoWindow = true;
+                MainClass.unarProcess.StartInfo.RedirectStandardOutput = true;
+                MainClass.unarProcess.StartInfo.UseShellExecute = false;
+                MainClass.unarProcess.StartInfo.Arguments = string.Format("-o \"\"\"{0}\"\"\" -r -D -k hidden \"\"\"{1}\"\"\"", tmpFolder, MainClass.path);
+                long counter = 0;
+                MainClass.unarProcess.OutputDataReceived += (sender, e) =>
+                {
+                    counter++;
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2("", e.Data, counter, MainClass.noFilesInArchive);
+                };
+                MainClass.unarProcess.Start();
+                MainClass.unarProcess.BeginOutputReadLine();
+                MainClass.unarProcess.WaitForExit();
+                MainClass.unarProcess.Close();
+
+                if(Finished != null)
+                    Finished();
+                
+                MainClass.tmpFolder = tmpFolder;
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
+        public static void CopyArchive()
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.developer))
+                {
+                    if(Failed != null)
+                        Failed("Developer cannot be empty");
+                    return;
+                }
+
+                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.product))
+                {
+                    if(Failed != null)
+                        Failed("Product cannot be empty");
+                    return;
+                }
+
+                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.version))
+                {
+                    if(Failed != null)
+                        Failed("Version cannot be empty");
+                    return;
+                }
+
+                // Check if repository folder exists
+                string destinationFolder = Settings.Current.RepositoryPath;
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                // Check if developer folder exists
+                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.developer);
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                // Check if product folder exists
+                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.product);
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                // Check if version folder exists
+                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.version);
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.languages))
+                {
+                    // Check if languages folder exists
+                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.languages);
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.architecture))
+                {
+                    // Check if architecture folder exists
+                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.architecture);
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+                if(MainClass.dbInfo.oem)
+                {
+                    // Check if oem folder exists
+                    destinationFolder = Path.Combine(destinationFolder, "oem");
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.machine))
+                {
+                    // Check if architecture folder exists
+                    destinationFolder = Path.Combine(destinationFolder, "for " + MainClass.dbInfo.machine);
+                    if(!Directory.Exists(destinationFolder))
+                        Directory.CreateDirectory(destinationFolder);
+                }
+
+                string destinationFile = "";
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.format))
+                    destinationFile += "[" + MainClass.dbInfo.format + "]";
+                if(MainClass.dbInfo.files)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "files";
+                }
+                if(MainClass.dbInfo.netinstall)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "netinstall";
+                }
+                if(MainClass.dbInfo.source)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "source";
+                }
+                if(MainClass.dbInfo.update)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "update";
+                }
+                if(MainClass.dbInfo.upgrade)
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += "upgrade";
+                }
+                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.description))
+                {
+                    if(destinationFile != "")
+                        destinationFile += "_";
+                    destinationFile += MainClass.dbInfo.description;
+                }
+                else if(destinationFile == "")
+                {
+                    destinationFile = "archive";
+                }
+
+                string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
+                if(File.Exists(destination))
+                {
+                    if(Failed != null)
+                        Failed("File already exists");
+                    return;
+                }
+
+                File.Copy(MainClass.path, destination);
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+            if(Finished != null)
+                Finished();
+        }
+
+        public static void RemoveTempFolder()
+        {
+            try
+            {
+                if(Directory.Exists(MainClass.tmpFolder))
+                {
+                    Directory.Delete(MainClass.tmpFolder, true);
+                    if(Finished != null)
+                        Finished();
+                }
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
         }
     }
 }

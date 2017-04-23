@@ -587,7 +587,6 @@ public partial class MainWindow
 		w51.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnArchive = new global::Gtk.Button();
-		this.btnArchive.Sensitive = false;
 		this.btnArchive.CanFocus = true;
 		this.btnArchive.Name = "btnArchive";
 		this.btnArchive.UseUnderline = true;
@@ -653,6 +652,7 @@ public partial class MainWindow
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 		this.btnStop.Clicked += new global::System.EventHandler(this.OnBtnStopClicked);
 		this.btnFolder.Clicked += new global::System.EventHandler(this.OnBtnFolderClicked);
+		this.btnArchive.Clicked += new global::System.EventHandler(this.OnBtnArchiveClicked);
 		this.btnAdd.Clicked += new global::System.EventHandler(this.OnBtnAddClicked);
 		this.btnPack.Clicked += new global::System.EventHandler(this.OnBtnPackClicked);
 		this.btnClose.Clicked += new global::System.EventHandler(this.OnBtnCloseClicked);

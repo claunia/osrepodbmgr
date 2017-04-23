@@ -643,12 +643,12 @@
             <child>
               <widget class="Gtk.Button" id="btnArchive">
                 <property name="MemberName" />
-                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-open Menu</property>
                 <property name="Label" translatable="yes">Open _archive</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnBtnArchiveClicked" />
               </widget>
               <packing>
                 <property name="PackType">End</property>

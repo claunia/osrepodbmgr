@@ -26,6 +26,7 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Gtk;
 
@@ -40,6 +41,11 @@ namespace osrepodbmgr
         public static bool unarUsable;
         public delegate void UnarChangeStatusDelegate();
         public static event UnarChangeStatusDelegate UnarChangeStatus;
+        public static string tmpFolder;
+        public static long noFilesInArchive;
+        public static string archiveFormat;
+        public static Process unarProcess;
+        public static bool copyArchive;
 
         public static void Main(string[] args)
         {
@@ -65,6 +71,8 @@ namespace osrepodbmgr
             unarUsable = true;
             if(UnarChangeStatus != null)
                 UnarChangeStatus();
+            Core.Finished -= CheckUnarFinished;
+            Core.Failed -= CheckUnarFailed;
         }
 
         static void CheckUnarFailed(string text)
@@ -72,6 +80,8 @@ namespace osrepodbmgr
             unarUsable = false;
             if(UnarChangeStatus != null)
                 UnarChangeStatus();
+            Core.Finished -= CheckUnarFinished;
+            Core.Failed -= CheckUnarFailed;
         }
     }
 }

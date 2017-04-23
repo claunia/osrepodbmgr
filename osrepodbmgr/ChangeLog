@@ -1,3 +1,14 @@
+2017-04-23  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
+	* Program.cs:
+	* MainWindow.cs:
+	* packages.config:
+	* osrepodbmgr.csproj:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/MainWindow.cs:
+	  Added support for archives.
+
 2017-04-20  Natalia Portillo  <claunia@claunia.com>
 
 	* Core.cs:
