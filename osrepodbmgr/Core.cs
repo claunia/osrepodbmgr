@@ -637,7 +637,6 @@ namespace osrepodbmgr
                     }
                 }
 
-                // TODO: Check if ZIP file contains Mac OS X metadata
                 MainClass.copyArchive = false;
                 MainClass.archiveFormat = format;
                 MainClass.noFilesInArchive = counter;
@@ -654,6 +653,20 @@ namespace osrepodbmgr
                     if(Failed != null)
                         Failed("Archive contains no files");
                     return;
+                }
+
+                if(format == "Zip")
+                {
+                    ZipFile zf = ZipFile.Read(MainClass.path);
+                    foreach(ZipEntry ze in zf)
+                    {
+                        // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
+                        if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
+                        {
+                            MainClass.copyArchive = true;
+                            break;
+                        }
+                    }
                 }
 
                 if(Finished != null)
