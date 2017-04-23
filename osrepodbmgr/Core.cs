@@ -45,14 +45,16 @@ namespace osrepodbmgr
         public delegate void FailedDelegate(string text);
         public delegate void FinishedWithoutErrorDelegate();
         public delegate void FinishedWithTextDelegate(string text);
-        public delegate void AddEntryDelegate(string filename, string hash, bool known);
+        public delegate void AddFileDelegate(string filename, string hash, bool known);
+        public delegate void AddOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
 
         public static event UpdateProgressDelegate UpdateProgress;
         public static event UpdateProgress2Delegate UpdateProgress2;
         public static event FailedDelegate Failed;
         public static event FinishedWithoutErrorDelegate Finished;
         public static event FinishedWithTextDelegate FinishedWithText;
-        public static event AddEntryDelegate AddEntry;
+        public static event AddFileDelegate AddFile;
+        public static event AddOSDelegate AddOS;
 
         static DBCore dbCore;
 
@@ -184,11 +186,118 @@ namespace osrepodbmgr
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Checking files in database", counter, MainClass.hashes.Count);
 
-                    if(AddEntry != null)
-                        AddEntry(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
+                    if(AddFile != null)
+                        AddFile(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
 
                     counter++;
                 }
+
+                if(UpdateProgress != null)
+                    UpdateProgress(null, "Retrieving OSes from database", counter, MainClass.hashes.Count);
+                List<DBEntry> oses;
+                dbCore.DBOps.GetAllOSes(out oses);
+
+                if(oses != null && oses.Count > 0)
+                {
+                    DBEntry[] osesArray = new DBEntry[oses.Count];
+                    oses.CopyTo(osesArray);
+
+                    long osCounter = 0;
+                    foreach(DBEntry os in osesArray)
+                    {
+                        if(UpdateProgress != null)
+                            UpdateProgress(null, string.Format("Check OS id {0}", os.id), osCounter, osesArray.Length);
+
+                        counter = 0;
+                        foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+                        {
+                            if(UpdateProgress2 != null)
+                                UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, MainClass.hashes.Count);
+
+                            if(!dbCore.DBOps.ExistsFileInOS(kvp.Value.Sha256, os.id))
+                            {
+                                if(oses.Contains(os))
+                                    oses.Remove(os);
+
+                                // If one file is missing, the rest don't matter
+                                break;
+                            }
+
+                            counter++;
+                        }
+
+                        if(oses.Count == 0)
+                            break; // No OSes left
+                    }
+                }
+
+                if(AddOS != null)
+                {
+                    // TODO: Check file name and existence
+                    foreach(DBEntry os in oses)
+                    {
+                        string destinationFolder;
+                        destinationFolder = Path.Combine(Settings.Current.RepositoryPath, os.developer, os.product, os.version);
+                        if(!string.IsNullOrWhiteSpace(os.languages))
+                            destinationFolder = Path.Combine(destinationFolder, os.languages);
+                        if(!string.IsNullOrWhiteSpace(os.architecture))
+                            destinationFolder = Path.Combine(destinationFolder, os.architecture);
+                        if(os.oem)
+                            destinationFolder = Path.Combine(destinationFolder, "oem");
+                        if(!string.IsNullOrWhiteSpace(os.machine))
+                            destinationFolder = Path.Combine(destinationFolder, "for " + os.machine);
+
+                        string destinationFile = "";
+                        if(!string.IsNullOrWhiteSpace(os.format))
+                            destinationFile += "[" + os.format + "]";
+                        if(os.files)
+                        {
+                            if(destinationFile != "")
+                                destinationFile += "_";
+                            destinationFile += "files";
+                        }
+                        if(os.netinstall)
+                        {
+                            if(destinationFile != "")
+                                destinationFile += "_";
+                            destinationFile += "netinstall";
+                        }
+                        if(os.source)
+                        {
+                            if(destinationFile != "")
+                                destinationFile += "_";
+                            destinationFile += "source";
+                        }
+                        if(os.update)
+                        {
+                            if(destinationFile != "")
+                                destinationFile += "_";
+                            destinationFile += "update";
+                        }
+                        if(os.upgrade)
+                        {
+                            if(destinationFile != "")
+                                destinationFile += "_";
+                            destinationFile += "upgrade";
+                        }
+                        if(!string.IsNullOrWhiteSpace(os.description))
+                        {
+                            if(destinationFile != "")
+                                destinationFile += "_";
+                            destinationFile += os.description;
+                        }
+                        else if(destinationFile == "")
+                        {
+                            destinationFile = "archive";
+                        }
+
+                        string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
+
+                        if(AddOS != null)
+                            AddOS(os, File.Exists(destination), destination);
+                    }
+                }
+
                 if(Finished != null)
                     Finished();
             }

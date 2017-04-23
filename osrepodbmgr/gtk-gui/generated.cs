@@ -8,7 +8,7 @@ namespace Stetic
 
 		internal static void Initialize(Gtk.Widget iconRenderer)
 		{
-			if((Stetic.Gui.initialized == false))
+			if ((Stetic.Gui.initialized == false))
 			{
 				Stetic.Gui.initialized = true;
 			}
@@ -20,7 +20,7 @@ namespace Stetic
 		public static Gdk.Pixbuf LoadIcon(Gtk.Widget widget, string name, Gtk.IconSize size)
 		{
 			Gdk.Pixbuf res = widget.RenderIcon(name, size, null);
-			if((res != null))
+			if ((res != null))
 			{
 				return res;
 			}
@@ -32,9 +32,9 @@ namespace Stetic
 				{
 					return Gtk.IconTheme.Default.LoadIcon(name, sz, 0);
 				}
-				catch(System.Exception)
+				catch (System.Exception)
 				{
-					if((name != "gtk-missing-image"))
+					if ((name != "gtk-missing-image"))
 					{
 						return Stetic.IconLoader.LoadIcon(widget, "gtk-missing-image", size);
 					}

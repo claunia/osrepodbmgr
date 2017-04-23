@@ -43,7 +43,8 @@ public partial class MainWindow : Window
     Thread thdExtractArchive;
     Thread thdRemoveTemp;
     bool stopped;
-    ListStore view;
+    ListStore fileView;
+    ListStore osView;
 
     public MainWindow() : base(WindowType.Toplevel)
     {
@@ -62,12 +63,66 @@ public partial class MainWindow : Window
         TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 1, "background", 3, "foreground", 4);
         TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell, "active", 2);
 
-        view = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string));
+        fileView = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string));
 
-        treeFiles.Model = view;
+        treeFiles.Model = fileView;
         treeFiles.AppendColumn(filenameColumn);
         treeFiles.AppendColumn(hashColumn);
         treeFiles.AppendColumn(dbColumn);
+
+        tabTabs.GetNthPage(1).Visible = false;
+
+        CellRendererText developerCell = new CellRendererText();
+        CellRendererText productCell = new CellRendererText();
+        CellRendererText versionCell = new CellRendererText();
+        CellRendererText languagesCell = new CellRendererText();
+        CellRendererText architectureCell = new CellRendererText();
+        CellRendererText machineCell = new CellRendererText();
+        CellRendererText formatCell = new CellRendererText();
+        CellRendererText descriptionCell = new CellRendererText();
+        CellRendererToggle oemCell = new CellRendererToggle();
+        CellRendererToggle upgradeCell = new CellRendererToggle();
+        CellRendererToggle updateCell = new CellRendererToggle();
+        CellRendererToggle sourceCell = new CellRendererToggle();
+        CellRendererToggle filesCell = new CellRendererToggle();
+        CellRendererToggle netinstallCell = new CellRendererToggle();
+        CellRendererText pathCell = new CellRendererText();
+
+        TreeViewColumn developerColumn = new TreeViewColumn("Developer", developerCell, "text", 0, "background", 14, "foreground", 15);
+        TreeViewColumn productColumn = new TreeViewColumn("Product", productCell, "text", 1, "background", 14, "foreground", 15);
+        TreeViewColumn versionColumn = new TreeViewColumn("Version", versionCell, "text", 2, "background", 14, "foreground", 15);
+        TreeViewColumn languagesColumn = new TreeViewColumn("Languages", languagesCell, "text", 3, "background", 14, "foreground", 15);
+        TreeViewColumn architectureColumn = new TreeViewColumn("Architecture", architectureCell, "text", 4, "background", 14, "foreground", 15);
+        TreeViewColumn machineColumn = new TreeViewColumn("Machine", machineCell, "text", 5, "background", 14, "foreground", 15);
+        TreeViewColumn formatColumn = new TreeViewColumn("Format", formatCell, "text", 6, "background", 14, "foreground", 15);
+        TreeViewColumn descriptionColumn = new TreeViewColumn("Description", descriptionCell, "text", 7, "background", 14, "foreground", 15);
+        TreeViewColumn oemColumn = new TreeViewColumn("OEM?", oemCell, "active", 8);
+        TreeViewColumn upgradeColumn = new TreeViewColumn("Upgrade?", upgradeCell, "active", 9);
+        TreeViewColumn updateColumn = new TreeViewColumn("Update?", updateCell, "active", 10);
+        TreeViewColumn sourceColumn = new TreeViewColumn("Source?", sourceCell, "active", 11);
+        TreeViewColumn filesColumn = new TreeViewColumn("Files?", filesCell, "active", 12);
+        TreeViewColumn netinstallColumn = new TreeViewColumn("NetInstall?", netinstallCell, "active", 13);
+        TreeViewColumn pathColumn = new TreeViewColumn("Path in repo", pathCell, "text", 16, "background", 14, "foreground", 15);
+
+        osView = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string),
+                                 typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(string), typeof(string), typeof(string));
+
+        treeOSes.Model = osView;
+        treeOSes.AppendColumn(developerColumn);
+        treeOSes.AppendColumn(productColumn);
+        treeOSes.AppendColumn(versionColumn);
+        treeOSes.AppendColumn(languagesColumn);
+        treeOSes.AppendColumn(architectureColumn);
+        treeOSes.AppendColumn(machineColumn);
+        treeOSes.AppendColumn(formatColumn);
+        treeOSes.AppendColumn(descriptionColumn);
+        treeOSes.AppendColumn(oemColumn);
+        treeOSes.AppendColumn(upgradeColumn);
+        treeOSes.AppendColumn(updateColumn);
+        treeOSes.AppendColumn(sourceColumn);
+        treeOSes.AppendColumn(filesColumn);
+        treeOSes.AppendColumn(netinstallColumn);
+        treeOSes.AppendColumn(pathColumn);
     }
 
     void UnarChangeStatus()
@@ -229,7 +284,9 @@ public partial class MainWindow : Window
             Core.Failed += ChkFilesFailed;
             Core.Finished += ChkFilesFinished;
             Core.UpdateProgress += UpdateProgress;
-            Core.AddEntry += AddFile;
+            Core.UpdateProgress2 += UpdateProgress2;
+            Core.AddFile += AddFile;
+            Core.AddOS += AddOS;
             btnAdd.Sensitive = false;
             thdCheckFiles.Start();
         });
@@ -254,10 +311,17 @@ public partial class MainWindow : Window
             Core.Failed -= ChkFilesFailed;
             Core.Finished -= ChkFilesFinished;
             Core.UpdateProgress -= UpdateProgress;
-            Core.AddEntry -= AddFile;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            Core.AddFile -= AddFile;
+            Core.AddOS -= AddOS;
             thdHashFiles = null;
-            if(view != null)
-                view.Clear();
+            if(fileView != null)
+                fileView.Clear();
+            if(osView != null)
+            {
+                tabTabs.GetNthPage(1).Visible = false;
+                osView.Clear();
+            }
         });
     }
 
@@ -271,7 +335,9 @@ public partial class MainWindow : Window
             Core.Failed -= ChkFilesFailed;
             Core.Finished -= ChkFilesFinished;
             Core.UpdateProgress -= UpdateProgress;
-            Core.AddEntry -= AddFile;
+            Core.UpdateProgress2 -= UpdateProgress2;
+            Core.AddFile -= AddFile;
+            Core.AddOS -= AddOS;
 
             thdHashFiles = null;
             prgProgress.Visible = false;
@@ -305,8 +371,20 @@ public partial class MainWindow : Window
         Application.Invoke(delegate
         {
             string color = known ? "green" : "red";
-            view.AppendValues(filename, hash, known, color, "black");
+            fileView.AppendValues(filename, hash, known, color, "black");
             btnAdd.Sensitive |= !known;
+        });
+    }
+
+    void AddOS(DBEntry os, bool existsInRepo, string pathInRepo)
+    {
+        Application.Invoke(delegate
+        {
+            string color = existsInRepo ? "green" : "red";
+            tabTabs.GetNthPage(1).Visible = true;
+            osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
+                                os.format, os.description, os.oem, os.upgrade, os.update, os.source,
+                                os.files, os.netinstall, color, "black", pathInRepo);
         });
     }
 
@@ -329,8 +407,13 @@ public partial class MainWindow : Window
         btnAdd.Visible = false;
         btnPack.Visible = false;
         btnClose.Visible = false;
-        if(view != null)
-            view.Clear();
+        if(fileView != null)
+            fileView.Clear();
+        if(osView != null)
+        {
+            tabTabs.GetNthPage(1).Visible = false;
+            osView.Clear();
+        }
         txtFormat.IsEditable = false;
         txtMachine.IsEditable = false;
         txtProduct.IsEditable = false;
@@ -514,8 +597,13 @@ public partial class MainWindow : Window
         Core.UpdateProgress -= UpdateProgress;
         Core.UpdateProgress2 -= UpdateProgress2;
         btnStop.Visible = false;
-        if(view != null)
-            view.Clear();
+        if(fileView != null)
+            fileView.Clear();
+        if(osView != null)
+        {
+            tabTabs.GetNthPage(1).Visible = false;
+            osView.Clear();
+        }
     }
 
     public void RemoveTempFilesFailed(string text)
@@ -611,13 +699,15 @@ public partial class MainWindow : Window
             Core.Failed -= AddFilesToDbFailed;
 
             long counter = 0;
-            view.Clear();
+            fileView.Clear();
             foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
             {
                 UpdateProgress(null, "Updating table", counter, MainClass.hashes.Count);
-                view.AppendValues(kvp.Key, kvp.Value.Path, true, "green", "black");
+                fileView.AppendValues(kvp.Key, kvp.Value.Path, true, "green", "black");
                 counter++;
             }
+
+            // TODO: Update OS table
 
             prgProgress.Visible = false;
             btnPack.Sensitive = true;

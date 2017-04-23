@@ -1,5 +1,18 @@
 2017-04-23  Natalia Portillo  <claunia@claunia.com>
 
+	* DBOps.cs:
+	  Added checking for which OSes contains chosen files.
+	Corrected DB misscalling.
+
+	* Core.cs:
+	* MainWindow.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/generated.cs:
+	* gtk-gui/MainWindow.cs:
+	  Added checking for which OSes contains chosen files.
+
+2017-04-23  Natalia Portillo  <claunia@claunia.com>
+
 	* Core.cs:
 	* DBOps.cs:
 	* DBCore.cs:

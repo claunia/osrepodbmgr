@@ -34,7 +34,7 @@ namespace osrepodbmgr
 {
     public struct DBEntry
     {
-        public ulong id;
+        public long id;
         public string developer;
         public string product;
         public string version;
@@ -91,21 +91,21 @@ namespace osrepodbmgr
             foreach(DataRow dRow in dataTable.Rows)
             {
                 DBEntry fEntry = new DBEntry();
-                fEntry.id = ulong.Parse(dRow["id"].ToString());
-                fEntry.developer = dRow["name"].ToString();
-                fEntry.product = dRow["founded"].ToString();
-                fEntry.version = dRow["website"].ToString();
-                fEntry.languages = dRow["twitter"].ToString();
-                fEntry.architecture = dRow["facebook"].ToString();
-                fEntry.machine = dRow["sold"].ToString();
-                fEntry.format = dRow["sold_to"].ToString();
-                fEntry.description = dRow["address"].ToString();
-                fEntry.oem = bool.Parse(dRow["city"].ToString());
-                fEntry.upgrade = bool.Parse(dRow["province"].ToString());
-                fEntry.update = bool.Parse(dRow["postal_code"].ToString());
-                fEntry.source = bool.Parse(dRow["country"].ToString());
-                fEntry.files = bool.Parse(dRow["city"].ToString());
-                fEntry.netinstall = bool.Parse(dRow["city"].ToString());
+                fEntry.id = long.Parse(dRow["id"].ToString());
+                fEntry.developer = dRow["developer"].ToString();
+                fEntry.product = dRow["product"].ToString();
+                fEntry.version = dRow["version"].ToString();
+                fEntry.languages = dRow["languages"].ToString();
+                fEntry.architecture = dRow["architecture"].ToString();
+                fEntry.machine = dRow["machine"].ToString();
+                fEntry.format = dRow["format"].ToString();
+                fEntry.description = dRow["description"].ToString();
+                fEntry.oem = bool.Parse(dRow["oem"].ToString());
+                fEntry.upgrade = bool.Parse(dRow["upgrade"].ToString());
+                fEntry.update = bool.Parse(dRow["update"].ToString());
+                fEntry.source = bool.Parse(dRow["source"].ToString());
+                fEntry.files = bool.Parse(dRow["files"].ToString());
+                fEntry.netinstall = bool.Parse(dRow["netinstall"].ToString());
                 entries.Add(fEntry);
             }
 
@@ -357,6 +357,30 @@ namespace osrepodbmgr
             dbcmd.Dispose();
 
             return true;
+        }
+
+        public bool ExistsFileInOS(string hash, long osId)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@hash";
+            param1.DbType = DbType.String;
+            param1.Value = hash;
+            dbcmd.Parameters.Add(param1);
+            dbcmd.CommandText = string.Format("SELECT * FROM `os_{0}` WHERE sha256 = @hash", osId);
+            DataSet dataSet = new DataSet();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
