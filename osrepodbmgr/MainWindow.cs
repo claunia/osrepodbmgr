@@ -612,10 +612,10 @@ public partial class MainWindow : Window
 
             long counter = 0;
             view.Clear();
-            foreach(KeyValuePair<string, string> kvp in MainClass.hashes)
+            foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
             {
                 UpdateProgress(null, "Updating table", counter, MainClass.hashes.Count);
-                view.AppendValues(kvp.Key, kvp.Value, true, "green", "black");
+                view.AppendValues(kvp.Key, kvp.Value.Path, true, "green", "black");
                 counter++;
             }
 
@@ -741,7 +741,7 @@ public partial class MainWindow : Window
             btnPack.Sensitive = false;
             btnClose.Sensitive = true;
 
-            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Correctly packed to " + text);
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, "Correctly packed to " + text);
             dlgMsg.Run();
             dlgMsg.Destroy();
         });

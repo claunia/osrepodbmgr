@@ -65,7 +65,7 @@ namespace osrepodbmgr
                     return false;
                 }
 
-                DBEntries = new DBOps(dbCon, this);
+                DBOps = new DBOps(dbCon, this);
 
                 return true;
             }
@@ -83,7 +83,7 @@ namespace osrepodbmgr
             if(dbCon != null)
                 dbCon.Close();
 
-            DBEntries = null;
+            DBOps = null;
         }
 
         public override bool CreateDB(string database, string server, string user, string password)
@@ -130,6 +130,11 @@ namespace osrepodbmgr
         public override IDbDataAdapter GetNewDataAdapter()
         {
             return new SQLiteDataAdapter();
+        }
+
+        public override long LastInsertRowId
+        {
+            get { return dbCon.LastInsertRowId;}
         }
 
         #endregion

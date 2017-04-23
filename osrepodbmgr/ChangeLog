@@ -1,5 +1,15 @@
 2017-04-23  Natalia Portillo  <claunia@claunia.com>
 
+	* Core.cs:
+	* DBOps.cs:
+	* DBCore.cs:
+	* SQLite.cs:
+	* Program.cs:
+	* MainWindow.cs:
+	  Adds files to an OS table.
+
+2017-04-23  Natalia Portillo  <claunia@claunia.com>
+
 	* DBOps.cs:
 	* SQLite.cs:
 	* DBCore.cs:

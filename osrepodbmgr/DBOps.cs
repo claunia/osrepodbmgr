@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace osrepodbmgr
 {
@@ -48,6 +49,18 @@ namespace osrepodbmgr
         public bool source;
         public bool files;
         public bool netinstall;
+    }
+
+    public struct DBFile
+    {
+        public ulong Id;
+        public string Path;
+        public string Sha256;
+        public long Length;
+        public DateTime CreationTimeUtc;
+        public DateTime LastAccessTimeUtc;
+        public DateTime LastWriteTimeUtc;
+        public FileAttributes Attributes;
     }
 
     public class DBOps
@@ -180,7 +193,7 @@ namespace osrepodbmgr
             return dbcmd;
         }
 
-        public bool AddOS(DBEntry entry)
+        public bool AddOS(DBEntry entry, out long id)
         {
             IDbCommand dbcmd = GetOSCommand(entry);
             IDbTransaction trans = dbCon.BeginTransaction();
@@ -194,6 +207,8 @@ namespace osrepodbmgr
             dbcmd.ExecuteNonQuery();
             trans.Commit();
             dbcmd.Dispose();
+
+            id = dbCore.LastInsertRowId;
 
             return true;
         }
@@ -248,6 +263,100 @@ namespace osrepodbmgr
             }
 
             return false;
+        }
+
+        IDbCommand GetFileCommand(DBFile person)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+            IDbDataParameter param2 = dbcmd.CreateParameter();
+            IDbDataParameter param3 = dbcmd.CreateParameter();
+            IDbDataParameter param4 = dbcmd.CreateParameter();
+            IDbDataParameter param5 = dbcmd.CreateParameter();
+            IDbDataParameter param6 = dbcmd.CreateParameter();
+            IDbDataParameter param7 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@path";
+            param2.ParameterName = "@sha256";
+            param3.ParameterName = "@length";
+            param4.ParameterName = "@creation";
+            param5.ParameterName = "@access";
+            param6.ParameterName = "@modification";
+            param7.ParameterName = "@attributes";
+
+            param1.DbType = DbType.String;
+            param2.DbType = DbType.String;
+            param3.DbType = DbType.String;
+            param4.DbType = DbType.String;
+            param5.DbType = DbType.String;
+            param6.DbType = DbType.String;
+            param7.DbType = DbType.Int32;
+
+            param1.Value = person.Path;
+            param2.Value = person.Sha256;
+            param3.Value = person.Length;
+            param4.Value = person.CreationTimeUtc.ToString("yyyy-MM-dd HH:mm");
+            param5.Value = person.LastAccessTimeUtc.ToString("yyyy-MM-dd HH:mm");
+            param6.Value = person.LastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm");
+            param7.Value = (int)person.Attributes;
+
+            dbcmd.Parameters.Add(param1);
+            dbcmd.Parameters.Add(param2);
+            dbcmd.Parameters.Add(param3);
+            dbcmd.Parameters.Add(param4);
+            dbcmd.Parameters.Add(param5);
+            dbcmd.Parameters.Add(param6);
+            dbcmd.Parameters.Add(param7);
+
+            return dbcmd;
+        }
+
+        public bool AddFileToOS(DBFile file, long os)
+        {
+            IDbCommand dbcmd = GetFileCommand(file);
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            string sql = string.Format("INSERT INTO `os_{0}` (`path`, `sha256`, `length`, `creation`, `access`, `modification`, `attributes`)" +
+                                       " VALUES (@path, @sha256, @length, @creation, @access, @modification, @attributes)", os);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
+
+
+        public bool CreateTableForOS(long id)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;\n\n" +
+                                             "CREATE TABLE IF NOT EXISTS `os_{0}` (\n"+
+                                             "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                                             "  `path` VARCHAR(8192) NOT NULL,\n" +
+                                             "  `sha256` VARCHAR(64) NOT NULL,\n\n" +
+                                             "  `length` BIGINT NOT NULL,\n" +
+                                             "  `creation` DATETIME NULL,\n" +
+                                             "  `access` DATETIME NULL,\n" +
+                                             "  `modification` DATETIME NULL,\n" +
+                                             "  `attributes` INTEGER NULL);\n\n" +
+                                             "CREATE UNIQUE INDEX `os_{0}_id_UNIQUE` ON `os_{0}` (`id` ASC);\n\n" +
+                                             "CREATE INDEX `os_{0}_path_idx` ON `os_{0}` (`path` ASC);", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
         }
     }
 }

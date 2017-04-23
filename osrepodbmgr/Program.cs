@@ -35,7 +35,7 @@ namespace osrepodbmgr
     static class MainClass
     {
         public static List<string> files;
-        public static Dictionary<string, string> hashes;
+        public static Dictionary<string, DBFile> hashes;
         public static string path;
         public static DBEntry dbInfo;
         public static bool unarUsable;

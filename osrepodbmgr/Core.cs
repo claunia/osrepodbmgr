@@ -100,11 +100,12 @@ namespace osrepodbmgr
         {
             try
             {
-                MainClass.hashes = new Dictionary<string, string>();
+                MainClass.hashes = new Dictionary<string, DBFile>();
                 long counter = 1;
                 foreach(string file in MainClass.files)
                 {
                     string filesPath;
+                    FileInfo fi = new FileInfo(file);
 
                     if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
                         filesPath = MainClass.tmpFolder;
@@ -148,7 +149,17 @@ namespace osrepodbmgr
 
                     fileStream.Close();
                     string hash = stringify(sha256Context.Final());
-                    MainClass.hashes.Add(relpath, hash);
+
+                    DBFile dbFile = new DBFile();
+                    dbFile.Attributes = fi.Attributes;
+                    dbFile.CreationTimeUtc = fi.CreationTimeUtc;
+                    dbFile.LastAccessTimeUtc = fi.LastAccessTimeUtc;
+                    dbFile.LastWriteTimeUtc = fi.LastWriteTimeUtc;
+                    dbFile.Length = fi.Length;
+                    dbFile.Path = relpath;
+                    dbFile.Sha256 = hash;
+
+                    MainClass.hashes.Add(relpath, dbFile);
                     counter++;
                 }
                 if(Finished != null)
@@ -168,13 +179,13 @@ namespace osrepodbmgr
             try
             {
                 long counter = 0;
-                foreach(KeyValuePair<string, string> kvp in MainClass.hashes)
+                foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Checking files in database", counter, MainClass.hashes.Count);
 
                     if(AddEntry != null)
-                        AddEntry(kvp.Key, kvp.Value, dbCore.DBEntries.ExistsFile(kvp.Value));
+                        AddEntry(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
 
                     counter++;
                 }
@@ -195,20 +206,35 @@ namespace osrepodbmgr
             try
             {
                 long counter = 0;
-                foreach(KeyValuePair<string, string> kvp in MainClass.hashes)
+                foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Adding files to database", counter, MainClass.hashes.Count);
 
-                    if(!dbCore.DBEntries.ExistsFile(kvp.Value))
-                        dbCore.DBEntries.AddFile(kvp.Value);
+                    if(!dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
+                        dbCore.DBOps.AddFile(kvp.Value.Sha256);
 
                     counter++;
                 }
 
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Adding OS information", counter, MainClass.hashes.Count);
-                dbCore.DBEntries.AddOS(MainClass.dbInfo);
+                long osId;
+                dbCore.DBOps.AddOS(MainClass.dbInfo, out osId);
+                if(UpdateProgress != null)
+                    UpdateProgress(null, "Creating OS table", counter, MainClass.hashes.Count);
+                dbCore.DBOps.CreateTableForOS(osId);
+
+                counter = 0;
+                foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress(null, "Adding files to OS in database", counter, MainClass.hashes.Count);
+
+                    dbCore.DBOps.AddFileToOS(kvp.Value, osId);
+
+                    counter++;
+                }
 
                 if(Finished != null)
                     Finished();
