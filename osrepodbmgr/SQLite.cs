@@ -46,7 +46,7 @@ namespace osrepodbmgr
                 dbCon.Open();
                 string sql;
 
-                sql = "SELECT * FROM cicm";
+                sql = "SELECT * FROM osrepodbmgr";
 
                 SQLiteCommand dbcmd = dbCon.CreateCommand();
                 dbcmd.CommandText = sql;
@@ -65,7 +65,7 @@ namespace osrepodbmgr
                     return false;
                 }
 
-                DBEntries = new DBEntries(dbCon, this);
+                DBEntries = new DBOps(dbCon, this);
 
                 return true;
             }
@@ -96,13 +96,13 @@ namespace osrepodbmgr
                 SQLiteCommand dbCmd = dbCon.CreateCommand();
                 string sql;
 
-                Console.WriteLine("Creating cicm table");
+                Console.WriteLine("Creating osrepodbmgr table");
 
-                sql = "CREATE TABLE cicm ( version INTEGER, name TEXT )";
+                sql = "CREATE TABLE osrepodbmgr ( version INTEGER, name TEXT )";
                 dbCmd.CommandText = sql;
                 dbCmd.ExecuteNonQuery();
 
-                sql = "INSERT INTO cicm ( version, name ) VALUES ( '1', 'Canary Islands Computer Museum' )";
+                sql = "INSERT INTO osrepodbmgr ( version, name ) VALUES ( '1', 'Canary Islands Computer Museum' )";
                 dbCmd.CommandText = sql;
                 dbCmd.ExecuteNonQuery();
 

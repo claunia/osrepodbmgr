@@ -37,7 +37,7 @@ namespace osrepodbmgr
 
         public abstract bool CreateDB(string database, string server, string user, string password);
 
-        public DBEntries DBEntries;
+        public DBOps DBEntries;
 
         public abstract IDbDataAdapter GetNewDataAdapter();
     }

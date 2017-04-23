@@ -82,7 +82,7 @@
     <Compile Include="SHA256Context.cs" />
     <Compile Include="DBCore.cs" />
     <Compile Include="SQLite.cs" />
-    <Compile Include="DBEntries.cs" />
+    <Compile Include="DBOps.cs" />
     <Compile Include="Schema.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="PlatformID.cs" />

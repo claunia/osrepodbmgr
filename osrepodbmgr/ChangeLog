@@ -1,5 +1,13 @@
 2017-04-23  Natalia Portillo  <claunia@claunia.com>
 
+	* DBOps.cs:
+	* SQLite.cs:
+	* DBCore.cs:
+	* osrepodbmgr.csproj:
+	  Modified DB.
+
+2017-04-23  Natalia Portillo  <claunia@claunia.com>
+
 	* Core.cs:
 	  Added detection of ZIP files created with Mac OS X.
 

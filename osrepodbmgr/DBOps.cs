@@ -33,6 +33,7 @@ namespace osrepodbmgr
 {
     public struct DBEntry
     {
+        public ulong id;
         public string developer;
         public string product;
         public string version;
@@ -49,12 +50,12 @@ namespace osrepodbmgr
         public bool netinstall;
     }
 
-    public class DBEntries
+    public class DBOps
     {
         readonly IDbConnection dbCon;
         readonly DBCore dbCore;
 
-        public DBEntries(IDbConnection connection, DBCore core)
+        public DBOps(IDbConnection connection, DBCore core)
         {
             dbCon = connection;
             dbCore = core;
@@ -77,6 +78,7 @@ namespace osrepodbmgr
             foreach(DataRow dRow in dataTable.Rows)
             {
                 DBEntry fEntry = new DBEntry();
+                fEntry.id = ulong.Parse(dRow["id"].ToString());
                 fEntry.developer = dRow["name"].ToString();
                 fEntry.product = dRow["founded"].ToString();
                 fEntry.version = dRow["website"].ToString();
