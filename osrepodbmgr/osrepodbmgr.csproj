@@ -87,6 +87,9 @@
     <Compile Include="Settings.cs" />
     <Compile Include="PlatformID.cs" />
     <Compile Include="DetectOS.cs" />
+    <Compile Include="..\CICMMetadata\dotnet\cicm.cs">
+      <Link>cicm.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
