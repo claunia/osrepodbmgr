@@ -90,6 +90,9 @@
     <Compile Include="..\CICMMetadata\dotnet\cicm.cs">
       <Link>cicm.cs</Link>
     </Compile>
+    <Compile Include="dlgMetadata.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.dlgMetadata.cs" />
+    <Compile Include="DicCore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

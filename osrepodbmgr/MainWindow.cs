@@ -27,9 +27,13 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
+using System.Xml.Serialization;
 using Gtk;
+using Newtonsoft.Json;
 using osrepodbmgr;
+using Schemas;
 
 public partial class MainWindow : Window
 {
@@ -363,6 +367,47 @@ public partial class MainWindow : Window
             chkUpgrade.Sensitive = true;
             chkNetinstall.Sensitive = true;
             chkSource.Sensitive = true;
+
+            btnMetadata.Visible = true;
+            if(MainClass.metadata != null)
+            {
+                foreach(string developer in MainClass.metadata.Developer)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
+                        txtDeveloper.Text += ",";
+                    txtDeveloper.Text += developer;
+                }
+
+                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Name))
+                    txtProduct.Text = MainClass.metadata.Name;
+                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Version))
+                    txtVersion.Text = MainClass.metadata.Version;
+
+                foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
+                        txtLanguages.Text += ",";
+                    txtLanguages.Text += language;
+                }
+
+                foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
+                        txtArchitecture.Text += ",";
+                    txtArchitecture.Text += architecture;
+                }
+
+                foreach(string machine in MainClass.metadata.Systems)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtMachine.Text))
+                        txtMachine.Text += ",";
+                    txtMachine.Text += machine;
+                }
+
+                btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(0, 127, 0));
+            }
+            else
+                btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(127, 0, 0));
         });
     }
 
@@ -461,6 +506,9 @@ public partial class MainWindow : Window
             thdRemoveTemp = new Thread(Core.RemoveTempFolder);
             thdRemoveTemp.Start();
         }
+
+        btnMetadata.Visible = false;
+        MainClass.metadata = null;
     }
 
     public void UpdateProgress(string text, string inner, long current, long maximum)
@@ -682,6 +730,24 @@ public partial class MainWindow : Window
         MainClass.dbInfo.source = chkSource.Active;
         MainClass.dbInfo.update = chkUpdate.Active;
         MainClass.dbInfo.upgrade = chkUpgrade.Active;
+
+        if(MainClass.metadata != null)
+        {
+            MemoryStream ms = new MemoryStream();
+            XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
+            xs.Serialize(ms, MainClass.metadata);
+            MainClass.dbInfo.xml = ms.ToArray();
+            JsonSerializer js = new JsonSerializer();
+            ms = new MemoryStream();
+            StreamWriter sw = new StreamWriter(ms);
+            js.Serialize(sw, MainClass.metadata, typeof(CICMMetadataType));
+            MainClass.dbInfo.json = ms.ToArray();
+        }
+        else
+        {
+            MainClass.dbInfo.xml = null;
+            MainClass.dbInfo.json = null;
+        }
 
         thdAddFiles = new Thread(Core.AddFilesToDb);
         thdAddFiles.Start();
@@ -1056,5 +1122,73 @@ public partial class MainWindow : Window
             thdPulseProgress.Start();
             thdFindFiles.Start();
         });
+    }
+
+    protected void OnBtnMetadataClicked(object sender, EventArgs e)
+    {
+        dlgMetadata _dlgMetadata = new dlgMetadata();
+        _dlgMetadata.Metadata = MainClass.metadata;
+        _dlgMetadata.FillFields();
+
+        if(_dlgMetadata.Run() == (int)ResponseType.Accept)
+        {
+            MainClass.metadata = _dlgMetadata.Metadata;
+
+            if(string.IsNullOrWhiteSpace(txtDeveloper.Text))
+            {
+                foreach(string developer in MainClass.metadata.Developer)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
+                        txtDeveloper.Text += ",";
+                    txtDeveloper.Text += developer;
+                }
+            }
+
+            if(string.IsNullOrWhiteSpace(txtProduct.Text))
+            {
+                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Name))
+                    txtProduct.Text = MainClass.metadata.Name;
+            }
+
+            if(string.IsNullOrWhiteSpace(txtVersion.Text))
+            {
+                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Version))
+                    txtVersion.Text = MainClass.metadata.Version;
+            }
+
+            if(string.IsNullOrWhiteSpace(txtLanguages.Text))
+            {
+                foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
+                        txtLanguages.Text += ",";
+                    txtLanguages.Text += language;
+                }
+            }
+
+            if(string.IsNullOrWhiteSpace(txtArchitecture.Text))
+            {
+                foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
+                        txtArchitecture.Text += ",";
+                    txtArchitecture.Text += architecture;
+                }
+            }
+
+            if(string.IsNullOrWhiteSpace(txtMachine.Text))
+            {
+                foreach(string machine in MainClass.metadata.Systems)
+                {
+                    if(!string.IsNullOrWhiteSpace(txtMachine.Text))
+                        txtMachine.Text += ",";
+                    txtMachine.Text += machine;
+                }
+            }
+
+            btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(0, 127, 0));
+        }
+
+        _dlgMetadata.Destroy();
     }
 }

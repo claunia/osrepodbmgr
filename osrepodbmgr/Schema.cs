@@ -58,7 +58,9 @@ namespace osrepodbmgr
             "  `update` BOOLEAN NULL,\n" +
             "  `source` BOOLEAN NULL,\n" +
             "  `files` BOOLEAN NULL,\n" +
-            "  `netinstall` BOOLEAN NULL);\n\n" +
+            "  `netinstall` BOOLEAN NULL,\n" +
+            "  `xml` BLOB NULL,\n" +
+            "  `json` BLOB NULL);\n\n" +
             "CREATE UNIQUE INDEX `oses_id_UNIQUE` ON `oses` (`id` ASC);\n\n" +
             "CREATE INDEX `oses_developer_idx` ON `oses` (`developer` ASC);\n\n" +
             "CREATE INDEX `oses_product_idx` ON `oses` (`product` ASC);\n\n" +

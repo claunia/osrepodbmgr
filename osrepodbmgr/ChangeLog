@@ -1,3 +1,22 @@
+2017-04-29  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
+	* DBOps.cs:
+	* Schema.cs:
+	* DicCore.cs:
+	* Program.cs:
+	* MainWindow.cs:
+	* dlgMetadata.cs:
+	* gtk-gui/gui.stetic:
+	* osrepodbmgr.csproj:
+	* gtk-gui/generated.cs:
+	* gtk-gui/MainWindow.cs:
+	* gtk-gui/osrepodbmgr.DicCore.cs:
+	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
+	  Added support for reading, editing (basic) metadata, adding
+	  it to the DB, and compress and copy it as XML and JSON to
+	  the archived file.
+
 2017-04-24  Natalia Portillo  <claunia@claunia.com>
 
 	* osrepodbmgr.csproj:

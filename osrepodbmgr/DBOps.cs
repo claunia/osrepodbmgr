@@ -49,6 +49,8 @@ namespace osrepodbmgr
         public bool source;
         public bool files;
         public bool netinstall;
+        public byte[] xml;
+        public byte[] json;
     }
 
     public struct DBFile
@@ -106,6 +108,8 @@ namespace osrepodbmgr
                 fEntry.source = bool.Parse(dRow["source"].ToString());
                 fEntry.files = bool.Parse(dRow["files"].ToString());
                 fEntry.netinstall = bool.Parse(dRow["netinstall"].ToString());
+                fEntry.xml = (byte[])dRow["xml"];
+                fEntry.json = (byte[])dRow["json"];
                 entries.Add(fEntry);
             }
 
@@ -130,6 +134,8 @@ namespace osrepodbmgr
             IDbDataParameter param12 = dbcmd.CreateParameter();
             IDbDataParameter param13 = dbcmd.CreateParameter();
             IDbDataParameter param14 = dbcmd.CreateParameter();
+            IDbDataParameter param15 = dbcmd.CreateParameter();
+            IDbDataParameter param16 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@developer";
             param2.ParameterName = "@product";
@@ -145,6 +151,8 @@ namespace osrepodbmgr
             param12.ParameterName = "@source";
             param13.ParameterName = "@files";
             param14.ParameterName = "@netinstall";
+            param15.ParameterName = "@xml";
+            param16.ParameterName = "@json";
 
             param1.DbType = DbType.String;
             param2.DbType = DbType.String;
@@ -159,6 +167,8 @@ namespace osrepodbmgr
             param12.DbType = DbType.Boolean;
             param13.DbType = DbType.Boolean;
             param14.DbType = DbType.Boolean;
+            param15.DbType = DbType.Object;
+            param16.DbType = DbType.Object;
 
             param1.Value = entry.developer;
             param2.Value = entry.product;
@@ -174,6 +184,8 @@ namespace osrepodbmgr
             param12.Value = entry.source;
             param13.Value = entry.files;
             param14.Value = entry.netinstall;
+            param15.Value = entry.xml;
+            param16.Value = entry.json;
 
             dbcmd.Parameters.Add(param1);
             dbcmd.Parameters.Add(param2);
@@ -189,6 +201,8 @@ namespace osrepodbmgr
             dbcmd.Parameters.Add(param12);
             dbcmd.Parameters.Add(param13);
             dbcmd.Parameters.Add(param14);
+            dbcmd.Parameters.Add(param15);
+            dbcmd.Parameters.Add(param16);
 
             return dbcmd;
         }
@@ -199,8 +213,8 @@ namespace osrepodbmgr
             IDbTransaction trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            const string sql = "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall)" +
-                " VALUES (@developer, @product, @version, @languages, @architecture, @machine, @format, @description, @oem, @upgrade, @update, @source, @files, @netinstall)";
+            const string sql = "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall, xml, json)" +
+                " VALUES (@developer, @product, @version, @languages, @architecture, @machine, @format, @description, @oem, @upgrade, @update, @source, @files, @netinstall, @xml, @json)";
 
             dbcmd.CommandText = sql;
 
@@ -338,7 +352,7 @@ namespace osrepodbmgr
             dbcmd.Transaction = trans;
 
             string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;\n\n" +
-                                             "CREATE TABLE IF NOT EXISTS `os_{0}` (\n"+
+                                             "CREATE TABLE IF NOT EXISTS `os_{0}` (\n" +
                                              "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                                              "  `path` VARCHAR(8192) NOT NULL,\n" +
                                              "  `sha256` VARCHAR(64) NOT NULL,\n\n" +

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Gtk;
+using Schemas;
 
 namespace osrepodbmgr
 {
@@ -46,6 +47,10 @@ namespace osrepodbmgr
         public static string archiveFormat;
         public static Process unarProcess;
         public static bool copyArchive;
+        public static string selectedFile;
+        public static OpticalDiscType workingDisc;
+        public static BlockMediaType workingDisk;
+        public static CICMMetadataType metadata;
 
         public static void Main(string[] args)
         {

@@ -117,6 +117,8 @@ public partial class MainWindow
 
 	private global::Gtk.Button btnStop;
 
+	private global::Gtk.Button btnMetadata;
+
 	protected virtual void Build()
 	{
 		global::Stetic.Gui.Initialize(this);
@@ -670,17 +672,32 @@ public partial class MainWindow
 		w59.Position = 8;
 		w59.Expand = false;
 		w59.Fill = false;
+		// Container child hbox1.Gtk.Box+BoxChild
+		this.btnMetadata = new global::Gtk.Button();
+		this.btnMetadata.CanFocus = true;
+		this.btnMetadata.Name = "btnMetadata";
+		this.btnMetadata.UseUnderline = true;
+		this.btnMetadata.Label = global::Mono.Unix.Catalog.GetString("Metadata");
+		global::Gtk.Image w60 = new global::Gtk.Image();
+		w60.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-properties", global::Gtk.IconSize.Menu);
+		this.btnMetadata.Image = w60;
+		this.hbox1.Add(this.btnMetadata);
+		global::Gtk.Box.BoxChild w61 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnMetadata]));
+		w61.PackType = ((global::Gtk.PackType)(1));
+		w61.Position = 9;
+		w61.Expand = false;
+		w61.Fill = false;
 		this.vbox1.Add(this.hbox1);
-		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox1]));
-		w60.Position = 12;
-		w60.Expand = false;
-		w60.Fill = false;
+		global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox1]));
+		w62.Position = 12;
+		w62.Expand = false;
+		w62.Fill = false;
 		this.Add(this.vbox1);
-		if ((this.Child != null))
+		if((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}
-		this.DefaultWidth = 771;
+		this.DefaultWidth = 778;
 		this.DefaultHeight = 544;
 		this.lblProgress.Hide();
 		this.prgProgress.Hide();
@@ -690,8 +707,10 @@ public partial class MainWindow
 		this.btnPack.Hide();
 		this.btnAdd.Hide();
 		this.btnStop.Hide();
+		this.btnMetadata.Hide();
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
+		this.btnMetadata.Clicked += new global::System.EventHandler(this.OnBtnMetadataClicked);
 		this.btnStop.Clicked += new global::System.EventHandler(this.OnBtnStopClicked);
 		this.btnFolder.Clicked += new global::System.EventHandler(this.OnBtnFolderClicked);
 		this.btnArchive.Clicked += new global::System.EventHandler(this.OnBtnArchiveClicked);
