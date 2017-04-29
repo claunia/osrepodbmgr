@@ -1,5 +1,10 @@
 2017-04-29  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgMetadata.cs:
+	  Re-add file to both combos when removed from any table.
+
+2017-04-29  Natalia Portillo  <claunia@claunia.com>
+
 	* Core.cs:
 	* DicCore.cs:
 	* Checksum.cs:

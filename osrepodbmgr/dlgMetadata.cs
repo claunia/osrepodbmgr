@@ -917,6 +917,7 @@ namespace osrepodbmgr
             if(treeDiscs.Selection.GetSelected(out selectedIter))
             {
                 cmbFilesForNewDisc.AppendText((string)lstDiscs.GetValue(selectedIter, 0));
+                cmbFilesForNewDisk.AppendText((string)lstDiscs.GetValue(selectedIter, 0));
                 lstDiscs.Remove(ref selectedIter);
             }
         }
@@ -1132,6 +1133,7 @@ namespace osrepodbmgr
             if(treeDisks.Selection.GetSelected(out selectedIter))
             {
                 cmbFilesForNewDisk.AppendText((string)lstDisks.GetValue(selectedIter, 0));
+                cmbFilesForNewDisc.AppendText((string)lstDisks.GetValue(selectedIter, 0));
                 lstDisks.Remove(ref selectedIter);
             }
         }
