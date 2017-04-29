@@ -485,8 +485,11 @@ namespace osrepodbmgr
                             files.Add(disk.SCSI.ModeSense.Image);
                         if(disk.SCSI.ModeSense10 != null)
                             files.Add(disk.SCSI.ModeSense10.Image);
-                        foreach(EVPDType evpd in disk.SCSI.EVPD)
-                            files.Add(evpd.Image);
+                        if(disk.SCSI.EVPD != null)
+                        {
+                            foreach(EVPDType evpd in disk.SCSI.EVPD)
+                                files.Add(evpd.Image);
+                        }
                     }
                     if(disk.SecureDigital != null)
                     {
@@ -710,15 +713,17 @@ namespace osrepodbmgr
             notebook3.GetNthPage(5).Visible = false;
             notebook3.GetNthPage(6).Visible = false;
             notebook3.GetNthPage(8).Visible = false;
-            prgAddDisc.Visible = true;
+            prgAddDisc1.Visible = true;
+            prgAddDisc2.Visible = true;
             Core.Failed += OnDiscAddFailed;
             Core.Finished += OnDiscAddFinished;
-            Core.UpdateProgress += UpdateDiscProgress;
+            Core.UpdateProgress += UpdateDiscProgress1;
+            Core.UpdateProgress2 += UpdateDiscProgress2;
             MainClass.workingDisc = null;
             btnStopAddDisc.Visible = true;
             btnAddDisc.Visible = false;
             btnRemoveDiscs.Visible = false;
-            thdDisc = new Thread(Core.AddDisc);
+            thdDisc = new Thread(Core.AddMedia);
             thdDisc.Start();
         }
 
@@ -730,15 +735,27 @@ namespace osrepodbmgr
             OnDiscAddFailed(null);
         }
 
-        public void UpdateDiscProgress(string text, string inner, long current, long maximum)
+        public void UpdateDiscProgress1(string text, string inner, long current, long maximum)
         {
             Application.Invoke(delegate
             {
-                prgAddDisc.Text = text + inner;
+                prgAddDisc1.Text = text + inner;
                 if(maximum > 0)
-                    prgAddDisc.Fraction = current / (double)maximum;
+                    prgAddDisc1.Fraction = current / (double)maximum;
                 else
-                    prgAddDisc.Pulse();
+                    prgAddDisc1.Pulse();
+            });
+        }
+
+        public void UpdateDiscProgress2(string text, string inner, long current, long maximum)
+        {
+            Application.Invoke(delegate
+            {
+                prgAddDisc2.Text = text + inner;
+                if(maximum > 0)
+                    prgAddDisc2.Fraction = current / (double)maximum;
+                else
+                    prgAddDisc2.Pulse();
             });
         }
 
@@ -761,10 +778,12 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(5).Visible = true;
                 notebook3.GetNthPage(6).Visible = true;
                 notebook3.GetNthPage(8).Visible = true;
-                prgAddDisc.Visible = true;
+                prgAddDisc1.Visible = false;
+                prgAddDisc2.Visible = false;
                 Core.Failed -= OnDiscAddFailed;
                 Core.Finished -= OnDiscAddFinished;
-                Core.UpdateProgress -= UpdateDiscProgress;
+                Core.UpdateProgress -= UpdateDiscProgress1;
+                Core.UpdateProgress2 -= UpdateDiscProgress2;
                 MainClass.workingDisc = null;
                 btnStopAddDisc.Visible = false;
                 btnAddDisc.Visible = true;
@@ -801,12 +820,18 @@ namespace osrepodbmgr
                     files.Add(disc.DMI.Image);
                 if(disc.LastRMD != null)
                     files.Add(disc.LastRMD.Image);
-                foreach(BorderType border in disc.LeadIn)
-                    files.Add(border.Image);
+                if(disc.LeadIn != null)
+                {
+                    foreach(BorderType border in disc.LeadIn)
+                        files.Add(border.Image);
+                }
                 if(disc.LeadInCdText != null)
                     files.Add(disc.LeadInCdText.Image);
-                foreach(BorderType border in disc.LeadOut)
-                    files.Add(border.Image);
+                if(disc.LeadOut != null)
+                {
+                    foreach(BorderType border in disc.LeadOut)
+                        files.Add(border.Image);
+                }
                 if(disc.MediaID != null)
                     files.Add(disc.MediaID.Image);
                 if(disc.PAC != null)
@@ -823,8 +848,11 @@ namespace osrepodbmgr
                     files.Add(disc.SAI.Image);
                 if(disc.TOC != null)
                     files.Add(disc.TOC.Image);
-                foreach(TrackType track in disc.Track)
-                    files.Add(track.Image.Value);
+                if(disc.Track != null)
+                {
+                    foreach(TrackType track in disc.Track)
+                        files.Add(track.Image.Value);
+                }
 
                 foreach(string file in files)
                 {
@@ -863,10 +891,12 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(5).Visible = true;
                 notebook3.GetNthPage(6).Visible = true;
                 notebook3.GetNthPage(8).Visible = true;
-                prgAddDisc.Visible = true;
+                prgAddDisc1.Visible = false;
+                prgAddDisc2.Visible = false;
                 Core.Failed -= OnDiscAddFailed;
                 Core.Finished -= OnDiscAddFinished;
-                Core.UpdateProgress -= UpdateDiscProgress;
+                Core.UpdateProgress -= UpdateDiscProgress1;
+                Core.UpdateProgress2 -= UpdateDiscProgress2;
                 MainClass.workingDisc = null;
                 btnStopAddDisc.Visible = false;
                 btnAddDisc.Visible = true;
@@ -902,15 +932,17 @@ namespace osrepodbmgr
             notebook3.GetNthPage(5).Visible = false;
             notebook3.GetNthPage(6).Visible = false;
             notebook3.GetNthPage(7).Visible = false;
-            prgAddDisk.Visible = true;
+            prgAddDisk1.Visible = true;
+            prgAddDisk2.Visible = true;
             Core.Failed += OnDiskAddFailed;
             Core.Finished += OnDiskAddFinished;
-            Core.UpdateProgress += UpdateDiskProgress;
+            Core.UpdateProgress += UpdateDiskProgress1;
+            Core.UpdateProgress2 += UpdateDiskProgress2;
             MainClass.workingDisk = null;
             btnStopAddDisk.Visible = true;
             btnAddDisk.Visible = false;
             btnRemoveDisk.Visible = false;
-            thdDisk = new Thread(Core.AddDisk);
+            thdDisk = new Thread(Core.AddMedia);
             thdDisk.Start();
         }
 
@@ -922,15 +954,27 @@ namespace osrepodbmgr
             OnDiskAddFailed(null);
         }
 
-        public void UpdateDiskProgress(string text, string inner, long current, long maximum)
+        public void UpdateDiskProgress1(string text, string inner, long current, long maximum)
         {
             Application.Invoke(delegate
             {
-                prgAddDisk.Text = text + inner;
+                prgAddDisk1.Text = text + inner;
                 if(maximum > 0)
-                    prgAddDisk.Fraction = current / (double)maximum;
+                    prgAddDisk1.Fraction = current / (double)maximum;
                 else
-                    prgAddDisk.Pulse();
+                    prgAddDisk1.Pulse();
+            });
+        }
+
+        public void UpdateDiskProgress2(string text, string inner, long current, long maximum)
+        {
+            Application.Invoke(delegate
+            {
+                prgAddDisk2.Text = text + inner;
+                if(maximum > 0)
+                    prgAddDisk2.Fraction = current / (double)maximum;
+                else
+                    prgAddDisk2.Pulse();
             });
         }
 
@@ -953,10 +997,12 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(5).Visible = true;
                 notebook3.GetNthPage(6).Visible = true;
                 notebook3.GetNthPage(7).Visible = true;
-                prgAddDisk.Visible = true;
+                prgAddDisk1.Visible = false;
+                prgAddDisk2.Visible = false;
                 Core.Failed -= OnDiskAddFailed;
                 Core.Finished -= OnDiskAddFinished;
-                Core.UpdateProgress -= UpdateDiskProgress;
+                Core.UpdateProgress -= UpdateDiskProgress1;
+                Core.UpdateProgress2 -= UpdateDiskProgress2;
                 MainClass.workingDisk = null;
                 btnStopAddDisk.Visible = false;
                 btnAddDisk.Visible = true;
@@ -995,8 +1041,11 @@ namespace osrepodbmgr
                         files.Add(disk.SCSI.ModeSense.Image);
                     if(disk.SCSI.ModeSense10 != null)
                         files.Add(disk.SCSI.ModeSense10.Image);
-                    foreach(EVPDType evpd in disk.SCSI.EVPD)
-                        files.Add(evpd.Image);
+                    if(disk.SCSI.EVPD != null)
+                    {
+                        foreach(EVPDType evpd in disk.SCSI.EVPD)
+                            files.Add(evpd.Image);
+                    }
                 }
                 if(disk.SecureDigital != null)
                 {
@@ -1007,10 +1056,16 @@ namespace osrepodbmgr
                     if(disk.SecureDigital.ExtendedCSD != null)
                         files.Add(disk.SecureDigital.ExtendedCSD.Image);
                 }
-                foreach(TapePartitionType tapePart in disk.TapeInformation)
-                    files.Add(tapePart.Image.Value);
-                foreach(BlockTrackType track in disk.Track)
-                    files.Add(track.Image.Value);
+                if(disk.TapeInformation != null)
+                {
+                    foreach(TapePartitionType tapePart in disk.TapeInformation)
+                        files.Add(tapePart.Image.Value);
+                }
+                if(disk.Track != null)
+                {
+                    foreach(BlockTrackType track in disk.Track)
+                        files.Add(track.Image.Value);
+                }
                 if(disk.USB != null && disk.USB.Descriptors != null)
                     files.Add(disk.USB.Descriptors.Image);
 
@@ -1051,10 +1106,12 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(5).Visible = true;
                 notebook3.GetNthPage(6).Visible = true;
                 notebook3.GetNthPage(7).Visible = true;
-                prgAddDisk.Visible = true;
+                prgAddDisk1.Visible = false;
+                prgAddDisk2.Visible = false;
                 Core.Failed -= OnDiskAddFailed;
                 Core.Finished -= OnDiskAddFinished;
-                Core.UpdateProgress -= UpdateDiskProgress;
+                Core.UpdateProgress -= UpdateDiskProgress1;
+                Core.UpdateProgress2 -= UpdateDiskProgress2;
                 MainClass.workingDisk = null;
                 btnStopAddDisk.Visible = false;
                 btnAddDisk.Visible = true;

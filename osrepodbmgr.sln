@@ -9,6 +9,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Helpers", "Di
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Console", "DiscImageChef\DiscImageChef.Console\DiscImageChef.Console.csproj", "{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.DiscImages", "DiscImageChef\DiscImageChef.DiscImages\DiscImageChef.DiscImages.csproj", "{74032CBC-339B-42F3-AF6F-E96C261F3E6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Filesystems", "DiscImageChef\DiscImageChef.Filesystems\DiscImageChef.Filesystems.csproj", "{D7016DF2-5A5E-4524-B40D-BA2D59576688}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Filters", "DiscImageChef\DiscImageChef.Filters\DiscImageChef.Filters.csproj", "{D571B8EF-903D-4353-BDD5-B834F9F029EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Partitions", "DiscImageChef\DiscImageChef.Partitions\DiscImageChef.Partitions.csproj", "{DA7AB65D-B5BA-4003-8893-A51BB071BA2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.CommonTypes", "DiscImageChef\DiscImageChef.CommonTypes\DiscImageChef.CommonTypes.csproj", "{F2B84194-26EB-4227-B1C5-6602517E85AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Claunia.RsrcFork", "DiscImageChef\Claunia.RsrcFork\Claunia.RsrcFork\Claunia.RsrcFork.csproj", "{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Decoders", "DiscImageChef\DiscImageChef.Decoders\DiscImageChef.Decoders.csproj", "{0BEB3088-B634-4289-AE17-CDF2D25D00D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Metadata", "DiscImageChef\DiscImageChef.Metadata\DiscImageChef.Metadata.csproj", "{9F213318-5CB8-4066-A757-074489C9F818}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,6 +47,38 @@ Global
 		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Debug|x86.Build.0 = Debug|Any CPU
 		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Release|x86.ActiveCfg = Release|Any CPU
 		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Release|x86.Build.0 = Release|Any CPU
+		{74032CBC-339B-42F3-AF6F-E96C261F3E6A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74032CBC-339B-42F3-AF6F-E96C261F3E6A}.Debug|x86.Build.0 = Debug|Any CPU
+		{74032CBC-339B-42F3-AF6F-E96C261F3E6A}.Release|x86.ActiveCfg = Release|Any CPU
+		{74032CBC-339B-42F3-AF6F-E96C261F3E6A}.Release|x86.Build.0 = Release|Any CPU
+		{D7016DF2-5A5E-4524-B40D-BA2D59576688}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D7016DF2-5A5E-4524-B40D-BA2D59576688}.Debug|x86.Build.0 = Debug|Any CPU
+		{D7016DF2-5A5E-4524-B40D-BA2D59576688}.Release|x86.ActiveCfg = Release|Any CPU
+		{D7016DF2-5A5E-4524-B40D-BA2D59576688}.Release|x86.Build.0 = Release|Any CPU
+		{D571B8EF-903D-4353-BDD5-B834F9F029EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D571B8EF-903D-4353-BDD5-B834F9F029EF}.Debug|x86.Build.0 = Debug|Any CPU
+		{D571B8EF-903D-4353-BDD5-B834F9F029EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{D571B8EF-903D-4353-BDD5-B834F9F029EF}.Release|x86.Build.0 = Release|Any CPU
+		{DA7AB65D-B5BA-4003-8893-A51BB071BA2F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DA7AB65D-B5BA-4003-8893-A51BB071BA2F}.Debug|x86.Build.0 = Debug|Any CPU
+		{DA7AB65D-B5BA-4003-8893-A51BB071BA2F}.Release|x86.ActiveCfg = Release|Any CPU
+		{DA7AB65D-B5BA-4003-8893-A51BB071BA2F}.Release|x86.Build.0 = Release|Any CPU
+		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Debug|x86.Build.0 = Debug|Any CPU
+		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Release|x86.ActiveCfg = Release|Any CPU
+		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Release|x86.Build.0 = Release|Any CPU
+		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Debug|x86.Build.0 = Debug|Any CPU
+		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Release|x86.Build.0 = Release|Any CPU
+		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Debug|x86.Build.0 = Debug|Any CPU
+		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Release|x86.ActiveCfg = Release|Any CPU
+		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Release|x86.Build.0 = Release|Any CPU
+		{9F213318-5CB8-4066-A757-074489C9F818}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9F213318-5CB8-4066-A757-074489C9F818}.Debug|x86.Build.0 = Debug|Any CPU
+		{9F213318-5CB8-4066-A757-074489C9F818}.Release|x86.ActiveCfg = Release|Any CPU
+		{9F213318-5CB8-4066-A757-074489C9F818}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

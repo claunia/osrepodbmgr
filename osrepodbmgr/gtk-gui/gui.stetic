@@ -1236,7 +1236,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook3">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">7</property>
             <child>
               <widget class="Gtk.VBox" id="vbox3">
                 <property name="MemberName" />
@@ -2814,11 +2814,23 @@ QNX/QNX/20090229/source.zip</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.ProgressBar" id="prgAddDisc">
+                  <widget class="Gtk.ProgressBar" id="prgAddDisc1">
                     <property name="MemberName" />
                   </widget>
                   <packing>
                     <property name="Position">3</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ProgressBar" id="prgAddDisc2">
+                    <property name="MemberName" />
+                    <property name="Visible">False</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">4</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -2980,11 +2992,23 @@ QNX/QNX/20090229/source.zip</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.ProgressBar" id="prgAddDisk">
+                  <widget class="Gtk.ProgressBar" id="prgAddDisk1">
                     <property name="MemberName" />
                   </widget>
                   <packing>
                     <property name="Position">3</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ProgressBar" id="prgAddDisk2">
+                    <property name="MemberName" />
+                    <property name="Visible">False</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">4</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>

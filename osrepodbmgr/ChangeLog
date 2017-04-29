@@ -1,6 +1,20 @@
 2017-04-29  Natalia Portillo  <claunia@claunia.com>
 
 	* Core.cs:
+	* DicCore.cs:
+	* Checksum.cs:
+	* PluginBase.cs:
+	* dlgMetadata.cs:
+	* gtk-gui/gui.stetic:
+	* osrepodbmgr.csproj:
+	* DetectImageFormat.cs:
+	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
+	  Added code to retrieve metadata from media images using
+	  DiscImageChef libraries.
+
+2017-04-29  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
 	* SHA256Context.cs:
 	* osrepodbmgr.csproj:
 	  Use SHA256 algorithm from DiscImageChef.

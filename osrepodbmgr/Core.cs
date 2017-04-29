@@ -899,6 +899,9 @@ namespace osrepodbmgr
                     FileStream jfs = new FileStream(Path.Combine(destinationFolder, destinationFile + ".json"), FileMode.CreateNew, FileAccess.Write);
                     jms.CopyTo(jfs);
                     jfs.Close();
+
+                    xms.Position = 0;
+                    jms.Position = 0;
                 }
 
                 zipCounter = 0;

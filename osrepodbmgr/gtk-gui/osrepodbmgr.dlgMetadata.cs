@@ -260,7 +260,9 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnStopAddDisc;
 
-		private global::Gtk.ProgressBar prgAddDisc;
+		private global::Gtk.ProgressBar prgAddDisc1;
+
+		private global::Gtk.ProgressBar prgAddDisc2;
 
 		private global::Gtk.Label label22;
 
@@ -286,7 +288,9 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnStopAddDisk;
 
-		private global::Gtk.ProgressBar prgAddDisk;
+		private global::Gtk.ProgressBar prgAddDisk1;
+
+		private global::Gtk.ProgressBar prgAddDisk2;
 
 		private global::Gtk.Label label32;
 
@@ -308,7 +312,7 @@ namespace osrepodbmgr
 			this.notebook3 = new global::Gtk.Notebook();
 			this.notebook3.CanFocus = true;
 			this.notebook3.Name = "notebook3";
-			this.notebook3.CurrentPage = 0;
+			this.notebook3.CurrentPage = 7;
 			// Container child notebook3.Gtk.Notebook+NotebookChild
 			this.vbox3 = new global::Gtk.VBox();
 			this.vbox3.Name = "vbox3";
@@ -1459,16 +1463,24 @@ namespace osrepodbmgr
 			w120.Expand = false;
 			w120.Fill = false;
 			// Container child vbox11.Gtk.Box+BoxChild
-			this.prgAddDisc = new global::Gtk.ProgressBar();
-			this.prgAddDisc.Name = "prgAddDisc";
-			this.vbox11.Add(this.prgAddDisc);
-			global::Gtk.Box.BoxChild w121 = ((global::Gtk.Box.BoxChild)(this.vbox11[this.prgAddDisc]));
+			this.prgAddDisc1 = new global::Gtk.ProgressBar();
+			this.prgAddDisc1.Name = "prgAddDisc1";
+			this.vbox11.Add(this.prgAddDisc1);
+			global::Gtk.Box.BoxChild w121 = ((global::Gtk.Box.BoxChild)(this.vbox11[this.prgAddDisc1]));
 			w121.Position = 3;
 			w121.Expand = false;
 			w121.Fill = false;
+			// Container child vbox11.Gtk.Box+BoxChild
+			this.prgAddDisc2 = new global::Gtk.ProgressBar();
+			this.prgAddDisc2.Name = "prgAddDisc2";
+			this.vbox11.Add(this.prgAddDisc2);
+			global::Gtk.Box.BoxChild w122 = ((global::Gtk.Box.BoxChild)(this.vbox11[this.prgAddDisc2]));
+			w122.Position = 4;
+			w122.Expand = false;
+			w122.Fill = false;
 			this.notebook3.Add(this.vbox11);
-			global::Gtk.Notebook.NotebookChild w122 = ((global::Gtk.Notebook.NotebookChild)(this.notebook3[this.vbox11]));
-			w122.Position = 7;
+			global::Gtk.Notebook.NotebookChild w123 = ((global::Gtk.Notebook.NotebookChild)(this.notebook3[this.vbox11]));
+			w123.Position = 7;
 			// Notebook tab
 			this.label22 = new global::Gtk.Label();
 			this.label22.Name = "label22";
@@ -1488,18 +1500,18 @@ namespace osrepodbmgr
 			this.lblNewDisk.Name = "lblNewDisk";
 			this.lblNewDisk.LabelProp = global::Mono.Unix.Catalog.GetString("Choose disk to add:");
 			this.hbox29.Add(this.lblNewDisk);
-			global::Gtk.Box.BoxChild w123 = ((global::Gtk.Box.BoxChild)(this.hbox29[this.lblNewDisk]));
-			w123.Position = 0;
-			w123.Expand = false;
-			w123.Fill = false;
+			global::Gtk.Box.BoxChild w124 = ((global::Gtk.Box.BoxChild)(this.hbox29[this.lblNewDisk]));
+			w124.Position = 0;
+			w124.Expand = false;
+			w124.Fill = false;
 			// Container child hbox29.Gtk.Box+BoxChild
 			this.cmbFilesForNewDisk = global::Gtk.ComboBox.NewText();
 			this.cmbFilesForNewDisk.Name = "cmbFilesForNewDisk";
 			this.hbox29.Add(this.cmbFilesForNewDisk);
-			global::Gtk.Box.BoxChild w124 = ((global::Gtk.Box.BoxChild)(this.hbox29[this.cmbFilesForNewDisk]));
-			w124.Position = 1;
-			w124.Expand = false;
-			w124.Fill = false;
+			global::Gtk.Box.BoxChild w125 = ((global::Gtk.Box.BoxChild)(this.hbox29[this.cmbFilesForNewDisk]));
+			w125.Position = 1;
+			w125.Expand = false;
+			w125.Fill = false;
 			// Container child hbox29.Gtk.Box+BoxChild
 			this.btnAddDisk = new global::Gtk.Button();
 			this.btnAddDisk.CanFocus = true;
@@ -1508,15 +1520,15 @@ namespace osrepodbmgr
 			this.btnAddDisk.UseUnderline = true;
 			this.btnAddDisk.Label = "gtk-add";
 			this.hbox29.Add(this.btnAddDisk);
-			global::Gtk.Box.BoxChild w125 = ((global::Gtk.Box.BoxChild)(this.hbox29[this.btnAddDisk]));
-			w125.Position = 2;
-			w125.Expand = false;
-			w125.Fill = false;
-			this.vbox12.Add(this.hbox29);
-			global::Gtk.Box.BoxChild w126 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.hbox29]));
-			w126.Position = 0;
+			global::Gtk.Box.BoxChild w126 = ((global::Gtk.Box.BoxChild)(this.hbox29[this.btnAddDisk]));
+			w126.Position = 2;
 			w126.Expand = false;
 			w126.Fill = false;
+			this.vbox12.Add(this.hbox29);
+			global::Gtk.Box.BoxChild w127 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.hbox29]));
+			w127.Position = 0;
+			w127.Expand = false;
+			w127.Fill = false;
 			// Container child vbox12.Gtk.Box+BoxChild
 			this.GtkScrolledWindow8 = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow8.Name = "GtkScrolledWindow8";
@@ -1527,8 +1539,8 @@ namespace osrepodbmgr
 			this.treeDisks.Name = "treeDisks";
 			this.GtkScrolledWindow8.Add(this.treeDisks);
 			this.vbox12.Add(this.GtkScrolledWindow8);
-			global::Gtk.Box.BoxChild w128 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.GtkScrolledWindow8]));
-			w128.Position = 1;
+			global::Gtk.Box.BoxChild w129 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.GtkScrolledWindow8]));
+			w129.Position = 1;
 			// Container child vbox12.Gtk.Box+BoxChild
 			this.hbox28 = new global::Gtk.HBox();
 			this.hbox28.Name = "hbox28";
@@ -1541,11 +1553,11 @@ namespace osrepodbmgr
 			this.btnRemoveDisk.UseUnderline = true;
 			this.btnRemoveDisk.Label = "gtk-remove";
 			this.hbox28.Add(this.btnRemoveDisk);
-			global::Gtk.Box.BoxChild w129 = ((global::Gtk.Box.BoxChild)(this.hbox28[this.btnRemoveDisk]));
-			w129.PackType = ((global::Gtk.PackType)(1));
-			w129.Position = 0;
-			w129.Expand = false;
-			w129.Fill = false;
+			global::Gtk.Box.BoxChild w130 = ((global::Gtk.Box.BoxChild)(this.hbox28[this.btnRemoveDisk]));
+			w130.PackType = ((global::Gtk.PackType)(1));
+			w130.Position = 0;
+			w130.Expand = false;
+			w130.Fill = false;
 			// Container child hbox28.Gtk.Box+BoxChild
 			this.btnClearDisks = new global::Gtk.Button();
 			this.btnClearDisks.CanFocus = true;
@@ -1554,11 +1566,11 @@ namespace osrepodbmgr
 			this.btnClearDisks.UseUnderline = true;
 			this.btnClearDisks.Label = "gtk-clear";
 			this.hbox28.Add(this.btnClearDisks);
-			global::Gtk.Box.BoxChild w130 = ((global::Gtk.Box.BoxChild)(this.hbox28[this.btnClearDisks]));
-			w130.PackType = ((global::Gtk.PackType)(1));
-			w130.Position = 1;
-			w130.Expand = false;
-			w130.Fill = false;
+			global::Gtk.Box.BoxChild w131 = ((global::Gtk.Box.BoxChild)(this.hbox28[this.btnClearDisks]));
+			w131.PackType = ((global::Gtk.PackType)(1));
+			w131.Position = 1;
+			w131.Expand = false;
+			w131.Fill = false;
 			// Container child hbox28.Gtk.Box+BoxChild
 			this.btnStopAddDisk = new global::Gtk.Button();
 			this.btnStopAddDisk.CanFocus = true;
@@ -1567,27 +1579,35 @@ namespace osrepodbmgr
 			this.btnStopAddDisk.UseUnderline = true;
 			this.btnStopAddDisk.Label = "gtk-stop";
 			this.hbox28.Add(this.btnStopAddDisk);
-			global::Gtk.Box.BoxChild w131 = ((global::Gtk.Box.BoxChild)(this.hbox28[this.btnStopAddDisk]));
-			w131.PackType = ((global::Gtk.PackType)(1));
-			w131.Position = 2;
-			w131.Expand = false;
-			w131.Fill = false;
-			this.vbox12.Add(this.hbox28);
-			global::Gtk.Box.BoxChild w132 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.hbox28]));
+			global::Gtk.Box.BoxChild w132 = ((global::Gtk.Box.BoxChild)(this.hbox28[this.btnStopAddDisk]));
+			w132.PackType = ((global::Gtk.PackType)(1));
 			w132.Position = 2;
 			w132.Expand = false;
 			w132.Fill = false;
-			// Container child vbox12.Gtk.Box+BoxChild
-			this.prgAddDisk = new global::Gtk.ProgressBar();
-			this.prgAddDisk.Name = "prgAddDisk";
-			this.vbox12.Add(this.prgAddDisk);
-			global::Gtk.Box.BoxChild w133 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.prgAddDisk]));
-			w133.Position = 3;
+			this.vbox12.Add(this.hbox28);
+			global::Gtk.Box.BoxChild w133 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.hbox28]));
+			w133.Position = 2;
 			w133.Expand = false;
 			w133.Fill = false;
+			// Container child vbox12.Gtk.Box+BoxChild
+			this.prgAddDisk1 = new global::Gtk.ProgressBar();
+			this.prgAddDisk1.Name = "prgAddDisk1";
+			this.vbox12.Add(this.prgAddDisk1);
+			global::Gtk.Box.BoxChild w134 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.prgAddDisk1]));
+			w134.Position = 3;
+			w134.Expand = false;
+			w134.Fill = false;
+			// Container child vbox12.Gtk.Box+BoxChild
+			this.prgAddDisk2 = new global::Gtk.ProgressBar();
+			this.prgAddDisk2.Name = "prgAddDisk2";
+			this.vbox12.Add(this.prgAddDisk2);
+			global::Gtk.Box.BoxChild w135 = ((global::Gtk.Box.BoxChild)(this.vbox12[this.prgAddDisk2]));
+			w135.Position = 4;
+			w135.Expand = false;
+			w135.Fill = false;
 			this.notebook3.Add(this.vbox12);
-			global::Gtk.Notebook.NotebookChild w134 = ((global::Gtk.Notebook.NotebookChild)(this.notebook3[this.vbox12]));
-			w134.Position = 8;
+			global::Gtk.Notebook.NotebookChild w136 = ((global::Gtk.Notebook.NotebookChild)(this.notebook3[this.vbox12]));
+			w136.Position = 8;
 			// Notebook tab
 			this.label32 = new global::Gtk.Label();
 			this.label32.Name = "label32";
@@ -1595,14 +1615,14 @@ namespace osrepodbmgr
 			this.notebook3.SetTabLabel(this.vbox12, this.label32);
 			this.label32.ShowAll();
 			w1.Add(this.notebook3);
-			global::Gtk.Box.BoxChild w135 = ((global::Gtk.Box.BoxChild)(w1[this.notebook3]));
-			w135.Position = 0;
+			global::Gtk.Box.BoxChild w137 = ((global::Gtk.Box.BoxChild)(w1[this.notebook3]));
+			w137.Position = 0;
 			// Internal child osrepodbmgr.dlgMetadata.ActionArea
-			global::Gtk.HButtonBox w136 = this.ActionArea;
-			w136.Name = "dialog1_ActionArea";
-			w136.Spacing = 10;
-			w136.BorderWidth = ((uint)(5));
-			w136.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w138 = this.ActionArea;
+			w138.Name = "dialog1_ActionArea";
+			w138.Spacing = 10;
+			w138.BorderWidth = ((uint)(5));
+			w138.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button();
 			this.buttonCancel.CanDefault = true;
@@ -1612,9 +1632,9 @@ namespace osrepodbmgr
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget(this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w137 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w136[this.buttonCancel]));
-			w137.Expand = false;
-			w137.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w139 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w138[this.buttonCancel]));
+			w139.Expand = false;
+			w139.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button();
 			this.buttonOk.CanDefault = true;
@@ -1624,10 +1644,10 @@ namespace osrepodbmgr
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
 			this.AddActionWidget(this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w138 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w136[this.buttonOk]));
-			w138.Position = 1;
-			w138.Expand = false;
-			w138.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w140 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w138[this.buttonOk]));
+			w140.Position = 1;
+			w140.Expand = false;
+			w140.Fill = false;
 			if((this.Child != null))
 			{
 				this.Child.ShowAll();
@@ -1635,6 +1655,8 @@ namespace osrepodbmgr
 			this.DefaultWidth = 909;
 			this.DefaultHeight = 533;
 			this.btnStopAddDisc.Hide();
+			this.prgAddDisc2.Hide();
+			this.prgAddDisk2.Hide();
 			this.Show();
 			this.chkBoxUnknownReleaseType.Toggled += new global::System.EventHandler(this.OnChkBoxUnknownReleaseTypeToggled);
 			this.chkReleaseDate.Toggled += new global::System.EventHandler(this.OnChkReleaseDateToggled);
