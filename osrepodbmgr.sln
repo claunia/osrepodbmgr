@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr", "osrepodbmgr\osrepodbmgr.csproj", "{19FB7436-031F-42B3-87F6-8508F63EDADA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Checksums", "DiscImageChef\DiscImageChef.Checksums\DiscImageChef.Checksums.csproj", "{CC48B324-A532-4A45-87A6-6F91F7141E8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Helpers", "DiscImageChef\DiscImageChef.Helpers\DiscImageChef.Helpers.csproj", "{F8BDF57B-1571-4CD0-84B3-B422088D359A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Console", "DiscImageChef\DiscImageChef.Console\DiscImageChef.Console.csproj", "{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +19,18 @@ Global
 		{19FB7436-031F-42B3-87F6-8508F63EDADA}.Debug|x86.Build.0 = Debug|x86
 		{19FB7436-031F-42B3-87F6-8508F63EDADA}.Release|x86.ActiveCfg = Release|x86
 		{19FB7436-031F-42B3-87F6-8508F63EDADA}.Release|x86.Build.0 = Release|x86
+		{CC48B324-A532-4A45-87A6-6F91F7141E8D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CC48B324-A532-4A45-87A6-6F91F7141E8D}.Debug|x86.Build.0 = Debug|Any CPU
+		{CC48B324-A532-4A45-87A6-6F91F7141E8D}.Release|x86.ActiveCfg = Release|Any CPU
+		{CC48B324-A532-4A45-87A6-6F91F7141E8D}.Release|x86.Build.0 = Release|Any CPU
+		{F8BDF57B-1571-4CD0-84B3-B422088D359A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F8BDF57B-1571-4CD0-84B3-B422088D359A}.Debug|x86.Build.0 = Debug|Any CPU
+		{F8BDF57B-1571-4CD0-84B3-B422088D359A}.Release|x86.ActiveCfg = Release|Any CPU
+		{F8BDF57B-1571-4CD0-84B3-B422088D359A}.Release|x86.Build.0 = Release|Any CPU
+		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Debug|x86.Build.0 = Debug|Any CPU
+		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Release|x86.ActiveCfg = Release|Any CPU
+		{CCAA7AFE-C094-4D82-A66D-630DE8A3F545}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

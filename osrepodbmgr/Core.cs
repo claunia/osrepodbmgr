@@ -33,6 +33,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using DiscImageChef.Checksums;
 using Ionic.Zip;
 using Newtonsoft.Json;
 using Schemas;

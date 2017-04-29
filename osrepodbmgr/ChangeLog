@@ -1,6 +1,13 @@
 2017-04-29  Natalia Portillo  <claunia@claunia.com>
 
 	* Core.cs:
+	* SHA256Context.cs:
+	* osrepodbmgr.csproj:
+	  Use SHA256 algorithm from DiscImageChef.
+
+2017-04-29  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
 	* DBOps.cs:
 	* Schema.cs:
 	* DicCore.cs:
