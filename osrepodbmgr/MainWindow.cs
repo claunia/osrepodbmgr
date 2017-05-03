@@ -1160,31 +1160,40 @@ public partial class MainWindow : Window
 
             if(string.IsNullOrWhiteSpace(txtLanguages.Text))
             {
-                foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                if(MainClass.metadata.Languages != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
-                        txtLanguages.Text += ",";
-                    txtLanguages.Text += language;
+                    foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
+                            txtLanguages.Text += ",";
+                        txtLanguages.Text += language;
+                }
                 }
             }
 
             if(string.IsNullOrWhiteSpace(txtArchitecture.Text))
             {
-                foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                if(MainClass.metadata.Architectures != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
-                        txtArchitecture.Text += ",";
-                    txtArchitecture.Text += architecture;
+                    foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
+                            txtArchitecture.Text += ",";
+                        txtArchitecture.Text += architecture;
+                    }
                 }
             }
 
             if(string.IsNullOrWhiteSpace(txtMachine.Text))
             {
-                foreach(string machine in MainClass.metadata.Systems)
+                if(MainClass.metadata.Systems != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtMachine.Text))
-                        txtMachine.Text += ",";
-                    txtMachine.Text += machine;
+                    foreach(string machine in MainClass.metadata.Systems)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtMachine.Text))
+                            txtMachine.Text += ",";
+                        txtMachine.Text += machine;
+                    }
                 }
             }
 

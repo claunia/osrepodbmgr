@@ -1,5 +1,10 @@
 2017-05-03  Natalia Portillo  <claunia@claunia.com>
 
+	* MainWindow.cs:
+	  Solved some null references.
+
+2017-05-03  Natalia Portillo  <claunia@claunia.com>
+
 	* Core.cs:
 	* SQLite.cs:
 	* DicCore.cs:
