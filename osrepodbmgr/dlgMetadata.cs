@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 using Schemas;
-using System.Runtime.InteropServices;
 
 namespace osrepodbmgr
 {

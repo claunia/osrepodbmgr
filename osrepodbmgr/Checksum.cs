@@ -31,9 +31,9 @@
 // ****************************************************************************/
 
 using System.Collections.Generic;
+using System.Threading;
 using DiscImageChef.Checksums;
 using Schemas;
-using System.Threading;
 
 namespace osrepodbmgr
 {

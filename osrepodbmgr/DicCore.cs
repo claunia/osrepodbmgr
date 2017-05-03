@@ -26,15 +26,15 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using DiscImageChef.Filters;
-using Schemas;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using DiscImageChef.CommonTypes;
+using DiscImageChef.Decoders.PCMCIA;
+using DiscImageChef.Filesystems;
+using DiscImageChef.Filters;
 using DiscImageChef.ImagePlugins;
 using DiscImageChef.PartPlugins;
-using DiscImageChef.Filesystems;
-using DiscImageChef.Decoders.PCMCIA;
+using Schemas;
 
 namespace osrepodbmgr
 {
@@ -156,7 +156,7 @@ namespace osrepodbmgr
 
                 if(UpdateProgress2 != null)
                     UpdateProgress2(null, null, 0, 0);
-                
+
                 switch(_imageFormat.ImageInfo.xmlMediaType)
                 {
                     case XmlMediaType.OpticalDisc:
@@ -549,7 +549,7 @@ namespace osrepodbmgr
                                 }
 
                                 if(UpdateProgress != null)
-                                    UpdateProgress(null, "Checking filesystems", maxProgress-1, maxProgress);
+                                    UpdateProgress(null, "Checking filesystems", maxProgress - 1, maxProgress);
 
                                 List<Partition> partitions = new List<Partition>();
 
@@ -721,7 +721,7 @@ namespace osrepodbmgr
                                 currentProgress++;
                                 if(UpdateProgress != null)
                                     UpdateProgress(null, string.Format("Hashing file containing {0}", tagType), currentProgress, maxProgress);
-                                
+
                                 switch(tagType)
                                 {
                                     case MediaTagType.ATAPI_IDENTIFY:
@@ -931,7 +931,7 @@ namespace osrepodbmgr
             }
             catch(Exception ex)
             {
-                if(Failed!=null)
+                if(Failed != null)
                     Failed(string.Format("Error reading file: {0}\n{1}", ex.Message, ex.StackTrace));
             }
         }

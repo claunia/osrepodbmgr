@@ -30,13 +30,13 @@ using Gtk;
 using Schemas;
 namespace osrepodbmgr
 {
-    public partial class dlgFilesystem : Gtk.Dialog
+    public partial class dlgFilesystem : Dialog
     {
         public FileSystemType Metadata;
 
         public dlgFilesystem()
         {
-            this.Build();
+            Build();
         }
 
         public void FillFields()

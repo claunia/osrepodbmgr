@@ -134,7 +134,7 @@ namespace osrepodbmgr
 
         public override long LastInsertRowId
         {
-            get { return dbCon.LastInsertRowId;}
+            get { return dbCon.LastInsertRowId; }
         }
 
         #endregion

@@ -31,10 +31,10 @@
 // ****************************************************************************/
 using System;
 using System.Collections.Generic;
-using DiscImageChef.Filesystems;
-using DiscImageChef.PartPlugins;
-using DiscImageChef.ImagePlugins;
 using System.Reflection;
+using DiscImageChef.Filesystems;
+using DiscImageChef.ImagePlugins;
+using DiscImageChef.PartPlugins;
 
 namespace osrepodbmgr
 {

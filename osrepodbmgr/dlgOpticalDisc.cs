@@ -26,13 +26,13 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using Schemas;
-using Gtk;
 using System.Collections.Generic;
+using Gtk;
+using Schemas;
 
 namespace osrepodbmgr
 {
-    public partial class dlgOpticalDisc : Gtk.Dialog
+    public partial class dlgOpticalDisc : Dialog
     {
         public OpticalDiscType Metadata;
 
@@ -83,7 +83,7 @@ namespace osrepodbmgr
 
         public dlgOpticalDisc()
         {
-            this.Build();
+            Build();
 
             #region Set partitions table
             CellRendererText partSequenceCell = new CellRendererText();

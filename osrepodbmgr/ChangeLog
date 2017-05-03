@@ -1,5 +1,17 @@
 2017-05-03  Natalia Portillo  <claunia@claunia.com>
 
+	* Core.cs:
+	* SQLite.cs:
+	* DicCore.cs:
+	* Checksum.cs:
+	* PluginBase.cs:
+	* dlgMetadata.cs:
+	* dlgFilesystem.cs:
+	* dlgOpticalDisc.cs:
+	  Refactor code.
+
+2017-05-03  Natalia Portillo  <claunia@claunia.com>
+
 	* MainWindow.cs:
 	* gtk-gui/gui.stetic:
 	* gtk-gui/MainWindow.cs:

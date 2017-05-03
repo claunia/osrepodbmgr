@@ -847,7 +847,6 @@ namespace osrepodbmgr
                     if(UpdateProgress != null)
                         UpdateProgress("Choosing files...", file, counter, MainClass.files.Count);
 
-                    //FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read);
                     FileInfo fi = new FileInfo(file);
 
                     ZipEntry ze = zf.AddFile(file);
