@@ -499,6 +499,7 @@ namespace osrepodbmgr
 			w20.Fill = false;
 			// Container child hbox7.Gtk.Box+BoxChild
 			this.cmbReleaseType = global::Gtk.ComboBox.NewText();
+			this.cmbReleaseType.Sensitive = false;
 			this.cmbReleaseType.Name = "cmbReleaseType";
 			this.hbox7.Add(this.cmbReleaseType);
 			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox7[this.cmbReleaseType]));

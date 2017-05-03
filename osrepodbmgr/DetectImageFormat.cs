@@ -54,7 +54,6 @@ namespace osrepodbmgr
                     {
                         try
                         {
-                            Console.WriteLine("Format detection: Trying plugin {0}", _imageplugin.Name);
                             if(_imageplugin.IdentifyImage(imageFilter))
                             {
                                 _imageFormat = _imageplugin;
@@ -78,7 +77,6 @@ namespace osrepodbmgr
                         {
                             try
                             {
-                                Console.WriteLine("Format detection: Trying plugin {0}", _imageplugin.Name);
                                 if(_imageplugin.IdentifyImage(imageFilter))
                                 {
                                     _imageFormat = _imageplugin;

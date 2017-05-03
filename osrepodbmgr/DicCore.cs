@@ -129,17 +129,17 @@ namespace osrepodbmgr
 
                 byte[] data;
                 long position = 0;
-                while(position < (fi.Length - 1048576))
+                while(position < (fi.Length - 524288))
                 {
-                    data = new byte[1048576];
-                    fs.Read(data, 0, 1048576);
+                    data = new byte[524288];
+                    fs.Read(data, 0, 524288);
 
                     if(UpdateProgress2 != null)
                         UpdateProgress2(null, string.Format("{0} of {1} bytes", position, fi.Length), position, fi.Length);
 
                     imgChkWorker.Update(data);
 
-                    position += 1048576;
+                    position += 524288;
                 }
 
                 data = new byte[fi.Length - position];

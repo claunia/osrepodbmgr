@@ -108,8 +108,11 @@ namespace osrepodbmgr
                 fEntry.source = bool.Parse(dRow["source"].ToString());
                 fEntry.files = bool.Parse(dRow["files"].ToString());
                 fEntry.netinstall = bool.Parse(dRow["netinstall"].ToString());
-                fEntry.xml = (byte[])dRow["xml"];
-                fEntry.json = (byte[])dRow["json"];
+
+                if(dRow["xml"] != DBNull.Value)
+                    fEntry.xml = (byte[])dRow["xml"];
+                if(dRow["json"] != DBNull.Value)
+                    fEntry.json = (byte[])dRow["json"];
                 entries.Add(fEntry);
             }
 
@@ -229,7 +232,7 @@ namespace osrepodbmgr
 
         public bool AddFile(string hash)
         {
-            Console.WriteLine("Adding {0}", hash);
+            //Console.WriteLine("Adding {0}", hash);
             IDbCommand dbcmd = dbCon.CreateCommand();
 
             IDbDataParameter param1 = dbcmd.CreateParameter();

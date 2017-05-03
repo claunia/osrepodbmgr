@@ -173,7 +173,7 @@ namespace osrepodbmgr
                     _dbCore.CloseDB();
                 }
 
-                txtUnar.Text = dlgFile.Filename;
+                txtDatabase.Text = dlgFile.Filename;
             }
 
             dlgFile.Destroy();

@@ -426,18 +426,6 @@ namespace osrepodbmgr
             public byte[] data;
         }
 
-        /*struct fletcher16Packet
-        {
-            public Fletcher16Context context;
-            public byte[] data;
-        }
-
-        struct fletcher32Packet
-        {
-            public Fletcher32Context context;
-            public byte[] data;
-        }*/
-
         struct md5Packet
         {
             public MD5Context context;
@@ -499,16 +487,6 @@ namespace osrepodbmgr
         {
             ((crc64Packet)packet).context.Update(((crc64Packet)packet).data);
         }
-
-        /*static void updateFletcher16(object packet)
-        {
-            ((fletcher16Packet)packet).context.Update(((fletcher16Packet)packet).data);
-        }
-
-        static void updateFletcher32(object packet)
-        {
-            ((fletcher32Packet)packet).context.Update(((fletcher32Packet)packet).data);
-        }*/
 
         static void updateMD5(object packet)
         {

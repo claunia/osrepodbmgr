@@ -386,9 +386,9 @@ namespace osrepodbmgr
             #endregion Set Xbox security sectors table
 
             #region Set tracks table
-            lstTracks = new ListStore(typeof(int), typeof(int), typeof(string), typeof(int), typeof(string), typeof(int), typeof(string), typeof(string),
-                                      typeof(long), typeof(long), typeof(string), typeof(int), typeof(string), typeof(ChecksumType[]), typeof(SubChannelType),
-                                      typeof(ListStore));
+            lstTracks = new ListStore(typeof(int), typeof(int), typeof(string), typeof(long), typeof(string), typeof(long), typeof(string), typeof(string),
+                  typeof(long), typeof(long), typeof(string), typeof(int), typeof(string), typeof(ChecksumType[]), typeof(SubChannelType),
+                  typeof(ListStore));
             CellRendererText trackSequenceCell = new CellRendererText();
             CellRendererText sessionSequenceCell = new CellRendererText();
             CellRendererText trackFileCell = new CellRendererText();
@@ -466,15 +466,15 @@ namespace osrepodbmgr
                 lblSide.Visible = true;
                 spSide.Visible = true;
                 lblLayer.Visible = true;
-                spLayer.Visible = true;
+                spLayer1.Visible = true;
                 chkSequence.Active = true;
-                lblDiscTitle.Text = Metadata.Sequence.MediaTitle;
+                txtDiscTitle.Text = Metadata.Sequence.MediaTitle;
                 spSequence.Value = Metadata.Sequence.MediaSequence;
                 spTotalMedia.Value = Metadata.Sequence.TotalMedia;
                 if(Metadata.Sequence.SideSpecified)
                     spSide.Value = Metadata.Sequence.Side;
                 if(Metadata.Sequence.LayerSpecified)
-                    spLayer.Value = Metadata.Sequence.Layer;
+                    spLayer1.Value = Metadata.Sequence.Layer;
             }
 
             if(Metadata.Layers != null)
@@ -706,9 +706,8 @@ namespace osrepodbmgr
                     }
                 }
 
-                lstTracks.AppendValues(track.Sequence.TrackNumber.ToString(), track.Sequence.Session.ToString(), track.Image.Value, track.Size.ToString(),
-                                       track.Image.format, track.Image.offset.ToString(), track.StartMSF, track.EndMSF, track.StartSector.ToString(),
-                                       track.EndSector.ToString(), track.TrackType1.ToString(), track.BytesPerSector.ToString(), track.AccoustID,
+                lstTracks.AppendValues(track.Sequence.TrackNumber, track.Sequence.Session, track.Image.Value, track.Size, track.Image.format, track.Image.offset,
+                                       track.StartMSF, track.EndMSF, track.StartSector, track.EndSector, track.TrackType1.ToString(), track.BytesPerSector, track.AccoustID,
                                        track.Checksums, track.SubChannel, lstPartitions);
 
             }
@@ -748,7 +747,7 @@ namespace osrepodbmgr
             lblSide.Visible = chkSequence.Active;
             spSide.Visible = chkSequence.Active;
             lblLayer.Visible = chkSequence.Active;
-            spLayer.Visible = chkSequence.Active;
+            spLayer1.Visible = chkSequence.Active;
         }
 
         protected void OnChkDimensionsToggled(object sender, EventArgs e)
@@ -824,7 +823,7 @@ namespace osrepodbmgr
                 dlgMsg.Destroy();
             }
 
-            lstLayers.AppendValues(spLayer.ValueAsInt, long.Parse(txtLayerSize.Text));
+            lstLayers.AppendValues(spLayer1.ValueAsInt, long.Parse(txtLayerSize.Text));
         }
 
         protected void OnBtnRemoveLayerClicked(object sender, EventArgs e)
@@ -1072,9 +1071,9 @@ namespace osrepodbmgr
         protected void OnBtnApplyTrackClicked(object sender, EventArgs e)
         {
             string file = (string)lstTracks.GetValue(trackIter, 2);
-            int filesize = (int)lstTracks.GetValue(trackIter, 3);
+            long filesize = (long)lstTracks.GetValue(trackIter, 3);
             string fileformat = (string)lstTracks.GetValue(trackIter, 4);
-            int fileoffset = (int)lstTracks.GetValue(trackIter, 5);
+            long fileoffset = (long)lstTracks.GetValue(trackIter, 5);
             ChecksumType[] checksums = (ChecksumType[])lstTracks.GetValue(trackIter, 13);
             SubChannelType subchannel = (SubChannelType)lstTracks.GetValue(trackIter, 14);
 
@@ -1545,10 +1544,10 @@ namespace osrepodbmgr
                     Metadata.Sequence.SideSpecified = true;
                     Metadata.Sequence.Side = spSide.ValueAsInt;
                 }
-                if(spLayer.ValueAsInt > 0)
+                if(spLayer1.ValueAsInt > 0)
                 {
                     Metadata.Sequence.LayerSpecified = true;
-                    Metadata.Sequence.Layer = spLayer.ValueAsInt;
+                    Metadata.Sequence.Layer = spLayer1.ValueAsInt;
                 }
             }
 

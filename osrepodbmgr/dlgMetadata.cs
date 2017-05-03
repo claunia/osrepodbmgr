@@ -551,7 +551,7 @@ namespace osrepodbmgr
 
         protected void OnChkReleaseDateToggled(object sender, EventArgs e)
         {
-            cldReleaseDate.Sensitive = chkReleaseDate.Active;
+            cldReleaseDate.Sensitive = !chkReleaseDate.Active;
         }
 
         protected void OnTxtAddKeywordClicked(object sender, EventArgs e)
@@ -715,6 +715,8 @@ namespace osrepodbmgr
             notebook3.GetNthPage(8).Visible = false;
             prgAddDisc1.Visible = true;
             prgAddDisc2.Visible = true;
+            buttonCancel.Visible = false;
+            buttonOk.Visible = false;
             Core.Failed += OnDiscAddFailed;
             Core.Finished += OnDiscAddFinished;
             Core.UpdateProgress += UpdateDiscProgress1;
@@ -780,6 +782,8 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(8).Visible = true;
                 prgAddDisc1.Visible = false;
                 prgAddDisc2.Visible = false;
+                buttonCancel.Visible = true;
+                buttonOk.Visible = true;
                 Core.Failed -= OnDiscAddFailed;
                 Core.Finished -= OnDiscAddFinished;
                 Core.UpdateProgress -= UpdateDiscProgress1;
@@ -893,6 +897,8 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(8).Visible = true;
                 prgAddDisc1.Visible = false;
                 prgAddDisc2.Visible = false;
+                buttonCancel.Visible = true;
+                buttonOk.Visible = true;
                 Core.Failed -= OnDiscAddFailed;
                 Core.Finished -= OnDiscAddFinished;
                 Core.UpdateProgress -= UpdateDiscProgress1;
@@ -935,6 +941,8 @@ namespace osrepodbmgr
             notebook3.GetNthPage(7).Visible = false;
             prgAddDisk1.Visible = true;
             prgAddDisk2.Visible = true;
+            buttonCancel.Visible = false;
+            buttonOk.Visible = false;
             Core.Failed += OnDiskAddFailed;
             Core.Finished += OnDiskAddFinished;
             Core.UpdateProgress += UpdateDiskProgress1;
@@ -1000,6 +1008,8 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(7).Visible = true;
                 prgAddDisk1.Visible = false;
                 prgAddDisk2.Visible = false;
+                buttonCancel.Visible = true;
+                buttonOk.Visible = true;
                 Core.Failed -= OnDiskAddFailed;
                 Core.Finished -= OnDiskAddFinished;
                 Core.UpdateProgress -= UpdateDiskProgress1;
@@ -1109,6 +1119,8 @@ namespace osrepodbmgr
                 notebook3.GetNthPage(7).Visible = true;
                 prgAddDisk1.Visible = false;
                 prgAddDisk2.Visible = false;
+                buttonCancel.Visible = true;
+                buttonOk.Visible = true;
                 Core.Failed -= OnDiskAddFailed;
                 Core.Finished -= OnDiskAddFinished;
                 Core.UpdateProgress -= UpdateDiskProgress1;
@@ -1155,9 +1167,9 @@ namespace osrepodbmgr
                 Metadata.Author = txtAuthor.Text.Split(',');
             if(!string.IsNullOrEmpty(txtDeveloper.Text))
                 Metadata.Developer = txtDeveloper.Text.Split(',');
-            if(!string.IsNullOrEmpty(txtAuthor.Text))
+            if(!string.IsNullOrEmpty(txtName.Text))
                 Metadata.Name = txtName.Text;
-            if(!string.IsNullOrEmpty(txtAuthor.Text))
+            if(!string.IsNullOrEmpty(txtPartNumber.Text))
                 Metadata.PartNumber = txtPartNumber.Text;
             if(!string.IsNullOrEmpty(txtPerformer.Text))
                 Metadata.Performer = txtPerformer.Text.Split(',');

@@ -172,11 +172,14 @@ public partial class MainWindow : Window
             btnSettings.Sensitive = false;
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
 
             thdFindFiles = new Thread(Core.FindFiles);
@@ -250,6 +253,8 @@ public partial class MainWindow : Window
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             lblProgress.Visible = false;
             prgProgress.Visible = false;
             lblProgress2.Visible = false;
@@ -270,6 +275,8 @@ public partial class MainWindow : Window
     {
         Application.Invoke(delegate
         {
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             lblProgress.Visible = false;
             prgProgress.Visible = false;
             lblProgress.Visible = false;
@@ -306,6 +313,8 @@ public partial class MainWindow : Window
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             if(thdCheckFiles != null)
                 thdCheckFiles.Abort();
             prgProgress.Visible = false;
@@ -343,6 +352,8 @@ public partial class MainWindow : Window
             Core.AddFile -= AddFile;
             Core.AddOS -= AddOS;
 
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             thdHashFiles = null;
             prgProgress.Visible = false;
             btnStop.Visible = false;
@@ -372,11 +383,14 @@ public partial class MainWindow : Window
             btnMetadata.Visible = true;
             if(MainClass.metadata != null)
             {
-                foreach(string developer in MainClass.metadata.Developer)
+                if(MainClass.metadata.Developer != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
-                        txtDeveloper.Text += ",";
-                    txtDeveloper.Text += developer;
+                    foreach(string developer in MainClass.metadata.Developer)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
+                            txtDeveloper.Text += ",";
+                        txtDeveloper.Text += developer;
+                    }
                 }
 
                 if(!string.IsNullOrWhiteSpace(MainClass.metadata.Name))
@@ -384,25 +398,34 @@ public partial class MainWindow : Window
                 if(!string.IsNullOrWhiteSpace(MainClass.metadata.Version))
                     txtVersion.Text = MainClass.metadata.Version;
 
-                foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                if(MainClass.metadata.Languages != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
-                        txtLanguages.Text += ",";
-                    txtLanguages.Text += language;
+                    foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
+                            txtLanguages.Text += ",";
+                        txtLanguages.Text += language;
+                    }
                 }
 
-                foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                if(MainClass.metadata.Architectures != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
-                        txtArchitecture.Text += ",";
-                    txtArchitecture.Text += architecture;
+                    foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
+                            txtArchitecture.Text += ",";
+                        txtArchitecture.Text += architecture;
+                    }
                 }
 
-                foreach(string machine in MainClass.metadata.Systems)
+                if(MainClass.metadata.Systems != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtMachine.Text))
-                        txtMachine.Text += ",";
-                    txtMachine.Text += machine;
+                    foreach(string machine in MainClass.metadata.Systems)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtMachine.Text))
+                            txtMachine.Text += ",";
+                        txtMachine.Text += machine;
+                    }
                 }
 
                 btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(0, 127, 0));
@@ -497,11 +520,14 @@ public partial class MainWindow : Window
             prgProgress.Text = "Removing temporary files";
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
             Core.Failed += RemoveTempFilesFailed;
             Core.Finished += RemoveTempFilesFinished;
@@ -522,7 +548,7 @@ public partial class MainWindow : Window
             if(maximum > 0)
                 prgProgress.Fraction = current / (double)maximum;
             else
-                prgProgress.Pulse();
+                while(true) { prgProgress.Pulse(); }
         });
     }
 
@@ -597,11 +623,14 @@ public partial class MainWindow : Window
             prgProgress.Text = "Removing temporary files";
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
             Core.Failed += RemoveTempFilesFailed;
             Core.Finished += RemoveTempFilesFinished;
@@ -761,6 +790,8 @@ public partial class MainWindow : Window
         {
             if(thdAddFiles != null)
                 thdAddFiles.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
 
             Core.UpdateProgress -= UpdateProgress;
             Core.Finished -= AddFilesToDbFinished;
@@ -796,6 +827,8 @@ public partial class MainWindow : Window
 
             if(thdAddFiles != null)
                 thdAddFiles.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
 
             Core.UpdateProgress -= UpdateProgress;
             Core.Finished -= AddFilesToDbFinished;
@@ -859,11 +892,14 @@ public partial class MainWindow : Window
         {
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
             Core.UpdateProgress -= UpdateProgress;
             Core.UpdateProgress2 -= UpdateProgress2;
@@ -886,18 +922,15 @@ public partial class MainWindow : Window
         {
             if(thdPackFiles != null)
                 thdPackFiles.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
 
             Core.UpdateProgress -= UpdateProgress;
             Core.UpdateProgress2 -= UpdateProgress2;
             Core.FinishedWithText -= PackFilesFinished;
             Core.Failed -= PackFilesFailed;
 
-            prgProgress.Visible = false;
-            prgProgress2.Visible = false;
-            lblProgress.Visible = false;
-            lblProgress2.Visible = false;
-            btnPack.Sensitive = false;
-            btnClose.Sensitive = true;
+            btnAdd.Click();
 
             MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, "Correctly packed to " + text);
             dlgMsg.Run();
@@ -918,6 +951,8 @@ public partial class MainWindow : Window
 
             if(thdPackFiles != null)
                 thdPackFiles.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
 
             Core.UpdateProgress -= UpdateProgress;
             Core.UpdateProgress2 -= UpdateProgress2;
@@ -974,11 +1009,14 @@ public partial class MainWindow : Window
             btnSettings.Sensitive = false;
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
 
             thdOpenArchive = new Thread(Core.OpenArchive);
@@ -1030,13 +1068,18 @@ public partial class MainWindow : Window
             btnFolder.Visible = false;
             btnArchive.Visible = false;
             btnSettings.Sensitive = false;
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
             Core.Failed -= OpenArchiveFailed;
             Core.Finished -= OpenArchiveFinished;
@@ -1077,11 +1120,14 @@ public partial class MainWindow : Window
                 prgProgress.Text = "Removing temporary files";
                 thdPulseProgress = new Thread(() =>
                 {
-                    Application.Invoke(delegate
+                    while(true)
                     {
-                        prgProgress.Pulse();
-                    });
-                    Thread.Sleep(10);
+                        Application.Invoke(delegate
+                        {
+                            prgProgress.Pulse();
+                        });
+                        Thread.Sleep(66);
+                    }
                 });
                 Core.Failed += RemoveTempFilesFailed;
                 Core.Finished += RemoveTempFilesFinished;
@@ -1097,6 +1143,8 @@ public partial class MainWindow : Window
         {
             if(thdExtractArchive != null)
                 thdExtractArchive.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             stopped = false;
             lblProgress.Text = "Finding files";
             lblProgress.Visible = true;
@@ -1110,11 +1158,14 @@ public partial class MainWindow : Window
             Core.UpdateProgress2 -= UpdateProgress2;
             thdPulseProgress = new Thread(() =>
             {
-                Application.Invoke(delegate
+                while(true)
                 {
-                    prgProgress.Pulse();
-                });
-                Thread.Sleep(10);
+                    Application.Invoke(delegate
+                    {
+                        prgProgress.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
             });
 
             thdFindFiles = new Thread(Core.FindFiles);
@@ -1167,7 +1218,7 @@ public partial class MainWindow : Window
                         if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
                             txtLanguages.Text += ",";
                         txtLanguages.Text += language;
-                }
+                    }
                 }
             }
 

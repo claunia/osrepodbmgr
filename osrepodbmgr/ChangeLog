@@ -1,5 +1,34 @@
 2017-05-03  Natalia Portillo  <claunia@claunia.com>
 
+	* Checksum.cs:
+	  Removed dead code.
+
+
+	* DBOps.cs:
+	  Check null exceptions.
+	Don't fill console with debug lines.
+
+	* DicCore.cs:
+	  Reduced buffer size for better UI responsiveness.
+
+
+	* MainWindow.cs:
+	  Corrected some GUI nuisances.
+	Check null exceptions.
+
+	* dlgMetadata.cs:
+	* frmSettings.cs:
+	* dlgOpticalDisc.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
+	  Corrected some GUI nuisances.
+
+
+	* DetectImageFormat.cs:
+	  Don't fill console with debug lines.
+
+2017-05-03  Natalia Portillo  <claunia@claunia.com>
+
 	* MainWindow.cs:
 	  Solved some null references.
 
