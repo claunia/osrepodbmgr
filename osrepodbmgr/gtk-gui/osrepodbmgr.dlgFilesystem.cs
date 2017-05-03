@@ -137,6 +137,7 @@ namespace osrepodbmgr
 			global::Stetic.Gui.Initialize(this);
 			// Widget osrepodbmgr.dlgFilesystem
 			this.Name = "osrepodbmgr.dlgFilesystem";
+			this.Title = global::Mono.Unix.Catalog.GetString("Edit filesystem metadata");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child osrepodbmgr.dlgFilesystem.VBox
 			global::Gtk.VBox w1 = this.VBox;
@@ -753,7 +754,7 @@ namespace osrepodbmgr
 			w65.Position = 1;
 			w65.Expand = false;
 			w65.Fill = false;
-			if ((this.Child != null))
+			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}

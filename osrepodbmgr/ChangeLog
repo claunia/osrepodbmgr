@@ -1,5 +1,15 @@
 2017-05-03  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgMetadata.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
+	* gtk-gui/osrepodbmgr.dlgBlockMedia.cs:
+	* gtk-gui/osrepodbmgr.dlgFilesystem.cs:
+	* gtk-gui/osrepodbmgr.dlgOpticalDisc.cs:
+	  Added window titles.
+
+2017-05-03  Natalia Portillo  <claunia@claunia.com>
+
 	* DicCore.cs:
 	  Corrected null reference.
 	Inform we are hashing bytes.

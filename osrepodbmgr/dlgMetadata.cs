@@ -1292,6 +1292,7 @@ namespace osrepodbmgr
                 return;
 
             dlgOpticalDisc _dlgOpticalDisc = new dlgOpticalDisc();
+            _dlgOpticalDisc.Title = string.Format("Editing disc metadata for {0}", (string)lstDiscs.GetValue(discIter, 0));
             _dlgOpticalDisc.Metadata = (OpticalDiscType)lstDiscs.GetValue(discIter, 1);
             _dlgOpticalDisc.FillFields();
 
@@ -1311,6 +1312,7 @@ namespace osrepodbmgr
                 return;
 
             dlgBlockMedia _dlgBlockMedia = new dlgBlockMedia();
+            _dlgBlockMedia.Title = string.Format("Editing disk metadata for {0}", (string)lstDisks.GetValue(diskIter, 0));
             _dlgBlockMedia.Metadata = (BlockMediaType)lstDisks.GetValue(diskIter, 1);
             _dlgBlockMedia.FillFields();
 

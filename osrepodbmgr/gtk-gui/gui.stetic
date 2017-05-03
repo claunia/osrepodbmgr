@@ -1225,6 +1225,7 @@ QNX/QNX/20090229/source.zip</property>
   </widget>
   <widget class="Gtk.Dialog" id="osrepodbmgr.dlgMetadata" design-size="909 533">
     <property name="MemberName" />
+    <property name="Title" translatable="yes">Editing metadata...</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
@@ -3132,7 +3133,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">10</property>
+            <property name="CurrentPage">0</property>
             <child>
               <widget class="Gtk.VBox" id="vbox2">
                 <property name="MemberName" />
@@ -6728,6 +6729,7 @@ QNX/QNX/20090229/source.zip</property>
   </widget>
   <widget class="Gtk.Dialog" id="osrepodbmgr.dlgFilesystem" design-size="902 594">
     <property name="MemberName" />
+    <property name="Title" translatable="yes">Edit filesystem metadata</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
@@ -7576,7 +7578,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">12</property>
+            <property name="CurrentPage">0</property>
             <child>
               <widget class="Gtk.VBox" id="vbox2">
                 <property name="MemberName" />

@@ -307,6 +307,7 @@ namespace osrepodbmgr
 			global::Stetic.Gui.Initialize(this);
 			// Widget osrepodbmgr.dlgMetadata
 			this.Name = "osrepodbmgr.dlgMetadata";
+			this.Title = global::Mono.Unix.Catalog.GetString("Editing metadata...");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child osrepodbmgr.dlgMetadata.VBox
 			global::Gtk.VBox w1 = this.VBox;
