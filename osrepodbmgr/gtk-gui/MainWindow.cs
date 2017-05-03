@@ -119,6 +119,8 @@ public partial class MainWindow
 
 	private global::Gtk.Button btnMetadata;
 
+	private global::Gtk.Button btnRemoveFile;
+
 	protected virtual void Build()
 	{
 		global::Stetic.Gui.Initialize(this);
@@ -687,17 +689,30 @@ public partial class MainWindow
 		w61.Position = 9;
 		w61.Expand = false;
 		w61.Fill = false;
-		this.vbox1.Add(this.hbox1);
-		global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox1]));
-		w62.Position = 12;
+		// Container child hbox1.Gtk.Box+BoxChild
+		this.btnRemoveFile = new global::Gtk.Button();
+		this.btnRemoveFile.CanFocus = true;
+		this.btnRemoveFile.Name = "btnRemoveFile";
+		this.btnRemoveFile.UseStock = true;
+		this.btnRemoveFile.UseUnderline = true;
+		this.btnRemoveFile.Label = "gtk-remove";
+		this.hbox1.Add(this.btnRemoveFile);
+		global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnRemoveFile]));
+		w62.PackType = ((global::Gtk.PackType)(1));
+		w62.Position = 10;
 		w62.Expand = false;
 		w62.Fill = false;
+		this.vbox1.Add(this.hbox1);
+		global::Gtk.Box.BoxChild w63 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox1]));
+		w63.Position = 12;
+		w63.Expand = false;
+		w63.Fill = false;
 		this.Add(this.vbox1);
 		if((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}
-		this.DefaultWidth = 778;
+		this.DefaultWidth = 857;
 		this.DefaultHeight = 544;
 		this.lblProgress.Hide();
 		this.prgProgress.Hide();
@@ -708,8 +723,10 @@ public partial class MainWindow
 		this.btnAdd.Hide();
 		this.btnStop.Hide();
 		this.btnMetadata.Hide();
+		this.btnRemoveFile.Hide();
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
+		this.btnRemoveFile.Clicked += new global::System.EventHandler(this.OnBtnRemoveFileClicked);
 		this.btnMetadata.Clicked += new global::System.EventHandler(this.OnBtnMetadataClicked);
 		this.btnStop.Clicked += new global::System.EventHandler(this.OnBtnStopClicked);
 		this.btnFolder.Clicked += new global::System.EventHandler(this.OnBtnFolderClicked);

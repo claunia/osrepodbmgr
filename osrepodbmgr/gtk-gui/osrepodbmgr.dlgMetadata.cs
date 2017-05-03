@@ -317,7 +317,7 @@ namespace osrepodbmgr
 			this.notebook3 = new global::Gtk.Notebook();
 			this.notebook3.CanFocus = true;
 			this.notebook3.Name = "notebook3";
-			this.notebook3.CurrentPage = 8;
+			this.notebook3.CurrentPage = 0;
 			// Container child notebook3.Gtk.Notebook+NotebookChild
 			this.vbox3 = new global::Gtk.VBox();
 			this.vbox3.Name = "vbox3";

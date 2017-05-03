@@ -310,7 +310,7 @@ public partial class MainWindow : Window
                 thdCheckFiles.Abort();
             prgProgress.Visible = false;
             btnStop.Visible = false;
-            btnClose.Visible = true;
+            btnClose.Visible = false;
             btnExit.Sensitive = true;
             Core.Failed -= ChkFilesFailed;
             Core.Finished -= ChkFilesFinished;
@@ -352,6 +352,7 @@ public partial class MainWindow : Window
             btnAdd.Visible = true;
             btnPack.Visible = true;
             btnPack.Sensitive = true;
+            btnRemoveFile.Visible = true;
 
             txtFormat.IsEditable = true;
             txtMachine.IsEditable = true;
@@ -452,6 +453,7 @@ public partial class MainWindow : Window
         btnAdd.Visible = false;
         btnPack.Visible = false;
         btnClose.Visible = false;
+        btnRemoveFile.Visible = false;
         if(fileView != null)
             fileView.Clear();
         if(osView != null)
@@ -1190,5 +1192,24 @@ public partial class MainWindow : Window
         }
 
         _dlgMetadata.Destroy();
+    }
+
+    protected void OnBtnRemoveFileClicked(object sender, EventArgs e)
+    {
+        TreeIter fileIter;
+        if(treeFiles.Selection.GetSelected(out fileIter))
+        {
+            string name = (string)fileView.GetValue(fileIter, 0);
+            string filesPath;
+
+            if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
+                filesPath = MainClass.tmpFolder;
+            else
+                filesPath = MainClass.path;
+
+            MainClass.hashes.Remove(name);
+            MainClass.files.Remove(System.IO.Path.Combine(filesPath, name));
+            fileView.Remove(ref fileIter);
+        }
     }
 }

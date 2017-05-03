@@ -1,5 +1,14 @@
 2017-05-03  Natalia Portillo  <claunia@claunia.com>
 
+	* MainWindow.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/MainWindow.cs:
+	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
+	  Added option to remove file from list of files, so to ignore
+	  it.
+
+2017-05-03  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgMetadata.cs:
 	* gtk-gui/gui.stetic:
 	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
