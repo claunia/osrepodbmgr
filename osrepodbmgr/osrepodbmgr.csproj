@@ -92,6 +92,12 @@
     <Compile Include="PluginBase.cs" />
     <Compile Include="DetectImageFormat.cs" />
     <Compile Include="Checksum.cs" />
+    <Compile Include="dlgBlockMedia.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.dlgBlockMedia.cs" />
+    <Compile Include="dlgFilesystem.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.dlgFilesystem.cs" />
+    <Compile Include="dlgOpticalDisc.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.dlgOpticalDisc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

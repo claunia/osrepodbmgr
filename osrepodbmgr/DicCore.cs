@@ -135,7 +135,7 @@ namespace osrepodbmgr
                     fs.Read(data, 0, 1048576);
 
                     if(UpdateProgress2 != null)
-                        UpdateProgress2(null, string.Format("{0} of {1}", position, fi.Length), position, fi.Length);
+                        UpdateProgress2(null, string.Format("{0} of {1} bytes", position, fi.Length), position, fi.Length);
 
                     imgChkWorker.Update(data);
 
@@ -146,7 +146,7 @@ namespace osrepodbmgr
                 fs.Read(data, 0, (int)(fi.Length - position));
 
                 if(UpdateProgress2 != null)
-                    UpdateProgress2(null, string.Format("{0} of {1}", position, fi.Length), position, fi.Length);
+                    UpdateProgress2(null, string.Format("{0} of {1} bytes", position, fi.Length), position, fi.Length);
 
                 imgChkWorker.Update(data);
 
@@ -413,7 +413,7 @@ namespace osrepodbmgr
                                 xmlTrk.StartSector = (long)trk.TrackStartSector;
                                 xmlTrk.EndSector = (long)trk.TrackEndSector;
 
-                                if(trk.Indexes.ContainsKey(0))
+                                if(trk.Indexes != null && trk.Indexes.ContainsKey(0))
                                 {
                                     ulong idx0;
                                     if(trk.Indexes.TryGetValue(0, out idx0))
@@ -459,14 +459,14 @@ namespace osrepodbmgr
                                     {
                                         sector = _imageFormat.ReadSectorsLong(doneSectors, sectorsToRead, (uint)xmlTrk.Sequence.TrackNumber);
                                         if(UpdateProgress2 != null)
-                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), position, fi.Length);
+                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
                                         doneSectors += sectorsToRead;
                                     }
                                     else
                                     {
                                         sector = _imageFormat.ReadSectorsLong(doneSectors, (uint)(sectors - doneSectors), (uint)xmlTrk.Sequence.TrackNumber);
                                         if(UpdateProgress2 != null)
-                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), position, fi.Length);
+                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
                                         doneSectors += (sectors - doneSectors);
                                     }
 

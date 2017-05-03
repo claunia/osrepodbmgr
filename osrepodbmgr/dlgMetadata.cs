@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 using Schemas;
+using System.Runtime.InteropServices;
 
 namespace osrepodbmgr
 {
@@ -1282,6 +1283,44 @@ namespace osrepodbmgr
                 Metadata.Subcategories = subcategories.ToArray();
             if(systems.Count > 0)
                 Metadata.Systems = systems.ToArray();
+        }
+
+        protected void OnBtnEditDiscClicked(object sender, EventArgs e)
+        {
+            TreeIter discIter;
+            if(!treeDiscs.Selection.GetSelected(out discIter))
+                return;
+
+            dlgOpticalDisc _dlgOpticalDisc = new dlgOpticalDisc();
+            _dlgOpticalDisc.Metadata = (OpticalDiscType)lstDiscs.GetValue(discIter, 1);
+            _dlgOpticalDisc.FillFields();
+
+            if(_dlgOpticalDisc.Run() == (int)ResponseType.Ok)
+            {
+                lstDiscs.Remove(ref discIter);
+                lstDiscs.AppendValues(_dlgOpticalDisc.Metadata.Image.Value, _dlgOpticalDisc.Metadata);
+            }
+
+            _dlgOpticalDisc.Destroy();
+        }
+
+        protected void OnBtnEditDiskClicked(object sender, EventArgs e)
+        {
+            TreeIter diskIter;
+            if(!treeDisks.Selection.GetSelected(out diskIter))
+                return;
+
+            dlgBlockMedia _dlgBlockMedia = new dlgBlockMedia();
+            _dlgBlockMedia.Metadata = (BlockMediaType)lstDisks.GetValue(diskIter, 1);
+            _dlgBlockMedia.FillFields();
+
+            if(_dlgBlockMedia.Run() == (int)ResponseType.Ok)
+            {
+                lstDisks.Remove(ref diskIter);
+                lstDisks.AppendValues(_dlgBlockMedia.Metadata.Image.Value, _dlgBlockMedia.Metadata);
+            }
+
+            _dlgBlockMedia.Destroy();
         }
     }
 }

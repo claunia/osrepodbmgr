@@ -1130,7 +1130,7 @@ public partial class MainWindow : Window
         _dlgMetadata.Metadata = MainClass.metadata;
         _dlgMetadata.FillFields();
 
-        if(_dlgMetadata.Run() == (int)ResponseType.Accept)
+        if(_dlgMetadata.Run() == (int)ResponseType.Ok)
         {
             MainClass.metadata = _dlgMetadata.Metadata;
 

@@ -1,3 +1,22 @@
+2017-05-03  Natalia Portillo  <claunia@claunia.com>
+
+	* DicCore.cs:
+	  Corrected null reference.
+	Inform we are hashing bytes.
+
+	* MainWindow.cs:
+	* dlgMetadata.cs:
+	* dlgBlockMedia.cs:
+	* dlgFilesystem.cs:
+	* dlgOpticalDisc.cs:
+	* gtk-gui/gui.stetic:
+	* osrepodbmgr.csproj:
+	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
+	* gtk-gui/osrepodbmgr.dlgBlockMedia.cs:
+	* gtk-gui/osrepodbmgr.dlgFilesystem.cs:
+	* gtk-gui/osrepodbmgr.dlgOpticalDisc.cs:
+	  Added support for editing media metadata.
+
 2017-04-29  Natalia Portillo  <claunia@claunia.com>
 
 	* dlgMetadata.cs:
