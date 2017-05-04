@@ -150,6 +150,7 @@ namespace osrepodbmgr
                             XmlSerializer xs = new XmlSerializer(Current.GetType());
                             StreamReader sr = new StreamReader(settingsPath);
                             Current = (SetSettings)xs.Deserialize(sr);
+                            sr.Close();
                         }
                         break;
                 }
@@ -221,6 +222,8 @@ namespace osrepodbmgr
             catch
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
+                if(System.Diagnostics.Debugger.IsAttached)
+                    throw;
             }
         }
 

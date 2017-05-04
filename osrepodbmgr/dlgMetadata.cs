@@ -717,6 +717,8 @@ namespace osrepodbmgr
             prgAddDisc2.Visible = true;
             buttonCancel.Visible = false;
             buttonOk.Visible = false;
+            btnEditDisc.Visible = false;
+            btnClearDiscs.Visible = false;
             Core.Failed += OnDiscAddFailed;
             Core.Finished += OnDiscAddFinished;
             Core.UpdateProgress += UpdateDiscProgress1;
@@ -784,6 +786,8 @@ namespace osrepodbmgr
                 prgAddDisc2.Visible = false;
                 buttonCancel.Visible = true;
                 buttonOk.Visible = true;
+                btnEditDisc.Visible = true;
+                btnClearDiscs.Visible = true;
                 Core.Failed -= OnDiscAddFailed;
                 Core.Finished -= OnDiscAddFinished;
                 Core.UpdateProgress -= UpdateDiscProgress1;
@@ -899,6 +903,8 @@ namespace osrepodbmgr
                 prgAddDisc2.Visible = false;
                 buttonCancel.Visible = true;
                 buttonOk.Visible = true;
+                btnEditDisc.Visible = true;
+                btnClearDiscs.Visible = true;
                 Core.Failed -= OnDiscAddFailed;
                 Core.Finished -= OnDiscAddFinished;
                 Core.UpdateProgress -= UpdateDiscProgress1;
@@ -943,6 +949,8 @@ namespace osrepodbmgr
             prgAddDisk2.Visible = true;
             buttonCancel.Visible = false;
             buttonOk.Visible = false;
+            btnEditDisk.Visible = false;
+            btnClearDisks.Visible = false;
             Core.Failed += OnDiskAddFailed;
             Core.Finished += OnDiskAddFinished;
             Core.UpdateProgress += UpdateDiskProgress1;
@@ -1010,6 +1018,8 @@ namespace osrepodbmgr
                 prgAddDisk2.Visible = false;
                 buttonCancel.Visible = true;
                 buttonOk.Visible = true;
+                btnEditDisk.Visible = true;
+                btnClearDisks.Visible = true;
                 Core.Failed -= OnDiskAddFailed;
                 Core.Finished -= OnDiskAddFinished;
                 Core.UpdateProgress -= UpdateDiskProgress1;
@@ -1121,6 +1131,8 @@ namespace osrepodbmgr
                 prgAddDisk2.Visible = false;
                 buttonCancel.Visible = true;
                 buttonOk.Visible = true;
+                btnEditDisk.Visible = true;
+                btnClearDisks.Visible = true;
                 Core.Failed -= OnDiskAddFailed;
                 Core.Finished -= OnDiskAddFinished;
                 Core.UpdateProgress -= UpdateDiskProgress1;
