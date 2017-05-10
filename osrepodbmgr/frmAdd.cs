@@ -549,7 +549,7 @@ public partial class frmAdd : Window
             if(maximum > 0)
                 prgProgress.Fraction = current / (double)maximum;
             else
-                while(true) { prgProgress.Pulse(); }
+                prgProgress.Pulse();
         });
     }
 
@@ -930,6 +930,8 @@ public partial class frmAdd : Window
             Workers.UpdateProgress2 -= UpdateProgress2;
             Workers.FinishedWithText -= PackFilesFinished;
             Workers.Failed -= PackFilesFailed;
+            prgProgress2.Visible = false;
+            lblProgress2.Visible = false;
 
             btnAdd.Click();
 

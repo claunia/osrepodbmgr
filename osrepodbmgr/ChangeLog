@@ -1,6 +1,11 @@
 2017-05-10  Natalia Portillo  <claunia@claunia.com>
 
 	* frmAdd.cs:
+	  Corrected GUI bugs.
+
+2017-05-10  Natalia Portillo  <claunia@claunia.com>
+
+	* frmAdd.cs:
 	* dlgMetadata.cs:
 	* frmSettings.cs:
 	  Refactor: Rename Core.Core to Core.Workers
