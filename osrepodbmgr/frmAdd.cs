@@ -35,7 +35,7 @@ using Newtonsoft.Json;
 using osrepodbmgr;
 using Schemas;
 
-public partial class MainWindow : Window
+public partial class frmAdd : Window
 {
     Thread thdPulseProgress;
     Thread thdFindFiles;
@@ -50,7 +50,7 @@ public partial class MainWindow : Window
     ListStore fileView;
     ListStore osView;
 
-    public MainWindow() : base(WindowType.Toplevel)
+    public frmAdd() : base(WindowType.Toplevel)
     {
         Build();
 

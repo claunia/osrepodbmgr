@@ -57,7 +57,7 @@ namespace osrepodbmgr
             Settings.LoadSettings();
             CheckUnar();
             Application.Init();
-            MainWindow win = new MainWindow();
+            frmAdd win = new frmAdd();
             win.Show();
             Application.Run();
         }

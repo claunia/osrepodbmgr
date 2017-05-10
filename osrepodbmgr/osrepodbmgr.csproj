@@ -70,8 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="MainWindow.cs" />
-    <Compile Include="gtk-gui\MainWindow.cs" />
+    <Compile Include="frmAdd.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="frmHelp.cs" />
@@ -98,6 +97,7 @@
     <Compile Include="gtk-gui\osrepodbmgr.dlgFilesystem.cs" />
     <Compile Include="dlgOpticalDisc.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.dlgOpticalDisc.cs" />
+    <Compile Include="gtk-gui\frmAdd.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

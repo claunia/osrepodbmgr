@@ -1,3 +1,14 @@
+2017-05-10  Natalia Portillo  <claunia@claunia.com>
+
+	* frmAdd.cs:
+	* Program.cs:
+	* gtk-gui/frmAdd.cs:
+	* gtk-gui/gui.stetic:
+	* osrepodbmgr.csproj:
+	* gtk-gui/generated.cs:
+	* gtk-gui/MainWindow.cs:
+	  Refactor: Rename MainWindow to frmAdd.
+
 2017-05-04  Natalia Portillo  <claunia@claunia.com>
 
 	* Settings.cs:
