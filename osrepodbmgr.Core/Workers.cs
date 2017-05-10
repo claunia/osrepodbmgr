@@ -40,7 +40,7 @@ using Schemas;
 
 namespace osrepodbmgr.Core
 {
-    public static partial class Core
+    public static partial class Workers
     {
         // Sets a 128Kbyte buffer
         const long bufferSize = 131072;

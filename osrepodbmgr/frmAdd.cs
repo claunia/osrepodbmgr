@@ -55,7 +55,7 @@ public partial class frmAdd : Window
     {
         Build();
 
-        Core.InitDB();
+        Workers.InitDB();
 
         Context.UnarChangeStatus += UnarChangeStatus;
         Context.CheckUnar();
@@ -183,10 +183,10 @@ public partial class frmAdd : Window
                 }
             });
 
-            thdFindFiles = new Thread(Core.FindFiles);
+            thdFindFiles = new Thread(Workers.FindFiles);
             Context.path = dlgFolder.Filename;
-            Core.Failed += FindFilesFailed;
-            Core.Finished += FindFilesFinished;
+            Workers.Failed += FindFilesFailed;
+            Workers.Finished += FindFilesFinished;
             btnStop.Visible = true;
             thdPulseProgress.Start();
             thdFindFiles.Start();
@@ -213,8 +213,8 @@ public partial class frmAdd : Window
             btnFolder.Visible = true;
             btnArchive.Visible = true;
             btnSettings.Sensitive = true;
-            Core.Failed -= FindFilesFailed;
-            Core.Finished -= FindFilesFinished;
+            Workers.Failed -= FindFilesFailed;
+            Workers.Finished -= FindFilesFinished;
             thdFindFiles = null;
         });
     }
@@ -226,8 +226,8 @@ public partial class frmAdd : Window
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
 
-            Core.Failed -= FindFilesFailed;
-            Core.Finished -= FindFilesFinished;
+            Workers.Failed -= FindFilesFailed;
+            Workers.Finished -= FindFilesFinished;
 
             lblProgress.Visible = true;
             prgProgress.Visible = true;
@@ -235,11 +235,11 @@ public partial class frmAdd : Window
             prgProgress2.Visible = true;
 
             thdFindFiles = null;
-            thdHashFiles = new Thread(Core.HashFiles);
-            Core.Failed += HashFilesFailed;
-            Core.Finished += HashFilesFinished;
-            Core.UpdateProgress += UpdateProgress;
-            Core.UpdateProgress2 += UpdateProgress2;
+            thdHashFiles = new Thread(Workers.HashFiles);
+            Workers.Failed += HashFilesFailed;
+            Workers.Finished += HashFilesFinished;
+            Workers.UpdateProgress += UpdateProgress;
+            Workers.UpdateProgress2 += UpdateProgress2;
             thdHashFiles.Start();
         });
     }
@@ -260,10 +260,10 @@ public partial class frmAdd : Window
             prgProgress.Visible = false;
             lblProgress2.Visible = false;
             prgProgress2.Visible = false;
-            Core.Failed -= HashFilesFailed;
-            Core.Finished -= HashFilesFinished;
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
+            Workers.Failed -= HashFilesFailed;
+            Workers.Finished -= HashFilesFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
@@ -284,21 +284,21 @@ public partial class frmAdd : Window
             prgProgress.Visible = false;
             lblProgress2.Visible = false;
             prgProgress2.Visible = false;
-            Core.Failed -= HashFilesFailed;
-            Core.Finished -= HashFilesFinished;
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
+            Workers.Failed -= HashFilesFailed;
+            Workers.Finished -= HashFilesFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
             thdHashFiles = null;
 
             prgProgress.Visible = true;
 
-            thdCheckFiles = new Thread(Core.CheckDbForFiles);
-            Core.Failed += ChkFilesFailed;
-            Core.Finished += ChkFilesFinished;
-            Core.UpdateProgress += UpdateProgress;
-            Core.UpdateProgress2 += UpdateProgress2;
-            Core.AddFile += AddFile;
-            Core.AddOS += AddOS;
+            thdCheckFiles = new Thread(Workers.CheckDbForFiles);
+            Workers.Failed += ChkFilesFailed;
+            Workers.Finished += ChkFilesFinished;
+            Workers.UpdateProgress += UpdateProgress;
+            Workers.UpdateProgress2 += UpdateProgress2;
+            Workers.AddFile += AddFile;
+            Workers.AddOS += AddOS;
             btnAdd.Sensitive = false;
             thdCheckFiles.Start();
         });
@@ -322,12 +322,12 @@ public partial class frmAdd : Window
             btnStop.Visible = false;
             btnClose.Visible = false;
             btnExit.Sensitive = true;
-            Core.Failed -= ChkFilesFailed;
-            Core.Finished -= ChkFilesFinished;
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
-            Core.AddFile -= AddFile;
-            Core.AddOS -= AddOS;
+            Workers.Failed -= ChkFilesFailed;
+            Workers.Finished -= ChkFilesFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+            Workers.AddFile -= AddFile;
+            Workers.AddOS -= AddOS;
             thdHashFiles = null;
             if(fileView != null)
                 fileView.Clear();
@@ -346,12 +346,12 @@ public partial class frmAdd : Window
             if(thdCheckFiles != null)
                 thdCheckFiles.Abort();
 
-            Core.Failed -= ChkFilesFailed;
-            Core.Finished -= ChkFilesFinished;
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
-            Core.AddFile -= AddFile;
-            Core.AddOS -= AddOS;
+            Workers.Failed -= ChkFilesFailed;
+            Workers.Finished -= ChkFilesFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+            Workers.AddFile -= AddFile;
+            Workers.AddOS -= AddOS;
 
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
@@ -530,9 +530,9 @@ public partial class frmAdd : Window
                     Thread.Sleep(66);
                 }
             });
-            Core.Failed += RemoveTempFilesFailed;
-            Core.Finished += RemoveTempFilesFinished;
-            thdRemoveTemp = new Thread(Core.RemoveTempFolder);
+            Workers.Failed += RemoveTempFilesFailed;
+            Workers.Finished += RemoveTempFilesFinished;
+            thdRemoveTemp = new Thread(Workers.RemoveTempFolder);
             thdRemoveTemp.Start();
         }
 
@@ -633,9 +633,9 @@ public partial class frmAdd : Window
                     Thread.Sleep(66);
                 }
             });
-            Core.Failed += RemoveTempFilesFailed;
-            Core.Finished += RemoveTempFilesFinished;
-            thdRemoveTemp = new Thread(Core.RemoveTempFolder);
+            Workers.Failed += RemoveTempFilesFailed;
+            Workers.Finished += RemoveTempFilesFinished;
+            thdRemoveTemp = new Thread(Workers.RemoveTempFolder);
             thdRemoveTemp.Start();
         }
         else
@@ -658,24 +658,24 @@ public partial class frmAdd : Window
         btnFolder.Visible = true;
         btnArchive.Visible = true;
         btnSettings.Sensitive = true;
-        Core.Failed -= FindFilesFailed;
-        Core.Failed -= HashFilesFailed;
-        Core.Failed -= ChkFilesFailed;
-        Core.Failed -= OpenArchiveFailed;
-        Core.Failed -= AddFilesToDbFailed;
-        Core.Failed -= PackFilesFailed;
-        Core.Failed -= ExtractArchiveFailed;
-        Core.Failed -= RemoveTempFilesFailed;
-        Core.Finished -= FindFilesFinished;
-        Core.Finished -= HashFilesFinished;
-        Core.Finished -= ChkFilesFinished;
-        Core.Finished -= OpenArchiveFinished;
-        Core.Finished -= AddFilesToDbFinished;
-        Core.Finished -= ExtractArchiveFinished;
-        Core.Finished -= RemoveTempFilesFinished;
-        Core.FinishedWithText -= PackFilesFinished;
-        Core.UpdateProgress -= UpdateProgress;
-        Core.UpdateProgress2 -= UpdateProgress2;
+        Workers.Failed -= FindFilesFailed;
+        Workers.Failed -= HashFilesFailed;
+        Workers.Failed -= ChkFilesFailed;
+        Workers.Failed -= OpenArchiveFailed;
+        Workers.Failed -= AddFilesToDbFailed;
+        Workers.Failed -= PackFilesFailed;
+        Workers.Failed -= ExtractArchiveFailed;
+        Workers.Failed -= RemoveTempFilesFailed;
+        Workers.Finished -= FindFilesFinished;
+        Workers.Finished -= HashFilesFinished;
+        Workers.Finished -= ChkFilesFinished;
+        Workers.Finished -= OpenArchiveFinished;
+        Workers.Finished -= AddFilesToDbFinished;
+        Workers.Finished -= ExtractArchiveFinished;
+        Workers.Finished -= RemoveTempFilesFinished;
+        Workers.FinishedWithText -= PackFilesFinished;
+        Workers.UpdateProgress -= UpdateProgress;
+        Workers.UpdateProgress2 -= UpdateProgress2;
         btnStop.Visible = false;
         if(fileView != null)
             fileView.Clear();
@@ -698,8 +698,8 @@ public partial class frmAdd : Window
                 thdPulseProgress.Abort();
                 thdPulseProgress = null;
             }
-            Core.Failed -= RemoveTempFilesFailed;
-            Core.Finished -= RemoveTempFilesFinished;
+            Workers.Failed -= RemoveTempFilesFailed;
+            Workers.Finished -= RemoveTempFilesFinished;
             Context.path = null;
             Context.tmpFolder = null;
             RestoreUI();
@@ -715,8 +715,8 @@ public partial class frmAdd : Window
                 thdPulseProgress.Abort();
                 thdPulseProgress = null;
             }
-            Core.Failed -= RemoveTempFilesFailed;
-            Core.Finished -= RemoveTempFilesFinished;
+            Workers.Failed -= RemoveTempFilesFailed;
+            Workers.Finished -= RemoveTempFilesFinished;
             Context.path = null;
             Context.tmpFolder = null;
             RestoreUI();
@@ -744,9 +744,9 @@ public partial class frmAdd : Window
         chkNetinstall.Sensitive = false;
         chkSource.Sensitive = false;
 
-        Core.UpdateProgress += UpdateProgress;
-        Core.Finished += AddFilesToDbFinished;
-        Core.Failed += AddFilesToDbFailed;
+        Workers.UpdateProgress += UpdateProgress;
+        Workers.Finished += AddFilesToDbFinished;
+        Workers.Failed += AddFilesToDbFailed;
 
         Context.dbInfo.architecture = txtArchitecture.Text;
         Context.dbInfo.description = txtDescription.Text;
@@ -781,7 +781,7 @@ public partial class frmAdd : Window
             Context.dbInfo.json = null;
         }
 
-        thdAddFiles = new Thread(Core.AddFilesToDb);
+        thdAddFiles = new Thread(Workers.AddFilesToDb);
         thdAddFiles.Start();
     }
 
@@ -794,9 +794,9 @@ public partial class frmAdd : Window
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
 
-            Core.UpdateProgress -= UpdateProgress;
-            Core.Finished -= AddFilesToDbFinished;
-            Core.Failed -= AddFilesToDbFailed;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.Finished -= AddFilesToDbFinished;
+            Workers.Failed -= AddFilesToDbFailed;
 
             long counter = 0;
             fileView.Clear();
@@ -831,9 +831,9 @@ public partial class frmAdd : Window
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
 
-            Core.UpdateProgress -= UpdateProgress;
-            Core.Finished -= AddFilesToDbFinished;
-            Core.Failed -= AddFilesToDbFailed;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.Finished -= AddFilesToDbFinished;
+            Workers.Failed -= AddFilesToDbFailed;
 
             ChkFilesFinished();
         });
@@ -869,10 +869,10 @@ public partial class frmAdd : Window
         chkNetinstall.Sensitive = false;
         chkSource.Sensitive = false;
 
-        Core.UpdateProgress += UpdateProgress;
-        Core.UpdateProgress2 += UpdateProgress2;
-        Core.FinishedWithText += PackFilesFinished;
-        Core.Failed += PackFilesFailed;
+        Workers.UpdateProgress += UpdateProgress;
+        Workers.UpdateProgress2 += UpdateProgress2;
+        Workers.FinishedWithText += PackFilesFinished;
+        Workers.Failed += PackFilesFailed;
 
         Context.dbInfo.architecture = txtArchitecture.Text;
         Context.dbInfo.description = txtDescription.Text;
@@ -902,17 +902,17 @@ public partial class frmAdd : Window
                     Thread.Sleep(66);
                 }
             });
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
             prgProgress.Text = "Copying archive as is.";
             prgProgress2.Visible = false;
             lblProgress2.Visible = false;
-            thdPackFiles = new Thread(Core.CopyArchive);
+            thdPackFiles = new Thread(Workers.CopyArchive);
             thdPackFiles.Start();
         }
         else
         {
-            thdPackFiles = new Thread(Core.CompressFiles);
+            thdPackFiles = new Thread(Workers.CompressFiles);
             thdPackFiles.Start();
         }
     }
@@ -926,10 +926,10 @@ public partial class frmAdd : Window
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
 
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
-            Core.FinishedWithText -= PackFilesFinished;
-            Core.Failed -= PackFilesFailed;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+            Workers.FinishedWithText -= PackFilesFinished;
+            Workers.Failed -= PackFilesFailed;
 
             btnAdd.Click();
 
@@ -955,10 +955,10 @@ public partial class frmAdd : Window
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
 
-            Core.UpdateProgress -= UpdateProgress;
-            Core.UpdateProgress2 -= UpdateProgress2;
-            Core.FinishedWithText -= PackFilesFinished;
-            Core.Failed -= PackFilesFailed;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+            Workers.FinishedWithText -= PackFilesFinished;
+            Workers.Failed -= PackFilesFailed;
 
             btnAdd.Sensitive = true;
             btnPack.Sensitive = true;
@@ -1020,10 +1020,10 @@ public partial class frmAdd : Window
                 }
             });
 
-            thdOpenArchive = new Thread(Core.OpenArchive);
+            thdOpenArchive = new Thread(Workers.OpenArchive);
             Context.path = dlgFolder.Filename;
-            Core.Failed += OpenArchiveFailed;
-            Core.Finished += OpenArchiveFinished;
+            Workers.Failed += OpenArchiveFailed;
+            Workers.Finished += OpenArchiveFinished;
             btnStop.Visible = true;
             thdPulseProgress.Start();
             thdOpenArchive.Start();
@@ -1050,8 +1050,8 @@ public partial class frmAdd : Window
             btnFolder.Visible = true;
             btnArchive.Visible = true;
             btnSettings.Sensitive = true;
-            Core.Failed -= OpenArchiveFailed;
-            Core.Finished -= OpenArchiveFinished;
+            Workers.Failed -= OpenArchiveFailed;
+            Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;
         });
     }
@@ -1082,13 +1082,13 @@ public partial class frmAdd : Window
                     Thread.Sleep(66);
                 }
             });
-            Core.Failed -= OpenArchiveFailed;
-            Core.Finished -= OpenArchiveFinished;
+            Workers.Failed -= OpenArchiveFailed;
+            Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;
-            Core.Failed += ExtractArchiveFailed;
-            Core.Finished += ExtractArchiveFinished;
-            Core.UpdateProgress2 += UpdateProgress2;
-            thdExtractArchive = new Thread(Core.ExtractArchive);
+            Workers.Failed += ExtractArchiveFailed;
+            Workers.Finished += ExtractArchiveFinished;
+            Workers.UpdateProgress2 += UpdateProgress2;
+            thdExtractArchive = new Thread(Workers.ExtractArchive);
             thdExtractArchive.Start();
         });
     }
@@ -1111,9 +1111,9 @@ public partial class frmAdd : Window
             btnFolder.Visible = true;
             btnArchive.Visible = true;
             btnSettings.Sensitive = true;
-            Core.Failed -= ExtractArchiveFailed;
-            Core.Finished -= ExtractArchiveFinished;
-            Core.UpdateProgress2 -= UpdateProgress2;
+            Workers.Failed -= ExtractArchiveFailed;
+            Workers.Finished -= ExtractArchiveFinished;
+            Workers.UpdateProgress2 -= UpdateProgress2;
             thdExtractArchive = null;
             if(Context.tmpFolder != null)
             {
@@ -1130,9 +1130,9 @@ public partial class frmAdd : Window
                         Thread.Sleep(66);
                     }
                 });
-                Core.Failed += RemoveTempFilesFailed;
-                Core.Finished += RemoveTempFilesFinished;
-                thdRemoveTemp = new Thread(Core.RemoveTempFolder);
+                Workers.Failed += RemoveTempFilesFailed;
+                Workers.Finished += RemoveTempFilesFinished;
+                thdRemoveTemp = new Thread(Workers.RemoveTempFolder);
                 thdRemoveTemp.Start();
             }
         });
@@ -1154,9 +1154,9 @@ public partial class frmAdd : Window
             btnFolder.Visible = false;
             btnArchive.Visible = false;
             btnSettings.Sensitive = false;
-            Core.Failed -= ExtractArchiveFailed;
-            Core.Finished -= ExtractArchiveFinished;
-            Core.UpdateProgress2 -= UpdateProgress2;
+            Workers.Failed -= ExtractArchiveFailed;
+            Workers.Finished -= ExtractArchiveFinished;
+            Workers.UpdateProgress2 -= UpdateProgress2;
             thdPulseProgress = new Thread(() =>
             {
                 while(true)
@@ -1169,9 +1169,9 @@ public partial class frmAdd : Window
                 }
             });
 
-            thdFindFiles = new Thread(Core.FindFiles);
-            Core.Failed += FindFilesFailed;
-            Core.Finished += FindFilesFinished;
+            thdFindFiles = new Thread(Workers.FindFiles);
+            Workers.Failed += FindFilesFailed;
+            Workers.Finished += FindFilesFinished;
             btnStop.Visible = true;
             thdPulseProgress.Start();
             thdFindFiles.Start();

@@ -55,10 +55,10 @@ namespace osrepodbmgr.Core
 
         public static void CheckUnar()
         {
-            Core.Finished += CheckUnarFinished;
-            Core.Failed += CheckUnarFailed;
+            Workers.Finished += CheckUnarFinished;
+            Workers.Failed += CheckUnarFailed;
 
-            Thread thdCheckUnar = new Thread(Core.CheckUnar);
+            Thread thdCheckUnar = new Thread(Workers.CheckUnar);
             thdCheckUnar.Start();
         }
 
@@ -67,8 +67,8 @@ namespace osrepodbmgr.Core
             unarUsable = true;
             if(UnarChangeStatus != null)
                 UnarChangeStatus();
-            Core.Finished -= CheckUnarFinished;
-            Core.Failed -= CheckUnarFailed;
+            Workers.Finished -= CheckUnarFinished;
+            Workers.Failed -= CheckUnarFailed;
         }
 
         static void CheckUnarFailed(string text)
@@ -76,8 +76,8 @@ namespace osrepodbmgr.Core
             unarUsable = false;
             if(UnarChangeStatus != null)
                 UnarChangeStatus();
-            Core.Finished -= CheckUnarFinished;
-            Core.Failed -= CheckUnarFailed;
+            Workers.Finished -= CheckUnarFinished;
+            Workers.Failed -= CheckUnarFailed;
         }
     }
 }

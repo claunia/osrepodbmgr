@@ -38,7 +38,7 @@ using Schemas;
 
 namespace osrepodbmgr.Core
 {
-    public static partial class Core
+    public static partial class Workers
     {
         public static void AddMedia()
         {

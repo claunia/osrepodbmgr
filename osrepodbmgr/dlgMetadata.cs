@@ -720,15 +720,15 @@ namespace osrepodbmgr
             buttonOk.Visible = false;
             btnEditDisc.Visible = false;
             btnClearDiscs.Visible = false;
-            Core.Core.Failed += OnDiscAddFailed;
-            Core.Core.Finished += OnDiscAddFinished;
-            Core.Core.UpdateProgress += UpdateDiscProgress1;
-            Core.Core.UpdateProgress2 += UpdateDiscProgress2;
+            Core.Workers.Failed += OnDiscAddFailed;
+            Core.Workers.Finished += OnDiscAddFinished;
+            Core.Workers.UpdateProgress += UpdateDiscProgress1;
+            Core.Workers.UpdateProgress2 += UpdateDiscProgress2;
             Context.workingDisc = null;
             btnStopAddDisc.Visible = true;
             btnAddDisc.Visible = false;
             btnRemoveDiscs.Visible = false;
-            thdDisc = new Thread(Core.Core.AddMedia);
+            thdDisc = new Thread(Core.Workers.AddMedia);
             thdDisc.Start();
         }
 
@@ -789,10 +789,10 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisc.Visible = true;
                 btnClearDiscs.Visible = true;
-                Core.Core.Failed -= OnDiscAddFailed;
-                Core.Core.Finished -= OnDiscAddFinished;
-                Core.Core.UpdateProgress -= UpdateDiscProgress1;
-                Core.Core.UpdateProgress2 -= UpdateDiscProgress2;
+                Core.Workers.Failed -= OnDiscAddFailed;
+                Core.Workers.Finished -= OnDiscAddFinished;
+                Core.Workers.UpdateProgress -= UpdateDiscProgress1;
+                Core.Workers.UpdateProgress2 -= UpdateDiscProgress2;
                 Context.workingDisc = null;
                 btnStopAddDisc.Visible = false;
                 btnAddDisc.Visible = true;
@@ -906,10 +906,10 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisc.Visible = true;
                 btnClearDiscs.Visible = true;
-                Core.Core.Failed -= OnDiscAddFailed;
-                Core.Core.Finished -= OnDiscAddFinished;
-                Core.Core.UpdateProgress -= UpdateDiscProgress1;
-                Core.Core.UpdateProgress2 -= UpdateDiscProgress2;
+                Core.Workers.Failed -= OnDiscAddFailed;
+                Core.Workers.Finished -= OnDiscAddFinished;
+                Core.Workers.UpdateProgress -= UpdateDiscProgress1;
+                Core.Workers.UpdateProgress2 -= UpdateDiscProgress2;
                 Context.workingDisc = null;
                 btnStopAddDisc.Visible = false;
                 btnAddDisc.Visible = true;
@@ -952,15 +952,15 @@ namespace osrepodbmgr
             buttonOk.Visible = false;
             btnEditDisk.Visible = false;
             btnClearDisks.Visible = false;
-            Core.Core.Failed += OnDiskAddFailed;
-            Core.Core.Finished += OnDiskAddFinished;
-            Core.Core.UpdateProgress += UpdateDiskProgress1;
-            Core.Core.UpdateProgress2 += UpdateDiskProgress2;
+            Core.Workers.Failed += OnDiskAddFailed;
+            Core.Workers.Finished += OnDiskAddFinished;
+            Core.Workers.UpdateProgress += UpdateDiskProgress1;
+            Core.Workers.UpdateProgress2 += UpdateDiskProgress2;
             Context.workingDisk = null;
             btnStopAddDisk.Visible = true;
             btnAddDisk.Visible = false;
             btnRemoveDisk.Visible = false;
-            thdDisk = new Thread(Core.Core.AddMedia);
+            thdDisk = new Thread(Core.Workers.AddMedia);
             thdDisk.Start();
         }
 
@@ -1021,10 +1021,10 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisk.Visible = true;
                 btnClearDisks.Visible = true;
-                Core.Core.Failed -= OnDiskAddFailed;
-                Core.Core.Finished -= OnDiskAddFinished;
-                Core.Core.UpdateProgress -= UpdateDiskProgress1;
-                Core.Core.UpdateProgress2 -= UpdateDiskProgress2;
+                Core.Workers.Failed -= OnDiskAddFailed;
+                Core.Workers.Finished -= OnDiskAddFinished;
+                Core.Workers.UpdateProgress -= UpdateDiskProgress1;
+                Core.Workers.UpdateProgress2 -= UpdateDiskProgress2;
                 Context.workingDisk = null;
                 btnStopAddDisk.Visible = false;
                 btnAddDisk.Visible = true;
@@ -1134,10 +1134,10 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisk.Visible = true;
                 btnClearDisks.Visible = true;
-                Core.Core.Failed -= OnDiskAddFailed;
-                Core.Core.Finished -= OnDiskAddFinished;
-                Core.Core.UpdateProgress -= UpdateDiskProgress1;
-                Core.Core.UpdateProgress2 -= UpdateDiskProgress2;
+                Core.Workers.Failed -= OnDiskAddFailed;
+                Core.Workers.Finished -= OnDiskAddFinished;
+                Core.Workers.UpdateProgress -= UpdateDiskProgress1;
+                Core.Workers.UpdateProgress2 -= UpdateDiskProgress2;
                 Context.workingDisk = null;
                 btnStopAddDisk.Visible = false;
                 btnAddDisk.Visible = true;

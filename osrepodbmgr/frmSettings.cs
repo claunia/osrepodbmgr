@@ -63,8 +63,8 @@ namespace osrepodbmgr
             Core.Settings.Current.DatabasePath = txtDatabase.Text;
             Core.Settings.Current.RepositoryPath = txtRepository.Text;
             Core.Settings.SaveSettings();
-            Core.Core.CloseDB();
-            Core.Core.InitDB();
+            Core.Workers.CloseDB();
+            Core.Workers.InitDB();
             Context.CheckUnar();
             Destroy();
         }
@@ -182,12 +182,12 @@ namespace osrepodbmgr
 
         void CheckUnar()
         {
-            Core.Core.FinishedWithText += CheckUnarFinished;
-            Core.Core.Failed += CheckUnarFailed;
+            Core.Workers.FinishedWithText += CheckUnarFinished;
+            Core.Workers.Failed += CheckUnarFailed;
 
             oldUnarPath = Core.Settings.Current.UnArchiverPath;
             Core.Settings.Current.UnArchiverPath = txtUnar.Text;
-            Thread thdCheckUnar = new Thread(Core.Core.CheckUnar);
+            Thread thdCheckUnar = new Thread(Core.Workers.CheckUnar);
             thdCheckUnar.Start();
         }
 
@@ -195,8 +195,8 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                Core.Core.FinishedWithText -= CheckUnarFinished;
-                Core.Core.Failed -= CheckUnarFailed;
+                Core.Workers.FinishedWithText -= CheckUnarFinished;
+                Core.Workers.Failed -= CheckUnarFailed;
 
                 lblUnarVersion.Text = text;
                 lblUnarVersion.Visible = true;
@@ -208,8 +208,8 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                Core.Core.FinishedWithText -= CheckUnarFinished;
-                Core.Core.Failed -= CheckUnarFailed;
+                Core.Workers.FinishedWithText -= CheckUnarFinished;
+                Core.Workers.Failed -= CheckUnarFailed;
 
                 if(string.IsNullOrWhiteSpace(oldUnarPath))
                     txtUnar.Text = "";
