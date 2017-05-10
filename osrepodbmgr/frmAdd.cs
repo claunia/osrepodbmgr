@@ -33,6 +33,7 @@ using System.Xml.Serialization;
 using Gtk;
 using Newtonsoft.Json;
 using osrepodbmgr;
+using osrepodbmgr.Core;
 using Schemas;
 
 public partial class frmAdd : Window
@@ -56,8 +57,8 @@ public partial class frmAdd : Window
 
         Core.InitDB();
 
-        MainClass.UnarChangeStatus += UnarChangeStatus;
-        MainClass.CheckUnar();
+        Context.UnarChangeStatus += UnarChangeStatus;
+        Context.CheckUnar();
 
         CellRendererText filenameCell = new CellRendererText();
         CellRendererText hashCell = new CellRendererText();
@@ -133,7 +134,7 @@ public partial class frmAdd : Window
     {
         Application.Invoke(delegate
         {
-            btnArchive.Sensitive = MainClass.unarUsable;
+            btnArchive.Sensitive = Context.unarUsable;
         });
     }
 
@@ -183,7 +184,7 @@ public partial class frmAdd : Window
             });
 
             thdFindFiles = new Thread(Core.FindFiles);
-            MainClass.path = dlgFolder.Filename;
+            Context.path = dlgFolder.Filename;
             Core.Failed += FindFilesFailed;
             Core.Finished += FindFilesFinished;
             btnStop.Visible = true;
@@ -381,11 +382,11 @@ public partial class frmAdd : Window
             chkSource.Sensitive = true;
 
             btnMetadata.Visible = true;
-            if(MainClass.metadata != null)
+            if(Context.metadata != null)
             {
-                if(MainClass.metadata.Developer != null)
+                if(Context.metadata.Developer != null)
                 {
-                    foreach(string developer in MainClass.metadata.Developer)
+                    foreach(string developer in Context.metadata.Developer)
                     {
                         if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
                             txtDeveloper.Text += ",";
@@ -393,14 +394,14 @@ public partial class frmAdd : Window
                     }
                 }
 
-                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Name))
-                    txtProduct.Text = MainClass.metadata.Name;
-                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Version))
-                    txtVersion.Text = MainClass.metadata.Version;
+                if(!string.IsNullOrWhiteSpace(Context.metadata.Name))
+                    txtProduct.Text = Context.metadata.Name;
+                if(!string.IsNullOrWhiteSpace(Context.metadata.Version))
+                    txtVersion.Text = Context.metadata.Version;
 
-                if(MainClass.metadata.Languages != null)
+                if(Context.metadata.Languages != null)
                 {
-                    foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                    foreach(LanguagesTypeLanguage language in Context.metadata.Languages)
                     {
                         if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
                             txtLanguages.Text += ",";
@@ -408,9 +409,9 @@ public partial class frmAdd : Window
                     }
                 }
 
-                if(MainClass.metadata.Architectures != null)
+                if(Context.metadata.Architectures != null)
                 {
-                    foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                    foreach(ArchitecturesTypeArchitecture architecture in Context.metadata.Architectures)
                     {
                         if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
                             txtArchitecture.Text += ",";
@@ -418,9 +419,9 @@ public partial class frmAdd : Window
                     }
                 }
 
-                if(MainClass.metadata.Systems != null)
+                if(Context.metadata.Systems != null)
                 {
-                    foreach(string machine in MainClass.metadata.Systems)
+                    foreach(string machine in Context.metadata.Systems)
                     {
                         if(!string.IsNullOrWhiteSpace(txtMachine.Text))
                             txtMachine.Text += ",";
@@ -469,9 +470,9 @@ public partial class frmAdd : Window
     {
         btnFolder.Visible = true;
         btnArchive.Visible = true;
-        MainClass.path = "";
-        MainClass.files = null;
-        MainClass.hashes = null;
+        Context.path = "";
+        Context.files = null;
+        Context.hashes = null;
         btnStop.Visible = false;
         btnAdd.Visible = false;
         btnPack.Visible = false;
@@ -513,7 +514,7 @@ public partial class frmAdd : Window
         chkNetinstall.Active = false;
         chkSource.Active = false;
 
-        if(MainClass.tmpFolder != null)
+        if(Context.tmpFolder != null)
         {
             btnStop.Visible = false;
             prgProgress.Visible = true;
@@ -536,7 +537,7 @@ public partial class frmAdd : Window
         }
 
         btnMetadata.Visible = false;
-        MainClass.metadata = null;
+        Context.metadata = null;
     }
 
     public void UpdateProgress(string text, string inner, long current, long maximum)
@@ -611,13 +612,13 @@ public partial class frmAdd : Window
             thdOpenArchive = null;
         }
 
-        if(MainClass.unarProcess != null)
+        if(Context.unarProcess != null)
         {
-            MainClass.unarProcess.Kill();
-            MainClass.unarProcess = null;
+            Context.unarProcess.Kill();
+            Context.unarProcess = null;
         }
 
-        if(MainClass.tmpFolder != null)
+        if(Context.tmpFolder != null)
         {
             btnStop.Visible = false;
             prgProgress.Text = "Removing temporary files";
@@ -699,8 +700,8 @@ public partial class frmAdd : Window
             }
             Core.Failed -= RemoveTempFilesFailed;
             Core.Finished -= RemoveTempFilesFinished;
-            MainClass.path = null;
-            MainClass.tmpFolder = null;
+            Context.path = null;
+            Context.tmpFolder = null;
             RestoreUI();
         });
     }
@@ -716,8 +717,8 @@ public partial class frmAdd : Window
             }
             Core.Failed -= RemoveTempFilesFailed;
             Core.Finished -= RemoveTempFilesFinished;
-            MainClass.path = null;
-            MainClass.tmpFolder = null;
+            Context.path = null;
+            Context.tmpFolder = null;
             RestoreUI();
         });
     }
@@ -747,37 +748,37 @@ public partial class frmAdd : Window
         Core.Finished += AddFilesToDbFinished;
         Core.Failed += AddFilesToDbFailed;
 
-        MainClass.dbInfo.architecture = txtArchitecture.Text;
-        MainClass.dbInfo.description = txtDescription.Text;
-        MainClass.dbInfo.developer = txtDeveloper.Text;
-        MainClass.dbInfo.format = txtFormat.Text;
-        MainClass.dbInfo.languages = txtLanguages.Text;
-        MainClass.dbInfo.machine = txtMachine.Text;
-        MainClass.dbInfo.product = txtProduct.Text;
-        MainClass.dbInfo.version = txtVersion.Text;
-        MainClass.dbInfo.files = chkFiles.Active;
-        MainClass.dbInfo.netinstall = chkNetinstall.Active;
-        MainClass.dbInfo.oem = chkOem.Active;
-        MainClass.dbInfo.source = chkSource.Active;
-        MainClass.dbInfo.update = chkUpdate.Active;
-        MainClass.dbInfo.upgrade = chkUpgrade.Active;
+        Context.dbInfo.architecture = txtArchitecture.Text;
+        Context.dbInfo.description = txtDescription.Text;
+        Context.dbInfo.developer = txtDeveloper.Text;
+        Context.dbInfo.format = txtFormat.Text;
+        Context.dbInfo.languages = txtLanguages.Text;
+        Context.dbInfo.machine = txtMachine.Text;
+        Context.dbInfo.product = txtProduct.Text;
+        Context.dbInfo.version = txtVersion.Text;
+        Context.dbInfo.files = chkFiles.Active;
+        Context.dbInfo.netinstall = chkNetinstall.Active;
+        Context.dbInfo.oem = chkOem.Active;
+        Context.dbInfo.source = chkSource.Active;
+        Context.dbInfo.update = chkUpdate.Active;
+        Context.dbInfo.upgrade = chkUpgrade.Active;
 
-        if(MainClass.metadata != null)
+        if(Context.metadata != null)
         {
             MemoryStream ms = new MemoryStream();
             XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
-            xs.Serialize(ms, MainClass.metadata);
-            MainClass.dbInfo.xml = ms.ToArray();
+            xs.Serialize(ms, Context.metadata);
+            Context.dbInfo.xml = ms.ToArray();
             JsonSerializer js = new JsonSerializer();
             ms = new MemoryStream();
             StreamWriter sw = new StreamWriter(ms);
-            js.Serialize(sw, MainClass.metadata, typeof(CICMMetadataType));
-            MainClass.dbInfo.json = ms.ToArray();
+            js.Serialize(sw, Context.metadata, typeof(CICMMetadataType));
+            Context.dbInfo.json = ms.ToArray();
         }
         else
         {
-            MainClass.dbInfo.xml = null;
-            MainClass.dbInfo.json = null;
+            Context.dbInfo.xml = null;
+            Context.dbInfo.json = null;
         }
 
         thdAddFiles = new Thread(Core.AddFilesToDb);
@@ -799,9 +800,9 @@ public partial class frmAdd : Window
 
             long counter = 0;
             fileView.Clear();
-            foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+            foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
             {
-                UpdateProgress(null, "Updating table", counter, MainClass.hashes.Count);
+                UpdateProgress(null, "Updating table", counter, Context.hashes.Count);
                 fileView.AppendValues(kvp.Key, kvp.Value.Path, true, "green", "black");
                 counter++;
             }
@@ -873,22 +874,22 @@ public partial class frmAdd : Window
         Core.FinishedWithText += PackFilesFinished;
         Core.Failed += PackFilesFailed;
 
-        MainClass.dbInfo.architecture = txtArchitecture.Text;
-        MainClass.dbInfo.description = txtDescription.Text;
-        MainClass.dbInfo.developer = txtDeveloper.Text;
-        MainClass.dbInfo.format = txtFormat.Text;
-        MainClass.dbInfo.languages = txtLanguages.Text;
-        MainClass.dbInfo.machine = txtMachine.Text;
-        MainClass.dbInfo.product = txtProduct.Text;
-        MainClass.dbInfo.version = txtVersion.Text;
-        MainClass.dbInfo.files = chkFiles.Active;
-        MainClass.dbInfo.netinstall = chkNetinstall.Active;
-        MainClass.dbInfo.oem = chkOem.Active;
-        MainClass.dbInfo.source = chkSource.Active;
-        MainClass.dbInfo.update = chkUpdate.Active;
-        MainClass.dbInfo.upgrade = chkUpgrade.Active;
+        Context.dbInfo.architecture = txtArchitecture.Text;
+        Context.dbInfo.description = txtDescription.Text;
+        Context.dbInfo.developer = txtDeveloper.Text;
+        Context.dbInfo.format = txtFormat.Text;
+        Context.dbInfo.languages = txtLanguages.Text;
+        Context.dbInfo.machine = txtMachine.Text;
+        Context.dbInfo.product = txtProduct.Text;
+        Context.dbInfo.version = txtVersion.Text;
+        Context.dbInfo.files = chkFiles.Active;
+        Context.dbInfo.netinstall = chkNetinstall.Active;
+        Context.dbInfo.oem = chkOem.Active;
+        Context.dbInfo.source = chkSource.Active;
+        Context.dbInfo.update = chkUpdate.Active;
+        Context.dbInfo.upgrade = chkUpgrade.Active;
 
-        if(!string.IsNullOrEmpty(MainClass.tmpFolder) && MainClass.copyArchive)
+        if(!string.IsNullOrEmpty(Context.tmpFolder) && Context.copyArchive)
         {
             thdPulseProgress = new Thread(() =>
             {
@@ -985,7 +986,7 @@ public partial class frmAdd : Window
 
     protected void OnBtnArchiveClicked(object sender, EventArgs e)
     {
-        if(!MainClass.unarUsable)
+        if(!Context.unarUsable)
         {
             MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot open archives without a working unar installation.");
             dlgMsg.Run();
@@ -1020,7 +1021,7 @@ public partial class frmAdd : Window
             });
 
             thdOpenArchive = new Thread(Core.OpenArchive);
-            MainClass.path = dlgFolder.Filename;
+            Context.path = dlgFolder.Filename;
             Core.Failed += OpenArchiveFailed;
             Core.Finished += OpenArchiveFinished;
             btnStop.Visible = true;
@@ -1114,7 +1115,7 @@ public partial class frmAdd : Window
             Core.Finished -= ExtractArchiveFinished;
             Core.UpdateProgress2 -= UpdateProgress2;
             thdExtractArchive = null;
-            if(MainClass.tmpFolder != null)
+            if(Context.tmpFolder != null)
             {
                 btnStop.Visible = false;
                 prgProgress.Text = "Removing temporary files";
@@ -1180,16 +1181,16 @@ public partial class frmAdd : Window
     protected void OnBtnMetadataClicked(object sender, EventArgs e)
     {
         dlgMetadata _dlgMetadata = new dlgMetadata();
-        _dlgMetadata.Metadata = MainClass.metadata;
+        _dlgMetadata.Metadata = Context.metadata;
         _dlgMetadata.FillFields();
 
         if(_dlgMetadata.Run() == (int)ResponseType.Ok)
         {
-            MainClass.metadata = _dlgMetadata.Metadata;
+            Context.metadata = _dlgMetadata.Metadata;
 
             if(string.IsNullOrWhiteSpace(txtDeveloper.Text))
             {
-                foreach(string developer in MainClass.metadata.Developer)
+                foreach(string developer in Context.metadata.Developer)
                 {
                     if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
                         txtDeveloper.Text += ",";
@@ -1199,21 +1200,21 @@ public partial class frmAdd : Window
 
             if(string.IsNullOrWhiteSpace(txtProduct.Text))
             {
-                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Name))
-                    txtProduct.Text = MainClass.metadata.Name;
+                if(!string.IsNullOrWhiteSpace(Context.metadata.Name))
+                    txtProduct.Text = Context.metadata.Name;
             }
 
             if(string.IsNullOrWhiteSpace(txtVersion.Text))
             {
-                if(!string.IsNullOrWhiteSpace(MainClass.metadata.Version))
-                    txtVersion.Text = MainClass.metadata.Version;
+                if(!string.IsNullOrWhiteSpace(Context.metadata.Version))
+                    txtVersion.Text = Context.metadata.Version;
             }
 
             if(string.IsNullOrWhiteSpace(txtLanguages.Text))
             {
-                if(MainClass.metadata.Languages != null)
+                if(Context.metadata.Languages != null)
                 {
-                    foreach(LanguagesTypeLanguage language in MainClass.metadata.Languages)
+                    foreach(LanguagesTypeLanguage language in Context.metadata.Languages)
                     {
                         if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
                             txtLanguages.Text += ",";
@@ -1224,9 +1225,9 @@ public partial class frmAdd : Window
 
             if(string.IsNullOrWhiteSpace(txtArchitecture.Text))
             {
-                if(MainClass.metadata.Architectures != null)
+                if(Context.metadata.Architectures != null)
                 {
-                    foreach(ArchitecturesTypeArchitecture architecture in MainClass.metadata.Architectures)
+                    foreach(ArchitecturesTypeArchitecture architecture in Context.metadata.Architectures)
                     {
                         if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
                             txtArchitecture.Text += ",";
@@ -1237,9 +1238,9 @@ public partial class frmAdd : Window
 
             if(string.IsNullOrWhiteSpace(txtMachine.Text))
             {
-                if(MainClass.metadata.Systems != null)
+                if(Context.metadata.Systems != null)
                 {
-                    foreach(string machine in MainClass.metadata.Systems)
+                    foreach(string machine in Context.metadata.Systems)
                     {
                         if(!string.IsNullOrWhiteSpace(txtMachine.Text))
                             txtMachine.Text += ",";
@@ -1262,13 +1263,13 @@ public partial class frmAdd : Window
             string name = (string)fileView.GetValue(fileIter, 0);
             string filesPath;
 
-            if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
-                filesPath = MainClass.tmpFolder;
+            if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                filesPath = Context.tmpFolder;
             else
-                filesPath = MainClass.path;
+                filesPath = Context.path;
 
-            MainClass.hashes.Remove(name);
-            MainClass.files.Remove(System.IO.Path.Combine(filesPath, name));
+            Context.hashes.Remove(name);
+            Context.files.Remove(System.IO.Path.Combine(filesPath, name));
             fileView.Remove(ref fileIter);
         }
     }

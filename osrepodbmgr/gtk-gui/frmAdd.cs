@@ -708,7 +708,7 @@ public partial class frmAdd
 		w63.Expand = false;
 		w63.Fill = false;
 		this.Add(this.vbox1);
-		if ((this.Child != null))
+		if((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}

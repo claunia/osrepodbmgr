@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Decoders", "D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Metadata", "DiscImageChef\DiscImageChef.Metadata\DiscImageChef.Metadata.csproj", "{9F213318-5CB8-4066-A757-074489C9F818}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr.Core", "osrepodbmgr.Core\osrepodbmgr.Core.csproj", "{076D5C4D-9601-4164-B979-0DABACB56BB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -79,6 +81,10 @@ Global
 		{9F213318-5CB8-4066-A757-074489C9F818}.Debug|x86.Build.0 = Debug|Any CPU
 		{9F213318-5CB8-4066-A757-074489C9F818}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F213318-5CB8-4066-A757-074489C9F818}.Release|x86.Build.0 = Release|Any CPU
+		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Debug|x86.Build.0 = Debug|Any CPU
+		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Release|x86.ActiveCfg = Release|Any CPU
+		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

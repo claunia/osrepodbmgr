@@ -25,21 +25,25 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-using Gtk;
-using osrepodbmgr.Core;
+using System.Data;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
-    static class MainClass
+    public abstract class DBCore
     {
-        public static void Main(string[] args)
+        public abstract bool OpenDB(string database, string server, string user, string password);
+
+        public abstract void CloseDB();
+
+        public abstract bool CreateDB(string database, string server, string user, string password);
+
+        public DBOps DBOps;
+
+        public abstract IDbDataAdapter GetNewDataAdapter();
+
+        public abstract long LastInsertRowId
         {
-            Core.Settings.LoadSettings();
-            Context.CheckUnar();
-            Application.Init();
-            frmAdd win = new frmAdd();
-            win.Show();
-            Application.Run();
+            get;
         }
     }
 }

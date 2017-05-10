@@ -36,7 +36,7 @@ using DiscImageChef.Filesystems;
 using DiscImageChef.ImagePlugins;
 using DiscImageChef.PartPlugins;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public class PluginBase
     {

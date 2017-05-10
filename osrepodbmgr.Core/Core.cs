@@ -38,7 +38,7 @@ using Ionic.Zip;
 using Newtonsoft.Json;
 using Schemas;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public static partial class Core
     {
@@ -70,10 +70,10 @@ namespace osrepodbmgr
         {
             string filesPath;
 
-            if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
-                filesPath = MainClass.tmpFolder;
+            if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                filesPath = Context.tmpFolder;
             else
-                filesPath = MainClass.path;
+                filesPath = Context.path;
 
             if(string.IsNullOrEmpty(filesPath))
             {
@@ -89,8 +89,8 @@ namespace osrepodbmgr
 
             try
             {
-                MainClass.files = new List<string>(Directory.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories));
-                MainClass.files.Sort();
+                Context.files = new List<string>(Directory.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories));
+                Context.files.Sort();
                 if(Finished != null)
                     Finished();
             }
@@ -107,7 +107,7 @@ namespace osrepodbmgr
         {
             try
             {
-                MainClass.hashes = new Dictionary<string, DBFile>();
+                Context.hashes = new Dictionary<string, DBFile>();
                 List<string> alreadyMetadata = new List<string>();
                 bool foundMetadata = false;
 
@@ -137,7 +137,7 @@ namespace osrepodbmgr
                 // End for metadata
 
                 long counter = 1;
-                foreach(string file in MainClass.files)
+                foreach(string file in Context.files)
                 {
                     // An already known metadata file, skip it
                     if(alreadyMetadata.Contains(file))
@@ -337,14 +337,14 @@ namespace osrepodbmgr
                     string filesPath;
                     FileInfo fi = new FileInfo(file);
 
-                    if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
-                        filesPath = MainClass.tmpFolder;
+                    if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                        filesPath = Context.tmpFolder;
                     else
-                        filesPath = MainClass.path;
+                        filesPath = Context.path;
 
                     string relpath = file.Substring(filesPath.Length + 1);
                     if(UpdateProgress != null)
-                        UpdateProgress(string.Format("Hashing file {0} of {1}", counter, MainClass.files.Count), null, counter, MainClass.files.Count);
+                        UpdateProgress(string.Format("Hashing file {0} of {1}", counter, Context.files.Count), null, counter, Context.files.Count);
                     FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
 
                     byte[] dataBuffer = new byte[bufferSize];
@@ -389,60 +389,60 @@ namespace osrepodbmgr
                     dbFile.Path = relpath;
                     dbFile.Sha256 = hash;
 
-                    MainClass.hashes.Add(relpath, dbFile);
+                    Context.hashes.Add(relpath, dbFile);
                     counter++;
                 }
 
                 if(foundMetadata)
                 {
-                    MainClass.metadata = new CICMMetadataType();
+                    Context.metadata = new CICMMetadataType();
                     if(architectures.Count > 0)
-                        MainClass.metadata.Architectures = architectures.Distinct().ToArray();
+                        Context.metadata.Architectures = architectures.Distinct().ToArray();
                     if(authors.Count > 0)
-                        MainClass.metadata.Author = authors.Distinct().ToArray();
+                        Context.metadata.Author = authors.Distinct().ToArray();
                     // TODO: Check for uniqueness
                     if(barcodes.Count > 0)
-                        MainClass.metadata.Barcodes = barcodes.ToArray();
+                        Context.metadata.Barcodes = barcodes.ToArray();
                     if(disks.Count > 0)
-                        MainClass.metadata.BlockMedia = disks.ToArray();
+                        Context.metadata.BlockMedia = disks.ToArray();
                     if(categories.Count > 0)
-                        MainClass.metadata.Categories = categories.Distinct().ToArray();
+                        Context.metadata.Categories = categories.Distinct().ToArray();
                     if(developers.Count > 0)
-                        MainClass.metadata.Developer = developers.Distinct().ToArray();
+                        Context.metadata.Developer = developers.Distinct().ToArray();
                     if(keywords.Count > 0)
-                        MainClass.metadata.Keywords = keywords.Distinct().ToArray();
+                        Context.metadata.Keywords = keywords.Distinct().ToArray();
                     if(languages.Count > 0)
-                        MainClass.metadata.Languages = languages.Distinct().ToArray();
-                    MainClass.metadata.Name = metadataName;
+                        Context.metadata.Languages = languages.Distinct().ToArray();
+                    Context.metadata.Name = metadataName;
                     if(discs.Count > 0)
-                        MainClass.metadata.OpticalDisc = discs.ToArray();
-                    MainClass.metadata.PartNumber = metadataPartNo;
+                        Context.metadata.OpticalDisc = discs.ToArray();
+                    Context.metadata.PartNumber = metadataPartNo;
                     if(performers.Count > 0)
-                        MainClass.metadata.Performer = performers.Distinct().ToArray();
+                        Context.metadata.Performer = performers.Distinct().ToArray();
                     if(publishers.Count > 0)
-                        MainClass.metadata.Publisher = publishers.Distinct().ToArray();
+                        Context.metadata.Publisher = publishers.Distinct().ToArray();
                     if(releaseDateSpecified)
                     {
-                        MainClass.metadata.ReleaseDate = releaseDate;
-                        MainClass.metadata.ReleaseDateSpecified = true;
+                        Context.metadata.ReleaseDate = releaseDate;
+                        Context.metadata.ReleaseDateSpecified = true;
                     }
                     if(releaseTypeSpecified)
                     {
-                        MainClass.metadata.ReleaseType = releaseType;
-                        MainClass.metadata.ReleaseTypeSpecified = true;
+                        Context.metadata.ReleaseType = releaseType;
+                        Context.metadata.ReleaseTypeSpecified = true;
                     }
-                    MainClass.metadata.SerialNumber = metadataSerial;
+                    Context.metadata.SerialNumber = metadataSerial;
                     if(subcategories.Count > 0)
-                        MainClass.metadata.Subcategories = subcategories.Distinct().ToArray();
+                        Context.metadata.Subcategories = subcategories.Distinct().ToArray();
                     if(systems.Count > 0)
-                        MainClass.metadata.Systems = systems.Distinct().ToArray();
-                    MainClass.metadata.Version = metadataVersion;
+                        Context.metadata.Systems = systems.Distinct().ToArray();
+                    Context.metadata.Version = metadataVersion;
 
                     foreach(string metadataFile in alreadyMetadata)
-                        MainClass.files.Remove(metadataFile);
+                        Context.files.Remove(metadataFile);
                 }
                 else
-                    MainClass.metadata = null;
+                    Context.metadata = null;
                 if(Finished != null)
                     Finished();
             }
@@ -460,10 +460,10 @@ namespace osrepodbmgr
             try
             {
                 long counter = 0;
-                foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress(null, "Checking files in database", counter, MainClass.hashes.Count);
+                        UpdateProgress(null, "Checking files in database", counter, Context.hashes.Count);
 
                     if(AddFile != null)
                         AddFile(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
@@ -472,7 +472,7 @@ namespace osrepodbmgr
                 }
 
                 if(UpdateProgress != null)
-                    UpdateProgress(null, "Retrieving OSes from database", counter, MainClass.hashes.Count);
+                    UpdateProgress(null, "Retrieving OSes from database", counter, Context.hashes.Count);
                 List<DBEntry> oses;
                 dbCore.DBOps.GetAllOSes(out oses);
 
@@ -488,10 +488,10 @@ namespace osrepodbmgr
                             UpdateProgress(null, string.Format("Check OS id {0}", os.id), osCounter, osesArray.Length);
 
                         counter = 0;
-                        foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+                        foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
                         {
                             if(UpdateProgress2 != null)
-                                UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, MainClass.hashes.Count);
+                                UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, Context.hashes.Count);
 
                             if(!dbCore.DBOps.ExistsFileInOS(kvp.Value.Sha256, os.id))
                             {
@@ -594,10 +594,10 @@ namespace osrepodbmgr
             try
             {
                 long counter = 0;
-                foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding files to database", counter, MainClass.hashes.Count);
+                        UpdateProgress(null, "Adding files to database", counter, Context.hashes.Count);
 
                     if(!dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
                         dbCore.DBOps.AddFile(kvp.Value.Sha256);
@@ -606,18 +606,18 @@ namespace osrepodbmgr
                 }
 
                 if(UpdateProgress != null)
-                    UpdateProgress(null, "Adding OS information", counter, MainClass.hashes.Count);
+                    UpdateProgress(null, "Adding OS information", counter, Context.hashes.Count);
                 long osId;
-                dbCore.DBOps.AddOS(MainClass.dbInfo, out osId);
+                dbCore.DBOps.AddOS(Context.dbInfo, out osId);
                 if(UpdateProgress != null)
-                    UpdateProgress(null, "Creating OS table", counter, MainClass.hashes.Count);
+                    UpdateProgress(null, "Creating OS table", counter, Context.hashes.Count);
                 dbCore.DBOps.CreateTableForOS(osId);
 
                 counter = 0;
-                foreach(KeyValuePair<string, DBFile> kvp in MainClass.hashes)
+                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding files to OS in database", counter, MainClass.hashes.Count);
+                        UpdateProgress(null, "Adding files to OS in database", counter, Context.hashes.Count);
 
                     dbCore.DBOps.AddFileToOS(kvp.Value, osId);
 
@@ -711,21 +711,21 @@ namespace osrepodbmgr
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.developer))
+                if(string.IsNullOrWhiteSpace(Context.dbInfo.developer))
                 {
                     if(Failed != null)
                         Failed("Developer cannot be empty");
                     return;
                 }
 
-                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.product))
+                if(string.IsNullOrWhiteSpace(Context.dbInfo.product))
                 {
                     if(Failed != null)
                         Failed("Product cannot be empty");
                     return;
                 }
 
-                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.version))
+                if(string.IsNullOrWhiteSpace(Context.dbInfo.version))
                 {
                     if(Failed != null)
                         Failed("Version cannot be empty");
@@ -737,84 +737,84 @@ namespace osrepodbmgr
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
                 // Check if developer folder exists
-                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.developer);
+                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.developer);
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
                 // Check if product folder exists
-                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.product);
+                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.product);
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
                 // Check if version folder exists
-                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.version);
+                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.version);
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.languages))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.languages))
                 {
                     // Check if languages folder exists
-                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.languages);
+                    destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.languages);
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.architecture))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.architecture))
                 {
                     // Check if architecture folder exists
-                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.architecture);
+                    destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.architecture);
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
-                if(MainClass.dbInfo.oem)
+                if(Context.dbInfo.oem)
                 {
                     // Check if oem folder exists
                     destinationFolder = Path.Combine(destinationFolder, "oem");
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.machine))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.machine))
                 {
                     // Check if architecture folder exists
-                    destinationFolder = Path.Combine(destinationFolder, "for " + MainClass.dbInfo.machine);
+                    destinationFolder = Path.Combine(destinationFolder, "for " + Context.dbInfo.machine);
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
 
                 string destinationFile = "";
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.format))
-                    destinationFile += "[" + MainClass.dbInfo.format + "]";
-                if(MainClass.dbInfo.files)
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.format))
+                    destinationFile += "[" + Context.dbInfo.format + "]";
+                if(Context.dbInfo.files)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "files";
                 }
-                if(MainClass.dbInfo.netinstall)
+                if(Context.dbInfo.netinstall)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "netinstall";
                 }
-                if(MainClass.dbInfo.source)
+                if(Context.dbInfo.source)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "source";
                 }
-                if(MainClass.dbInfo.update)
+                if(Context.dbInfo.update)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "update";
                 }
-                if(MainClass.dbInfo.upgrade)
+                if(Context.dbInfo.upgrade)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "upgrade";
                 }
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.description))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.description))
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
-                    destinationFile += MainClass.dbInfo.description;
+                    destinationFile += Context.dbInfo.description;
                 }
                 else if(destinationFile == "")
                 {
@@ -836,16 +836,16 @@ namespace osrepodbmgr
 
                 string filesPath;
 
-                if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
-                    filesPath = MainClass.tmpFolder;
+                if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                    filesPath = Context.tmpFolder;
                 else
-                    filesPath = MainClass.path;
+                    filesPath = Context.path;
 
                 int counter = 0;
-                foreach(string file in MainClass.files)
+                foreach(string file in Context.files)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress("Choosing files...", file, counter, MainClass.files.Count);
+                        UpdateProgress("Choosing files...", file, counter, Context.files.Count);
 
                     FileInfo fi = new FileInfo(file);
 
@@ -860,11 +860,11 @@ namespace osrepodbmgr
                     counter++;
                 }
 
-                if(MainClass.metadata != null)
+                if(Context.metadata != null)
                 {
                     MemoryStream xms = new MemoryStream();
                     XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
-                    xs.Serialize(xms, MainClass.metadata);
+                    xs.Serialize(xms, Context.metadata);
                     xms.Position = 0;
 
                     ZipEntry zx = zf.AddEntry("metadata.xml", xms);
@@ -880,7 +880,7 @@ namespace osrepodbmgr
                     js.NullValueHandling = NullValueHandling.Ignore;
                     MemoryStream jms = new MemoryStream();
                     StreamWriter sw = new StreamWriter(jms, Encoding.UTF8, 1048576, true);
-                    js.Serialize(sw, MainClass.metadata, typeof(CICMMetadataType));
+                    js.Serialize(sw, Context.metadata, typeof(CICMMetadataType));
                     sw.Close();
                     jms.Position = 0;
 
@@ -1040,14 +1040,14 @@ namespace osrepodbmgr
 
         public static void OpenArchive()
         {
-            if(!MainClass.unarUsable)
+            if(!Context.unarUsable)
             {
                 if(Failed != null)
                     Failed("The UnArchiver is not correctly installed");
                 return;
             }
 
-            if(!File.Exists(MainClass.path))
+            if(!File.Exists(Context.path))
             {
                 if(Failed != null)
                     Failed("Specified file cannot be found");
@@ -1067,7 +1067,7 @@ namespace osrepodbmgr
                 lsarProcess.StartInfo.CreateNoWindow = true;
                 lsarProcess.StartInfo.RedirectStandardOutput = true;
                 lsarProcess.StartInfo.UseShellExecute = false;
-                lsarProcess.StartInfo.Arguments = string.Format("-j \"\"\"{0}\"\"\"", MainClass.path);
+                lsarProcess.StartInfo.Arguments = string.Format("-j \"\"\"{0}\"\"\"", Context.path);
                 lsarProcess.Start();
                 string lsarOutput = lsarProcess.StandardOutput.ReadToEnd();
                 lsarProcess.WaitForExit();
@@ -1087,9 +1087,9 @@ namespace osrepodbmgr
                     }
                 }
 
-                MainClass.copyArchive = false;
-                MainClass.archiveFormat = format;
-                MainClass.noFilesInArchive = counter;
+                Context.copyArchive = false;
+                Context.archiveFormat = format;
+                Context.noFilesInArchive = counter;
 
                 if(string.IsNullOrEmpty(format))
                 {
@@ -1107,13 +1107,13 @@ namespace osrepodbmgr
 
                 if(format == "Zip")
                 {
-                    ZipFile zf = ZipFile.Read(MainClass.path);
+                    ZipFile zf = ZipFile.Read(Context.path);
                     foreach(ZipEntry ze in zf)
                     {
                         // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
                         if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
                         {
-                            MainClass.copyArchive = true;
+                            Context.copyArchive = true;
                             break;
                         }
                     }
@@ -1133,14 +1133,14 @@ namespace osrepodbmgr
 
         public static void ExtractArchive()
         {
-            if(!MainClass.unarUsable)
+            if(!Context.unarUsable)
             {
                 if(Failed != null)
                     Failed("The UnArchiver is not correctly installed");
                 return;
             }
 
-            if(!File.Exists(MainClass.path))
+            if(!File.Exists(Context.path))
             {
                 if(Failed != null)
                     Failed("Specified file cannot be found");
@@ -1170,28 +1170,28 @@ namespace osrepodbmgr
 
             try
             {
-                MainClass.unarProcess = new Process();
-                MainClass.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
-                MainClass.unarProcess.StartInfo.CreateNoWindow = true;
-                MainClass.unarProcess.StartInfo.RedirectStandardOutput = true;
-                MainClass.unarProcess.StartInfo.UseShellExecute = false;
-                MainClass.unarProcess.StartInfo.Arguments = string.Format("-o \"\"\"{0}\"\"\" -r -D -k hidden \"\"\"{1}\"\"\"", tmpFolder, MainClass.path);
+                Context.unarProcess = new Process();
+                Context.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
+                Context.unarProcess.StartInfo.CreateNoWindow = true;
+                Context.unarProcess.StartInfo.RedirectStandardOutput = true;
+                Context.unarProcess.StartInfo.UseShellExecute = false;
+                Context.unarProcess.StartInfo.Arguments = string.Format("-o \"\"\"{0}\"\"\" -r -D -k hidden \"\"\"{1}\"\"\"", tmpFolder, Context.path);
                 long counter = 0;
-                MainClass.unarProcess.OutputDataReceived += (sender, e) =>
+                Context.unarProcess.OutputDataReceived += (sender, e) =>
                 {
                     counter++;
                     if(UpdateProgress2 != null)
-                        UpdateProgress2("", e.Data, counter, MainClass.noFilesInArchive);
+                        UpdateProgress2("", e.Data, counter, Context.noFilesInArchive);
                 };
-                MainClass.unarProcess.Start();
-                MainClass.unarProcess.BeginOutputReadLine();
-                MainClass.unarProcess.WaitForExit();
-                MainClass.unarProcess.Close();
+                Context.unarProcess.Start();
+                Context.unarProcess.BeginOutputReadLine();
+                Context.unarProcess.WaitForExit();
+                Context.unarProcess.Close();
 
                 if(Finished != null)
                     Finished();
 
-                MainClass.tmpFolder = tmpFolder;
+                Context.tmpFolder = tmpFolder;
             }
             catch(Exception ex)
             {
@@ -1206,21 +1206,21 @@ namespace osrepodbmgr
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.developer))
+                if(string.IsNullOrWhiteSpace(Context.dbInfo.developer))
                 {
                     if(Failed != null)
                         Failed("Developer cannot be empty");
                     return;
                 }
 
-                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.product))
+                if(string.IsNullOrWhiteSpace(Context.dbInfo.product))
                 {
                     if(Failed != null)
                         Failed("Product cannot be empty");
                     return;
                 }
 
-                if(string.IsNullOrWhiteSpace(MainClass.dbInfo.version))
+                if(string.IsNullOrWhiteSpace(Context.dbInfo.version))
                 {
                     if(Failed != null)
                         Failed("Version cannot be empty");
@@ -1232,84 +1232,84 @@ namespace osrepodbmgr
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
                 // Check if developer folder exists
-                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.developer);
+                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.developer);
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
                 // Check if product folder exists
-                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.product);
+                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.product);
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
                 // Check if version folder exists
-                destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.version);
+                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.version);
                 if(!Directory.Exists(destinationFolder))
                     Directory.CreateDirectory(destinationFolder);
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.languages))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.languages))
                 {
                     // Check if languages folder exists
-                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.languages);
+                    destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.languages);
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.architecture))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.architecture))
                 {
                     // Check if architecture folder exists
-                    destinationFolder = Path.Combine(destinationFolder, MainClass.dbInfo.architecture);
+                    destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.architecture);
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
-                if(MainClass.dbInfo.oem)
+                if(Context.dbInfo.oem)
                 {
                     // Check if oem folder exists
                     destinationFolder = Path.Combine(destinationFolder, "oem");
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.machine))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.machine))
                 {
                     // Check if architecture folder exists
-                    destinationFolder = Path.Combine(destinationFolder, "for " + MainClass.dbInfo.machine);
+                    destinationFolder = Path.Combine(destinationFolder, "for " + Context.dbInfo.machine);
                     if(!Directory.Exists(destinationFolder))
                         Directory.CreateDirectory(destinationFolder);
                 }
 
                 string destinationFile = "";
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.format))
-                    destinationFile += "[" + MainClass.dbInfo.format + "]";
-                if(MainClass.dbInfo.files)
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.format))
+                    destinationFile += "[" + Context.dbInfo.format + "]";
+                if(Context.dbInfo.files)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "files";
                 }
-                if(MainClass.dbInfo.netinstall)
+                if(Context.dbInfo.netinstall)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "netinstall";
                 }
-                if(MainClass.dbInfo.source)
+                if(Context.dbInfo.source)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "source";
                 }
-                if(MainClass.dbInfo.update)
+                if(Context.dbInfo.update)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "update";
                 }
-                if(MainClass.dbInfo.upgrade)
+                if(Context.dbInfo.upgrade)
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
                     destinationFile += "upgrade";
                 }
-                if(!string.IsNullOrWhiteSpace(MainClass.dbInfo.description))
+                if(!string.IsNullOrWhiteSpace(Context.dbInfo.description))
                 {
                     if(destinationFile != "")
                         destinationFile += "_";
-                    destinationFile += MainClass.dbInfo.description;
+                    destinationFile += Context.dbInfo.description;
                 }
                 else if(destinationFile == "")
                 {
@@ -1324,7 +1324,7 @@ namespace osrepodbmgr
                     return;
                 }
 
-                File.Copy(MainClass.path, destination);
+                File.Copy(Context.path, destination);
             }
             catch(Exception ex)
             {
@@ -1341,9 +1341,9 @@ namespace osrepodbmgr
         {
             try
             {
-                if(Directory.Exists(MainClass.tmpFolder))
+                if(Directory.Exists(Context.tmpFolder))
                 {
-                    Directory.Delete(MainClass.tmpFolder, true);
+                    Directory.Delete(Context.tmpFolder, true);
                     if(Finished != null)
                         Finished();
                 }

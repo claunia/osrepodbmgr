@@ -29,7 +29,7 @@ using System;
 using System.Data;
 using System.Data.SQLite;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public class SQLite : DBCore
     {

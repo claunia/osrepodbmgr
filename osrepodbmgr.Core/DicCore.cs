@@ -36,13 +36,13 @@ using DiscImageChef.ImagePlugins;
 using DiscImageChef.PartPlugins;
 using Schemas;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public static partial class Core
     {
         public static void AddMedia()
         {
-            if(string.IsNullOrWhiteSpace(MainClass.selectedFile))
+            if(string.IsNullOrWhiteSpace(Context.selectedFile))
             {
                 if(Failed != null)
                     Failed("There is no file set");
@@ -51,12 +51,12 @@ namespace osrepodbmgr
 
             string filesPath;
 
-            if(!string.IsNullOrEmpty(MainClass.tmpFolder) && Directory.Exists(MainClass.tmpFolder))
-                filesPath = MainClass.tmpFolder;
+            if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                filesPath = Context.tmpFolder;
             else
-                filesPath = MainClass.path;
+                filesPath = Context.path;
 
-            string selectedFile = Path.Combine(filesPath, MainClass.selectedFile);
+            string selectedFile = Path.Combine(filesPath, Context.selectedFile);
 
             if(!File.Exists(selectedFile))
             {
@@ -681,7 +681,7 @@ namespace osrepodbmgr
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Software.Version = _imageFormat.GetImageApplicationVersion();
                             }
 
-                            MainClass.workingDisc = sidecar.OpticalDisc[0];
+                            Context.workingDisc = sidecar.OpticalDisc[0];
                             if(Finished != null)
                                 Finished();
                             return;
@@ -905,7 +905,7 @@ namespace osrepodbmgr
                             // TODO: Implement support for getting CHS
                             if(UpdateProgress != null)
                                 UpdateProgress(null, "Finishing", maxProgress, maxProgress);
-                            MainClass.workingDisk = sidecar.BlockMedia[0];
+                            Context.workingDisk = sidecar.BlockMedia[0];
                             if(Finished != null)
                                 Finished();
                             return;

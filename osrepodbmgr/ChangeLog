@@ -2,6 +2,19 @@
 
 	* frmAdd.cs:
 	* Program.cs:
+	* frmHelp.cs:
+	* dlgMetadata.cs:
+	* frmSettings.cs:
+	* dlgFilesystem.cs:
+	* gtk-gui/frmAdd.cs:
+	* osrepodbmgr.csproj:
+	* gtk-gui/generated.cs:
+	  Refactor: Separate engine code from GUI.
+
+2017-05-10  Natalia Portillo  <claunia@claunia.com>
+
+	* frmAdd.cs:
+	* Program.cs:
 	* gtk-gui/frmAdd.cs:
 	* gtk-gui/gui.stetic:
 	* osrepodbmgr.csproj:

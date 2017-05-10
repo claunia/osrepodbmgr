@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Gtk;
+using osrepodbmgr.Core;
 using Schemas;
 
 namespace osrepodbmgr
@@ -216,7 +217,7 @@ namespace osrepodbmgr
 
         void FillFilesCombos()
         {
-            foreach(KeyValuePair<string, DBFile> files in MainClass.hashes)
+            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
             {
                 lstFilesForDisc.AppendValues(files.Key);
                 lstFilesForDisk.AppendValues(files.Key);
@@ -227,7 +228,7 @@ namespace osrepodbmgr
         {
             // TODO: Check that files are not already added as disks
             lstFilesForDisc.Clear();
-            foreach(KeyValuePair<string, DBFile> files in MainClass.hashes)
+            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
                 lstFilesForDisc.AppendValues(files.Key);
         }
 
@@ -235,7 +236,7 @@ namespace osrepodbmgr
         {
             // TODO: Check that files are not already added as discs
             lstFilesForDisk.Clear();
-            foreach(KeyValuePair<string, DBFile> files in MainClass.hashes)
+            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
                 lstFilesForDisk.AppendValues(files.Key);
         }
 
@@ -704,7 +705,7 @@ namespace osrepodbmgr
 
         protected void OnBtnAddDiscClicked(object sender, EventArgs e)
         {
-            MainClass.selectedFile = cmbFilesForNewDisc.ActiveText;
+            Context.selectedFile = cmbFilesForNewDisc.ActiveText;
             notebook3.GetNthPage(0).Visible = false;
             notebook3.GetNthPage(1).Visible = false;
             notebook3.GetNthPage(2).Visible = false;
@@ -719,15 +720,15 @@ namespace osrepodbmgr
             buttonOk.Visible = false;
             btnEditDisc.Visible = false;
             btnClearDiscs.Visible = false;
-            Core.Failed += OnDiscAddFailed;
-            Core.Finished += OnDiscAddFinished;
-            Core.UpdateProgress += UpdateDiscProgress1;
-            Core.UpdateProgress2 += UpdateDiscProgress2;
-            MainClass.workingDisc = null;
+            Core.Core.Failed += OnDiscAddFailed;
+            Core.Core.Finished += OnDiscAddFinished;
+            Core.Core.UpdateProgress += UpdateDiscProgress1;
+            Core.Core.UpdateProgress2 += UpdateDiscProgress2;
+            Context.workingDisc = null;
             btnStopAddDisc.Visible = true;
             btnAddDisc.Visible = false;
             btnRemoveDiscs.Visible = false;
-            thdDisc = new Thread(Core.AddMedia);
+            thdDisc = new Thread(Core.Core.AddMedia);
             thdDisc.Start();
         }
 
@@ -773,7 +774,7 @@ namespace osrepodbmgr
                     dlgMsg.Run();
                     dlgMsg.Destroy();
                 }
-                MainClass.selectedFile = "";
+                Context.selectedFile = "";
                 notebook3.GetNthPage(0).Visible = true;
                 notebook3.GetNthPage(1).Visible = true;
                 notebook3.GetNthPage(2).Visible = true;
@@ -788,11 +789,11 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisc.Visible = true;
                 btnClearDiscs.Visible = true;
-                Core.Failed -= OnDiscAddFailed;
-                Core.Finished -= OnDiscAddFinished;
-                Core.UpdateProgress -= UpdateDiscProgress1;
-                Core.UpdateProgress2 -= UpdateDiscProgress2;
-                MainClass.workingDisc = null;
+                Core.Core.Failed -= OnDiscAddFailed;
+                Core.Core.Finished -= OnDiscAddFinished;
+                Core.Core.UpdateProgress -= UpdateDiscProgress1;
+                Core.Core.UpdateProgress2 -= UpdateDiscProgress2;
+                Context.workingDisc = null;
                 btnStopAddDisc.Visible = false;
                 btnAddDisc.Visible = true;
                 btnRemoveDiscs.Visible = true;
@@ -804,12 +805,12 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                if(MainClass.workingDisc == null)
+                if(Context.workingDisc == null)
                     return;
 
-                OpticalDiscType disc = MainClass.workingDisc;
+                OpticalDiscType disc = Context.workingDisc;
 
-                lstDiscs.AppendValues(MainClass.selectedFile, disc);
+                lstDiscs.AppendValues(Context.selectedFile, disc);
                 List<string> files = new List<string>();
                 files.Add(disc.Image.Value);
                 if(disc.ADIP != null)
@@ -890,7 +891,7 @@ namespace osrepodbmgr
                     while(cmbFilesForNewDisk.Model.IterNext(ref iter));
                 }
 
-                MainClass.selectedFile = "";
+                Context.selectedFile = "";
                 notebook3.GetNthPage(0).Visible = true;
                 notebook3.GetNthPage(1).Visible = true;
                 notebook3.GetNthPage(2).Visible = true;
@@ -905,11 +906,11 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisc.Visible = true;
                 btnClearDiscs.Visible = true;
-                Core.Failed -= OnDiscAddFailed;
-                Core.Finished -= OnDiscAddFinished;
-                Core.UpdateProgress -= UpdateDiscProgress1;
-                Core.UpdateProgress2 -= UpdateDiscProgress2;
-                MainClass.workingDisc = null;
+                Core.Core.Failed -= OnDiscAddFailed;
+                Core.Core.Finished -= OnDiscAddFinished;
+                Core.Core.UpdateProgress -= UpdateDiscProgress1;
+                Core.Core.UpdateProgress2 -= UpdateDiscProgress2;
+                Context.workingDisc = null;
                 btnStopAddDisc.Visible = false;
                 btnAddDisc.Visible = true;
                 btnRemoveDiscs.Visible = true;
@@ -936,7 +937,7 @@ namespace osrepodbmgr
 
         protected void OnBtnAddDiskClicked(object sender, EventArgs e)
         {
-            MainClass.selectedFile = cmbFilesForNewDisk.ActiveText;
+            Context.selectedFile = cmbFilesForNewDisk.ActiveText;
             notebook3.GetNthPage(0).Visible = false;
             notebook3.GetNthPage(1).Visible = false;
             notebook3.GetNthPage(2).Visible = false;
@@ -951,15 +952,15 @@ namespace osrepodbmgr
             buttonOk.Visible = false;
             btnEditDisk.Visible = false;
             btnClearDisks.Visible = false;
-            Core.Failed += OnDiskAddFailed;
-            Core.Finished += OnDiskAddFinished;
-            Core.UpdateProgress += UpdateDiskProgress1;
-            Core.UpdateProgress2 += UpdateDiskProgress2;
-            MainClass.workingDisk = null;
+            Core.Core.Failed += OnDiskAddFailed;
+            Core.Core.Finished += OnDiskAddFinished;
+            Core.Core.UpdateProgress += UpdateDiskProgress1;
+            Core.Core.UpdateProgress2 += UpdateDiskProgress2;
+            Context.workingDisk = null;
             btnStopAddDisk.Visible = true;
             btnAddDisk.Visible = false;
             btnRemoveDisk.Visible = false;
-            thdDisk = new Thread(Core.AddMedia);
+            thdDisk = new Thread(Core.Core.AddMedia);
             thdDisk.Start();
         }
 
@@ -1005,7 +1006,7 @@ namespace osrepodbmgr
                     dlgMsg.Run();
                     dlgMsg.Destroy();
                 }
-                MainClass.selectedFile = "";
+                Context.selectedFile = "";
                 notebook3.GetNthPage(0).Visible = true;
                 notebook3.GetNthPage(1).Visible = true;
                 notebook3.GetNthPage(2).Visible = true;
@@ -1020,11 +1021,11 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisk.Visible = true;
                 btnClearDisks.Visible = true;
-                Core.Failed -= OnDiskAddFailed;
-                Core.Finished -= OnDiskAddFinished;
-                Core.UpdateProgress -= UpdateDiskProgress1;
-                Core.UpdateProgress2 -= UpdateDiskProgress2;
-                MainClass.workingDisk = null;
+                Core.Core.Failed -= OnDiskAddFailed;
+                Core.Core.Finished -= OnDiskAddFinished;
+                Core.Core.UpdateProgress -= UpdateDiskProgress1;
+                Core.Core.UpdateProgress2 -= UpdateDiskProgress2;
+                Context.workingDisk = null;
                 btnStopAddDisk.Visible = false;
                 btnAddDisk.Visible = true;
                 btnRemoveDisk.Visible = true;
@@ -1036,10 +1037,10 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                if(MainClass.workingDisk == null)
+                if(Context.workingDisk == null)
                     return;
 
-                BlockMediaType disk = MainClass.workingDisk;
+                BlockMediaType disk = Context.workingDisk;
 
                 lstDisks.AppendValues(disk.Image.Value, disk);
                 List<string> files = new List<string>();
@@ -1118,7 +1119,7 @@ namespace osrepodbmgr
                     while(cmbFilesForNewDisk.Model.IterNext(ref iter));
                 }
 
-                MainClass.selectedFile = "";
+                Context.selectedFile = "";
                 notebook3.GetNthPage(0).Visible = true;
                 notebook3.GetNthPage(1).Visible = true;
                 notebook3.GetNthPage(2).Visible = true;
@@ -1133,11 +1134,11 @@ namespace osrepodbmgr
                 buttonOk.Visible = true;
                 btnEditDisk.Visible = true;
                 btnClearDisks.Visible = true;
-                Core.Failed -= OnDiskAddFailed;
-                Core.Finished -= OnDiskAddFinished;
-                Core.UpdateProgress -= UpdateDiskProgress1;
-                Core.UpdateProgress2 -= UpdateDiskProgress2;
-                MainClass.workingDisk = null;
+                Core.Core.Failed -= OnDiskAddFailed;
+                Core.Core.Finished -= OnDiskAddFinished;
+                Core.Core.UpdateProgress -= UpdateDiskProgress1;
+                Core.Core.UpdateProgress2 -= UpdateDiskProgress2;
+                Context.workingDisk = null;
                 btnStopAddDisk.Visible = false;
                 btnAddDisk.Visible = true;
                 btnRemoveDisk.Visible = true;

@@ -28,6 +28,7 @@
 using System;
 using Gtk;
 using Schemas;
+
 namespace osrepodbmgr
 {
     public partial class dlgFilesystem : Dialog

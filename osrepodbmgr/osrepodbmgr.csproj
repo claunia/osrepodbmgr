@@ -77,20 +77,8 @@
     <Compile Include="gtk-gui\osrepodbmgr.frmHelp.cs" />
     <Compile Include="frmSettings.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.frmSettings.cs" />
-    <Compile Include="Core.cs" />
-    <Compile Include="DBCore.cs" />
-    <Compile Include="SQLite.cs" />
-    <Compile Include="DBOps.cs" />
-    <Compile Include="Schema.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="PlatformID.cs" />
-    <Compile Include="DetectOS.cs" />
     <Compile Include="dlgMetadata.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.dlgMetadata.cs" />
-    <Compile Include="DicCore.cs" />
-    <Compile Include="PluginBase.cs" />
-    <Compile Include="DetectImageFormat.cs" />
-    <Compile Include="Checksum.cs" />
     <Compile Include="dlgBlockMedia.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.dlgBlockMedia.cs" />
     <Compile Include="dlgFilesystem.cs" />
@@ -103,37 +91,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.Checksums\DiscImageChef.Checksums.csproj">
-      <Project>{CC48B324-A532-4A45-87A6-6F91F7141E8D}</Project>
-      <Name>DiscImageChef.Checksums</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.DiscImages\DiscImageChef.DiscImages.csproj">
-      <Project>{74032CBC-339B-42F3-AF6F-E96C261F3E6A}</Project>
-      <Name>DiscImageChef.DiscImages</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.Filesystems\DiscImageChef.Filesystems.csproj">
-      <Project>{D7016DF2-5A5E-4524-B40D-BA2D59576688}</Project>
-      <Name>DiscImageChef.Filesystems</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.Filters\DiscImageChef.Filters.csproj">
-      <Project>{D571B8EF-903D-4353-BDD5-B834F9F029EF}</Project>
-      <Name>DiscImageChef.Filters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.Partitions\DiscImageChef.Partitions.csproj">
-      <Project>{DA7AB65D-B5BA-4003-8893-A51BB071BA2F}</Project>
-      <Name>DiscImageChef.Partitions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.CommonTypes\DiscImageChef.CommonTypes.csproj">
-      <Project>{F2B84194-26EB-4227-B1C5-6602517E85AE}</Project>
-      <Name>DiscImageChef.CommonTypes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DiscImageChef\DiscImageChef.Decoders\DiscImageChef.Decoders.csproj">
-      <Project>{0BEB3088-B634-4289-AE17-CDF2D25D00D5}</Project>
-      <Name>DiscImageChef.Decoders</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DiscImageChef\DiscImageChef.Metadata\DiscImageChef.Metadata.csproj">
       <Project>{9F213318-5CB8-4066-A757-074489C9F818}</Project>
       <Name>DiscImageChef.Metadata</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osrepodbmgr.Core\osrepodbmgr.Core.csproj">
+      <Project>{076D5C4D-9601-4164-B979-0DABACB56BB8}</Project>
+      <Name>osrepodbmgr.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

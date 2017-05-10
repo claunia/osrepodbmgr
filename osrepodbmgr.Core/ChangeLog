@@ -1,0 +1,20 @@
+2017-05-10  Natalia Portillo  <claunia@claunia.com>
+
+	* Core.cs:
+	* DBOps.cs:
+	* SQLite.cs:
+	* DBCore.cs:
+	* Schema.cs:
+	* DicCore.cs:
+	* Context.cs:
+	* Settings.cs:
+	* Checksum.cs:
+	* DetectOS.cs:
+	* PlatformID.cs:
+	* PluginBase.cs:
+	* packages.config:
+	* DetectImageFormat.cs:
+	* osrepodbmgr.Core.csproj:
+	* Properties/AssemblyInfo.cs:
+	  Refactor: Separate engine code from GUI.
+

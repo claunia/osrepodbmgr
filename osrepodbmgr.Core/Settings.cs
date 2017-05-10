@@ -32,7 +32,7 @@ using System.Xml.Serialization;
 using Claunia.PropertyList;
 using Microsoft.Win32;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public class SetSettings
     {

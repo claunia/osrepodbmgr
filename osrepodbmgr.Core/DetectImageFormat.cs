@@ -33,7 +33,7 @@ using System;
 using DiscImageChef.Filters;
 using DiscImageChef.ImagePlugins;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public static class ImageFormat
     {

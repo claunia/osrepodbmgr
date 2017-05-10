@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     public struct DBEntry
     {

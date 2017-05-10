@@ -29,6 +29,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Gtk;
+using osrepodbmgr.Core;
 
 namespace osrepodbmgr
 {
@@ -40,10 +41,10 @@ namespace osrepodbmgr
                 base(WindowType.Toplevel)
         {
             Build();
-            txtTmp.Text = osrepodbmgr.Settings.Current.TemporaryFolder;
-            txtUnar.Text = osrepodbmgr.Settings.Current.UnArchiverPath;
-            txtDatabase.Text = osrepodbmgr.Settings.Current.DatabasePath;
-            txtRepository.Text = osrepodbmgr.Settings.Current.RepositoryPath;
+            txtTmp.Text = Core.Settings.Current.TemporaryFolder;
+            txtUnar.Text = Core.Settings.Current.UnArchiverPath;
+            txtDatabase.Text = Core.Settings.Current.DatabasePath;
+            txtRepository.Text = Core.Settings.Current.RepositoryPath;
 
             if(!string.IsNullOrWhiteSpace(txtUnar.Text))
                 CheckUnar();
@@ -57,14 +58,14 @@ namespace osrepodbmgr
         protected void OnBtnApplyClicked(object sender, EventArgs e)
         {
             // TODO: Check sanity
-            osrepodbmgr.Settings.Current.TemporaryFolder = txtTmp.Text;
-            osrepodbmgr.Settings.Current.UnArchiverPath = txtUnar.Text;
-            osrepodbmgr.Settings.Current.DatabasePath = txtDatabase.Text;
-            osrepodbmgr.Settings.Current.RepositoryPath = txtRepository.Text;
-            osrepodbmgr.Settings.SaveSettings();
-            Core.CloseDB();
-            Core.InitDB();
-            MainClass.CheckUnar();
+            Core.Settings.Current.TemporaryFolder = txtTmp.Text;
+            Core.Settings.Current.UnArchiverPath = txtUnar.Text;
+            Core.Settings.Current.DatabasePath = txtDatabase.Text;
+            Core.Settings.Current.RepositoryPath = txtRepository.Text;
+            Core.Settings.SaveSettings();
+            Core.Core.CloseDB();
+            Core.Core.InitDB();
+            Context.CheckUnar();
             Destroy();
         }
 
@@ -121,7 +122,7 @@ namespace osrepodbmgr
                                                      "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
             dlgFile.SelectMultiple = false;
             dlgFile.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            dlgFile.SetFilename("osrepodbmgr.db");
+            dlgFile.SetFilename("Core.db");
 
             if(dlgFile.Run() == (int)ResponseType.Accept)
             {
@@ -181,12 +182,12 @@ namespace osrepodbmgr
 
         void CheckUnar()
         {
-            Core.FinishedWithText += CheckUnarFinished;
-            Core.Failed += CheckUnarFailed;
+            Core.Core.FinishedWithText += CheckUnarFinished;
+            Core.Core.Failed += CheckUnarFailed;
 
-            oldUnarPath = osrepodbmgr.Settings.Current.UnArchiverPath;
-            osrepodbmgr.Settings.Current.UnArchiverPath = txtUnar.Text;
-            Thread thdCheckUnar = new Thread(Core.CheckUnar);
+            oldUnarPath = Core.Settings.Current.UnArchiverPath;
+            Core.Settings.Current.UnArchiverPath = txtUnar.Text;
+            Thread thdCheckUnar = new Thread(Core.Core.CheckUnar);
             thdCheckUnar.Start();
         }
 
@@ -194,12 +195,12 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                Core.FinishedWithText -= CheckUnarFinished;
-                Core.Failed -= CheckUnarFailed;
+                Core.Core.FinishedWithText -= CheckUnarFinished;
+                Core.Core.Failed -= CheckUnarFailed;
 
                 lblUnarVersion.Text = text;
                 lblUnarVersion.Visible = true;
-                osrepodbmgr.Settings.Current.UnArchiverPath = oldUnarPath;
+                Core.Settings.Current.UnArchiverPath = oldUnarPath;
             });
         }
 
@@ -207,14 +208,14 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                Core.FinishedWithText -= CheckUnarFinished;
-                Core.Failed -= CheckUnarFailed;
+                Core.Core.FinishedWithText -= CheckUnarFinished;
+                Core.Core.Failed -= CheckUnarFailed;
 
                 if(string.IsNullOrWhiteSpace(oldUnarPath))
                     txtUnar.Text = "";
                 else
                     txtUnar.Text = oldUnarPath;
-                osrepodbmgr.Settings.Current.UnArchiverPath = oldUnarPath;
+                Core.Settings.Current.UnArchiverPath = oldUnarPath;
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();

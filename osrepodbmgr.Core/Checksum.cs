@@ -35,7 +35,7 @@ using System.Threading;
 using DiscImageChef.Checksums;
 using Schemas;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
     class Checksum
     {

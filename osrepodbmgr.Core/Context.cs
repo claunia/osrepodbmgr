@@ -25,25 +25,59 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-using System.Data;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using Schemas;
 
-namespace osrepodbmgr
+namespace osrepodbmgr.Core
 {
-    public abstract class DBCore
+    public static class Context
     {
-        public abstract bool OpenDB(string database, string server, string user, string password);
+        public static List<string> files;
+        public static Dictionary<string, DBFile> hashes;
+        public static string path;
+        public static DBEntry dbInfo;
+        public static bool unarUsable;
+        public static string tmpFolder;
+        public static long noFilesInArchive;
+        public static string archiveFormat;
+        public static Process unarProcess;
+        public static bool copyArchive;
+        public static string selectedFile;
+        public static OpticalDiscType workingDisc;
+        public static BlockMediaType workingDisk;
+        public static CICMMetadataType metadata;
 
-        public abstract void CloseDB();
+        public delegate void UnarChangeStatusDelegate();
+        public static event UnarChangeStatusDelegate UnarChangeStatus;
 
-        public abstract bool CreateDB(string database, string server, string user, string password);
-
-        public DBOps DBOps;
-
-        public abstract IDbDataAdapter GetNewDataAdapter();
-
-        public abstract long LastInsertRowId
+        public static void CheckUnar()
         {
-            get;
+            Core.Finished += CheckUnarFinished;
+            Core.Failed += CheckUnarFailed;
+
+            Thread thdCheckUnar = new Thread(Core.CheckUnar);
+            thdCheckUnar.Start();
+        }
+
+        static void CheckUnarFinished()
+        {
+            unarUsable = true;
+            if(UnarChangeStatus != null)
+                UnarChangeStatus();
+            Core.Finished -= CheckUnarFinished;
+            Core.Failed -= CheckUnarFailed;
+        }
+
+        static void CheckUnarFailed(string text)
+        {
+            unarUsable = false;
+            if(UnarChangeStatus != null)
+                UnarChangeStatus();
+            Core.Finished -= CheckUnarFinished;
+            Core.Failed -= CheckUnarFailed;
         }
     }
 }
