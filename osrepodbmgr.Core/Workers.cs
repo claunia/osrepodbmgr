@@ -1107,13 +1107,14 @@ namespace osrepodbmgr.Core
 
                 if(format == "Zip")
                 {
+                    Context.copyArchive = true;
                     ZipFile zf = ZipFile.Read(Context.path);
                     foreach(ZipEntry ze in zf)
                     {
                         // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
                         if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
                         {
-                            Context.copyArchive = true;
+                            Context.copyArchive = false;
                             break;
                         }
                     }
