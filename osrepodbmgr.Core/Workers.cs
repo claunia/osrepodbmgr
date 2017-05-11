@@ -592,11 +592,10 @@ namespace osrepodbmgr.Core
 
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Adding OS information", counter, Context.hashes.Count);
-                long osId;
-                dbCore.DBOps.AddOS(Context.dbInfo, out osId);
+                dbCore.DBOps.AddOS(Context.dbInfo, out Context.dbInfo.id);
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Creating OS table", counter, Context.hashes.Count);
-                dbCore.DBOps.CreateTableForOS(osId);
+                dbCore.DBOps.CreateTableForOS(Context.dbInfo.id);
 
                 counter = 0;
                 foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
@@ -604,7 +603,7 @@ namespace osrepodbmgr.Core
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Adding files to OS in database", counter, Context.hashes.Count);
 
-                    dbCore.DBOps.AddFileToOS(kvp.Value, osId);
+                    dbCore.DBOps.AddFileToOS(kvp.Value, Context.dbInfo.id);
 
                     counter++;
                 }

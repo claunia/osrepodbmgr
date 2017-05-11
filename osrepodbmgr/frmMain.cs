@@ -222,6 +222,13 @@ namespace osrepodbmgr
         protected void OnBtnAddClicked(object sender, EventArgs e)
         {
             frmAdd _frmAdd = new frmAdd();
+            _frmAdd.OnAddedOS += (os, existsInRepo, pathInRepo) =>
+            {
+                string color = existsInRepo ? "green" : "red";
+                osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
+                                    os.format, os.description, os.oem, os.upgrade, os.update, os.source,
+                                    os.files, os.netinstall, color, "black", pathInRepo, os.id, os.mdid);
+            };
             _frmAdd.Run();
             _frmAdd.Destroy();
         }
