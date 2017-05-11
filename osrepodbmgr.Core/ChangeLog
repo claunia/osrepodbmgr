@@ -1,6 +1,11 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* Workers.cs:
+	  Use DotNetZip to test for ZIP file.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* Workers.cs:
 	  Correct detection of which ZIP files must be copied and
 	  which ones must be recompressed.
 

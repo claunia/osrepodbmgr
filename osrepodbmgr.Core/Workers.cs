@@ -1105,7 +1105,7 @@ namespace osrepodbmgr.Core
                     return;
                 }
 
-                if(format == "Zip")
+                if(ZipFile.IsZipFile(Context.path))
                 {
                     Context.copyArchive = true;
                     ZipFile zf = ZipFile.Read(Context.path);
