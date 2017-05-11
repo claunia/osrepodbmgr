@@ -25,13 +25,12 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-
 using System;
 using System.IO;
 using System.Xml.Serialization;
 using Claunia.PropertyList;
-using Microsoft.Win32;
 using Ionic.Zip;
+using Microsoft.Win32;
 
 namespace osrepodbmgr.Core
 {

@@ -1,5 +1,11 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.cs:
+	* dlgSettings.cs:
+	  Refactor: Sort and remove usings.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.cs:
 	* dlgHelp.cs:
 	* frmMain.cs:

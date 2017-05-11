@@ -1,5 +1,13 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* Context.cs:
+	* Checksum.cs:
+	* DetectOS.cs:
+	* Settings.cs:
+	  Refactor: Sort and remove usings.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers.cs:
 	  Corrected file copy and extract.
 

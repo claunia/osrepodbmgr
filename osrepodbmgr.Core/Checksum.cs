@@ -29,7 +29,6 @@
 // ----------------------------------------------------------------------------
 // Copyright © 2011-2016 Natalia Portillo
 // ****************************************************************************/
-
 using System.Collections.Generic;
 using System.Threading;
 using DiscImageChef.Checksums;

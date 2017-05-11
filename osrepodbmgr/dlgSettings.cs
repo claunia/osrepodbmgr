@@ -29,8 +29,8 @@ using System;
 using System.IO;
 using System.Threading;
 using Gtk;
-using osrepodbmgr.Core;
 using Ionic.Zip;
+using osrepodbmgr.Core;
 
 namespace osrepodbmgr
 {

@@ -26,10 +26,10 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.IO;
 using System.Threading;
 using Gtk;
 using osrepodbmgr.Core;
-using System.IO;
 
 namespace osrepodbmgr
 {
