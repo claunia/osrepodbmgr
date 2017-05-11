@@ -732,49 +732,25 @@ namespace osrepodbmgr.Core
                     return;
                 }
 
-                // Check if repository folder exists
-                string destinationFolder = Settings.Current.RepositoryPath;
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                // Check if developer folder exists
+                string destinationFolder = "";
                 destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.developer);
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                // Check if product folder exists
                 destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.product);
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                // Check if version folder exists
                 destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.version);
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
                 if(!string.IsNullOrWhiteSpace(Context.dbInfo.languages))
                 {
-                    // Check if languages folder exists
                     destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.languages);
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
                 if(!string.IsNullOrWhiteSpace(Context.dbInfo.architecture))
                 {
-                    // Check if architecture folder exists
                     destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.architecture);
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
                 if(Context.dbInfo.oem)
                 {
-                    // Check if oem folder exists
                     destinationFolder = Path.Combine(destinationFolder, "oem");
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
                 if(!string.IsNullOrWhiteSpace(Context.dbInfo.machine))
                 {
-                    // Check if architecture folder exists
                     destinationFolder = Path.Combine(destinationFolder, "for " + Context.dbInfo.machine);
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
 
                 string destinationFile = "";
@@ -822,17 +798,63 @@ namespace osrepodbmgr.Core
                 }
 
                 string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
+
+                MD5Context md5 = new MD5Context();
+                md5.Init();
+                byte[] tmp;
+                string mdid = md5.Data(Encoding.UTF8.GetBytes(destination), out tmp);
+                Console.WriteLine("MDID: {0}", mdid);
+
+                destinationFolder = Settings.Current.RepositoryPath;
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[0].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[1].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[2].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[3].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[4].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+
+                destination = Path.Combine(destinationFolder, mdid) + ".zip";
+
+                if(dbCore.DBOps.ExistsOS(mdid))
+                {
+                    if(File.Exists(destination))
+                    {
+                        if(Failed != null)
+                            Failed("OS already exists.");
+                        return;
+                    }
+
+                    if(Failed != null)
+                        Failed("OS already exists in the database but not in the repository, check for inconsistencies.");
+                    return;
+                }
+
                 if(File.Exists(destination))
                 {
                     if(Failed != null)
-                        Failed("File already exists");
+                        Failed("OS already exists in the repository but not in the database, check for inconsistencies.");
                     return;
                 }
+
+                Context.dbInfo.mdid = mdid;
 
                 ZipFile zf = new ZipFile(destination);
                 zf.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
                 zf.CompressionMethod = Settings.Current.CompressionAlgorithm;
                 zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
+                zf.AlternateEncoding = Encoding.UTF8;
+                zf.AlternateEncodingUsage = ZipOption.Always;
 
                 string filesPath;
 
@@ -892,10 +914,10 @@ namespace osrepodbmgr.Core
                     zj.LastModified = zx.AccessedTime;
                     zj.FileName = "metadata.json";
 
-                    FileStream xfs = new FileStream(Path.Combine(destinationFolder, destinationFile + ".xml"), FileMode.CreateNew, FileAccess.Write);
+                    FileStream xfs = new FileStream(Path.Combine(destinationFolder, mdid + ".xml"), FileMode.CreateNew, FileAccess.Write);
                     xms.CopyTo(xfs);
                     xfs.Close();
-                    FileStream jfs = new FileStream(Path.Combine(destinationFolder, destinationFile + ".json"), FileMode.CreateNew, FileAccess.Write);
+                    FileStream jfs = new FileStream(Path.Combine(destinationFolder, mdid + ".json"), FileMode.CreateNew, FileAccess.Write);
                     jms.CopyTo(jfs);
                     jfs.Close();
 
@@ -1235,7 +1257,7 @@ namespace osrepodbmgr.Core
 
             if(UpdateProgress != null && e.CurrentEntry != null && e.EntriesTotal > 0)
                 UpdateProgress("Extracting...", e.CurrentEntry.FileName, zipCounter, e.EntriesTotal);
-            if(UpdateProgress2 != null)
+            if(UpdateProgress2 != null && e.TotalBytesToTransfer > 0)
                 UpdateProgress2(string.Format("{0:P}", e.BytesTransferred / (double)e.TotalBytesToTransfer),
                                 string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
                                 e.BytesTransferred, e.TotalBytesToTransfer);
@@ -1270,49 +1292,25 @@ namespace osrepodbmgr.Core
                     return;
                 }
 
-                // Check if repository folder exists
-                string destinationFolder = Settings.Current.RepositoryPath;
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                // Check if developer folder exists
+                string destinationFolder = "";
                 destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.developer);
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                // Check if product folder exists
                 destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.product);
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                // Check if version folder exists
                 destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.version);
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
                 if(!string.IsNullOrWhiteSpace(Context.dbInfo.languages))
                 {
-                    // Check if languages folder exists
                     destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.languages);
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
                 if(!string.IsNullOrWhiteSpace(Context.dbInfo.architecture))
                 {
-                    // Check if architecture folder exists
                     destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.architecture);
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
                 if(Context.dbInfo.oem)
                 {
-                    // Check if oem folder exists
                     destinationFolder = Path.Combine(destinationFolder, "oem");
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
                 if(!string.IsNullOrWhiteSpace(Context.dbInfo.machine))
                 {
-                    // Check if architecture folder exists
                     destinationFolder = Path.Combine(destinationFolder, "for " + Context.dbInfo.machine);
-                    if(!Directory.Exists(destinationFolder))
-                        Directory.CreateDirectory(destinationFolder);
                 }
 
                 string destinationFile = "";
@@ -1360,14 +1358,85 @@ namespace osrepodbmgr.Core
                 }
 
                 string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
-                if(File.Exists(destination))
+
+                MD5Context md5 = new MD5Context();
+                md5.Init();
+                byte[] tmp;
+                string mdid = md5.Data(Encoding.UTF8.GetBytes(destination), out tmp);
+                Console.WriteLine("MDID: {0}", mdid);
+
+                destinationFolder = Settings.Current.RepositoryPath;
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[0].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[1].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[2].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[3].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+                destinationFolder = Path.Combine(destinationFolder, mdid[4].ToString());
+                if(!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+
+                destination = Path.Combine(destinationFolder, mdid) + ".zip";
+
+                if(dbCore.DBOps.ExistsOS(mdid))
                 {
+                    if(File.Exists(destination))
+                    {
+                        if(Failed != null)
+                            Failed("OS already exists.");
+                        return;
+                    }
+
                     if(Failed != null)
-                        Failed("File already exists");
+                        Failed("OS already exists in the database but not in the repository, check for inconsistencies.");
                     return;
                 }
 
+                if(File.Exists(destination))
+                {
+                    if(Failed != null)
+                        Failed("OS already exists in the repository but not in the database, check for inconsistencies.");
+                    return;
+                }
+
+                Context.dbInfo.mdid = mdid;
+
                 File.Copy(Context.path, destination);
+
+                if(Context.metadata != null)
+                {
+                    MemoryStream xms = new MemoryStream();
+                    XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
+                    xs.Serialize(xms, Context.metadata);
+                    xms.Position = 0;
+
+                    JsonSerializer js = new JsonSerializer();
+                    js.Formatting = Newtonsoft.Json.Formatting.Indented;
+                    js.NullValueHandling = NullValueHandling.Ignore;
+                    MemoryStream jms = new MemoryStream();
+                    StreamWriter sw = new StreamWriter(jms, Encoding.UTF8, 1048576, true);
+                    js.Serialize(sw, Context.metadata, typeof(CICMMetadataType));
+                    sw.Close();
+                    jms.Position = 0;
+
+                    FileStream xfs = new FileStream(Path.Combine(destinationFolder, mdid + ".xml"), FileMode.CreateNew, FileAccess.Write);
+                    xms.CopyTo(xfs);
+                    xfs.Close();
+                    FileStream jfs = new FileStream(Path.Combine(destinationFolder, mdid + ".json"), FileMode.CreateNew, FileAccess.Write);
+                    jms.CopyTo(jfs);
+                    jfs.Close();
+
+                    xms.Position = 0;
+                    jms.Position = 0;
+                }
             }
             catch(Exception ex)
             {

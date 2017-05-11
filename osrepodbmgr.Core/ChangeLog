@@ -1,5 +1,13 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* DBOps.cs:
+	* Schema.cs:
+	* Workers.cs:
+	  Change to opaque repo, where the created files are a hash of
+	  the OS data (name, developer, etc).
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers.cs:
 	* Settings.cs:
 	  Add support for choosing compression algorithm.

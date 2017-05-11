@@ -51,6 +51,7 @@ namespace osrepodbmgr.Core
         public bool netinstall;
         public byte[] xml;
         public byte[] json;
+        public string mdid;
     }
 
     public struct DBFile
@@ -108,6 +109,7 @@ namespace osrepodbmgr.Core
                 fEntry.source = bool.Parse(dRow["source"].ToString());
                 fEntry.files = bool.Parse(dRow["files"].ToString());
                 fEntry.netinstall = bool.Parse(dRow["netinstall"].ToString());
+                fEntry.mdid = dRow["mdid"].ToString();
 
                 if(dRow["xml"] != DBNull.Value)
                     fEntry.xml = (byte[])dRow["xml"];
@@ -139,6 +141,7 @@ namespace osrepodbmgr.Core
             IDbDataParameter param14 = dbcmd.CreateParameter();
             IDbDataParameter param15 = dbcmd.CreateParameter();
             IDbDataParameter param16 = dbcmd.CreateParameter();
+            IDbDataParameter param17 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@developer";
             param2.ParameterName = "@product";
@@ -156,6 +159,7 @@ namespace osrepodbmgr.Core
             param14.ParameterName = "@netinstall";
             param15.ParameterName = "@xml";
             param16.ParameterName = "@json";
+            param17.ParameterName = "@mdid";
 
             param1.DbType = DbType.String;
             param2.DbType = DbType.String;
@@ -172,6 +176,7 @@ namespace osrepodbmgr.Core
             param14.DbType = DbType.Boolean;
             param15.DbType = DbType.Object;
             param16.DbType = DbType.Object;
+            param17.DbType = DbType.String;
 
             param1.Value = entry.developer;
             param2.Value = entry.product;
@@ -189,6 +194,7 @@ namespace osrepodbmgr.Core
             param14.Value = entry.netinstall;
             param15.Value = entry.xml;
             param16.Value = entry.json;
+            param17.Value = entry.mdid;
 
             dbcmd.Parameters.Add(param1);
             dbcmd.Parameters.Add(param2);
@@ -206,6 +212,7 @@ namespace osrepodbmgr.Core
             dbcmd.Parameters.Add(param14);
             dbcmd.Parameters.Add(param15);
             dbcmd.Parameters.Add(param16);
+            dbcmd.Parameters.Add(param17);
 
             return dbcmd;
         }
@@ -216,8 +223,8 @@ namespace osrepodbmgr.Core
             IDbTransaction trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            const string sql = "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall, xml, json)" +
-                " VALUES (@developer, @product, @version, @languages, @architecture, @machine, @format, @description, @oem, @upgrade, @update, @source, @files, @netinstall, @xml, @json)";
+            const string sql = "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall, xml, json, mdid)" +
+                " VALUES (@developer, @product, @version, @languages, @architecture, @machine, @format, @description, @oem, @upgrade, @update, @source, @files, @netinstall, @xml, @json, @mdid)";
 
             dbcmd.CommandText = sql;
 
@@ -386,6 +393,30 @@ namespace osrepodbmgr.Core
             param1.Value = hash;
             dbcmd.Parameters.Add(param1);
             dbcmd.CommandText = string.Format("SELECT * FROM `os_{0}` WHERE sha256 = @hash", osId);
+            DataSet dataSet = new DataSet();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool ExistsOS(string mdid)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@mdid";
+            param1.DbType = DbType.String;
+            param1.Value = mdid;
+            dbcmd.Parameters.Add(param1);
+            dbcmd.CommandText = "SELECT * FROM `oses` WHERE mdid = @mdid";
             DataSet dataSet = new DataSet();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
             dataAdapter.SelectCommand = dbcmd;

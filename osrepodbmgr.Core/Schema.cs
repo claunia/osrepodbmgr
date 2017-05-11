@@ -45,6 +45,7 @@ namespace osrepodbmgr.Core
             "DROP TABLE IF EXISTS `oses` ;\n\n" +
             "CREATE TABLE IF NOT EXISTS `oses` (\n" +
             "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+            "  `mdid` CHAR(40) NOT NULL,\n" +
             "  `developer` VARCHAR(45) NOT NULL,\n" +
             "  `product` VARCHAR(45) NOT NULL,\n" +
             "  `version` VARCHAR(45) NULL,\n" +
@@ -62,6 +63,7 @@ namespace osrepodbmgr.Core
             "  `xml` BLOB NULL,\n" +
             "  `json` BLOB NULL);\n\n" +
             "CREATE UNIQUE INDEX `oses_id_UNIQUE` ON `oses` (`id` ASC);\n\n" +
+            "CREATE UNIQUE INDEX `oses_mdid_UNIQUE` ON `oses` (`mdid` ASC);\n\n" +
             "CREATE INDEX `oses_developer_idx` ON `oses` (`developer` ASC);\n\n" +
             "CREATE INDEX `oses_product_idx` ON `oses` (`product` ASC);\n\n" +
             "CREATE INDEX `oses_version_idx` ON `oses` (`version` ASC);\n\n" +
