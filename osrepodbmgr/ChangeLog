@@ -1,6 +1,11 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* dlgAdd.cs:
+	  Correct buttons visibility.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* dlgAdd.cs:
 	* frmMain.cs:
 	* dlgSettings.cs:
 	* gtk-gui/generated.cs:

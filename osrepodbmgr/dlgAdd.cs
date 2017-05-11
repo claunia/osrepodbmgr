@@ -711,6 +711,7 @@ public partial class dlgAdd : Dialog
 
     void AddToDatabase()
     {
+        btnRemoveFile.Sensitive = false;
         btnPack.Sensitive = false;
         btnClose.Sensitive = false;
         prgProgress.Visible = true;
@@ -788,7 +789,7 @@ public partial class dlgAdd : Dialog
             foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
             {
                 UpdateProgress(null, "Updating table", counter, Context.hashes.Count);
-                fileView.AppendValues(kvp.Key, kvp.Value.Path, true, "green", "black");
+                fileView.AppendValues(kvp.Key, kvp.Value.Sha256, true, "green", "black");
                 counter++;
             }
 
@@ -804,7 +805,6 @@ public partial class dlgAdd : Dialog
                                                                        Context.dbInfo.mdid) + ".zip");
 
             prgProgress.Visible = false;
-            btnPack.Sensitive = true;
             btnClose.Sensitive = true;
         });
     }
@@ -835,6 +835,7 @@ public partial class dlgAdd : Dialog
 
     protected void OnBtnPackClicked(object sender, EventArgs e)
     {
+        btnRemoveFile.Sensitive = false;
         btnPack.Sensitive = false;
         btnClose.Sensitive = false;
         prgProgress.Visible = true;
@@ -925,6 +926,7 @@ public partial class dlgAdd : Dialog
             Workers.FinishedWithText -= PackFilesFinished;
             Workers.Failed -= PackFilesFailed;
 
+            btnRemoveFile.Sensitive = true;
             btnPack.Sensitive = true;
             btnClose.Sensitive = true;
             prgProgress.Visible = false;
