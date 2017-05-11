@@ -30,6 +30,7 @@ using System.IO;
 using System.Threading;
 using Gtk;
 using osrepodbmgr.Core;
+using Ionic.Zip;
 
 namespace osrepodbmgr
 {
@@ -48,6 +49,30 @@ namespace osrepodbmgr
 
             if(!string.IsNullOrWhiteSpace(txtUnar.Text))
                 CheckUnar();
+
+            CellRendererText textCell = new CellRendererText();
+            cmbCompAlg.Clear();
+            ListStore lstCompAlgs = new ListStore(typeof(string));
+            cmbCompAlg.PackStart(textCell, true);
+            cmbCompAlg.AddAttribute(textCell, "text", 0);
+            cmbCompAlg.Model = lstCompAlgs;
+
+            lstCompAlgs.Clear();
+            foreach(CompressionMethod type in Enum.GetValues(typeof(CompressionMethod)))
+                lstCompAlgs.AppendValues(type.ToString());
+
+            cmbCompAlg.Active = 0;
+            TreeIter iter;
+            cmbCompAlg.Model.GetIterFirst(out iter);
+            do
+            {
+                if((string)cmbCompAlg.Model.GetValue(iter, 0) == Core.Settings.Current.CompressionAlgorithm.ToString())
+                {
+                    cmbCompAlg.SetActiveIter(iter);
+                    break;
+                }
+            }
+            while(cmbCompAlg.Model.IterNext(ref iter));
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -62,6 +87,7 @@ namespace osrepodbmgr
             Core.Settings.Current.UnArchiverPath = txtUnar.Text;
             Core.Settings.Current.DatabasePath = txtDatabase.Text;
             Core.Settings.Current.RepositoryPath = txtRepository.Text;
+            Core.Settings.Current.CompressionAlgorithm = (CompressionMethod)Enum.Parse(typeof(CompressionMethod), cmbCompAlg.ActiveText);
             Core.Settings.SaveSettings();
             Core.Workers.CloseDB();
             Core.Workers.InitDB();

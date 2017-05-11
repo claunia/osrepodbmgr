@@ -1,5 +1,12 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* frmSettings.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.frmSettings.cs:
+	  Add support for choosing compression algorithm.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* packages.config:
 	* osrepodbmgr.csproj:
 	  Remove unneeded packages.

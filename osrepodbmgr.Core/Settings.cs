@@ -31,6 +31,7 @@ using System.IO;
 using System.Xml.Serialization;
 using Claunia.PropertyList;
 using Microsoft.Win32;
+using Ionic.Zip;
 
 namespace osrepodbmgr.Core
 {
@@ -40,6 +41,7 @@ namespace osrepodbmgr.Core
         public string DatabasePath;
         public string RepositoryPath;
         public string UnArchiverPath;
+        public CompressionMethod CompressionAlgorithm;
     }
 
     public static class Settings
@@ -100,6 +102,13 @@ namespace osrepodbmgr.Core
                                 else
                                     Current.UnArchiverPath = null;
 
+                                if(parsedPreferences.TryGetValue("CompressionAlgorithm", out obj))
+                                {
+                                    if(!Enum.TryParse(((NSString)obj).ToString(), true, out Current.CompressionAlgorithm))
+                                        Current.CompressionAlgorithm = CompressionMethod.Deflate;
+                                }
+                                else
+                                    Current.CompressionAlgorithm = CompressionMethod.Deflate;
                             }
                             else {
                                 SetDefaultSettings();
@@ -133,6 +142,8 @@ namespace osrepodbmgr.Core
                             Current.DatabasePath = (string)key.GetValue("DatabasePath");
                             Current.RepositoryPath = (string)key.GetValue("RepositoryPath");
                             Current.UnArchiverPath = (string)key.GetValue("UnArchiverPath");
+                            if(!Enum.TryParse((string)key.GetValue("CompressionAlgorithm"), true, out Current.CompressionAlgorithm))
+                                Current.CompressionAlgorithm = CompressionMethod.Deflate;
                         }
                         break;
                     default:
@@ -178,6 +189,7 @@ namespace osrepodbmgr.Core
                             root.Add("DatabasePath", Current.DatabasePath);
                             root.Add("RepositoryPath", Current.RepositoryPath);
                             root.Add("UnArchiverPath", Current.UnArchiverPath);
+                            root.Add("CompressionAlgorithm", Current.CompressionAlgorithm);
 
                             string preferencesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Preferences");
                             string preferencesFilePath = Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
@@ -200,6 +212,7 @@ namespace osrepodbmgr.Core
                             key.SetValue("DatabasePath", Current.DatabasePath);
                             key.SetValue("RepositoryPath", Current.RepositoryPath);
                             key.SetValue("UnArchiverPath", Current.UnArchiverPath);
+                            key.SetValue("CompressionAlgorithm", Current.CompressionAlgorithm);
                         }
                         break;
                     default:
@@ -234,6 +247,7 @@ namespace osrepodbmgr.Core
             Current.DatabasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepodbmgr.db");
             Current.RepositoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepo");
             Current.UnArchiverPath = null;
+            Current.CompressionAlgorithm = CompressionMethod.Deflate;
         }
     }
 }

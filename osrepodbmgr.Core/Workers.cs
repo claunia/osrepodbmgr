@@ -831,7 +831,7 @@ namespace osrepodbmgr.Core
 
                 ZipFile zf = new ZipFile(destination);
                 zf.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
-                zf.CompressionMethod = CompressionMethod.Deflate;
+                zf.CompressionMethod = Settings.Current.CompressionAlgorithm;
                 zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
 
                 string filesPath;
