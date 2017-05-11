@@ -1,5 +1,11 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* packages.config:
+	* osrepodbmgr.csproj:
+	  Remove unneeded packages.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* frmAdd.cs:
 	  Use DotNetZip to extract ZIP files that are not created by
 	  mac OS.
