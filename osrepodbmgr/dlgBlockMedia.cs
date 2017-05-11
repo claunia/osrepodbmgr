@@ -222,6 +222,13 @@ namespace osrepodbmgr
             treeModeSense10.AppendColumn(sizeColumn);
             #endregion Set SCSI MODE SENSE (10) table
 
+            #region Set SCSI LOG SENSE table
+            lstLogSense = new ListStore(typeof(string), typeof(int), typeof(ChecksumType[]));
+            treeLogSense.Model = lstLogSense;
+            treeLogSense.AppendColumn(fileColumn);
+            treeLogSense.AppendColumn(sizeColumn);
+            #endregion Set SCSI MODE SENSE (10) table
+
             #region Set SCSI EVPDs table
             lstEVPDs = new ListStore(typeof(int), typeof(string), typeof(int), typeof(int), typeof(ChecksumType[]));
 

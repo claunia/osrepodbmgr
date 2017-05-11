@@ -1,5 +1,10 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgBlockMedia.cs:
+	  Corrected initialization of LOG SENSE table.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* frmAdd.cs:
 	  Correct visibility of progress bars on extraction with
 	  DotNetZip.
