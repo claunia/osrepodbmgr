@@ -1064,7 +1064,6 @@ public partial class frmAdd : Window
         {
             stopped = false;
             prgProgress.Text = "Extracting archive";
-            lblProgress.Visible = false;
             prgProgress.Visible = true;
             prgProgress2.Visible = true;
             btnExit.Sensitive = false;
@@ -1088,7 +1087,11 @@ public partial class frmAdd : Window
                 });
             }
             else
+            {
                 Workers.UpdateProgress += UpdateProgress;
+                lblProgress.Visible = true;
+                lblProgress2.Visible = true;
+            }
             Workers.Failed -= OpenArchiveFailed;
             Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;
@@ -1113,6 +1116,7 @@ public partial class frmAdd : Window
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
             lblProgress.Visible = false;
+            lblProgress2.Visible = false;
             prgProgress2.Visible = false;
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
@@ -1157,6 +1161,7 @@ public partial class frmAdd : Window
             stopped = false;
             lblProgress.Text = "Finding files";
             lblProgress.Visible = true;
+            lblProgress2.Visible = false;
             prgProgress.Visible = true;
             btnExit.Sensitive = false;
             btnFolder.Visible = false;

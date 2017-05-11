@@ -1,5 +1,11 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* frmAdd.cs:
+	  Correct visibility of progress bars on extraction with
+	  DotNetZip.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* frmSettings.cs:
 	* gtk-gui/gui.stetic:
 	* gtk-gui/osrepodbmgr.frmSettings.cs:
