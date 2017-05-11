@@ -221,16 +221,16 @@ namespace osrepodbmgr
 
         protected void OnBtnAddClicked(object sender, EventArgs e)
         {
-            frmAdd _frmAdd = new frmAdd();
-            _frmAdd.OnAddedOS += (os, existsInRepo, pathInRepo) =>
+            dlgAdd _dlgAdd = new dlgAdd();
+            _dlgAdd.OnAddedOS += (os, existsInRepo, pathInRepo) =>
             {
                 string color = existsInRepo ? "green" : "red";
                 osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
                                     os.format, os.description, os.oem, os.upgrade, os.update, os.source,
                                     os.files, os.netinstall, color, "black", pathInRepo, os.id, os.mdid);
             };
-            _frmAdd.Run();
-            _frmAdd.Destroy();
+            _dlgAdd.Run();
+            _dlgAdd.Destroy();
         }
 
         protected void OnBtnRemoveClicked(object sender, EventArgs e)
@@ -534,16 +534,16 @@ namespace osrepodbmgr
 
         protected void OnBtnHelpClicked(object sender, EventArgs e)
         {
-            frmHelp _help = new frmHelp();
+            dlgHelp _help = new dlgHelp();
             _help.Run();
             _help.Destroy();
         }
 
         protected void OnBtnSettingsClicked(object sender, EventArgs e)
         {
-            frmSettings _frmSettings = new frmSettings();
-            _frmSettings.Run();
-            _frmSettings.Destroy();
+            dlgSettings _dlgSettings = new dlgSettings();
+            _dlgSettings.Run();
+            _dlgSettings.Destroy();
         }
 
         protected void OnBtnQuitClicked(object sender, EventArgs e)

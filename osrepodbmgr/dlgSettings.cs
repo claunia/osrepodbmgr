@@ -34,11 +34,11 @@ using Ionic.Zip;
 
 namespace osrepodbmgr
 {
-    public partial class frmSettings : Dialog
+    public partial class dlgSettings : Dialog
     {
         string oldUnarPath;
 
-        public frmSettings()
+        public dlgSettings()
         {
             Build();
             txtTmp.Text = Core.Settings.Current.TemporaryFolder;

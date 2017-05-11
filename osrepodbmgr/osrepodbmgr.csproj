@@ -64,13 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="frmAdd.cs" />
+    <Compile Include="dlgAdd.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="frmHelp.cs" />
-    <Compile Include="gtk-gui\osrepodbmgr.frmHelp.cs" />
-    <Compile Include="frmSettings.cs" />
-    <Compile Include="gtk-gui\osrepodbmgr.frmSettings.cs" />
+    <Compile Include="dlgHelp.cs" />
+    <Compile Include="dlgSettings.cs" />
     <Compile Include="dlgMetadata.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.dlgMetadata.cs" />
     <Compile Include="dlgBlockMedia.cs" />
@@ -79,9 +77,11 @@
     <Compile Include="gtk-gui\osrepodbmgr.dlgFilesystem.cs" />
     <Compile Include="dlgOpticalDisc.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.dlgOpticalDisc.cs" />
-    <Compile Include="gtk-gui\frmAdd.cs" />
     <Compile Include="frmMain.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.frmMain.cs" />
+    <Compile Include="gtk-gui\dlgAdd.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.dlgHelp.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.dlgSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

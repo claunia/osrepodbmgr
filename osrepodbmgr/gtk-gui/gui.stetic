@@ -7,7 +7,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/osrepodbmgr.exe" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="frmAdd" design-size="857 544">
+  <widget class="Gtk.Dialog" id="dlgAdd" design-size="857 544">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add operating system</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -755,7 +755,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="osrepodbmgr.frmHelp" design-size="400 300">
+  <widget class="Gtk.Dialog" id="osrepodbmgr.dlgHelp" design-size="400 300">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Help</property>
     <property name="TypeHint">Dialog</property>
@@ -949,7 +949,7 @@ QNX/QNX/20090229/source.zip</property>
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="osrepodbmgr.frmSettings" design-size="400 250">
+  <widget class="Gtk.Dialog" id="osrepodbmgr.dlgSettings" design-size="400 250">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Settings</property>
     <property name="WindowPosition">CenterOnParent</property>

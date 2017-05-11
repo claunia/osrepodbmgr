@@ -1,5 +1,21 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.cs:
+	* dlgHelp.cs:
+	* frmMain.cs:
+	* dlgSettings.cs:
+	* gtk-gui/frmAdd.cs:
+	* gtk-gui/dlgAdd.cs:
+	* osrepodbmgr.csproj:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.frmHelp.cs:
+	* gtk-gui/osrepodbmgr.dlgHelp.cs:
+	* gtk-gui/osrepodbmgr.dlgSettings.cs:
+	* gtk-gui/osrepodbmgr.frmSettings.cs:
+	  Refactor: Rename dialog classes from frm* to dlg*.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* frmAdd.cs:
 	* frmMain.cs:
 	  Corrected file copy and extract.

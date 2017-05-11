@@ -36,7 +36,7 @@ using osrepodbmgr;
 using osrepodbmgr.Core;
 using Schemas;
 
-public partial class frmAdd : Dialog
+public partial class dlgAdd : Dialog
 {
     Thread thdPulseProgress;
     Thread thdFindFiles;
@@ -54,7 +54,7 @@ public partial class frmAdd : Dialog
     public delegate void OnAddedOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
     public event OnAddedOSDelegate OnAddedOS;
 
-    public frmAdd()
+    public dlgAdd()
     {
         Build();
 

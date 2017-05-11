@@ -29,9 +29,9 @@ using System;
 
 namespace osrepodbmgr
 {
-    public partial class frmHelp : Gtk.Dialog
+    public partial class dlgHelp : Gtk.Dialog
     {
-        public frmHelp()
+        public dlgHelp()
         {
             Build();
         }
