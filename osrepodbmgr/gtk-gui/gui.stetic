@@ -618,32 +618,13 @@
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-save Menu</property>
-                <property name="Label" translatable="yes">_Pack...</property>
+                <property name="Label" translatable="yes">_Add to repository...</property>
                 <property name="UseUnderline">True</property>
                 <signal name="Clicked" handler="OnBtnPackClicked" />
               </widget>
               <packing>
                 <property name="PackType">End</property>
                 <property name="Position">2</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="Gtk.Button" id="btnAdd">
-                <property name="MemberName" />
-                <property name="Visible">False</property>
-                <property name="CanFocus">True</property>
-                <property name="Type">TextAndIcon</property>
-                <property name="Icon">stock:gtk-add Menu</property>
-                <property name="Label" translatable="yes">Add to _DB</property>
-                <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnBtnAddClicked" />
-              </widget>
-              <packing>
-                <property name="PackType">End</property>
-                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -661,7 +642,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">4</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -679,7 +660,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">5</property>
+                <property name="Position">4</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -698,7 +679,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">6</property>
+                <property name="Position">5</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -717,7 +698,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">7</property>
+                <property name="Position">6</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -736,7 +717,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">8</property>
+                <property name="Position">7</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>

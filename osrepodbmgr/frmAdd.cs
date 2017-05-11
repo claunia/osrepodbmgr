@@ -288,7 +288,6 @@ public partial class frmAdd : Dialog
             Workers.UpdateProgress2 += UpdateProgress2;
             Workers.AddFile += AddFile;
             Workers.AddOS += AddOS;
-            btnAdd.Sensitive = false;
             thdCheckFiles.Start();
         });
     }
@@ -349,7 +348,6 @@ public partial class frmAdd : Dialog
             btnStop.Visible = false;
             btnClose.Visible = true;
             btnExit.Sensitive = true;
-            btnAdd.Visible = true;
             btnPack.Visible = true;
             btnPack.Sensitive = true;
             btnRemoveFile.Visible = true;
@@ -430,7 +428,7 @@ public partial class frmAdd : Dialog
         {
             string color = known ? "green" : "red";
             fileView.AppendValues(filename, hash, known, color, "black");
-            btnAdd.Sensitive |= !known;
+            btnPack.Sensitive |= !known;
         });
     }
 
@@ -462,7 +460,6 @@ public partial class frmAdd : Dialog
         Context.files = null;
         Context.hashes = null;
         btnStop.Visible = false;
-        btnAdd.Visible = false;
         btnPack.Visible = false;
         btnClose.Visible = false;
         btnRemoveFile.Visible = false;
@@ -709,9 +706,8 @@ public partial class frmAdd : Dialog
         });
     }
 
-    protected void OnBtnAddClicked(object sender, EventArgs e)
+    void AddToDatabase()
     {
-        btnAdd.Sensitive = false;
         btnPack.Sensitive = false;
         btnClose.Sensitive = false;
         prgProgress.Visible = true;
@@ -827,7 +823,6 @@ public partial class frmAdd : Dialog
 
     protected void OnBtnPackClicked(object sender, EventArgs e)
     {
-        btnAdd.Sensitive = false;
         btnPack.Sensitive = false;
         btnClose.Sensitive = false;
         prgProgress.Visible = true;
@@ -913,7 +908,7 @@ public partial class frmAdd : Dialog
             prgProgress2.Visible = false;
             lblProgress2.Visible = false;
 
-            btnAdd.Click();
+            AddToDatabase();
 
             MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, "Correctly packed to " + text);
             dlgMsg.Run();
@@ -942,7 +937,6 @@ public partial class frmAdd : Dialog
             Workers.FinishedWithText -= PackFilesFinished;
             Workers.Failed -= PackFilesFailed;
 
-            btnAdd.Sensitive = true;
             btnPack.Sensitive = true;
             btnClose.Sensitive = true;
             prgProgress.Visible = false;

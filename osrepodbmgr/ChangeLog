@@ -1,6 +1,14 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* frmAdd.cs:
+	* gtk-gui/frmAdd.cs:
+	* gtk-gui/gui.stetic:
+	  Do not allow to add to the database without adding to the
+	  repository, to prevent inconsistencies between them.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* frmAdd.cs:
 	* Program.cs:
 	* frmHelp.cs:
 	* frmMain.cs:
