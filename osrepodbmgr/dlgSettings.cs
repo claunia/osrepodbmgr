@@ -29,7 +29,6 @@ using System;
 using System.IO;
 using System.Threading;
 using Gtk;
-using Ionic.Zip;
 using osrepodbmgr.Core;
 
 namespace osrepodbmgr
@@ -57,7 +56,7 @@ namespace osrepodbmgr
             cmbCompAlg.Model = lstCompAlgs;
 
             lstCompAlgs.Clear();
-            foreach(CompressionMethod type in Enum.GetValues(typeof(CompressionMethod)))
+            foreach(AlgoEnum type in Enum.GetValues(typeof(AlgoEnum)))
                 lstCompAlgs.AppendValues(type.ToString());
 
             cmbCompAlg.Active = 0;
@@ -86,7 +85,7 @@ namespace osrepodbmgr
             Core.Settings.Current.UnArchiverPath = txtUnar.Text;
             Core.Settings.Current.DatabasePath = txtDatabase.Text;
             Core.Settings.Current.RepositoryPath = txtRepository.Text;
-            Core.Settings.Current.CompressionAlgorithm = (CompressionMethod)Enum.Parse(typeof(CompressionMethod), cmbCompAlg.ActiveText);
+            Core.Settings.Current.CompressionAlgorithm = (AlgoEnum)Enum.Parse(typeof(AlgoEnum), cmbCompAlg.ActiveText);
             Core.Settings.SaveSettings();
             Core.Workers.CloseDB();
             Core.Workers.InitDB();

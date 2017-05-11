@@ -29,7 +29,6 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 using Claunia.PropertyList;
-using Ionic.Zip;
 using Microsoft.Win32;
 
 namespace osrepodbmgr.Core
@@ -40,7 +39,7 @@ namespace osrepodbmgr.Core
         public string DatabasePath;
         public string RepositoryPath;
         public string UnArchiverPath;
-        public CompressionMethod CompressionAlgorithm;
+        public AlgoEnum CompressionAlgorithm;
     }
 
     public static class Settings
@@ -104,10 +103,10 @@ namespace osrepodbmgr.Core
                                 if(parsedPreferences.TryGetValue("CompressionAlgorithm", out obj))
                                 {
                                     if(!Enum.TryParse(((NSString)obj).ToString(), true, out Current.CompressionAlgorithm))
-                                        Current.CompressionAlgorithm = CompressionMethod.Deflate;
+                                        Current.CompressionAlgorithm = AlgoEnum.GZip;
                                 }
                                 else
-                                    Current.CompressionAlgorithm = CompressionMethod.Deflate;
+                                    Current.CompressionAlgorithm = AlgoEnum.GZip;
                             }
                             else {
                                 SetDefaultSettings();
@@ -142,7 +141,7 @@ namespace osrepodbmgr.Core
                             Current.RepositoryPath = (string)key.GetValue("RepositoryPath");
                             Current.UnArchiverPath = (string)key.GetValue("UnArchiverPath");
                             if(!Enum.TryParse((string)key.GetValue("CompressionAlgorithm"), true, out Current.CompressionAlgorithm))
-                                Current.CompressionAlgorithm = CompressionMethod.Deflate;
+                                Current.CompressionAlgorithm = AlgoEnum.GZip;
                         }
                         break;
                     default:
@@ -246,7 +245,7 @@ namespace osrepodbmgr.Core
             Current.DatabasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepodbmgr.db");
             Current.RepositoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepo");
             Current.UnArchiverPath = null;
-            Current.CompressionAlgorithm = CompressionMethod.Deflate;
+            Current.CompressionAlgorithm = AlgoEnum.GZip;
         }
     }
 }

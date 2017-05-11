@@ -876,33 +876,8 @@ public partial class dlgAdd : Dialog
         Context.dbInfo.update = chkUpdate.Active;
         Context.dbInfo.upgrade = chkUpgrade.Active;
 
-        if(!string.IsNullOrEmpty(Context.tmpFolder) && Context.copyArchive)
-        {
-            thdPulseProgress = new Thread(() =>
-            {
-                while(true)
-                {
-                    Application.Invoke(delegate
-                    {
-                        prgProgress.Pulse();
-                    });
-                    Thread.Sleep(66);
-                }
-            });
-            Workers.UpdateProgress -= UpdateProgress;
-            Workers.UpdateProgress2 -= UpdateProgress2;
-            prgProgress.Text = "Copying archive as is.";
-            thdPulseProgress.Start();
-            prgProgress2.Visible = false;
-            lblProgress2.Visible = false;
-            thdPackFiles = new Thread(Workers.CopyArchive);
-            thdPackFiles.Start();
-        }
-        else
-        {
-            thdPackFiles = new Thread(Workers.CompressFiles);
-            thdPackFiles.Start();
-        }
+        thdPackFiles = new Thread(Workers.CompressFiles);
+        thdPackFiles.Start();
     }
 
     public void PackFilesFinished(string text)
@@ -1056,26 +1031,9 @@ public partial class dlgAdd : Dialog
             btnArchive.Visible = false;
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
-            if(!Context.copyArchive)
-            {
-                thdPulseProgress = new Thread(() =>
-                {
-                    while(true)
-                    {
-                        Application.Invoke(delegate
-                        {
-                            prgProgress.Pulse();
-                        });
-                        Thread.Sleep(66);
-                    }
-                });
-            }
-            else
-            {
-                Workers.UpdateProgress += UpdateProgress;
-                lblProgress.Visible = true;
-                lblProgress2.Visible = true;
-            }
+            Workers.UpdateProgress += UpdateProgress;
+            lblProgress.Visible = true;
+            lblProgress2.Visible = true;
             Workers.Failed -= OpenArchiveFailed;
             Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;

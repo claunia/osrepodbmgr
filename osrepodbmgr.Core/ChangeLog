@@ -1,5 +1,16 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* Context.cs:
+	* Workers.cs:
+	* AlgoEnum.cs:
+	* Settings.cs:
+	* packages.config:
+	* osrepodbmgr.Core.csproj:
+	  Store files separate in the repository instead of
+	  compressing them in ZIP. Supported GZ, BZ2 and LZMA formats.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers.cs:
 	  Refactor: Format.
 

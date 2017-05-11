@@ -1,5 +1,15 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.cs:
+	* frmMain.cs:
+	* dlgSettings.cs:
+	* gtk-gui/generated.cs:
+	* gtk-gui/osrepodbmgr.dlgSettings.cs:
+	  Store files separate in the repository instead of
+	  compressing them in ZIP. Supported GZ, BZ2 and LZMA formats.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* frmMain.cs:
 	* dlgSettings.cs:
 	  Refactor: Sort and remove usings.

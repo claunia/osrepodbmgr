@@ -37,6 +37,9 @@ using DiscImageChef.Checksums;
 using Ionic.Zip;
 using Newtonsoft.Json;
 using Schemas;
+using SharpCompress.Compressors.Deflate;
+using SharpCompress.Compressors.BZip2;
+using SharpCompress.Compressors.LZMA;
 
 namespace osrepodbmgr.Core
 {
@@ -789,27 +792,6 @@ namespace osrepodbmgr.Core
                 string mdid = md5.Data(Encoding.UTF8.GetBytes(destination), out tmp);
                 Console.WriteLine("MDID: {0}", mdid);
 
-                destinationFolder = Settings.Current.RepositoryPath;
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[0].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[1].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[2].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[3].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[4].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-
-                destination = Path.Combine(destinationFolder, mdid) + ".zip";
-
                 if(dbCore.DBOps.ExistsOS(mdid))
                 {
                     if(File.Exists(destination))
@@ -833,13 +815,6 @@ namespace osrepodbmgr.Core
 
                 Context.dbInfo.mdid = mdid;
 
-                ZipFile zf = new ZipFile(destination);
-                zf.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
-                zf.CompressionMethod = Settings.Current.CompressionAlgorithm;
-                zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
-                zf.AlternateEncoding = Encoding.UTF8;
-                zf.AlternateEncodingUsage = ZipOption.Always;
-
                 string filesPath;
 
                 if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
@@ -848,20 +823,82 @@ namespace osrepodbmgr.Core
                     filesPath = Context.path;
 
                 int counter = 0;
-                foreach(string file in Context.files)
+                string extension = null;
+
+                switch(Settings.Current.CompressionAlgorithm)
+                {
+                    case AlgoEnum.GZip:
+                        extension = ".gz";
+                        break;
+                    case AlgoEnum.BZip2:
+                        extension = ".bz2";
+                        break;
+                    case AlgoEnum.LZMA:
+                        extension = ".lzma";
+                        break;
+                }
+
+                foreach(KeyValuePair<string, DBFile> file in Context.hashes)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress("Choosing files...", file, counter, Context.files.Count);
+                        UpdateProgress("Compressing...", file.Value.Path, counter, Context.hashes.Count);
 
-                    FileInfo fi = new FileInfo(file);
+                    destinationFolder = Path.Combine(Settings.Current.RepositoryPath, file.Value.Sha256[0].ToString(), file.Value.Sha256[1].ToString(), file.Value.Sha256[2].ToString(), file.Value.Sha256[3].ToString(), file.Value.Sha256[4].ToString());
+                    Directory.CreateDirectory(destinationFolder);
 
-                    ZipEntry ze = zf.AddFile(file);
-                    ze.AccessedTime = fi.LastAccessTimeUtc;
-                    ze.Attributes = fi.Attributes;
-                    ze.CreationTime = fi.CreationTimeUtc;
-                    ze.EmitTimesInUnixFormatWhenSaving = true;
-                    ze.LastModified = fi.LastWriteTimeUtc;
-                    ze.FileName = file.Substring(filesPath.Length + 1);
+                    destinationFile = Path.Combine(destinationFolder, file.Value.Sha256 + extension);
+
+                    if(!File.Exists(destinationFile))
+                    {
+                        FileStream inFs = new FileStream(Path.Combine(filesPath, file.Value.Path), FileMode.Open, FileAccess.Read);
+                        FileStream outFs = new FileStream(destinationFile, FileMode.CreateNew, FileAccess.Write);
+                        Stream zStream = null;
+
+                        switch(Settings.Current.CompressionAlgorithm)
+                        {
+                            case AlgoEnum.GZip:
+                                zStream = new GZipStream(outFs, SharpCompress.Compressors.CompressionMode.Compress, CompressionLevel.BestCompression);
+                                break;
+                            case AlgoEnum.BZip2:
+                                zStream = new BZip2Stream(outFs, SharpCompress.Compressors.CompressionMode.Compress);
+                                break;
+                            case AlgoEnum.LZMA:
+                                zStream = new LzmaStream(new LzmaEncoderProperties(), false, outFs);
+                                outFs.Write(((LzmaStream)zStream).Properties, 0, ((LzmaStream)zStream).Properties.Length);
+                                outFs.Write(BitConverter.GetBytes(inFs.Length), 0, 8);
+                                break;
+                        }
+
+
+                        byte[] buffer = new byte[bufferSize];
+
+                        while((inFs.Position + bufferSize) <= inFs.Length)
+                        {
+                            if(UpdateProgress2 != null)
+                                UpdateProgress2(string.Format("{0:P}", inFs.Position / (double)inFs.Length),
+                                                string.Format("{0} / {1} bytes", inFs.Position, inFs.Length),
+                                                inFs.Position, inFs.Length);
+
+                            inFs.Read(buffer, 0, buffer.Length);
+                            zStream.Write(buffer, 0, buffer.Length);
+                        }
+
+                        buffer = new byte[inFs.Length - inFs.Position];
+                        if(UpdateProgress2 != null)
+                            UpdateProgress2(string.Format("{0:P}", inFs.Position / (double)inFs.Length),
+                                            string.Format("{0} / {1} bytes", inFs.Position, inFs.Length),
+                                            inFs.Position, inFs.Length);
+
+                        inFs.Read(buffer, 0, buffer.Length);
+                        zStream.Write(buffer, 0, buffer.Length);
+
+                        if(UpdateProgress2 != null)
+                            UpdateProgress2(string.Format("{0:P}", inFs.Length / (double)inFs.Length),
+                                            "Finishing...",inFs.Length, inFs.Length);
+                        
+                        inFs.Close();
+                        zStream.Close();
+                    }
 
                     counter++;
                 }
@@ -873,14 +910,6 @@ namespace osrepodbmgr.Core
                     xs.Serialize(xms, Context.metadata);
                     xms.Position = 0;
 
-                    ZipEntry zx = zf.AddEntry("metadata.xml", xms);
-                    zx.AccessedTime = DateTime.UtcNow;
-                    zx.Attributes = FileAttributes.Normal;
-                    zx.CreationTime = zx.AccessedTime;
-                    zx.EmitTimesInUnixFormatWhenSaving = true;
-                    zx.LastModified = zx.AccessedTime;
-                    zx.FileName = "metadata.xml";
-
                     JsonSerializer js = new JsonSerializer();
                     js.Formatting = Newtonsoft.Json.Formatting.Indented;
                     js.NullValueHandling = NullValueHandling.Ignore;
@@ -890,13 +919,9 @@ namespace osrepodbmgr.Core
                     sw.Close();
                     jms.Position = 0;
 
-                    ZipEntry zj = zf.AddEntry("metadata.json", jms);
-                    zj.AccessedTime = DateTime.UtcNow;
-                    zj.Attributes = FileAttributes.Normal;
-                    zj.CreationTime = zx.AccessedTime;
-                    zj.EmitTimesInUnixFormatWhenSaving = true;
-                    zj.LastModified = zx.AccessedTime;
-                    zj.FileName = "metadata.json";
+                    destinationFolder = Path.Combine(Settings.Current.RepositoryPath, "metadata", mdid[0].ToString(), mdid[1].ToString(),
+                                                     mdid[2].ToString(), mdid[3].ToString(), mdid[4].ToString());
+                    Directory.CreateDirectory(destinationFolder);
 
                     FileStream xfs = new FileStream(Path.Combine(destinationFolder, mdid + ".xml"), FileMode.CreateNew, FileAccess.Write);
                     xms.CopyTo(xfs);
@@ -909,12 +934,8 @@ namespace osrepodbmgr.Core
                     jms.Position = 0;
                 }
 
-                zipCounter = 0;
-                zipCurrentEntryName = "";
-                zf.SaveProgress += Zf_SaveProgress;
-                if(UpdateProgress != null)
-                    UpdateProgress(null, "Saving...", 0, 0);
-                zf.Save();
+                if(FinishedWithText!= null)
+                    FinishedWithText(string.Format("Correctly added operating system with MDID {0}", mdid));
             }
             catch(Exception ex)
             {
@@ -923,30 +944,6 @@ namespace osrepodbmgr.Core
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
-            if(Finished != null)
-                Finished();
-        }
-
-        static void Zf_SaveProgress(object sender, SaveProgressEventArgs e)
-        {
-            if(e.CurrentEntry != null && e.CurrentEntry.FileName != zipCurrentEntryName)
-            {
-                zipCurrentEntryName = e.CurrentEntry.FileName;
-                zipCounter++;
-            }
-
-            if(UpdateProgress != null && e.CurrentEntry != null && e.EntriesTotal > 0)
-                UpdateProgress("Compressing...", e.CurrentEntry.FileName, zipCounter, e.EntriesTotal);
-            if(UpdateProgress2 != null)
-                UpdateProgress2(string.Format("{0:P}", e.BytesTransferred / (double)e.TotalBytesToTransfer),
-                                string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
-                                e.BytesTransferred, e.TotalBytesToTransfer);
-
-            Console.WriteLine("{0}", e.EventType);
-            if(e.EventType == ZipProgressEventType.Error_Saving && Failed != null)
-                Failed("Failed compression");
-            if(e.EventType == ZipProgressEventType.Saving_Completed && FinishedWithText != null)
-                FinishedWithText(e.ArchiveName);
         }
 
         public static void CheckUnar()
@@ -1093,7 +1090,7 @@ namespace osrepodbmgr.Core
                     }
                 }
 
-                Context.copyArchive = false;
+                Context.unzipWithUnAr = false;
                 Context.archiveFormat = format;
                 Context.noFilesInArchive = counter;
 
@@ -1113,14 +1110,14 @@ namespace osrepodbmgr.Core
 
                 if(ZipFile.IsZipFile(Context.path))
                 {
-                    Context.copyArchive = true;
+                    Context.unzipWithUnAr = true;
                     ZipFile zf = ZipFile.Read(Context.path);
                     foreach(ZipEntry ze in zf)
                     {
                         // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
                         if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
                         {
-                            Context.copyArchive = false;
+                            Context.unzipWithUnAr = false;
                             break;
                         }
                     }
@@ -1176,7 +1173,7 @@ namespace osrepodbmgr.Core
             try
             {
                 // If it's a ZIP file not created by Mac OS X, use DotNetZip to uncompress (unar freaks out or corrupts certain ZIP features)
-                if(ZipFile.IsZipFile(Context.path) && Context.copyArchive)
+                if(ZipFile.IsZipFile(Context.path) && Context.unzipWithUnAr)
                 {
                     try
                     {
@@ -1254,189 +1251,6 @@ namespace osrepodbmgr.Core
             Console.WriteLine("{0}", e.EventType);
             if(e.EventType == ZipProgressEventType.Extracting_AfterExtractAll && Finished != null)
                 Finished();
-        }
-
-        public static void CopyArchive()
-        {
-            try
-            {
-                if(string.IsNullOrWhiteSpace(Context.dbInfo.developer))
-                {
-                    if(Failed != null)
-                        Failed("Developer cannot be empty");
-                    return;
-                }
-
-                if(string.IsNullOrWhiteSpace(Context.dbInfo.product))
-                {
-                    if(Failed != null)
-                        Failed("Product cannot be empty");
-                    return;
-                }
-
-                if(string.IsNullOrWhiteSpace(Context.dbInfo.version))
-                {
-                    if(Failed != null)
-                        Failed("Version cannot be empty");
-                    return;
-                }
-
-                string destinationFolder = "";
-                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.developer);
-                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.product);
-                destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.version);
-                if(!string.IsNullOrWhiteSpace(Context.dbInfo.languages))
-                {
-                    destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.languages);
-                }
-                if(!string.IsNullOrWhiteSpace(Context.dbInfo.architecture))
-                {
-                    destinationFolder = Path.Combine(destinationFolder, Context.dbInfo.architecture);
-                }
-                if(Context.dbInfo.oem)
-                {
-                    destinationFolder = Path.Combine(destinationFolder, "oem");
-                }
-                if(!string.IsNullOrWhiteSpace(Context.dbInfo.machine))
-                {
-                    destinationFolder = Path.Combine(destinationFolder, "for " + Context.dbInfo.machine);
-                }
-
-                string destinationFile = "";
-                if(!string.IsNullOrWhiteSpace(Context.dbInfo.format))
-                    destinationFile += "[" + Context.dbInfo.format + "]";
-                if(Context.dbInfo.files)
-                {
-                    if(destinationFile != "")
-                        destinationFile += "_";
-                    destinationFile += "files";
-                }
-                if(Context.dbInfo.netinstall)
-                {
-                    if(destinationFile != "")
-                        destinationFile += "_";
-                    destinationFile += "netinstall";
-                }
-                if(Context.dbInfo.source)
-                {
-                    if(destinationFile != "")
-                        destinationFile += "_";
-                    destinationFile += "source";
-                }
-                if(Context.dbInfo.update)
-                {
-                    if(destinationFile != "")
-                        destinationFile += "_";
-                    destinationFile += "update";
-                }
-                if(Context.dbInfo.upgrade)
-                {
-                    if(destinationFile != "")
-                        destinationFile += "_";
-                    destinationFile += "upgrade";
-                }
-                if(!string.IsNullOrWhiteSpace(Context.dbInfo.description))
-                {
-                    if(destinationFile != "")
-                        destinationFile += "_";
-                    destinationFile += Context.dbInfo.description;
-                }
-                else if(destinationFile == "")
-                {
-                    destinationFile = "archive";
-                }
-
-                string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
-
-                MD5Context md5 = new MD5Context();
-                md5.Init();
-                byte[] tmp;
-                string mdid = md5.Data(Encoding.UTF8.GetBytes(destination), out tmp);
-                Console.WriteLine("MDID: {0}", mdid);
-
-                destinationFolder = Settings.Current.RepositoryPath;
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[0].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[1].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[2].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[3].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-                destinationFolder = Path.Combine(destinationFolder, mdid[4].ToString());
-                if(!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-
-                destination = Path.Combine(destinationFolder, mdid) + ".zip";
-
-                if(dbCore.DBOps.ExistsOS(mdid))
-                {
-                    if(File.Exists(destination))
-                    {
-                        if(Failed != null)
-                            Failed("OS already exists.");
-                        return;
-                    }
-
-                    if(Failed != null)
-                        Failed("OS already exists in the database but not in the repository, check for inconsistencies.");
-                    return;
-                }
-
-                if(File.Exists(destination))
-                {
-                    if(Failed != null)
-                        Failed("OS already exists in the repository but not in the database, check for inconsistencies.");
-                    return;
-                }
-
-                Context.dbInfo.mdid = mdid;
-
-                File.Copy(Context.path, destination);
-
-                if(Context.metadata != null)
-                {
-                    MemoryStream xms = new MemoryStream();
-                    XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
-                    xs.Serialize(xms, Context.metadata);
-                    xms.Position = 0;
-
-                    JsonSerializer js = new JsonSerializer();
-                    js.Formatting = Newtonsoft.Json.Formatting.Indented;
-                    js.NullValueHandling = NullValueHandling.Ignore;
-                    MemoryStream jms = new MemoryStream();
-                    StreamWriter sw = new StreamWriter(jms, Encoding.UTF8, 1048576, true);
-                    js.Serialize(sw, Context.metadata, typeof(CICMMetadataType));
-                    sw.Close();
-                    jms.Position = 0;
-
-                    FileStream xfs = new FileStream(Path.Combine(destinationFolder, mdid + ".xml"), FileMode.CreateNew, FileAccess.Write);
-                    xms.CopyTo(xfs);
-                    xfs.Close();
-                    FileStream jfs = new FileStream(Path.Combine(destinationFolder, mdid + ".json"), FileMode.CreateNew, FileAccess.Write);
-                    jms.CopyTo(jfs);
-                    jfs.Close();
-
-                    xms.Position = 0;
-                    jms.Position = 0;
-                }
-
-                if(FinishedWithText != null)
-                    FinishedWithText(destination);
-            }
-            catch(Exception ex)
-            {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-            }
         }
 
         public static void RemoveTempFolder()

@@ -309,7 +309,7 @@ namespace osrepodbmgr
 			global::Gtk.ButtonBox.ButtonBoxChild w30 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.btnDialog]));
 			w30.Expand = false;
 			w30.Fill = false;
-			if((this.Child != null))
+			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}

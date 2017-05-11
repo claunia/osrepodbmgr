@@ -43,7 +43,7 @@ namespace osrepodbmgr.Core
         public static long noFilesInArchive;
         public static string archiveFormat;
         public static Process unarProcess;
-        public static bool copyArchive;
+        public static bool unzipWithUnAr;
         public static string selectedFile;
         public static OpticalDiscType workingDisc;
         public static BlockMediaType workingDisk;

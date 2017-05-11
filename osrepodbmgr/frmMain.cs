@@ -253,6 +253,8 @@ namespace osrepodbmgr
 
         protected void OnBtnExtractClicked(object sender, EventArgs e)
         {
+            throw new NotImplementedException();
+            /*
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
@@ -305,7 +307,7 @@ namespace osrepodbmgr
                 }
                 else
                     dlgFolder.Destroy();
-            }
+            }*/
         }
 
         public void ExtractArchiveFailed(string text)
@@ -346,7 +348,7 @@ namespace osrepodbmgr
 
                 Context.userExtracting = false;
                 Context.tmpFolder = null;
-                Context.copyArchive = false;
+                //Context.copyArchive = false;
                 Context.path = null;
             });
         }
@@ -391,13 +393,15 @@ namespace osrepodbmgr
 
                 Context.userExtracting = false;
                 Context.tmpFolder = null;
-                Context.copyArchive = false;
+                //Context.copyArchive = false;
                 Context.path = null;
             });
         }
 
         protected void OnBtnSaveClicked(object sender, EventArgs e)
         {
+            throw new NotImplementedException();
+            /*
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
@@ -447,7 +451,7 @@ namespace osrepodbmgr
                 }
                 else
                     dlgFolder.Destroy();
-            }
+            }*/
         }
 
         public void CopyFileFailed(string text)
@@ -485,7 +489,7 @@ namespace osrepodbmgr
 
                 Context.userExtracting = false;
                 Context.tmpFolder = null;
-                Context.copyArchive = false;
+                //Context.copyArchive = false;
                 Context.path = null;
             });
         }
@@ -527,7 +531,7 @@ namespace osrepodbmgr
 
                 Context.userExtracting = false;
                 Context.tmpFolder = null;
-                Context.copyArchive = false;
+                //Context.copyArchive = false;
                 Context.path = null;
             });
         }

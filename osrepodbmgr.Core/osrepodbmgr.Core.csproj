@@ -42,6 +42,9 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Data" />
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\SharpCompress.0.15.2\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +61,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="AlgoEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
