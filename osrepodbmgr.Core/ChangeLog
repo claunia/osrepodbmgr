@@ -1,3 +1,8 @@
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* Workers.cs:
+	  Correct progress bar on compression.
+
 2017-05-10  Natalia Portillo  <claunia@claunia.com>
 
 	* Context.cs:

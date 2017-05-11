@@ -929,7 +929,7 @@ namespace osrepodbmgr.Core
                 zipCounter++;
             }
 
-            if(UpdateProgress != null && e.CurrentEntry != null)
+            if(UpdateProgress != null && e.CurrentEntry != null && e.EntriesTotal > 0)
                 UpdateProgress("Compressing...", e.CurrentEntry.FileName, zipCounter, e.EntriesTotal);
             if(UpdateProgress2 != null)
                 UpdateProgress2(string.Format("{0:P}", e.BytesTransferred / (double)e.TotalBytesToTransfer),
