@@ -892,6 +892,7 @@ public partial class frmAdd : Dialog
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
             prgProgress.Text = "Copying archive as is.";
+            thdPulseProgress.Start();
             prgProgress2.Visible = false;
             lblProgress2.Visible = false;
             thdPackFiles = new Thread(Workers.CopyArchive);

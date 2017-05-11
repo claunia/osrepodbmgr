@@ -1427,8 +1427,8 @@ namespace osrepodbmgr.Core
                     jms.Position = 0;
                 }
 
-                if(Finished != null)
-                    Finished();
+                if(FinishedWithText != null)
+                    FinishedWithText(destination);
             }
             catch(Exception ex)
             {
@@ -1500,7 +1500,7 @@ namespace osrepodbmgr.Core
                 }
 
                 FileStream inFs = new FileStream(Context.path, FileMode.Open, FileAccess.Read);
-                FileStream outFs = new FileStream(Context.path, FileMode.Create, FileAccess.Write);
+                FileStream outFs = new FileStream(Context.tmpFolder, FileMode.Create, FileAccess.Write);
 
                 byte[] buffer = new byte[bufferSize];
 

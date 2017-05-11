@@ -1,6 +1,11 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* Workers.cs:
+	  Corrected file copy and extract.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* Workers.cs:
 	  Inform main window that an OS has been added.
 
 2017-05-11  Natalia Portillo  <claunia@claunia.com>

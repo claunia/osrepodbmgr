@@ -256,7 +256,7 @@ namespace osrepodbmgr
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
-                Context.path = (string)osView.GetValue(osIter, 18);
+                Context.path = (string)osView.GetValue(osIter, 16);
 
                 if(!File.Exists(Context.path))
                 {
@@ -272,11 +272,11 @@ namespace osrepodbmgr
 
                 if(dlgFolder.Run() == (int)ResponseType.Accept)
                 {
-                    dlgFolder.Destroy();
-
                     Context.userExtracting = true;
                     Context.tmpFolder = dlgFolder.Filename;
                     Context.copyArchive = true;
+
+                    dlgFolder.Destroy();
 
                     lblProgress.Visible = true;
                     lblProgress2.Visible = true;
@@ -384,15 +384,15 @@ namespace osrepodbmgr
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
 
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
+                                                         string.Format("Correctly extracted to {0}", Context.tmpFolder));
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+
                 Context.userExtracting = false;
                 Context.tmpFolder = null;
                 Context.copyArchive = false;
                 Context.path = null;
-
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
-                                                         string.Format("Correctly extracted to {0}", Context.tmpFolder));
-                dlgMsg.Run();
-                dlgMsg.Destroy();
             });
         }
 
@@ -401,7 +401,7 @@ namespace osrepodbmgr
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
-                Context.path = (string)osView.GetValue(osIter, 18);
+                Context.path = (string)osView.GetValue(osIter, 16);
 
                 if(!File.Exists(Context.path))
                 {
@@ -417,11 +417,11 @@ namespace osrepodbmgr
 
                 if(dlgFolder.Run() == (int)ResponseType.Accept)
                 {
-                    dlgFolder.Destroy();
-
                     Context.userExtracting = true;
                     Context.tmpFolder = dlgFolder.Filename;
                     Context.copyArchive = true;
+
+                    dlgFolder.Destroy();
 
                     lblProgress.Visible = true;
                     prgProgress.Visible = true;
@@ -520,15 +520,15 @@ namespace osrepodbmgr
                 Workers.Finished -= CopyFileFinished;
                 Workers.UpdateProgress -= UpdateProgress;
 
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
+                                                         string.Format("Correctly saved as {0}", Context.tmpFolder));
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+
                 Context.userExtracting = false;
                 Context.tmpFolder = null;
                 Context.copyArchive = false;
                 Context.path = null;
-
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
-                                                         string.Format("Correctly saved as {0}", Context.tmpFolder));
-                dlgMsg.Run();
-                dlgMsg.Destroy();
             });
         }
 

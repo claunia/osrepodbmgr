@@ -2,6 +2,12 @@
 
 	* frmAdd.cs:
 	* frmMain.cs:
+	  Corrected file copy and extract.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* frmAdd.cs:
+	* frmMain.cs:
 	  Inform main window that an OS has been added.
 
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
