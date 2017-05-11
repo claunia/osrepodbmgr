@@ -4,13 +4,13 @@ namespace osrepodbmgr
 {
 	public partial class frmHelp
 	{
-		private global::Gtk.VBox vbox4;
-
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 
 		private global::Gtk.TextView txtHelp;
 
 		private global::Gtk.Button btnOK;
+
+		private global::Gtk.Button btnDialog;
 
 		protected virtual void Build()
 		{
@@ -20,11 +20,10 @@ namespace osrepodbmgr
 			this.Title = global::Mono.Unix.Catalog.GetString("Help");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
-			this.Modal = true;
-			// Container child osrepodbmgr.frmHelp.Gtk.Container+ContainerChild
-			this.vbox4 = new global::Gtk.VBox();
-			this.vbox4.Name = "vbox4";
-			this.vbox4.Spacing = 6;
+			// Internal child osrepodbmgr.frmHelp.VBox
+			global::Gtk.VBox w1 = this.VBox;
+			w1.Name = "vbox4";
+			w1.Spacing = 6;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -36,9 +35,9 @@ namespace osrepodbmgr
 			this.txtHelp.Name = "txtHelp";
 			this.txtHelp.Editable = false;
 			this.GtkScrolledWindow.Add(this.txtHelp);
-			this.vbox4.Add(this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.GtkScrolledWindow]));
-			w2.Position = 0;
+			w1.Add(this.GtkScrolledWindow);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1[this.GtkScrolledWindow]));
+			w3.Position = 0;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.btnOK = new global::Gtk.Button();
 			this.btnOK.CanFocus = true;
@@ -46,18 +45,31 @@ namespace osrepodbmgr
 			this.btnOK.UseStock = true;
 			this.btnOK.UseUnderline = true;
 			this.btnOK.Label = "gtk-ok";
-			this.vbox4.Add(this.btnOK);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.btnOK]));
-			w3.Position = 1;
-			w3.Expand = false;
-			w3.Fill = false;
-			this.Add(this.vbox4);
+			w1.Add(this.btnOK);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1[this.btnOK]));
+			w4.Position = 1;
+			w4.Expand = false;
+			w4.Fill = false;
+			// Internal child osrepodbmgr.frmHelp.ActionArea
+			global::Gtk.HButtonBox w5 = this.ActionArea;
+			w5.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
+			// Container child __gtksharp_108_Stetic_TopLevelDialog_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+			this.btnDialog = new global::Gtk.Button();
+			this.btnDialog.CanFocus = true;
+			this.btnDialog.Name = "btnDialog";
+			this.btnDialog.UseUnderline = true;
+			this.btnDialog.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
+			this.AddActionWidget(this.btnDialog, 0);
+			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5[this.btnDialog]));
+			w6.Expand = false;
+			w6.Fill = false;
 			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 400;
 			this.DefaultHeight = 300;
+			w5.Hide();
 			this.Show();
 			this.btnOK.Clicked += new global::System.EventHandler(this.OnBtnOKClicked);
 		}

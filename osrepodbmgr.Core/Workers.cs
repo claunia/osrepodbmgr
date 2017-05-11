@@ -455,6 +455,44 @@ namespace osrepodbmgr.Core
             }
         }
 
+        public static void GetAllOSes()
+        {
+            try
+            {
+                List<DBEntry> oses;
+                dbCore.DBOps.GetAllOSes(out oses);
+
+                if(AddOS != null)
+                {
+                    int counter = 0;
+                    // TODO: Check file name and existence
+                    foreach(DBEntry os in oses)
+                    {
+                        if(UpdateProgress != null)
+                            UpdateProgress("Populating OSes table", string.Format("{0} {1}", os.developer, os.product), counter, oses.Count);
+                        string destination = Path.Combine(Settings.Current.RepositoryPath, os.mdid[0].ToString(),
+                                                          os.mdid[1].ToString(), os.mdid[2].ToString(), os.mdid[3].ToString(),
+                                                          os.mdid[4].ToString(), os.mdid) + ".zip";
+
+                        if(AddOS != null)
+                            AddOS(os, File.Exists(destination), destination);
+
+                        counter++;
+                    }
+                }
+
+                if(Finished != null)
+                    Finished();
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
         public static void CheckDbForFiles()
         {
             try
@@ -515,62 +553,9 @@ namespace osrepodbmgr.Core
                     // TODO: Check file name and existence
                     foreach(DBEntry os in oses)
                     {
-                        string destinationFolder;
-                        destinationFolder = Path.Combine(Settings.Current.RepositoryPath, os.developer, os.product, os.version);
-                        if(!string.IsNullOrWhiteSpace(os.languages))
-                            destinationFolder = Path.Combine(destinationFolder, os.languages);
-                        if(!string.IsNullOrWhiteSpace(os.architecture))
-                            destinationFolder = Path.Combine(destinationFolder, os.architecture);
-                        if(os.oem)
-                            destinationFolder = Path.Combine(destinationFolder, "oem");
-                        if(!string.IsNullOrWhiteSpace(os.machine))
-                            destinationFolder = Path.Combine(destinationFolder, "for " + os.machine);
-
-                        string destinationFile = "";
-                        if(!string.IsNullOrWhiteSpace(os.format))
-                            destinationFile += "[" + os.format + "]";
-                        if(os.files)
-                        {
-                            if(destinationFile != "")
-                                destinationFile += "_";
-                            destinationFile += "files";
-                        }
-                        if(os.netinstall)
-                        {
-                            if(destinationFile != "")
-                                destinationFile += "_";
-                            destinationFile += "netinstall";
-                        }
-                        if(os.source)
-                        {
-                            if(destinationFile != "")
-                                destinationFile += "_";
-                            destinationFile += "source";
-                        }
-                        if(os.update)
-                        {
-                            if(destinationFile != "")
-                                destinationFile += "_";
-                            destinationFile += "update";
-                        }
-                        if(os.upgrade)
-                        {
-                            if(destinationFile != "")
-                                destinationFile += "_";
-                            destinationFile += "upgrade";
-                        }
-                        if(!string.IsNullOrWhiteSpace(os.description))
-                        {
-                            if(destinationFile != "")
-                                destinationFile += "_";
-                            destinationFile += os.description;
-                        }
-                        else if(destinationFile == "")
-                        {
-                            destinationFile = "archive";
-                        }
-
-                        string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
+                        string destination = Path.Combine(Settings.Current.RepositoryPath, os.mdid[0].ToString(),
+                                                          os.mdid[1].ToString(), os.mdid[2].ToString(), os.mdid[3].ToString(),
+                                                          os.mdid[4].ToString(), os.mdid) + ".zip";
 
                         if(AddOS != null)
                             AddOS(os, File.Exists(destination), destination);
@@ -1156,13 +1141,6 @@ namespace osrepodbmgr.Core
 
         public static void ExtractArchive()
         {
-            if(!Context.unarUsable)
-            {
-                if(Failed != null)
-                    Failed("The UnArchiver is not correctly installed");
-                return;
-            }
-
             if(!File.Exists(Context.path))
             {
                 if(Failed != null)
@@ -1177,7 +1155,12 @@ namespace osrepodbmgr.Core
                 return;
             }
 
-            string tmpFolder = Path.Combine(Settings.Current.TemporaryFolder, Path.GetRandomFileName());
+            string tmpFolder;
+
+            if(Context.userExtracting)
+                tmpFolder = Context.tmpFolder;
+            else
+                tmpFolder = Path.Combine(Settings.Current.TemporaryFolder, Path.GetRandomFileName());
 
             try
             {
@@ -1214,6 +1197,13 @@ namespace osrepodbmgr.Core
                 }
                 else
                 {
+                    if(!Context.unarUsable)
+                    {
+                        if(Failed != null)
+                            Failed("The UnArchiver is not correctly installed");
+                        return;
+                    }
+
                     Context.unarProcess = new Process();
                     Context.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
                     Context.unarProcess.StartInfo.CreateNoWindow = true;
@@ -1437,6 +1427,9 @@ namespace osrepodbmgr.Core
                     xms.Position = 0;
                     jms.Position = 0;
                 }
+
+                if(Finished != null)
+                    Finished();
             }
             catch(Exception ex)
             {
@@ -1445,8 +1438,6 @@ namespace osrepodbmgr.Core
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
-            if(Finished != null)
-                Finished();
         }
 
         public static void RemoveTempFolder()
@@ -1459,6 +1450,82 @@ namespace osrepodbmgr.Core
                     if(Finished != null)
                         Finished();
                 }
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
+        public static void RemoveOS(long id, string mdid)
+        {
+            if(id == 0 || string.IsNullOrWhiteSpace(mdid))
+                return;
+            
+            string destination = Path.Combine(Settings.Current.RepositoryPath, mdid[0].ToString(),
+                                  mdid[1].ToString(), mdid[2].ToString(), mdid[3].ToString(),
+                                  mdid[4].ToString(), mdid) + ".zip";
+
+            if(File.Exists(destination))
+                File.Delete(destination);
+
+            dbCore.DBOps.RemoveOS(id);
+        }
+
+        public static void CopyFile()
+        {
+            try
+            {
+                if(!File.Exists(Context.path))
+                {
+                    if(Failed != null)
+                        Failed("Specified file cannot be found");
+                    return;
+                }
+
+                if(string.IsNullOrWhiteSpace(Context.tmpFolder))
+                {
+                    if(Failed != null)
+                        Failed("Destination cannot be empty");
+                    return;
+                }
+
+                if(Directory.Exists(Context.tmpFolder))
+                {
+                    if(Failed != null)
+                        Failed("Destination cannot be a folder");
+                    return;
+                }
+
+                FileStream inFs = new FileStream(Context.path, FileMode.Open, FileAccess.Read);
+                FileStream outFs = new FileStream(Context.path, FileMode.Create, FileAccess.Write);
+
+                byte[] buffer = new byte[bufferSize];
+
+                while((inFs.Position + bufferSize) <= inFs.Length)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress("Copying file...", string.Format("{0} / {1} bytes", inFs.Position, inFs.Length), inFs.Position, inFs.Length);
+
+                    inFs.Read(buffer, 0, buffer.Length);
+                    outFs.Write(buffer, 0, buffer.Length);
+                }
+
+                buffer = new byte[inFs.Length - inFs.Position];
+                if(UpdateProgress != null)
+                    UpdateProgress("Copying file...", string.Format("{0} / {1} bytes", inFs.Position, inFs.Length), inFs.Position, inFs.Length);
+
+                inFs.Read(buffer, 0, buffer.Length);
+                outFs.Write(buffer, 0, buffer.Length);
+
+                inFs.Close();
+                outFs.Close();
+
+                if(Finished != null)
+                    Finished();
             }
             catch(Exception ex)
             {

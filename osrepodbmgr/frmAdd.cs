@@ -36,7 +36,7 @@ using osrepodbmgr;
 using osrepodbmgr.Core;
 using Schemas;
 
-public partial class frmAdd : Window
+public partial class frmAdd : Dialog
 {
     Thread thdPulseProgress;
     Thread thdFindFiles;
@@ -51,11 +51,9 @@ public partial class frmAdd : Window
     ListStore fileView;
     ListStore osView;
 
-    public frmAdd() : base(WindowType.Toplevel)
+    public frmAdd()
     {
         Build();
-
-        Workers.InitDB();
 
         Context.UnarChangeStatus += UnarChangeStatus;
         Context.CheckUnar();
@@ -141,18 +139,12 @@ public partial class frmAdd : Window
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
     {
         if(btnStop.Visible)
-            OnBtnStopClicked(sender, a);
+            btnStop.Click();
         if(btnClose.Sensitive)
-            OnBtnCloseClicked(sender, a);
+            btnClose.Click();
 
         Application.Quit();
         a.RetVal = true;
-    }
-
-    protected void OnBtnHelpClicked(object sender, EventArgs e)
-    {
-        frmHelp _help = new frmHelp();
-        _help.Show();
     }
 
     protected void OnBtnFolderClicked(object sender, EventArgs e)
@@ -170,7 +162,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = false;
             btnFolder.Visible = false;
             btnArchive.Visible = false;
-            btnSettings.Sensitive = false;
             thdPulseProgress = new Thread(() =>
             {
                 while(true)
@@ -212,7 +203,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
-            btnSettings.Sensitive = true;
             Workers.Failed -= FindFilesFailed;
             Workers.Finished -= FindFilesFinished;
             thdFindFiles = null;
@@ -267,7 +257,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
-            btnSettings.Sensitive = true;
             thdHashFiles = null;
         });
     }
@@ -360,7 +349,6 @@ public partial class frmAdd : Window
             btnStop.Visible = false;
             btnClose.Visible = true;
             btnExit.Sensitive = true;
-            btnSettings.Sensitive = true;
             btnAdd.Visible = true;
             btnPack.Visible = true;
             btnPack.Sensitive = true;
@@ -461,9 +449,9 @@ public partial class frmAdd : Window
     protected void OnBtnExitClicked(object sender, EventArgs e)
     {
         if(btnClose.Sensitive)
-            OnBtnCloseClicked(sender, e);
+            btnClose.Click();
 
-        Application.Quit();
+        btnDialog.Click();
     }
 
     protected void OnBtnCloseClicked(object sender, EventArgs e)
@@ -651,13 +639,11 @@ public partial class frmAdd : Window
         btnExit.Sensitive = true;
         btnFolder.Visible = true;
         btnArchive.Visible = true;
-        btnSettings.Sensitive = true;
         lblProgress.Visible = false;
         prgProgress.Visible = false;
         btnExit.Sensitive = true;
         btnFolder.Visible = true;
         btnArchive.Visible = true;
-        btnSettings.Sensitive = true;
         Workers.Failed -= FindFilesFailed;
         Workers.Failed -= HashFilesFailed;
         Workers.Failed -= ChkFilesFailed;
@@ -679,7 +665,7 @@ public partial class frmAdd : Window
         btnStop.Visible = false;
         if(fileView != null)
             fileView.Clear();
-        if(osView != null)
+        if(osView != null && tabTabs != null && tabTabs.GetNthPage(1) != null)
         {
             tabTabs.GetNthPage(1).Visible = false;
             osView.Clear();
@@ -837,12 +823,6 @@ public partial class frmAdd : Window
 
             ChkFilesFinished();
         });
-    }
-
-    protected void OnBtnSettingsClicked(object sender, EventArgs e)
-    {
-        frmSettings _frmSettings = new frmSettings();
-        _frmSettings.Show();
     }
 
     protected void OnBtnPackClicked(object sender, EventArgs e)
@@ -1009,7 +989,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = false;
             btnFolder.Visible = false;
             btnArchive.Visible = false;
-            btnSettings.Sensitive = false;
             thdPulseProgress = new Thread(() =>
             {
                 while(true)
@@ -1051,7 +1030,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
-            btnSettings.Sensitive = true;
             Workers.Failed -= OpenArchiveFailed;
             Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;
@@ -1069,7 +1047,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = false;
             btnFolder.Visible = false;
             btnArchive.Visible = false;
-            btnSettings.Sensitive = false;
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
             if(!Context.copyArchive)
@@ -1121,7 +1098,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
-            btnSettings.Sensitive = true;
             Workers.Failed -= ExtractArchiveFailed;
             Workers.Finished -= ExtractArchiveFinished;
             Workers.UpdateProgress -= UpdateProgress;
@@ -1166,7 +1142,6 @@ public partial class frmAdd : Window
             btnExit.Sensitive = false;
             btnFolder.Visible = false;
             btnArchive.Visible = false;
-            btnSettings.Sensitive = false;
             Workers.Failed -= ExtractArchiveFailed;
             Workers.Finished -= ExtractArchiveFinished;
             Workers.UpdateProgress -= UpdateProgress;

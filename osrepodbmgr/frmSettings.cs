@@ -34,12 +34,11 @@ using Ionic.Zip;
 
 namespace osrepodbmgr
 {
-    public partial class frmSettings : Window
+    public partial class frmSettings : Dialog
     {
         string oldUnarPath;
 
-        public frmSettings() :
-                base(WindowType.Toplevel)
+        public frmSettings()
         {
             Build();
             txtTmp.Text = Core.Settings.Current.TemporaryFolder;
@@ -77,7 +76,7 @@ namespace osrepodbmgr
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
         {
-            Destroy();
+            btnDialog.Click();
         }
 
         protected void OnBtnApplyClicked(object sender, EventArgs e)
@@ -92,7 +91,7 @@ namespace osrepodbmgr
             Core.Workers.CloseDB();
             Core.Workers.InitDB();
             Context.CheckUnar();
-            Destroy();
+            btnDialog.Click();
         }
 
         protected void OnBtnUnarClicked(object sender, EventArgs e)

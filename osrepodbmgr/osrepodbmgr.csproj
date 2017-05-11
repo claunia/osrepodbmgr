@@ -80,6 +80,8 @@
     <Compile Include="dlgOpticalDisc.cs" />
     <Compile Include="gtk-gui\osrepodbmgr.dlgOpticalDisc.cs" />
     <Compile Include="gtk-gui\frmAdd.cs" />
+    <Compile Include="frmMain.cs" />
+    <Compile Include="gtk-gui\osrepodbmgr.frmMain.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

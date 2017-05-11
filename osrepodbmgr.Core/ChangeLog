@@ -1,6 +1,13 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* DBOps.cs:
+	* Context.cs:
+	* Workers.cs:
+	  Added a main window to handle everything from there.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* DBOps.cs:
 	* Schema.cs:
 	* Workers.cs:
 	  Change to opaque repo, where the created files are a hash of

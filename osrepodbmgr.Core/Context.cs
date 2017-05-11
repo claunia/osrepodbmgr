@@ -49,6 +49,7 @@ namespace osrepodbmgr.Core
         public static OpticalDiscType workingDisc;
         public static BlockMediaType workingDisk;
         public static CICMMetadataType metadata;
+        public static bool userExtracting;
 
         public delegate void UnarChangeStatusDelegate();
         public static event UnarChangeStatusDelegate UnarChangeStatus;

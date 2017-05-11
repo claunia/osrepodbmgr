@@ -354,6 +354,34 @@ namespace osrepodbmgr.Core
             return true;
         }
 
+        public bool RemoveOS(long id)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            dbcmd = dbCon.CreateCommand();
+            trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            sql = string.Format("DELETE FROM oses WHERE id = '{0}';", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
 
         public bool CreateTableForOS(long id)
         {

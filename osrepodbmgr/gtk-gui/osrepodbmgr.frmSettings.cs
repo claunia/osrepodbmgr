@@ -4,8 +4,6 @@ namespace osrepodbmgr
 {
 	public partial class frmSettings
 	{
-		private global::Gtk.VBox vbox5;
-
 		private global::Gtk.HBox hbox26;
 
 		private global::Gtk.Label lblDatabase;
@@ -52,17 +50,19 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnApply;
 
+		private global::Gtk.Button btnDialog;
+
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
 			// Widget osrepodbmgr.frmSettings
 			this.Name = "osrepodbmgr.frmSettings";
-			this.Title = global::Mono.Unix.Catalog.GetString("frmSettings");
+			this.Title = global::Mono.Unix.Catalog.GetString("Settings");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
-			// Container child osrepodbmgr.frmSettings.Gtk.Container+ContainerChild
-			this.vbox5 = new global::Gtk.VBox();
-			this.vbox5.Name = "vbox5";
-			this.vbox5.Spacing = 6;
+			// Internal child osrepodbmgr.frmSettings.VBox
+			global::Gtk.VBox w1 = this.VBox;
+			w1.Name = "vbox5";
+			w1.Spacing = 6;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox26 = new global::Gtk.HBox();
 			this.hbox26.Name = "hbox26";
@@ -72,10 +72,10 @@ namespace osrepodbmgr
 			this.lblDatabase.Name = "lblDatabase";
 			this.lblDatabase.LabelProp = global::Mono.Unix.Catalog.GetString("Database file");
 			this.hbox26.Add(this.lblDatabase);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox26[this.lblDatabase]));
-			w1.Position = 0;
-			w1.Expand = false;
-			w1.Fill = false;
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox26[this.lblDatabase]));
+			w2.Position = 0;
+			w2.Expand = false;
+			w2.Fill = false;
 			// Container child hbox26.Gtk.Box+BoxChild
 			this.txtDatabase = new global::Gtk.Entry();
 			this.txtDatabase.CanFocus = true;
@@ -83,27 +83,27 @@ namespace osrepodbmgr
 			this.txtDatabase.IsEditable = true;
 			this.txtDatabase.InvisibleChar = '●';
 			this.hbox26.Add(this.txtDatabase);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox26[this.txtDatabase]));
-			w2.Position = 1;
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox26[this.txtDatabase]));
+			w3.Position = 1;
 			// Container child hbox26.Gtk.Box+BoxChild
 			this.btnDatabase = new global::Gtk.Button();
 			this.btnDatabase.CanFocus = true;
 			this.btnDatabase.Name = "btnDatabase";
 			this.btnDatabase.UseUnderline = true;
 			this.btnDatabase.Label = global::Mono.Unix.Catalog.GetString("Choose");
-			global::Gtk.Image w3 = new global::Gtk.Image();
-			w3.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
-			this.btnDatabase.Image = w3;
+			global::Gtk.Image w4 = new global::Gtk.Image();
+			w4.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
+			this.btnDatabase.Image = w4;
 			this.hbox26.Add(this.btnDatabase);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox26[this.btnDatabase]));
-			w4.Position = 2;
-			w4.Expand = false;
-			w4.Fill = false;
-			this.vbox5.Add(this.hbox26);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox26]));
-			w5.Position = 0;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox26[this.btnDatabase]));
+			w5.Position = 2;
 			w5.Expand = false;
 			w5.Fill = false;
+			w1.Add(this.hbox26);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(w1[this.hbox26]));
+			w6.Position = 0;
+			w6.Expand = false;
+			w6.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox25 = new global::Gtk.HBox();
 			this.hbox25.Name = "hbox25";
@@ -113,10 +113,10 @@ namespace osrepodbmgr
 			this.lblRepository.Name = "lblRepository";
 			this.lblRepository.LabelProp = global::Mono.Unix.Catalog.GetString("Repository folder");
 			this.hbox25.Add(this.lblRepository);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox25[this.lblRepository]));
-			w6.Position = 0;
-			w6.Expand = false;
-			w6.Fill = false;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox25[this.lblRepository]));
+			w7.Position = 0;
+			w7.Expand = false;
+			w7.Fill = false;
 			// Container child hbox25.Gtk.Box+BoxChild
 			this.txtRepository = new global::Gtk.Entry();
 			this.txtRepository.CanFocus = true;
@@ -124,27 +124,27 @@ namespace osrepodbmgr
 			this.txtRepository.IsEditable = true;
 			this.txtRepository.InvisibleChar = '●';
 			this.hbox25.Add(this.txtRepository);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox25[this.txtRepository]));
-			w7.Position = 1;
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox25[this.txtRepository]));
+			w8.Position = 1;
 			// Container child hbox25.Gtk.Box+BoxChild
 			this.btnRepository = new global::Gtk.Button();
 			this.btnRepository.CanFocus = true;
 			this.btnRepository.Name = "btnRepository";
 			this.btnRepository.UseUnderline = true;
 			this.btnRepository.Label = global::Mono.Unix.Catalog.GetString("Choose");
-			global::Gtk.Image w8 = new global::Gtk.Image();
-			w8.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
-			this.btnRepository.Image = w8;
+			global::Gtk.Image w9 = new global::Gtk.Image();
+			w9.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
+			this.btnRepository.Image = w9;
 			this.hbox25.Add(this.btnRepository);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox25[this.btnRepository]));
-			w9.Position = 2;
-			w9.Expand = false;
-			w9.Fill = false;
-			this.vbox5.Add(this.hbox25);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox25]));
-			w10.Position = 1;
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox25[this.btnRepository]));
+			w10.Position = 2;
 			w10.Expand = false;
 			w10.Fill = false;
+			w1.Add(this.hbox25);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(w1[this.hbox25]));
+			w11.Position = 1;
+			w11.Expand = false;
+			w11.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox24 = new global::Gtk.HBox();
 			this.hbox24.Name = "hbox24";
@@ -154,10 +154,10 @@ namespace osrepodbmgr
 			this.lblTmp.Name = "lblTmp";
 			this.lblTmp.LabelProp = global::Mono.Unix.Catalog.GetString("Temporary folder");
 			this.hbox24.Add(this.lblTmp);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox24[this.lblTmp]));
-			w11.Position = 0;
-			w11.Expand = false;
-			w11.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox24[this.lblTmp]));
+			w12.Position = 0;
+			w12.Expand = false;
+			w12.Fill = false;
 			// Container child hbox24.Gtk.Box+BoxChild
 			this.txtTmp = new global::Gtk.Entry();
 			this.txtTmp.CanFocus = true;
@@ -165,27 +165,27 @@ namespace osrepodbmgr
 			this.txtTmp.IsEditable = true;
 			this.txtTmp.InvisibleChar = '●';
 			this.hbox24.Add(this.txtTmp);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox24[this.txtTmp]));
-			w12.Position = 1;
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox24[this.txtTmp]));
+			w13.Position = 1;
 			// Container child hbox24.Gtk.Box+BoxChild
 			this.btnTmp = new global::Gtk.Button();
 			this.btnTmp.CanFocus = true;
 			this.btnTmp.Name = "btnTmp";
 			this.btnTmp.UseUnderline = true;
 			this.btnTmp.Label = global::Mono.Unix.Catalog.GetString("Choose");
-			global::Gtk.Image w13 = new global::Gtk.Image();
-			w13.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
-			this.btnTmp.Image = w13;
+			global::Gtk.Image w14 = new global::Gtk.Image();
+			w14.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
+			this.btnTmp.Image = w14;
 			this.hbox24.Add(this.btnTmp);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox24[this.btnTmp]));
-			w14.Position = 2;
-			w14.Expand = false;
-			w14.Fill = false;
-			this.vbox5.Add(this.hbox24);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox24]));
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox24[this.btnTmp]));
 			w15.Position = 2;
 			w15.Expand = false;
 			w15.Fill = false;
+			w1.Add(this.hbox24);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(w1[this.hbox24]));
+			w16.Position = 2;
+			w16.Expand = false;
+			w16.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox23 = new global::Gtk.HBox();
 			this.hbox23.Name = "hbox23";
@@ -195,10 +195,10 @@ namespace osrepodbmgr
 			this.lblUnar.Name = "lblUnar";
 			this.lblUnar.LabelProp = global::Mono.Unix.Catalog.GetString("Path to unar");
 			this.hbox23.Add(this.lblUnar);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox23[this.lblUnar]));
-			w16.Position = 0;
-			w16.Expand = false;
-			w16.Fill = false;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox23[this.lblUnar]));
+			w17.Position = 0;
+			w17.Expand = false;
+			w17.Fill = false;
 			// Container child hbox23.Gtk.Box+BoxChild
 			this.txtUnar = new global::Gtk.Entry();
 			this.txtUnar.CanFocus = true;
@@ -206,36 +206,36 @@ namespace osrepodbmgr
 			this.txtUnar.IsEditable = true;
 			this.txtUnar.InvisibleChar = '●';
 			this.hbox23.Add(this.txtUnar);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox23[this.txtUnar]));
-			w17.Position = 1;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox23[this.txtUnar]));
+			w18.Position = 1;
 			// Container child hbox23.Gtk.Box+BoxChild
 			this.btnUnar = new global::Gtk.Button();
 			this.btnUnar.CanFocus = true;
 			this.btnUnar.Name = "btnUnar";
 			this.btnUnar.UseUnderline = true;
 			this.btnUnar.Label = global::Mono.Unix.Catalog.GetString("Choose");
-			global::Gtk.Image w18 = new global::Gtk.Image();
-			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
-			this.btnUnar.Image = w18;
+			global::Gtk.Image w19 = new global::Gtk.Image();
+			w19.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
+			this.btnUnar.Image = w19;
 			this.hbox23.Add(this.btnUnar);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox23[this.btnUnar]));
-			w19.Position = 2;
-			w19.Expand = false;
-			w19.Fill = false;
-			this.vbox5.Add(this.hbox23);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox23]));
-			w20.Position = 3;
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox23[this.btnUnar]));
+			w20.Position = 2;
 			w20.Expand = false;
 			w20.Fill = false;
+			w1.Add(this.hbox23);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(w1[this.hbox23]));
+			w21.Position = 3;
+			w21.Expand = false;
+			w21.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.lblUnarVersion = new global::Gtk.Label();
 			this.lblUnarVersion.Name = "lblUnarVersion";
 			this.lblUnarVersion.LabelProp = global::Mono.Unix.Catalog.GetString("label1");
-			this.vbox5.Add(this.lblUnarVersion);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.lblUnarVersion]));
-			w21.Position = 4;
-			w21.Expand = false;
-			w21.Fill = false;
+			w1.Add(this.lblUnarVersion);
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(w1[this.lblUnarVersion]));
+			w22.Position = 4;
+			w22.Expand = false;
+			w22.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
@@ -245,23 +245,23 @@ namespace osrepodbmgr
 			this.lblCompAlg.Name = "lblCompAlg";
 			this.lblCompAlg.LabelProp = global::Mono.Unix.Catalog.GetString("Compression algorithm");
 			this.hbox1.Add(this.lblCompAlg);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.lblCompAlg]));
-			w22.Position = 0;
-			w22.Expand = false;
-			w22.Fill = false;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.lblCompAlg]));
+			w23.Position = 0;
+			w23.Expand = false;
+			w23.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.cmbCompAlg = global::Gtk.ComboBox.NewText();
 			this.cmbCompAlg.Name = "cmbCompAlg";
 			this.hbox1.Add(this.cmbCompAlg);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.cmbCompAlg]));
-			w23.Position = 1;
-			w23.Expand = false;
-			w23.Fill = false;
-			this.vbox5.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox1]));
-			w24.Position = 5;
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.cmbCompAlg]));
+			w24.Position = 1;
 			w24.Expand = false;
 			w24.Fill = false;
+			w1.Add(this.hbox1);
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(w1[this.hbox1]));
+			w25.Position = 5;
+			w25.Expand = false;
+			w25.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox18 = new global::Gtk.HBox();
 			this.hbox18.Name = "hbox18";
@@ -274,10 +274,10 @@ namespace osrepodbmgr
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = "gtk-cancel";
 			this.hbox18.Add(this.btnCancel);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
-			w25.Position = 0;
-			w25.Expand = false;
-			w25.Fill = false;
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
+			w26.Position = 0;
+			w26.Expand = false;
+			w26.Fill = false;
 			// Container child hbox18.Gtk.Box+BoxChild
 			this.btnApply = new global::Gtk.Button();
 			this.btnApply.CanFocus = true;
@@ -286,24 +286,37 @@ namespace osrepodbmgr
 			this.btnApply.UseUnderline = true;
 			this.btnApply.Label = "gtk-apply";
 			this.hbox18.Add(this.btnApply);
-			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
-			w26.PackType = ((global::Gtk.PackType)(1));
-			w26.Position = 1;
-			w26.Expand = false;
-			w26.Fill = false;
-			this.vbox5.Add(this.hbox18);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox18]));
-			w27.Position = 6;
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
+			w27.PackType = ((global::Gtk.PackType)(1));
+			w27.Position = 1;
 			w27.Expand = false;
 			w27.Fill = false;
-			this.Add(this.vbox5);
+			w1.Add(this.hbox18);
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(w1[this.hbox18]));
+			w28.Position = 6;
+			w28.Expand = false;
+			w28.Fill = false;
+			// Internal child osrepodbmgr.frmSettings.ActionArea
+			global::Gtk.HButtonBox w29 = this.ActionArea;
+			w29.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
+			// Container child __gtksharp_108_Stetic_TopLevelDialog_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+			this.btnDialog = new global::Gtk.Button();
+			this.btnDialog.CanFocus = true;
+			this.btnDialog.Name = "btnDialog";
+			this.btnDialog.UseUnderline = true;
+			this.btnDialog.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
+			this.AddActionWidget(this.btnDialog, 0);
+			global::Gtk.ButtonBox.ButtonBoxChild w30 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.btnDialog]));
+			w30.Expand = false;
+			w30.Fill = false;
 			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 400;
-			this.DefaultHeight = 210;
+			this.DefaultHeight = 250;
 			this.lblUnarVersion.Hide();
+			w29.Hide();
 			this.Show();
 			this.btnDatabase.Clicked += new global::System.EventHandler(this.OnBtnDatabaseClicked);
 			this.btnRepository.Clicked += new global::System.EventHandler(this.OnBtnRepositoryClicked);

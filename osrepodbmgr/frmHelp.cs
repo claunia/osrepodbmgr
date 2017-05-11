@@ -29,17 +29,16 @@ using System;
 
 namespace osrepodbmgr
 {
-    public partial class frmHelp : Gtk.Window
+    public partial class frmHelp : Gtk.Dialog
     {
-        public frmHelp() :
-                base(Gtk.WindowType.Toplevel)
+        public frmHelp()
         {
             Build();
         }
 
         protected void OnBtnOKClicked(object sender, EventArgs e)
         {
-            Destroy();
+            btnDialog.Click();
         }
     }
 }

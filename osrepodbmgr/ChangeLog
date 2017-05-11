@@ -1,5 +1,21 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
+	* frmAdd.cs:
+	* Program.cs:
+	* frmHelp.cs:
+	* frmMain.cs:
+	* frmSettings.cs:
+	* gtk-gui/frmAdd.cs:
+	* gtk-gui/gui.stetic:
+	* osrepodbmgr.csproj:
+	* gtk-gui/osrepodbmgr.frmHelp.cs:
+	* gtk-gui/osrepodbmgr.frmMain.cs:
+	* gtk-gui/osrepodbmgr.frmSettings.cs:
+	* gtk-gui/osrepodbmgr.dlgBlockMedia.cs:
+	  Added a main window to handle everything from there.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgBlockMedia.cs:
 	  Corrected initialization of LOG SENSE table.
 
