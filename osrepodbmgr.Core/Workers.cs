@@ -1171,26 +1171,48 @@ namespace osrepodbmgr.Core
 
             try
             {
-                Context.unarProcess = new Process();
-                Context.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
-                Context.unarProcess.StartInfo.CreateNoWindow = true;
-                Context.unarProcess.StartInfo.RedirectStandardOutput = true;
-                Context.unarProcess.StartInfo.UseShellExecute = false;
-                Context.unarProcess.StartInfo.Arguments = string.Format("-o \"\"\"{0}\"\"\" -r -D -k hidden \"\"\"{1}\"\"\"", tmpFolder, Context.path);
-                long counter = 0;
-                Context.unarProcess.OutputDataReceived += (sender, e) =>
+                // If it's a ZIP file not created by Mac OS X, use DotNetZip to uncompress (unar freaks out or corrupts certain ZIP features)
+                if(ZipFile.IsZipFile(Context.path) && Context.copyArchive)
                 {
-                    counter++;
-                    if(UpdateProgress2 != null)
-                        UpdateProgress2("", e.Data, counter, Context.noFilesInArchive);
-                };
-                Context.unarProcess.Start();
-                Context.unarProcess.BeginOutputReadLine();
-                Context.unarProcess.WaitForExit();
-                Context.unarProcess.Close();
+                    try
+                    {
+                        ZipFile zf = ZipFile.Read(Context.path);
+                        zf.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                        zf.ExtractProgress += Zf_ExtractProgress;
+                        zipCounter = 0;
+                        zipCurrentEntryName = "";
+                        zf.ExtractAll(tmpFolder);
+                    }
+                    catch
+                    {
+                        if(Failed != null)
+                            Failed("Failed extraction");
+                        return;
+                    }
+                }
+                else
+                {
+                    Context.unarProcess = new Process();
+                    Context.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
+                    Context.unarProcess.StartInfo.CreateNoWindow = true;
+                    Context.unarProcess.StartInfo.RedirectStandardOutput = true;
+                    Context.unarProcess.StartInfo.UseShellExecute = false;
+                    Context.unarProcess.StartInfo.Arguments = string.Format("-o \"\"\"{0}\"\"\" -r -D -k hidden \"\"\"{1}\"\"\"", tmpFolder, Context.path);
+                    long counter = 0;
+                    Context.unarProcess.OutputDataReceived += (sender, e) =>
+                    {
+                        counter++;
+                        if(UpdateProgress2 != null)
+                            UpdateProgress2("", e.Data, counter, Context.noFilesInArchive);
+                    };
+                    Context.unarProcess.Start();
+                    Context.unarProcess.BeginOutputReadLine();
+                    Context.unarProcess.WaitForExit();
+                    Context.unarProcess.Close();
 
-                if(Finished != null)
-                    Finished();
+                    if(Finished != null)
+                        Finished();
+                }
 
                 Context.tmpFolder = tmpFolder;
             }
@@ -1201,6 +1223,26 @@ namespace osrepodbmgr.Core
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
+        }
+
+        static void Zf_ExtractProgress(object sender, ExtractProgressEventArgs e)
+        {
+            if(e.CurrentEntry != null && e.CurrentEntry.FileName != zipCurrentEntryName)
+            {
+                zipCurrentEntryName = e.CurrentEntry.FileName;
+                zipCounter++;
+            }
+
+            if(UpdateProgress != null && e.CurrentEntry != null && e.EntriesTotal > 0)
+                UpdateProgress("Extracting...", e.CurrentEntry.FileName, zipCounter, e.EntriesTotal);
+            if(UpdateProgress2 != null)
+                UpdateProgress2(string.Format("{0:P}", e.BytesTransferred / (double)e.TotalBytesToTransfer),
+                                string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
+                                e.BytesTransferred, e.TotalBytesToTransfer);
+
+            Console.WriteLine("{0}", e.EventType);
+            if(e.EventType == ZipProgressEventType.Extracting_AfterExtractAll && Finished != null)
+                Finished();
         }
 
         public static void CopyArchive()

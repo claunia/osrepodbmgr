@@ -1073,17 +1073,22 @@ public partial class frmAdd : Window
             btnSettings.Sensitive = false;
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
-            thdPulseProgress = new Thread(() =>
+            if(!Context.copyArchive)
             {
-                while(true)
+                thdPulseProgress = new Thread(() =>
                 {
-                    Application.Invoke(delegate
+                    while(true)
                     {
-                        prgProgress.Pulse();
-                    });
-                    Thread.Sleep(66);
-                }
-            });
+                        Application.Invoke(delegate
+                        {
+                            prgProgress.Pulse();
+                        });
+                        Thread.Sleep(66);
+                    }
+                });
+            }
+            else
+                Workers.UpdateProgress += UpdateProgress;
             Workers.Failed -= OpenArchiveFailed;
             Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;
@@ -1115,6 +1120,7 @@ public partial class frmAdd : Window
             btnSettings.Sensitive = true;
             Workers.Failed -= ExtractArchiveFailed;
             Workers.Finished -= ExtractArchiveFinished;
+            Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
             thdExtractArchive = null;
             if(Context.tmpFolder != null)
@@ -1158,6 +1164,7 @@ public partial class frmAdd : Window
             btnSettings.Sensitive = false;
             Workers.Failed -= ExtractArchiveFailed;
             Workers.Finished -= ExtractArchiveFinished;
+            Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
             thdPulseProgress = new Thread(() =>
             {

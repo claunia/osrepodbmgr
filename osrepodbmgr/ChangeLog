@@ -1,3 +1,9 @@
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* frmAdd.cs:
+	  Use DotNetZip to extract ZIP files that are not created by
+	  mac OS.
+
 2017-05-10  Natalia Portillo  <claunia@claunia.com>
 
 	* frmAdd.cs:

@@ -1,6 +1,12 @@
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* Workers.cs:
+	  Use DotNetZip to extract ZIP files that are not created by
+	  mac OS.
+
+2017-05-11  Natalia Portillo  <claunia@claunia.com>
+
+	* Workers.cs:
 	  Use DotNetZip to test for ZIP file.
 
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
