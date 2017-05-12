@@ -910,7 +910,6 @@ namespace osrepodbmgr.Core
                                 break;
                         }
 
-
                         byte[] buffer = new byte[bufferSize];
 
                         while((inFs.Position + bufferSize) <= inFs.Length)
@@ -1388,6 +1387,378 @@ namespace osrepodbmgr.Core
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
+        }
+
+        public static void SaveAs()
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(Context.path))
+                {
+                    if(Failed != null)
+                        Failed("Destination cannot be empty");
+                    return;
+                }
+
+                if(File.Exists(Context.path))
+                {
+                    if(Failed != null)
+                        Failed("Destination cannot be a file");
+                    return;
+                }
+
+                if(Context.dbInfo.id == 0)
+                {
+                    if(Failed != null)
+                        Failed("Operating system must be set");
+                    return;
+                }
+
+                List<DBFile> files;
+                List<DBFolder> folders;
+                long counter;
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Asking DB for files...", 1, 100);
+
+                dbCore.DBOps.GetAllFiles(out files, Context.dbInfo.id);
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Asking DB for folders...", 2, 100);
+
+                dbCore.DBOps.GetAllFolders(out folders, Context.dbInfo.id);
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Creating folders...", 3, 100);
+
+                counter = 0;
+                foreach(DBFolder folder in folders)
+                {
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2("", folder.Path, counter, folders.Count);
+
+                    DirectoryInfo di = Directory.CreateDirectory(Path.Combine(Context.path, folder.Path));
+                    di.Attributes = folder.Attributes;
+                    di.CreationTimeUtc = folder.CreationTimeUtc;
+                    di.LastAccessTimeUtc = folder.LastAccessTimeUtc;
+                    di.LastWriteTimeUtc = folder.LastWriteTimeUtc;
+
+                    counter++;
+                }
+
+                counter = 3;
+                foreach(DBFile file in files)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress("", string.Format("Creating {0}...", file.Path), counter, 3 + files.Count);
+
+                    Stream zStream = null;
+                    string repoPath;
+                    AlgoEnum algorithm;
+
+                    if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".gz")))
+                    {
+                        repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".gz");
+                        algorithm = AlgoEnum.GZip;
+                    }
+                    else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".bz2")))
+                    {
+                        repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".bz2");
+                        algorithm = AlgoEnum.BZip2;
+                    }
+                    else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".lzma")))
+                    {
+                        repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".lzma");
+                        algorithm = AlgoEnum.LZMA;
+                    }
+                    else
+                    {
+                        if(Failed != null)
+                            Failed(string.Format("Cannot find file with hash {0} in the repository", file.Sha256));
+                        return;
+                    }
+
+                    FileStream inFs = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
+                    FileStream outFs = new FileStream(Path.Combine(Context.path, file.Path), FileMode.CreateNew, FileAccess.Write);
+
+                    switch(algorithm)
+                    {
+                        case AlgoEnum.GZip:
+                            zStream = new GZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            break;
+                        case AlgoEnum.BZip2:
+                            zStream = new BZip2Stream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            break;
+                        case AlgoEnum.LZMA:
+                            byte[] properties = new byte[5];
+                            inFs.Read(properties, 0, 5);
+                            inFs.Seek(8, SeekOrigin.Current);
+                            zStream = new LzmaStream(properties, inFs);
+                            break;
+                    }
+
+                    byte[] buffer = new byte[bufferSize];
+
+                    while((outFs.Position + bufferSize) <= file.Length)
+                    {
+                        if(UpdateProgress2 != null)
+                            UpdateProgress2(string.Format("{0:P}", outFs.Position / (double)file.Length),
+                                            string.Format("{0} / {1} bytes", outFs.Position, file.Length),
+                                            outFs.Position, file.Length);
+
+                        zStream.Read(buffer, 0, buffer.Length);
+                        outFs.Write(buffer, 0, buffer.Length);
+                    }
+
+                    buffer = new byte[file.Length - outFs.Position];
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2(string.Format("{0:P}", outFs.Position / (double)file.Length),
+                                        string.Format("{0} / {1} bytes", outFs.Position, file.Length),
+                                        outFs.Position, file.Length);
+
+                    zStream.Read(buffer, 0, buffer.Length);
+                    outFs.Write(buffer, 0, buffer.Length);
+
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2(string.Format("{0:P}", file.Length / (double)file.Length),
+                                        "Finishing...", inFs.Length, inFs.Length);
+
+                    zStream.Close();
+                    outFs.Close();
+
+                    FileInfo fi = new FileInfo(Path.Combine(Context.path, file.Path));
+                    fi.Attributes = file.Attributes;
+                    fi.CreationTimeUtc = file.CreationTimeUtc;
+                    fi.LastAccessTimeUtc = file.LastAccessTimeUtc;
+                    fi.LastWriteTimeUtc = file.LastWriteTimeUtc;
+
+                    counter++;
+                }
+
+                if(Finished != null)
+                    Finished();
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
+        public static void CompressTo()
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(Context.path))
+                {
+                    if(Failed != null)
+                        Failed("Destination cannot be empty");
+                    return;
+                }
+
+                if(Directory.Exists(Context.path))
+                {
+                    if(Failed != null)
+                        Failed("Destination cannot be a folder");
+                    return;
+                }
+
+                if(Context.dbInfo.id == 0)
+                {
+                    if(Failed != null)
+                        Failed("Operating system must be set");
+                    return;
+                }
+
+                ZipFile zf = new ZipFile(Context.path, Encoding.UTF8);
+                zf.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                zf.CompressionMethod = CompressionMethod.Deflate;
+                zf.SaveProgress += Zf_SaveProgress;
+                zf.EmitTimesInUnixFormatWhenSaving = true;
+                zf.EmitTimesInWindowsFormatWhenSaving = true;
+                zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
+                zf.SortEntriesBeforeSaving = true;
+                List<DBFile> files;
+                List<DBFolder> folders;
+                long counter;
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Asking DB for files...", 1, 100);
+
+                dbCore.DBOps.GetAllFiles(out files, Context.dbInfo.id);
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Asking DB for folders...", 2, 100);
+
+                dbCore.DBOps.GetAllFolders(out folders, Context.dbInfo.id);
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Creating folders...", 3, 100);
+
+                counter = 0;
+                foreach(DBFolder folder in folders)
+                {
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2("", folder.Path, counter, folders.Count);
+
+                    ZipEntry zd = zf.AddDirectoryByName(folder.Path);
+                    zd.Attributes = folder.Attributes;
+                    zd.CreationTime = folder.CreationTimeUtc;
+                    zd.AccessedTime = folder.LastAccessTimeUtc;
+                    zd.LastModified = folder.LastWriteTimeUtc;
+                    zd.ModifiedTime = folder.LastWriteTimeUtc;
+
+                    counter++;
+                }
+
+                counter = 3;
+                Context.hashes = new Dictionary<string, DBFile>();
+                foreach(DBFile file in files)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress("", string.Format("Adding {0}...", file.Path), counter, 3 + files.Count);
+
+                    Context.hashes.Add(file.Path, file);
+
+                    ZipEntry zi = zf.AddEntry(file.Path, Zf_HandleOpen, Zf_HandleClose);
+                    zi.Attributes = file.Attributes;
+                    zi.CreationTime = file.CreationTimeUtc;
+                    zi.AccessedTime = file.LastAccessTimeUtc;
+                    zi.LastModified = file.LastWriteTimeUtc;
+                    zi.ModifiedTime = file.LastWriteTimeUtc;
+
+                    counter++;
+                }
+
+                zipCounter = 0;
+                zipCurrentEntryName = "";
+                zf.Save();
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
+        static Stream Zf_HandleOpen(string entryName)
+        {
+            DBFile file;
+            if(!Context.hashes.TryGetValue(entryName, out file))
+                throw new ArgumentException("Cannot find requested zip entry in hashes dictionary");
+
+            // Special case for empty file, as it seems to crash when SharpCompress tries to unLZMA it.
+            if(file.Length == 0)
+                return new MemoryStream();
+
+            Stream zStream = null;
+            string repoPath;
+            AlgoEnum algorithm;
+
+            if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".gz")))
+            {
+                repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".gz");
+                algorithm = AlgoEnum.GZip;
+            }
+            else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".bz2")))
+            {
+                repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".bz2");
+                algorithm = AlgoEnum.BZip2;
+            }
+            else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".lzma")))
+            {
+                repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".lzma");
+                algorithm = AlgoEnum.LZMA;
+            }
+            else
+                throw new ArgumentException(string.Format("Cannot find file with hash {0} in the repository", file.Sha256));
+
+            FileStream inFs = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
+
+            switch(algorithm)
+            {
+                case AlgoEnum.GZip:
+                    zStream = new GZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                    break;
+                case AlgoEnum.BZip2:
+                    zStream = new BZip2Stream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                    break;
+                case AlgoEnum.LZMA:
+                    byte[] properties = new byte[5];
+                    inFs.Read(properties, 0, 5);
+                    inFs.Seek(8, SeekOrigin.Current);
+                    zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
+                    break;
+            }
+
+            return zStream;
+        }
+
+        static void Zf_HandleClose(string entryName, Stream stream)
+        {
+            stream.Close();
+        }
+
+        static void Zf_SaveProgress(object sender, SaveProgressEventArgs e)
+        {
+            if(e.CurrentEntry != null && e.CurrentEntry.FileName != zipCurrentEntryName)
+            {
+                zipCurrentEntryName = e.CurrentEntry.FileName;
+                zipCounter++;
+            }
+
+            if(UpdateProgress != null && e.CurrentEntry != null && e.EntriesTotal > 0)
+                UpdateProgress("Compressing...", e.CurrentEntry.FileName, zipCounter, e.EntriesTotal);
+            if(UpdateProgress2 != null && e.TotalBytesToTransfer > 0)
+                UpdateProgress2(string.Format("{0:P}", e.BytesTransferred / (double)e.TotalBytesToTransfer),
+                                string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
+                                e.BytesTransferred, e.TotalBytesToTransfer);
+
+            if(e.EventType == ZipProgressEventType.Error_Saving && Failed != null)
+                Failed("An error occurred creating ZIP file.");
+            
+            if(e.EventType == ZipProgressEventType.Saving_Completed && Finished != null)
+                Finished();
         }
     }
 }

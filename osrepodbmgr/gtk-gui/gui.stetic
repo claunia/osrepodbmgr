@@ -12563,11 +12563,11 @@ QNX/QNX/20090229/source.zip</property>
                 <property name="MemberName" />
                 <property name="Visible">False</property>
                 <property name="CanFocus">True</property>
-                <property name="UseStock">True</property>
-                <property name="Type">StockItem</property>
-                <property name="StockId">gtk-save-as</property>
+                <property name="Type">TextAndIcon</property>
+                <property name="Icon">stock:gtk-directory Menu</property>
+                <property name="Label" translatable="yes">Save _As</property>
+                <property name="UseUnderline">True</property>
                 <signal name="Clicked" handler="OnBtnSaveClicked" />
-                <property name="label">gtk-save-as</property>
               </widget>
               <packing>
                 <property name="PackType">End</property>
@@ -12578,15 +12578,14 @@ QNX/QNX/20090229/source.zip</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Button" id="btnExtract">
+              <widget class="Gtk.Button" id="btnCompress">
                 <property name="MemberName" />
-                <property name="Visible">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
-                <property name="Icon">stock:gtk-directory Menu</property>
-                <property name="Label" translatable="yes">Extract to</property>
+                <property name="Icon">stock:gtk-save Menu</property>
+                <property name="Label" translatable="yes">Compress to</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnBtnExtractClicked" />
+                <signal name="Clicked" handler="OnBtnCompressClicked" />
               </widget>
               <packing>
                 <property name="PackType">End</property>

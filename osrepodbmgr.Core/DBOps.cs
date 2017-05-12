@@ -556,6 +556,68 @@ namespace osrepodbmgr.Core
 
             return false;
         }
+
+        public bool GetAllFiles(out List<DBFile> entries, long id)
+        {
+            entries = new List<DBFile>();
+
+            string sql = string.Format("SELECT * from os_{0}", id);
+
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dbcmd.CommandText = sql;
+            DataSet dataSet = new DataSet();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                DBFile fEntry = new DBFile();
+                fEntry.Id = ulong.Parse(dRow["id"].ToString());
+                fEntry.Path = dRow["path"].ToString();
+                fEntry.Sha256 = dRow["sha256"].ToString();
+                fEntry.Length = long.Parse(dRow["length"].ToString());
+                fEntry.CreationTimeUtc = DateTime.Parse(dRow["creation"].ToString());
+                fEntry.LastAccessTimeUtc = DateTime.Parse(dRow["access"].ToString());
+                fEntry.LastWriteTimeUtc = DateTime.Parse(dRow["modification"].ToString());
+                fEntry.Attributes = (FileAttributes)int.Parse(dRow["attributes"].ToString());
+
+                entries.Add(fEntry);
+            }
+
+            return true;
+        }
+
+        public bool GetAllFolders(out List<DBFolder> entries, long id)
+        {
+            entries = new List<DBFolder>();
+
+            string sql = string.Format("SELECT * from os_{0}_folders", id);
+
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dbcmd.CommandText = sql;
+            DataSet dataSet = new DataSet();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                DBFolder fEntry = new DBFolder();
+                fEntry.Id = ulong.Parse(dRow["id"].ToString());
+                fEntry.Path = dRow["path"].ToString();
+                fEntry.CreationTimeUtc = DateTime.Parse(dRow["creation"].ToString());
+                fEntry.LastAccessTimeUtc = DateTime.Parse(dRow["access"].ToString());
+                fEntry.LastWriteTimeUtc = DateTime.Parse(dRow["modification"].ToString());
+                fEntry.Attributes = (FileAttributes)int.Parse(dRow["attributes"].ToString());
+
+                entries.Add(fEntry);
+            }
+
+            return true;
+        }
     }
 }
 

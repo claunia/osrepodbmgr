@@ -42,7 +42,7 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnSave;
 
-		private global::Gtk.Button btnExtract;
+		private global::Gtk.Button btnCompress;
 
 		private global::Gtk.Button btnStop;
 
@@ -206,30 +206,32 @@ namespace osrepodbmgr
 			this.btnSave = new global::Gtk.Button();
 			this.btnSave.CanFocus = true;
 			this.btnSave.Name = "btnSave";
-			this.btnSave.UseStock = true;
 			this.btnSave.UseUnderline = true;
-			this.btnSave.Label = "gtk-save-as";
+			this.btnSave.Label = global::Mono.Unix.Catalog.GetString("Save _As");
+			global::Gtk.Image w17 = new global::Gtk.Image();
+			w17.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-directory", global::Gtk.IconSize.Menu);
+			this.btnSave.Image = w17;
 			this.hbox1.Add(this.btnSave);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnSave]));
-			w17.PackType = ((global::Gtk.PackType)(1));
-			w17.Position = 5;
-			w17.Expand = false;
-			w17.Fill = false;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnSave]));
+			w18.PackType = ((global::Gtk.PackType)(1));
+			w18.Position = 5;
+			w18.Expand = false;
+			w18.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.btnExtract = new global::Gtk.Button();
-			this.btnExtract.CanFocus = true;
-			this.btnExtract.Name = "btnExtract";
-			this.btnExtract.UseUnderline = true;
-			this.btnExtract.Label = global::Mono.Unix.Catalog.GetString("Extract to");
-			global::Gtk.Image w18 = new global::Gtk.Image();
-			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-directory", global::Gtk.IconSize.Menu);
-			this.btnExtract.Image = w18;
-			this.hbox1.Add(this.btnExtract);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnExtract]));
-			w19.PackType = ((global::Gtk.PackType)(1));
-			w19.Position = 6;
-			w19.Expand = false;
-			w19.Fill = false;
+			this.btnCompress = new global::Gtk.Button();
+			this.btnCompress.CanFocus = true;
+			this.btnCompress.Name = "btnCompress";
+			this.btnCompress.UseUnderline = true;
+			this.btnCompress.Label = global::Mono.Unix.Catalog.GetString("Compress to");
+			global::Gtk.Image w19 = new global::Gtk.Image();
+			w19.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-save", global::Gtk.IconSize.Menu);
+			this.btnCompress.Image = w19;
+			this.hbox1.Add(this.btnCompress);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnCompress]));
+			w20.PackType = ((global::Gtk.PackType)(1));
+			w20.Position = 6;
+			w20.Expand = false;
+			w20.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnStop = new global::Gtk.Button();
 			this.btnStop.CanFocus = true;
@@ -238,16 +240,16 @@ namespace osrepodbmgr
 			this.btnStop.UseUnderline = true;
 			this.btnStop.Label = "gtk-stop";
 			this.hbox1.Add(this.btnStop);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnStop]));
-			w20.PackType = ((global::Gtk.PackType)(1));
-			w20.Position = 7;
-			w20.Expand = false;
-			w20.Fill = false;
-			this.vbox2.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox1]));
-			w21.Position = 3;
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnStop]));
+			w21.PackType = ((global::Gtk.PackType)(1));
+			w21.Position = 7;
 			w21.Expand = false;
 			w21.Fill = false;
+			this.vbox2.Add(this.hbox1);
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox1]));
+			w22.Position = 3;
+			w22.Expand = false;
+			w22.Fill = false;
 			this.Add(this.vbox2);
 			if((this.Child != null))
 			{
@@ -262,14 +264,13 @@ namespace osrepodbmgr
 			this.btnSettings.Hide();
 			this.btnHelp.Hide();
 			this.btnSave.Hide();
-			this.btnExtract.Hide();
 			this.btnStop.Hide();
 			this.Show();
 			this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 			this.btnAdd.Clicked += new global::System.EventHandler(this.OnBtnAddClicked);
 			this.btnRemove.Clicked += new global::System.EventHandler(this.OnBtnRemoveClicked);
 			this.btnStop.Clicked += new global::System.EventHandler(this.OnBtnStopClicked);
-			this.btnExtract.Clicked += new global::System.EventHandler(this.OnBtnExtractClicked);
+			this.btnCompress.Clicked += new global::System.EventHandler(this.OnBtnCompressClicked);
 			this.btnSave.Clicked += new global::System.EventHandler(this.OnBtnSaveClicked);
 			this.btnHelp.Clicked += new global::System.EventHandler(this.OnBtnHelpClicked);
 			this.btnSettings.Clicked += new global::System.EventHandler(this.OnBtnSettingsClicked);

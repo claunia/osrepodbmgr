@@ -38,8 +38,8 @@ namespace osrepodbmgr
         ListStore osView;
         Thread thdPulseProgress;
         Thread thdPopulateOSes;
-        Thread thdExtractArchive;
-        Thread thdCopyFile;
+        Thread thdCompressTo;
+        Thread thdSaveAs;
 
         public frmMain() :
                 base(WindowType.Toplevel)
@@ -169,7 +169,7 @@ namespace osrepodbmgr
                 treeOSes.Sensitive = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnExtract.Visible = true;
+                btnCompress.Visible = true;
                 btnSave.Visible = true;
                 btnHelp.Visible = true;
                 btnSettings.Visible = true;
@@ -251,43 +251,31 @@ namespace osrepodbmgr
             }
         }
 
-        protected void OnBtnExtractClicked(object sender, EventArgs e)
+        protected void OnBtnSaveClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
-            /*
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
-                Context.path = (string)osView.GetValue(osIter, 16);
+                Context.dbInfo.id = (long)osView.GetValue(osIter, 17);
 
-                if(!File.Exists(Context.path))
-                {
-                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "File is not in repository.");
-                    dlgMsg.Run();
-                    dlgMsg.Destroy();
-                    return;
-                }
-
-                FileChooserDialog dlgFolder = new FileChooserDialog("Extract to...", this, FileChooserAction.SelectFolder,
+                FileChooserDialog dlgFolder = new FileChooserDialog("Save to...", this, FileChooserAction.SelectFolder,
                                                      "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
                 dlgFolder.SelectMultiple = false;
 
                 if(dlgFolder.Run() == (int)ResponseType.Accept)
                 {
-                    Context.userExtracting = true;
-                    Context.tmpFolder = dlgFolder.Filename;
-                    Context.copyArchive = true;
+                    Context.path = dlgFolder.Filename;
 
                     dlgFolder.Destroy();
 
                     lblProgress.Visible = true;
-                    lblProgress2.Visible = true;
                     prgProgress.Visible = true;
+                    lblProgress2.Visible = true;
                     prgProgress2.Visible = true;
                     treeOSes.Sensitive = false;
                     btnAdd.Visible = false;
                     btnRemove.Visible = false;
-                    btnExtract.Visible = false;
+                    btnCompress.Visible = false;
                     btnSave.Visible = false;
                     btnHelp.Visible = false;
                     btnSettings.Visible = false;
@@ -298,19 +286,19 @@ namespace osrepodbmgr
                         thdPulseProgress.Abort();
                         thdPulseProgress = null;
                     }
-                    Workers.Failed += ExtractArchiveFailed;
-                    Workers.Finished += ExtractArchiveFinished;
+                    Workers.Failed += SaveAsFailed;
+                    Workers.Finished += SaveAsFinished;
                     Workers.UpdateProgress += UpdateProgress;
                     Workers.UpdateProgress2 += UpdateProgress2;
-                    thdExtractArchive = new Thread(Workers.ExtractArchive);
-                    thdExtractArchive.Start();
+                    thdSaveAs = new Thread(Workers.SaveAs);
+                    thdSaveAs.Start();
                 }
                 else
                     dlgFolder.Destroy();
-            }*/
+            }
         }
 
-        public void ExtractArchiveFailed(string text)
+        public void SaveAsFailed(string text)
         {
             Application.Invoke(delegate
             {
@@ -322,38 +310,35 @@ namespace osrepodbmgr
                     thdPulseProgress.Abort();
                     thdPulseProgress = null;
                 }
-                if(thdExtractArchive != null)
+                if(thdSaveAs != null)
                 {
-                    thdExtractArchive.Abort();
-                    thdExtractArchive = null;
+                    thdSaveAs.Abort();
+                    thdSaveAs = null;
                 }
 
                 lblProgress.Visible = false;
-                lblProgress2.Visible = false;
                 prgProgress.Visible = false;
+                lblProgress2.Visible = false;
                 prgProgress2.Visible = false;
                 treeOSes.Sensitive = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnExtract.Visible = true;
+                btnCompress.Visible = true;
                 btnSave.Visible = true;
                 btnHelp.Visible = true;
                 btnSettings.Visible = true;
                 btnStop.Visible = false;
 
-                Workers.Failed -= ExtractArchiveFailed;
-                Workers.Finished -= ExtractArchiveFinished;
+                Workers.Failed -= SaveAsFailed;
+                Workers.Finished -= SaveAsFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
 
-                Context.userExtracting = false;
-                Context.tmpFolder = null;
-                //Context.copyArchive = false;
                 Context.path = null;
             });
         }
 
-        public void ExtractArchiveFinished()
+        public void SaveAsFinished()
         {
             Application.Invoke(delegate
             {
@@ -362,176 +347,34 @@ namespace osrepodbmgr
                     thdPulseProgress.Abort();
                     thdPulseProgress = null;
                 }
-                if(thdExtractArchive != null)
+                if(thdSaveAs != null)
                 {
-                    thdExtractArchive.Abort();
-                    thdExtractArchive = null;
+                    thdSaveAs.Abort();
+                    thdSaveAs = null;
                 }
 
                 lblProgress.Visible = false;
-                lblProgress2.Visible = false;
                 prgProgress.Visible = false;
+                lblProgress2.Visible = false;
                 prgProgress2.Visible = false;
                 treeOSes.Sensitive = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnExtract.Visible = true;
+                btnCompress.Visible = true;
                 btnSave.Visible = true;
                 btnHelp.Visible = true;
                 btnSettings.Visible = true;
                 btnStop.Visible = false;
 
-                Workers.Failed -= ExtractArchiveFailed;
-                Workers.Finished -= ExtractArchiveFinished;
-                Workers.UpdateProgress -= UpdateProgress;
-                Workers.UpdateProgress2 -= UpdateProgress2;
-
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
-                                                         string.Format("Correctly extracted to {0}", Context.tmpFolder));
-                dlgMsg.Run();
-                dlgMsg.Destroy();
-
-                Context.userExtracting = false;
-                Context.tmpFolder = null;
-                //Context.copyArchive = false;
-                Context.path = null;
-            });
-        }
-
-        protected void OnBtnSaveClicked(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-            /*
-            TreeIter osIter;
-            if(treeOSes.Selection.GetSelected(out osIter))
-            {
-                Context.path = (string)osView.GetValue(osIter, 16);
-
-                if(!File.Exists(Context.path))
-                {
-                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "File is not in repository.");
-                    dlgMsg.Run();
-                    dlgMsg.Destroy();
-                    return;
-                }
-
-                FileChooserDialog dlgFolder = new FileChooserDialog("Copy to...", this, FileChooserAction.Save,
-                                                     "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
-                dlgFolder.SelectMultiple = false;
-
-                if(dlgFolder.Run() == (int)ResponseType.Accept)
-                {
-                    Context.userExtracting = true;
-                    Context.tmpFolder = dlgFolder.Filename;
-                    Context.copyArchive = true;
-
-                    dlgFolder.Destroy();
-
-                    lblProgress.Visible = true;
-                    prgProgress.Visible = true;
-                    treeOSes.Sensitive = false;
-                    btnAdd.Visible = false;
-                    btnRemove.Visible = false;
-                    btnExtract.Visible = false;
-                    btnSave.Visible = false;
-                    btnHelp.Visible = false;
-                    btnSettings.Visible = false;
-                    btnStop.Visible = true;
-
-                    if(thdPulseProgress != null)
-                    {
-                        thdPulseProgress.Abort();
-                        thdPulseProgress = null;
-                    }
-                    Workers.Failed += CopyFileFailed;
-                    Workers.Finished += CopyFileFinished;
-                    Workers.UpdateProgress += UpdateProgress;
-                    thdCopyFile = new Thread(Workers.CopyFile);
-                    thdCopyFile.Start();
-                }
-                else
-                    dlgFolder.Destroy();
-            }*/
-        }
-
-        public void CopyFileFailed(string text)
-        {
-            Application.Invoke(delegate
-            {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
-                dlgMsg.Run();
-                dlgMsg.Destroy();
-                if(thdPulseProgress != null)
-                {
-                    thdPulseProgress.Abort();
-                    thdPulseProgress = null;
-                }
-                if(thdCopyFile != null)
-                {
-                    thdCopyFile.Abort();
-                    thdCopyFile = null;
-                }
-
-                lblProgress.Visible = false;
-                prgProgress.Visible = false;
-                treeOSes.Sensitive = true;
-                btnAdd.Visible = true;
-                btnRemove.Visible = true;
-                btnExtract.Visible = true;
-                btnSave.Visible = true;
-                btnHelp.Visible = true;
-                btnSettings.Visible = true;
-                btnStop.Visible = false;
-
-                Workers.Failed -= CopyFileFailed;
-                Workers.Finished -= CopyFileFinished;
-                Workers.UpdateProgress -= UpdateProgress;
-
-                Context.userExtracting = false;
-                Context.tmpFolder = null;
-                //Context.copyArchive = false;
-                Context.path = null;
-            });
-        }
-
-        public void CopyFileFinished()
-        {
-            Application.Invoke(delegate
-            {
-                if(thdPulseProgress != null)
-                {
-                    thdPulseProgress.Abort();
-                    thdPulseProgress = null;
-                }
-                if(thdCopyFile != null)
-                {
-                    thdCopyFile.Abort();
-                    thdCopyFile = null;
-                }
-
-                lblProgress.Visible = false;
-                prgProgress.Visible = false;
-                treeOSes.Sensitive = true;
-                btnAdd.Visible = true;
-                btnRemove.Visible = true;
-                btnExtract.Visible = true;
-                btnSave.Visible = true;
-                btnHelp.Visible = true;
-                btnSettings.Visible = true;
-                btnStop.Visible = false;
-
-                Workers.Failed -= CopyFileFailed;
-                Workers.Finished -= CopyFileFinished;
+                Workers.Failed -= SaveAsFailed;
+                Workers.Finished -= SaveAsFinished;
                 Workers.UpdateProgress -= UpdateProgress;
 
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
-                                                         string.Format("Correctly saved as {0}", Context.tmpFolder));
+                                                         string.Format("Correctly saved to {0}", Context.path));
                 dlgMsg.Run();
                 dlgMsg.Destroy();
 
-                Context.userExtracting = false;
-                Context.tmpFolder = null;
-                //Context.copyArchive = false;
                 Context.path = null;
             });
         }
@@ -568,21 +411,150 @@ namespace osrepodbmgr
                 thdPopulateOSes.Abort();
                 thdPopulateOSes = null;
             }
-            if(thdExtractArchive != null)
+            if(thdCompressTo != null)
             {
                 thdPopulateOSes.Abort();
                 thdPopulateOSes = null;
             }
-            if(thdCopyFile != null)
+            if(thdSaveAs != null)
             {
-                thdCopyFile.Abort();
-                thdCopyFile = null;
+                thdSaveAs.Abort();
+                thdSaveAs = null;
             }
         }
 
         protected void OnDeleteEvent(object sender, DeleteEventArgs e)
         {
             OnBtnStopClicked(sender, e);
+        }
+
+        protected void OnBtnCompressClicked(object sender, EventArgs e)
+        {
+            TreeIter osIter;
+            if(treeOSes.Selection.GetSelected(out osIter))
+            {
+                Context.dbInfo.id = (long)osView.GetValue(osIter, 17);
+
+                FileChooserDialog dlgFolder = new FileChooserDialog("Compress to...", this, FileChooserAction.Save,
+                                                     "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
+                dlgFolder.SelectMultiple = false;
+
+                if(dlgFolder.Run() == (int)ResponseType.Accept)
+                {
+                    Context.path = dlgFolder.Filename;
+
+                    dlgFolder.Destroy();
+
+                    lblProgress.Visible = true;
+                    prgProgress.Visible = true;
+                    lblProgress2.Visible = true;
+                    prgProgress2.Visible = true;
+                    treeOSes.Sensitive = false;
+                    btnAdd.Visible = false;
+                    btnRemove.Visible = false;
+                    btnCompress.Visible = false;
+                    btnSave.Visible = false;
+                    btnHelp.Visible = false;
+                    btnSettings.Visible = false;
+                    btnStop.Visible = true;
+
+                    if(thdPulseProgress != null)
+                    {
+                        thdPulseProgress.Abort();
+                        thdPulseProgress = null;
+                    }
+                    Workers.Failed += CompressToFailed;
+                    Workers.Finished += CompressToFinished;
+                    Workers.UpdateProgress += UpdateProgress;
+                    Workers.UpdateProgress2 += UpdateProgress2;
+                    thdCompressTo = new Thread(Workers.CompressTo);
+                    thdCompressTo.Start();
+                }
+                else
+                    dlgFolder.Destroy();
+            }
+        }
+
+        public void CompressToFailed(string text)
+        {
+            Application.Invoke(delegate
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdCompressTo != null)
+                {
+                    thdCompressTo.Abort();
+                    thdCompressTo = null;
+                }
+
+                lblProgress.Visible = false;
+                lblProgress2.Visible = false;
+                prgProgress.Visible = false;
+                prgProgress2.Visible = false;
+                treeOSes.Sensitive = true;
+                btnAdd.Visible = true;
+                btnRemove.Visible = true;
+                btnCompress.Visible = true;
+                btnSave.Visible = true;
+                btnHelp.Visible = true;
+                btnSettings.Visible = true;
+                btnStop.Visible = false;
+
+                Workers.Failed -= CompressToFailed;
+                Workers.Finished -= CompressToFinished;
+                Workers.UpdateProgress -= UpdateProgress;
+                Workers.UpdateProgress2 -= UpdateProgress2;
+
+                Context.path = null;
+            });
+        }
+
+        public void CompressToFinished()
+        {
+            Application.Invoke(delegate
+            {
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdCompressTo != null)
+                {
+                    thdCompressTo.Abort();
+                    thdCompressTo = null;
+                }
+
+                lblProgress.Visible = false;
+                lblProgress2.Visible = false;
+                prgProgress.Visible = false;
+                prgProgress2.Visible = false;
+                treeOSes.Sensitive = true;
+                btnAdd.Visible = true;
+                btnRemove.Visible = true;
+                btnCompress.Visible = true;
+                btnSave.Visible = true;
+                btnHelp.Visible = true;
+                btnSettings.Visible = true;
+                btnStop.Visible = false;
+
+                Workers.Failed -= CompressToFailed;
+                Workers.Finished -= CompressToFinished;
+                Workers.UpdateProgress -= UpdateProgress;
+                Workers.UpdateProgress2 -= UpdateProgress2;
+
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
+                                                         string.Format("Correctly compressed as {0}", Context.path));
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+
+                Context.path = null;
+            });
         }
     }
 }

@@ -1,3 +1,11 @@
+2017-05-12  Natalia Portillo  <claunia@claunia.com>
+
+	* frmMain.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/generated.cs:
+	* gtk-gui/osrepodbmgr.frmMain.cs:
+	  Implemented extract of OS from repo, as files or zipped.
+
 2017-05-11  Natalia Portillo  <claunia@claunia.com>
 
 	* dlgAdd.cs:

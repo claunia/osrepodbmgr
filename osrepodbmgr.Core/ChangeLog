@@ -1,6 +1,12 @@
 2017-05-12  Natalia Portillo  <claunia@claunia.com>
 
 	* DBOps.cs:
+	* Workers.cs:
+	  Implemented extract of OS from repo, as files or zipped.
+
+2017-05-12  Natalia Portillo  <claunia@claunia.com>
+
+	* DBOps.cs:
 	* Context.cs:
 	* Workers.cs:
 	  Add folders to database. This way empty folders get
