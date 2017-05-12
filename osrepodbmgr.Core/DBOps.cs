@@ -66,6 +66,16 @@ namespace osrepodbmgr.Core
         public FileAttributes Attributes;
     }
 
+    public struct DBFolder
+    {
+        public ulong Id;
+        public string Path;
+        public DateTime CreationTimeUtc;
+        public DateTime LastAccessTimeUtc;
+        public DateTime LastWriteTimeUtc;
+        public FileAttributes Attributes;
+    }
+
     public class DBOps
     {
         readonly IDbConnection dbCon;
@@ -354,6 +364,61 @@ namespace osrepodbmgr.Core
             return true;
         }
 
+        IDbCommand GetFolderCommand(DBFolder person)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+            IDbDataParameter param4 = dbcmd.CreateParameter();
+            IDbDataParameter param5 = dbcmd.CreateParameter();
+            IDbDataParameter param6 = dbcmd.CreateParameter();
+            IDbDataParameter param7 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@path";
+            param4.ParameterName = "@creation";
+            param5.ParameterName = "@access";
+            param6.ParameterName = "@modification";
+            param7.ParameterName = "@attributes";
+
+            param1.DbType = DbType.String;
+            param4.DbType = DbType.String;
+            param5.DbType = DbType.String;
+            param6.DbType = DbType.String;
+            param7.DbType = DbType.Int32;
+
+            param1.Value = person.Path;
+            param4.Value = person.CreationTimeUtc.ToString("yyyy-MM-dd HH:mm");
+            param5.Value = person.LastAccessTimeUtc.ToString("yyyy-MM-dd HH:mm");
+            param6.Value = person.LastWriteTimeUtc.ToString("yyyy-MM-dd HH:mm");
+            param7.Value = (int)person.Attributes;
+
+            dbcmd.Parameters.Add(param1);
+            dbcmd.Parameters.Add(param4);
+            dbcmd.Parameters.Add(param5);
+            dbcmd.Parameters.Add(param6);
+            dbcmd.Parameters.Add(param7);
+
+            return dbcmd;
+        }
+
+        public bool AddFolderToOS(DBFolder folder, long os)
+        {
+            IDbCommand dbcmd = GetFolderCommand(folder);
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            string sql = string.Format("INSERT INTO `os_{0}_folders` (`path`, `creation`, `access`, `modification`, `attributes`)" +
+                                       " VALUES (@path, @creation, @access, @modification, @attributes)", os);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
+
         public bool RemoveOS(long id)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
@@ -361,6 +426,18 @@ namespace osrepodbmgr.Core
             dbcmd.Transaction = trans;
 
             string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            dbcmd = dbCon.CreateCommand();
+            trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            sql = string.Format("DROP TABLE IF EXISTS `os_{0}_folders`;", id);
 
             dbcmd.CommandText = sql;
 
@@ -390,17 +467,38 @@ namespace osrepodbmgr.Core
             dbcmd.Transaction = trans;
 
             string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;\n\n" +
-                                             "CREATE TABLE IF NOT EXISTS `os_{0}` (\n" +
-                                             "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                                             "  `path` VARCHAR(8192) NOT NULL,\n" +
-                                             "  `sha256` VARCHAR(64) NOT NULL,\n\n" +
-                                             "  `length` BIGINT NOT NULL,\n" +
-                                             "  `creation` DATETIME NULL,\n" +
-                                             "  `access` DATETIME NULL,\n" +
-                                             "  `modification` DATETIME NULL,\n" +
-                                             "  `attributes` INTEGER NULL);\n\n" +
-                                             "CREATE UNIQUE INDEX `os_{0}_id_UNIQUE` ON `os_{0}` (`id` ASC);\n\n" +
-                                             "CREATE INDEX `os_{0}_path_idx` ON `os_{0}` (`path` ASC);", id);
+                                         "CREATE TABLE IF NOT EXISTS `os_{0}` (\n" +
+                                         "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                                         "  `path` VARCHAR(8192) NOT NULL,\n" +
+                                         "  `sha256` VARCHAR(64) NOT NULL,\n\n" +
+                                         "  `length` BIGINT NOT NULL,\n" +
+                                         "  `creation` DATETIME NULL,\n" +
+                                         "  `access` DATETIME NULL,\n" +
+                                         "  `modification` DATETIME NULL,\n" +
+                                         "  `attributes` INTEGER NULL);\n\n" +
+                                         "CREATE UNIQUE INDEX `os_{0}_id_UNIQUE` ON `os_{0}` (`id` ASC);\n\n" +
+                                         "CREATE INDEX `os_{0}_path_idx` ON `os_{0}` (`path` ASC);", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            dbcmd = dbCon.CreateCommand();
+            trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            sql = string.Format("DROP TABLE IF EXISTS `os_{0}_folders`;\n\n" +
+                                 "CREATE TABLE IF NOT EXISTS `os_{0}_folders` (\n" +
+                                 "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                                 "  `path` VARCHAR(8192) NOT NULL,\n" +
+                                 "  `creation` DATETIME NULL,\n" +
+                                 "  `access` DATETIME NULL,\n" +
+                                 "  `modification` DATETIME NULL,\n" +
+                                 "  `attributes` INTEGER NULL);\n\n" +
+                                 "CREATE UNIQUE INDEX `os_{0}_folders_id_UNIQUE` ON `os_{0}_folders` (`id` ASC);\n\n" +
+                                 "CREATE INDEX `os_{0}_folders_path_idx` ON `os_{0}_folders` (`path` ASC);", id);
 
             dbcmd.CommandText = sql;
 

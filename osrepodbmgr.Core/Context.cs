@@ -35,7 +35,9 @@ namespace osrepodbmgr.Core
     public static class Context
     {
         public static List<string> files;
+        public static List<string> folders;
         public static Dictionary<string, DBFile> hashes;
+        public static Dictionary<string, DBFolder> foldersDict;
         public static string path;
         public static DBEntry dbInfo;
         public static bool unarUsable;

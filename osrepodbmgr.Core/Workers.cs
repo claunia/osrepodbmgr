@@ -94,6 +94,8 @@ namespace osrepodbmgr.Core
             {
                 Context.files = new List<string>(Directory.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories));
                 Context.files.Sort();
+                Context.folders = new List<string>(Directory.EnumerateDirectories(filesPath, "*", SearchOption.AllDirectories));
+                Context.folders.Sort();
                 if(Finished != null)
                     Finished();
             }
@@ -111,6 +113,7 @@ namespace osrepodbmgr.Core
             try
             {
                 Context.hashes = new Dictionary<string, DBFile>();
+                Context.foldersDict = new Dictionary<string, DBFolder>();
                 List<string> alreadyMetadata = new List<string>();
                 bool foundMetadata = false;
 
@@ -396,6 +399,33 @@ namespace osrepodbmgr.Core
                     counter++;
                 }
 
+                counter = 1;
+                foreach(string folder in Context.folders)
+                {
+
+                    string filesPath;
+                    DirectoryInfo di = new DirectoryInfo(folder);
+
+                    if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                        filesPath = Context.tmpFolder;
+                    else
+                        filesPath = Context.path;
+
+                    string relpath = folder.Substring(filesPath.Length + 1);
+                    if(UpdateProgress != null)
+                        UpdateProgress(string.Format("Checking folder {0} of {1}", counter, Context.folders.Count), null, counter, Context.folders.Count);
+
+                    DBFolder dbFolder = new DBFolder();
+                    dbFolder.Attributes = di.Attributes;
+                    dbFolder.CreationTimeUtc = di.CreationTimeUtc;
+                    dbFolder.LastAccessTimeUtc = di.LastAccessTimeUtc;
+                    dbFolder.LastWriteTimeUtc = di.LastWriteTimeUtc;
+                    dbFolder.Path = relpath;
+
+                    Context.foldersDict.Add(relpath, dbFolder);
+                    counter++;
+                }
+
                 if(foundMetadata)
                 {
                     Context.metadata = new CICMMetadataType();
@@ -607,6 +637,17 @@ namespace osrepodbmgr.Core
                         UpdateProgress(null, "Adding files to OS in database", counter, Context.hashes.Count);
 
                     dbCore.DBOps.AddFileToOS(kvp.Value, Context.dbInfo.id);
+
+                    counter++;
+                }
+
+                counter = 0;
+                foreach(KeyValuePair<string, DBFolder> kvp in Context.foldersDict)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress(null, "Adding folders to OS in database", counter, Context.foldersDict.Count);
+
+                    dbCore.DBOps.AddFolderToOS(kvp.Value, Context.dbInfo.id);
 
                     counter++;
                 }
