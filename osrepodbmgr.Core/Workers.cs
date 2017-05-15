@@ -1151,7 +1151,7 @@ namespace osrepodbmgr.Core
                 if(ZipFile.IsZipFile(Context.path))
                 {
                     Context.unzipWithUnAr = true;
-                    ZipFile zf = ZipFile.Read(Context.path);
+                    ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
                     foreach(ZipEntry ze in zf)
                     {
                         // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
@@ -1219,7 +1219,7 @@ namespace osrepodbmgr.Core
                 {
                     try
                     {
-                        ZipFile zf = ZipFile.Read(Context.path);
+                        ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
                         zf.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
                         zf.ExtractProgress += Zf_ExtractProgress;
                         zipCounter = 0;
