@@ -1,81 +1,145 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<StackLayout Orientation="Vertical">
-		<StackLayout Orientation="Horizontal">
-			<Label>Filesystem type</Label>
-			<TextBox ID="txtType"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<TextBox ID="txtFiles"/>
-			<Label>files</Label>
-			<CheckBox ID="chkBootable" ThreeState="False">Bootable</CheckBox>
-			<CheckBox ID="chkDirty" ThreeState="False">Dirty</CheckBox>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<NumericUpDown ID="spClusterSize" MaxValue="1048576"/>
-			<Label>bytes per cluster</Label>
-			<TextBox ID="txtClusters"/>
-			<Label>clusters</Label>
-			<TextBox ID="txtFreeClusters"/>
-			<Label>free clusters</Label>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<CheckBox ID="chkCreationDate" ThreeState="False" CheckedChanged="OnChkCreationDateToggled">Creation date</CheckBox>
-			<DateTimePicker ID="cldCreationDate" Mode="DateTime"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<CheckBox ID="chkModificationDate" ThreeState="False" CheckedChanged="OnChkModificationDateToggled">Modification date</CheckBox>
-			<DateTimePicker ID="cldModificationDate" Mode="DateTime"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<CheckBox ID="chkEffectiveDate" ThreeState="False" CheckedChanged="OnChkEffectiveDateToggled">Effective date</CheckBox>
-			<DateTimePicker ID="cldEffectiveDate" Mode="DateTime"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<CheckBox ID="chkExpirationDate" ThreeState="False" CheckedChanged="OnChkExpirationDateToggled">Expiration date</CheckBox>
-			<DateTimePicker ID="cldExpirationDate" Mode="DateTime"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<CheckBox ID="chkBackupDate" ThreeState="False" CheckedChanged="OnChkBackupDateToggled">Last backup date</CheckBox>
-			<DateTimePicker ID="cldBackupDate" Mode="DateTime"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Volume label</Label>
-			<TextBox ID="txtLabel"/>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Volume serial</Label>
-			<TextBox ID="txtSerial"/>
-		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Filesystem type</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtType" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtFiles" />
+				</StackLayoutItem>
+				<Label>files</Label>
+				<CheckBox ID="chkBootable" ThreeState="False">Bootable</CheckBox>
+				<CheckBox ID="chkDirty" ThreeState="False">Dirty</CheckBox>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<NumericUpDown ID="spClusterSize" MaxValue="1048576" />
+				<Label>bytes per cluster</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtClusters" />
+				</StackLayoutItem>
+				<Label>clusters</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtFreeClusters" />
+				</StackLayoutItem>
+				<Label>free clusters</Label>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<CheckBox ID="chkCreationDate" ThreeState="False" CheckedChanged="OnChkCreationDateToggled">Creation date</CheckBox>
+				<StackLayoutItem Expand="True">
+					<DateTimePicker ID="cldCreationDate" Mode="DateTime" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<CheckBox ID="chkModificationDate" ThreeState="False" CheckedChanged="OnChkModificationDateToggled">Modification date</CheckBox>
+				<StackLayoutItem Expand="True">
+					<DateTimePicker ID="cldModificationDate" Mode="DateTime" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<CheckBox ID="chkEffectiveDate" ThreeState="False" CheckedChanged="OnChkEffectiveDateToggled">Effective date</CheckBox>
+				<StackLayoutItem Expand="True">
+					<DateTimePicker ID="cldEffectiveDate" Mode="DateTime" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<CheckBox ID="chkExpirationDate" ThreeState="False" CheckedChanged="OnChkExpirationDateToggled">Expiration date</CheckBox>
+				<StackLayoutItem Expand="True">
+					<DateTimePicker ID="cldExpirationDate" Mode="DateTime" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<CheckBox ID="chkBackupDate" ThreeState="False" CheckedChanged="OnChkBackupDateToggled">Last backup date</CheckBox>
+				<StackLayoutItem Expand="True">
+					<DateTimePicker ID="cldBackupDate" Mode="DateTime" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Volume label</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtLabel" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Volume serial</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtSerial" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 			<GroupBox Text="ISO9660 information">
 				<StackLayout Orientation="Vertical">
-					<StackLayout Orientation="Horizontal">
-						<Label>System identifier</Label>
-						<TextBox ID="txtSysId"/>
-					</StackLayout>
-					<StackLayout Orientation="Horizontal">
-						<Label>Volume identifier</Label>
-						<TextBox ID="txtVolId"/>
-					</StackLayout>
-					<StackLayout Orientation="Horizontal">
-						<Label>Publisher identifier</Label>
-						<TextBox ID="txtPubId"/>
-					</StackLayout>
-					<StackLayout Orientation="Horizontal">
-						<Label>Data preparer identifier</Label>
-						<TextBox ID="txtDataId"/>
-					</StackLayout>
-					<StackLayout Orientation="Horizontal">
-						<Label>Application identifier</Label>
-						<TextBox ID="txtAppId"/>
-					</StackLayout>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<StackLayout Orientation="Horizontal">
+							<Label>System identifier</Label>
+							<StackLayoutItem Expand="True">
+								<TextBox ID="txtSysId" />
+							</StackLayoutItem>
+						</StackLayout>
+					</StackLayoutItem>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<StackLayout Orientation="Horizontal">
+							<Label>Volume identifier</Label>
+							<StackLayoutItem Expand="True">
+								<TextBox ID="txtVolId" />
+							</StackLayoutItem>
+						</StackLayout>
+					</StackLayoutItem>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<StackLayout Orientation="Horizontal">
+							<Label>Publisher identifier</Label>
+							<StackLayoutItem Expand="True">
+								<TextBox ID="txtPubId" />
+							</StackLayoutItem>
+						</StackLayout>
+					</StackLayoutItem>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<StackLayout Orientation="Horizontal">
+							<Label>Data preparer identifier</Label>
+							<StackLayoutItem Expand="True">
+								<TextBox ID="txtDataId" />
+							</StackLayoutItem>
+						</StackLayout>
+					</StackLayoutItem>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<StackLayout Orientation="Horizontal">
+							<Label>Application identifier</Label>
+							<StackLayoutItem Expand="True">
+								<TextBox ID="txtAppId" />
+							</StackLayoutItem>
+						</StackLayout>
+					</StackLayoutItem>
 				</StackLayout>
 			</GroupBox>
 		</StackLayoutItem>
-		<StackLayout Orientation="Horizontal">
-			<Button ID="btnCancel" Click="OnBtnCancelClicked">Cancel</Button>
-			<Button ID="btnSave" Click="OnBtnSaveClicked">Save</Button>
-		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Center">
+			<StackLayout Orientation="Horizontal">
+				<Button ID="btnCancel" Click="OnBtnCancelClicked">Cancel</Button>
+				<Button ID="btnSave" Click="OnBtnSaveClicked">Save</Button>
+			</StackLayout>
+		</StackLayoutItem>
 	</StackLayout>
 </Dialog>

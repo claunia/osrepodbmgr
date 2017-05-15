@@ -1,132 +1,161 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="544" Width="857"
-	Closing="OnDeleteEvent" Resizable="True" DisplayMode="Attached">
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="544" Width="857" Closing="OnDeleteEvent" Resizable="True" DisplayMode="Attached">
 	<StackLayout Orientation="Vertical">
-		<StackLayout Orientation="Horizontal">
-			<Label>Developer</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtDeveloper"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Product</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtProduct"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Version</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtVersion"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Languages</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtLanguages"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Architecture</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtArchitecture"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Machine</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtMachine"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Format</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtFormat"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<Label>Description</Label>
-			<StackLayoutItem Expand="True">
-				<TextBox ID="txtDescription"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<CheckBox ID="chkOem">oem</CheckBox>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-				<CheckBox ID="chkUpdate">update</CheckBox>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<CheckBox ID="chkUpgrade">upgrade</CheckBox>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-				<CheckBox ID="chkFiles">files</CheckBox>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<CheckBox ID="chkSource">source</CheckBox>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-				<CheckBox ID="chkNetinstall">netinstall</CheckBox>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Center">
-				<TabControl>
-					<TabPage Text="Files">
-						<GridView ID="treeFiles"/>
-					</TabPage>
-					<TabPage Text="OSes" ID="tabOSes" Visible="False">
-						<GridView ID="treeOSes"/>
-					</TabPage>
-				</TabControl>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<Label ID="lblProgress">Progress</Label>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-				<ProgressBar ID="prgProgress"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<Label ID="lblProgress2">Progress2</Label>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-				<ProgressBar ID="prgProgress2"/>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnRemoveFile" Click="OnBtnRemoveFileClicked" Visible="False">Remove</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnMetadata" Click="OnBtnMetadataClicked" Visible="False">Metadata</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnStop" Click="OnBtnStopClicked" Visible="False">Stop</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnFolder" Click="OnBtnFolderClicked">Open folder</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnArchive" Click="OnBtnArchiveClicked">Open archive</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnPack" Click="OnBtnPackClicked" Visible="False">Add to repository...</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnClose" Click="OnBtnCloseClicked" Visible="False">Close</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnExit" Click="OnBtnExitClicked">OK</Button>
-			</StackLayoutItem>
-		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Developer</Label>
+				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
+					<TextBox ID="txtDeveloper" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Product</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtProduct" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Version</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtVersion" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Languages</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtLanguages" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Architecture</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtArchitecture" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Machine</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtMachine" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Format</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtFormat" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<Label>Description</Label>
+				<StackLayoutItem Expand="True">
+					<TextBox ID="txtDescription" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem Expand="True" HorizontalAlignment="Left">
+					<CheckBox ID="chkOem">oem</CheckBox>
+				</StackLayoutItem>
+				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
+					<CheckBox ID="chkUpdate">update</CheckBox>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem Expand="True" HorizontalAlignment="Left">
+					<CheckBox ID="chkUpgrade">upgrade</CheckBox>
+				</StackLayoutItem>
+				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
+					<CheckBox ID="chkFiles">files</CheckBox>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem Expand="True" HorizontalAlignment="Left">
+					<CheckBox ID="chkSource">source</CheckBox>
+				</StackLayoutItem>
+				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
+					<CheckBox ID="chkNetinstall">netinstall</CheckBox>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<TabControl>
+						<TabPage Text="Files">
+							<GridView ID="treeFiles" />
+						</TabPage>
+						<TabPage Text="OSes" ID="tabOSes" Visible="False">
+							<GridView ID="treeOSes" />
+						</TabPage>
+					</TabControl>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Label ID="lblProgress">Progress</Label>
+				</StackLayoutItem>
+				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
+					<ProgressBar ID="prgProgress" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Label ID="lblProgress2">Progress2</Label>
+				</StackLayoutItem>
+				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
+					<ProgressBar ID="prgProgress2" />
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Center">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnRemoveFile" Click="OnBtnRemoveFileClicked" Visible="False">Remove</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnMetadata" Click="OnBtnMetadataClicked" Visible="False">Metadata</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnStop" Click="OnBtnStopClicked" Visible="False">Stop</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnFolder" Click="OnBtnFolderClicked">Open folder</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnArchive" Click="OnBtnArchiveClicked">Open archive</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnPack" Click="OnBtnPackClicked" Visible="False">Add to repository...</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnClose" Click="OnBtnCloseClicked" Visible="False">Close</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnExit" Click="OnBtnExitClicked">OK</Button>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
 	</StackLayout>
 </Dialog>

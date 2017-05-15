@@ -1,51 +1,58 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="400" Height="250"
-	xmlns:e="clr-namespace:osrepodbmgr.Core;assembly=osrepodbmgr.Core">
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="400" Height="250" xmlns:e="clr-namespace:osrepodbmgr.Core;assembly=osrepodbmgr.Core">
 	<StackLayout Orientation="Vertical">
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Label>Database file</Label>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-				<TextBox ID="txtDatabase"/>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Right">
-				<Button ID="btnDatabase" Click="OnBtnDatabaseClicked">Choose...</Button>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Label>Repository folder</Label>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-				<TextBox ID="txtRepository"/>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Right">
-				<Button ID="btnRepository" Click="OnBtnRepositoryClicked">Choose...</Button>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Label>Temporary folder</Label>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-				<TextBox ID="txtTmp"/>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Right">
-				<Button ID="btnTmp" Click="OnBtnTmpClicked">Choose...</Button>
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Label>Path to unar</Label>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-				<TextBox ID="txtUnar"/>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Right">
-				<Button ID="btnUnar" Click="OnBtnUnarClicked">Choose...</Button>
-			</StackLayoutItem>
-		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Label>Database file</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+					<TextBox ID="txtDatabase" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Right">
+					<Button ID="btnDatabase" Click="OnBtnDatabaseClicked">Choose...</Button>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Label>Repository folder</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+					<TextBox ID="txtRepository" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Right">
+					<Button ID="btnRepository" Click="OnBtnRepositoryClicked">Choose...</Button>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Label>Temporary folder</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+					<TextBox ID="txtTmp" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Right">
+					<Button ID="btnTmp" Click="OnBtnTmpClicked">Choose...</Button>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Label>Path to unar</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+					<TextBox ID="txtUnar" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Right">
+					<Button ID="btnUnar" Click="OnBtnUnarClicked">Choose...</Button>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
 		<StackLayout Orientation="Horizontal">
 			<StackLayoutItem HorizontalAlignment="Center">
 				<Label ID="lblUnarVersion" Visible="False">lblUnarVersion</Label>
@@ -56,13 +63,15 @@
 				<Label>Compression algorithm</Label>
 			</StackLayoutItem>
 		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem HorizontalAlignment="Left">
-				<Button ID="btnCancel" Click="OnBtnCancelClicked">Cancel</Button>
-			</StackLayoutItem>
-			<StackLayoutItem HorizontalAlignment="Right">
-				<Button ID="btnApply" Click="OnBtnApplyClicked">Apply</Button>
-			</StackLayoutItem>
-		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Center">
+			<StackLayout Orientation="Horizontal">
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnCancel" Click="OnBtnCancelClicked">Cancel</Button>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Right">
+					<Button ID="btnApply" Click="OnBtnApplyClicked">Apply</Button>
+				</StackLayoutItem>
+			</StackLayout>
+		</StackLayoutItem>
 	</StackLayout>
 </Dialog>
