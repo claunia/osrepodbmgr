@@ -1201,6 +1201,8 @@ namespace osrepodbmgr.Core
             try
             {
                 Directory.CreateDirectory(tmpFolder);
+
+                Context.tmpFolder = tmpFolder;
             }
             catch(Exception)
             {
@@ -1213,7 +1215,7 @@ namespace osrepodbmgr.Core
             try
             {
                 // If it's a ZIP file not created by Mac OS X, use DotNetZip to uncompress (unar freaks out or corrupts certain ZIP features)
-                if(ZipFile.IsZipFile(Context.path) && Context.unzipWithUnAr)
+                if(ZipFile.IsZipFile(Context.path) && !Context.unzipWithUnAr)
                 {
                     try
                     {
@@ -1257,12 +1259,11 @@ namespace osrepodbmgr.Core
                     Context.unarProcess.BeginOutputReadLine();
                     Context.unarProcess.WaitForExit();
                     Context.unarProcess.Close();
+                    Context.unarProcess = null;
 
                     if(Finished != null)
                         Finished();
                 }
-
-                Context.tmpFolder = tmpFolder;
             }
             catch(Exception ex)
             {
