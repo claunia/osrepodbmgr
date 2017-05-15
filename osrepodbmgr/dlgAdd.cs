@@ -862,6 +862,7 @@ public partial class dlgAdd : Dialog
         Workers.FinishedWithText += PackFilesFinished;
         Workers.Failed += PackFilesFailed;
 
+        Context.dbInfo = new DBEntry();
         Context.dbInfo.architecture = txtArchitecture.Text;
         Context.dbInfo.description = txtDescription.Text;
         Context.dbInfo.developer = txtDeveloper.Text;
