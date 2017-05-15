@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Panel xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<StackLayout>
-		<Label>Some Content</Label>
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="300" Width="400">
+	<StackLayout Orientation="Vertical">
+		<StackLayoutItem VerticalAlignment="Stretch" Expand="True" HorizontalAlignment="Stretch">
+			<TextArea ReadOnly="True" ID="txtHelp"/>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Center">
+			<Button Click="OnBtnOKClicked">OK</Button>
+		</StackLayoutItem>
 	</StackLayout>
-</Panel>
+</Dialog>

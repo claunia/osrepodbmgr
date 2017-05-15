@@ -1,6 +1,50 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Panel xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<StackLayout>
-		<Label>Some Content</Label>
+<Form xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="365" Width="612">
+	<StackLayout Orientation="Vertical">
+		<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
+			<GroupBox Text="Operating systems">
+				<GridView ID="treeOSes" Enabled="False"></GridView>
+			</GroupBox>
+		</StackLayoutItem>
+		<StackLayout Orientation="Horizontal">
+			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
+				<Label ID="lblProgress">lblProgress</Label>
+			</StackLayoutItem>
+			<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
+				<ProgressBar ID="prgProgress"/>
+			</StackLayoutItem>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
+				<Label ID="lblProgress2" Visible="False">lblProgress2</Label>
+			</StackLayoutItem>
+			<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
+				<ProgressBar ID="prgProgress2" Visible="False"/>
+			</StackLayoutItem>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<Button x:Name="btnAdd" Click="OnBtnAddClicked" Visible="False">Add</Button>
+			<Button x:Name="btnRemove" Click="OnBtnRemoveClicked" Visible="False">Remove</Button>
+			<Button x:Name="btnStop" Click="OnBtnStopClicked" Visible="False">Stop</Button>
+			<Button x:Name="btnCompress" Click="OnBtnCompressClicked" Visible="False">Compress to</Button>
+			<Button x:Name="btnSave" Click="OnBtnSaveClicked" Visible="False">Save As</Button>
+		</StackLayout>
 	</StackLayout>
-</Panel>
+	<Form.Menu>
+		<MenuBar>
+			<ButtonMenuItem Text="&amp;File" ID="mnuFile">
+				<ButtonMenuItem Text="Add" Click="OnBtnAddClicked" Shortcut="CommonModifier+A"/>
+				<ButtonMenuItem Text="Remove" Click="OnBtnRemoveClicked" Shortcut="CommonModifier+R"/>
+				<ButtonMenuItem Text="Save As" Click="OnBtnSaveClicked" Shortcut="CommonModifier+S"/>
+				<ButtonMenuItem Text="Compress" Click="OnBtnCompressClicked" Shortcut="CommonModifier+E"/>
+			</ButtonMenuItem>
+			<ButtonMenuItem Text="Help" ID="btnHelp" Click="OnBtnHelpClicked"/>
+			<MenuBar.ApplicationItems>
+				<ButtonMenuItem ID="btnSettings" Text="Preferences..." Click="OnBtnSettingsClicked" Shortcut="{On Control+O, Mac=Application+Comma}"/>
+			</MenuBar.ApplicationItems>
+			<MenuBar.QuitItem>
+				<ButtonMenuItem ID="btnQuit" Text="Quit" Click="OnBtnQuitClicked" Shortcut="CommonModifier+Q"/>
+			</MenuBar.QuitItem>
+		</MenuBar>
+	</Form.Menu>
+</Form>

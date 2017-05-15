@@ -28,6 +28,7 @@
 using System;
 using Eto;
 using Eto.Forms;
+using osrepodbmgr.Core;
 
 namespace osrepodbmgr.Eto.Desktop
 {
@@ -36,7 +37,9 @@ namespace osrepodbmgr.Eto.Desktop
         [STAThread]
         public static void Main(string[] args)
         {
-            new Application(Platform.Detect).Run(new MainForm());
+            Settings.LoadSettings();
+            Context.CheckUnar();
+            new Application(Platform.Detect).Run(new frmMain());
         }
     }
 }

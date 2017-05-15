@@ -28,6 +28,7 @@
 using System;
 using Eto;
 using Eto.Forms;
+using osrepodbmgr.Core;
 
 namespace osrepodbmgr.Eto.XamMac2
 {
@@ -36,7 +37,9 @@ namespace osrepodbmgr.Eto.XamMac2
         [STAThread]
         public static void Main(string[] args)
         {
-            new Application(Platforms.XamMac2).Run(new MainForm());
+            Settings.LoadSettings();
+            Context.CheckUnar();
+            new Application(Platforms.XamMac2).Run(new frmMain());
         }
     }
 }

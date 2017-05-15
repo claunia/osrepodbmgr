@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr", "osrepodbmgr\osrepodbmgr.csproj", "{19FB7436-031F-42B3-87F6-8508F63EDADA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr.Gtk", "osrepodbmgr\osrepodbmgr.Gtk.csproj", "{19FB7436-031F-42B3-87F6-8508F63EDADA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Checksums", "DiscImageChef\DiscImageChef.Checksums\DiscImageChef.Checksums.csproj", "{CC48B324-A532-4A45-87A6-6F91F7141E8D}"
 EndProject
@@ -26,6 +26,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Metadata", "DiscImageChef\DiscImageChef.Metadata\DiscImageChef.Metadata.csproj", "{9F213318-5CB8-4066-A757-074489C9F818}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr.Core", "osrepodbmgr.Core\osrepodbmgr.Core.csproj", "{076D5C4D-9601-4164-B979-0DABACB56BB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr.Eto", "osrepodbmgr.Eto\osrepodbmgr.Eto.csproj", "{E805559F-89AE-47B4-926D-5B63A4F3A123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr.Eto.Desktop", "osrepodbmgr.Eto.Desktop\osrepodbmgr.Eto.Desktop.csproj", "{DCC4B0CF-0F0D-4EDA-87CB-ED8303D07555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osrepodbmgr.Eto.XamMac2", "osrepodbmgr.Eto.XamMac2\osrepodbmgr.Eto.XamMac2.csproj", "{FE0C10AD-1C0D-490F-B1BF-9702A5B01074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +91,18 @@ Global
 		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Debug|x86.Build.0 = Debug|Any CPU
 		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Release|x86.ActiveCfg = Release|Any CPU
 		{076D5C4D-9601-4164-B979-0DABACB56BB8}.Release|x86.Build.0 = Release|Any CPU
+		{E805559F-89AE-47B4-926D-5B63A4F3A123}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E805559F-89AE-47B4-926D-5B63A4F3A123}.Debug|x86.Build.0 = Debug|Any CPU
+		{E805559F-89AE-47B4-926D-5B63A4F3A123}.Release|x86.ActiveCfg = Release|Any CPU
+		{E805559F-89AE-47B4-926D-5B63A4F3A123}.Release|x86.Build.0 = Release|Any CPU
+		{DCC4B0CF-0F0D-4EDA-87CB-ED8303D07555}.Debug|x86.ActiveCfg = Debug|x86
+		{DCC4B0CF-0F0D-4EDA-87CB-ED8303D07555}.Debug|x86.Build.0 = Debug|x86
+		{DCC4B0CF-0F0D-4EDA-87CB-ED8303D07555}.Release|x86.ActiveCfg = Release|x86
+		{DCC4B0CF-0F0D-4EDA-87CB-ED8303D07555}.Release|x86.Build.0 = Release|x86
+		{FE0C10AD-1C0D-490F-B1BF-9702A5B01074}.Debug|x86.ActiveCfg = Debug|x86
+		{FE0C10AD-1C0D-490F-B1BF-9702A5B01074}.Debug|x86.Build.0 = Debug|x86
+		{FE0C10AD-1C0D-490F-B1BF-9702A5B01074}.Release|x86.ActiveCfg = Release|x86
+		{FE0C10AD-1C0D-490F-B1BF-9702A5B01074}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

@@ -1,6 +1,81 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Panel xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<StackLayout>
-		<Label>Some Content</Label>
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<StackLayout Orientation="Vertical">
+		<StackLayout Orientation="Horizontal">
+			<Label>Filesystem type</Label>
+			<TextBox ID="txtType"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<TextBox ID="txtFiles"/>
+			<Label>files</Label>
+			<CheckBox ID="chkBootable" ThreeState="False">Bootable</CheckBox>
+			<CheckBox ID="chkDirty" ThreeState="False">Dirty</CheckBox>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<NumericUpDown ID="spClusterSize" MaxValue="1048576"/>
+			<Label>bytes per cluster</Label>
+			<TextBox ID="txtClusters"/>
+			<Label>clusters</Label>
+			<TextBox ID="txtFreeClusters"/>
+			<Label>free clusters</Label>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<CheckBox ID="chkCreationDate" ThreeState="False" CheckedChanged="OnChkCreationDateToggled">Creation date</CheckBox>
+			<DateTimePicker ID="cldCreationDate" Mode="DateTime"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<CheckBox ID="chkModificationDate" ThreeState="False" CheckedChanged="OnChkModificationDateToggled">Modification date</CheckBox>
+			<DateTimePicker ID="cldModificationDate" Mode="DateTime"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<CheckBox ID="chkEffectiveDate" ThreeState="False" CheckedChanged="OnChkEffectiveDateToggled">Effective date</CheckBox>
+			<DateTimePicker ID="cldEffectiveDate" Mode="DateTime"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<CheckBox ID="chkExpirationDate" ThreeState="False" CheckedChanged="OnChkExpirationDateToggled">Expiration date</CheckBox>
+			<DateTimePicker ID="cldExpirationDate" Mode="DateTime"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<CheckBox ID="chkBackupDate" ThreeState="False" CheckedChanged="OnChkBackupDateToggled">Last backup date</CheckBox>
+			<DateTimePicker ID="cldBackupDate" Mode="DateTime"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<Label>Volume label</Label>
+			<TextBox ID="txtLabel"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<Label>Volume serial</Label>
+			<TextBox ID="txtSerial"/>
+		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+			<GroupBox Text="ISO9660 information">
+				<StackLayout Orientation="Vertical">
+					<StackLayout Orientation="Horizontal">
+						<Label>System identifier</Label>
+						<TextBox ID="txtSysId"/>
+					</StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Label>Volume identifier</Label>
+						<TextBox ID="txtVolId"/>
+					</StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Label>Publisher identifier</Label>
+						<TextBox ID="txtPubId"/>
+					</StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Label>Data preparer identifier</Label>
+						<TextBox ID="txtDataId"/>
+					</StackLayout>
+					<StackLayout Orientation="Horizontal">
+						<Label>Application identifier</Label>
+						<TextBox ID="txtAppId"/>
+					</StackLayout>
+				</StackLayout>
+			</GroupBox>
+		</StackLayoutItem>
+		<StackLayout Orientation="Horizontal">
+			<Button ID="btnCancel" Click="OnBtnCancelClicked">Cancel</Button>
+			<Button ID="btnSave" Click="OnBtnSaveClicked">Save</Button>
+		</StackLayout>
 	</StackLayout>
-</Panel>
+</Dialog>

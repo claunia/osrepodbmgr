@@ -26,12 +26,70 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MainForm.xeto.cs">
-      <DependentUpon>MainForm.xeto</DependentUpon>
+    <Compile Include="frmMain.xeto.cs">
+      <DependentUpon>frmMain.xeto</DependentUpon>
     </Compile>
+    <Compile Include="dlgHelp.xeto.cs">
+      <DependentUpon>dlgHelp.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="dlgSettings.xeto.cs">
+      <DependentUpon>dlgSettings.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="dlgAdd.xeto.cs">
+      <DependentUpon>dlgAdd.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="dlgMetadata.xeto.cs">
+      <DependentUpon>dlgMetadata.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="dlgFilesystem.xeto.cs">
+      <DependentUpon>dlgFilesystem.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="dlgBlockMedia.xeto.cs">
+      <DependentUpon>dlgBlockMedia.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="dlgOpticalDisc.xeto.cs">
+      <DependentUpon>dlgOpticalDisc.xeto</DependentUpon>
+    </Compile>
+    <Compile Include="WrappersForEto.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MainForm.xeto" />
+    <Reference Include="Eto">
+      <HintPath>..\packages\Eto.Forms.2.3.0\lib\net45\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="Portable.Xaml">
+      <HintPath>..\packages\Portable.Xaml.0.14.0\lib\dotnet\Portable.Xaml.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Serialization.Xaml">
+      <HintPath>..\packages\Eto.Serialization.Xaml.2.3.0\lib\net45\Eto.Serialization.Xaml.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmMain.xeto" />
+    <EmbeddedResource Include="dlgHelp.xeto" />
+    <EmbeddedResource Include="dlgSettings.xeto" />
+    <EmbeddedResource Include="dlgAdd.xeto" />
+    <EmbeddedResource Include="dlgMetadata.xeto" />
+    <EmbeddedResource Include="dlgFilesystem.xeto" />
+    <EmbeddedResource Include="dlgBlockMedia.xeto" />
+    <EmbeddedResource Include="dlgOpticalDisc.xeto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\osrepodbmgr.Core\osrepodbmgr.Core.csproj">
+      <Project>{076D5C4D-9601-4164-B979-0DABACB56BB8}</Project>
+      <Name>osrepodbmgr.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DiscImageChef\DiscImageChef.Metadata\DiscImageChef.Metadata.csproj">
+      <Project>{9F213318-5CB8-4066-A757-074489C9F818}</Project>
+      <Name>DiscImageChef.Metadata</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
