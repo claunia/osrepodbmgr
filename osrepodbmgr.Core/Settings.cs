@@ -51,6 +51,9 @@ namespace osrepodbmgr.Core
             Current = new SetSettings();
             DiscImageChef.Interop.PlatformID ptID = DiscImageChef.Interop.DetectOS.GetRealPlatformID();
 
+            FileStream prefsFs = null;
+            StreamReader prefsSr = null;
+
             try
             {
                 switch(ptID)
@@ -67,7 +70,8 @@ namespace osrepodbmgr.Core
                                 SaveSettings();
                             }
 
-                            NSDictionary parsedPreferences = (NSDictionary)BinaryPropertyListParser.Parse(new FileInfo(preferencesFilePath));
+                            prefsFs = new FileStream(preferencesFilePath, FileMode.Open);
+                            NSDictionary parsedPreferences = (NSDictionary)BinaryPropertyListParser.Parse(prefsFs);
                             if(parsedPreferences != null)
                             {
                                 NSObject obj;
@@ -107,8 +111,12 @@ namespace osrepodbmgr.Core
                                 }
                                 else
                                     Current.CompressionAlgorithm = AlgoEnum.GZip;
+
+                                prefsFs.Close();
                             }
                             else {
+                                prefsFs.Close();
+
                                 SetDefaultSettings();
                                 SaveSettings();
                             }
@@ -157,15 +165,20 @@ namespace osrepodbmgr.Core
                             }
 
                             XmlSerializer xs = new XmlSerializer(Current.GetType());
-                            StreamReader sr = new StreamReader(settingsPath);
-                            Current = (SetSettings)xs.Deserialize(sr);
-                            sr.Close();
+                            prefsSr = new StreamReader(settingsPath);
+                            Current = (SetSettings)xs.Deserialize(prefsSr);
+                            prefsSr.Close();
                         }
                         break;
                 }
             }
             catch
             {
+                if(prefsFs != null)
+                    prefsFs.Close();
+                if(prefsSr != null)
+                    prefsSr.Close();
+                
                 SetDefaultSettings();
                 SaveSettings();
             }
@@ -187,7 +200,7 @@ namespace osrepodbmgr.Core
                             root.Add("DatabasePath", Current.DatabasePath);
                             root.Add("RepositoryPath", Current.RepositoryPath);
                             root.Add("UnArchiverPath", Current.UnArchiverPath);
-                            root.Add("CompressionAlgorithm", Current.CompressionAlgorithm);
+                            root.Add("CompressionAlgorithm", Current.CompressionAlgorithm.ToString());
 
                             string preferencesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Preferences");
                             string preferencesFilePath = Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
