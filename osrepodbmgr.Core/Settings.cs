@@ -216,13 +216,14 @@ namespace osrepodbmgr.Core
                     case DiscImageChef.Interop.PlatformID.WinCE:
                     case DiscImageChef.Interop.PlatformID.WindowsPhone:
                         {
-                            RegistryKey parentKey = Registry.CurrentUser.OpenSubKey("SOFTWARE").CreateSubKey("Canary Islands Computer Museum");
+                            RegistryKey parentKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true).CreateSubKey("Canary Islands Computer Museum");
                             RegistryKey key = parentKey.CreateSubKey("OSRepoDBMgr");
 
                             key.SetValue("TemporaryFolder", Current.TemporaryFolder);
                             key.SetValue("DatabasePath", Current.DatabasePath);
                             key.SetValue("RepositoryPath", Current.RepositoryPath);
-                            key.SetValue("UnArchiverPath", Current.UnArchiverPath);
+                            if (Current.UnArchiverPath != null)
+                                key.SetValue("UnArchiverPath", Current.UnArchiverPath);
                             key.SetValue("CompressionAlgorithm", Current.CompressionAlgorithm);
                         }
                         break;
