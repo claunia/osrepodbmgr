@@ -102,36 +102,36 @@
 												<CheckBox ID="chkSequence" CheckedChanged="OnChkSequenceToggled">Sequenced</CheckBox>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Center">
-												<Label ID="lblMediaTitle">Media title</Label>
+												<Label ID="lblMediaTitle" Visible="False">Media title</Label>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<TextBox ID="txtMediaTitle" />
-											</StackLayoutItem>
-											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<StackLayout Orientation="Horizontal">
-													<Label ID="lblSequence">Sequence:</Label>
-													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spSequence" />
-													</StackLayoutItem>
-													<Label ID="lblTotalMedia">of</Label>
-													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spTotalMedia" />
-													</StackLayoutItem>
-												</StackLayout>
+												<TextBox ID="txtMediaTitle"  Visible="False"/>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 												<StackLayout Orientation="Horizontal">
-													<Label ID="lblSide">Side:</Label>
+													<Label ID="lblSequence" Visible="False">Sequence:</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spSide" />
+														<NumericUpDown ID="spSequence"  Visible="False"/>
+													</StackLayoutItem>
+													<Label ID="lblTotalMedia" Visible="False">of</Label>
+													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+														<NumericUpDown ID="spTotalMedia"  Visible="False"/>
 													</StackLayoutItem>
 												</StackLayout>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 												<StackLayout Orientation="Horizontal">
-													<Label ID="lblLayer">Layer:</Label>
+													<Label ID="lblSide" Visible="False">Side:</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spLayer" />
+														<NumericUpDown ID="spSide"  Visible="False"/>
+													</StackLayoutItem>
+												</StackLayout>
+											</StackLayoutItem>
+											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+												<StackLayout Orientation="Horizontal">
+													<Label ID="lblLayer" Visible="False">Layer:</Label>
+													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+														<NumericUpDown ID="spLayer"  Visible="False"/>
 													</StackLayoutItem>
 												</StackLayout>
 											</StackLayoutItem>
@@ -198,10 +198,10 @@
 												<CheckBox ID="chkDimensions" CheckedChanged="OnChkDimensionsToggled">Known dimensions</CheckBox>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Center" Expand="True">
-												<CheckBox ID="chkRound" CheckedChanged="OnChkRoundToggled">Round?</CheckBox>
+												<CheckBox ID="chkRound" CheckedChanged="OnChkRoundToggled" Visible="False">Round?</CheckBox>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<StackLayout Orientation="Horizontal" ID="stkDiameter">
+												<StackLayout Orientation="Horizontal" ID="stkDiameter" Visible="False">
 													<Label>Diameter</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 														<NumericUpDown ID="spDiameter" DecimalPlaces="5" />
@@ -210,7 +210,7 @@
 												</StackLayout>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<StackLayout Orientation="Horizontal" ID="stkHeight">
+												<StackLayout Orientation="Horizontal" ID="stkHeight" Visible="False">
 													<Label>Height</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 														<NumericUpDown ID="spHeight" DecimalPlaces="5" />
@@ -219,7 +219,7 @@
 												</StackLayout>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<StackLayout Orientation="Horizontal" ID="stkWidth">
+												<StackLayout Orientation="Horizontal" ID="stkWidth" Visible="False">
 													<Label>Width</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 														<NumericUpDown ID="spWidth" DecimalPlaces="5" />
@@ -228,7 +228,7 @@
 												</StackLayout>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<StackLayout Orientation="Horizontal" ID="stkThickness">
+												<StackLayout Orientation="Horizontal" ID="stkThickness" Visible="False">
 													<Label>Thickness</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 														<NumericUpDown ID="spThickness" DecimalPlaces="5" />
@@ -247,7 +247,7 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkATA" Enabled="False">Has ATA IDENTIFY information?</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeATA" Enabled="False" />
+							<GridView ID="treeATA" Enabled="False"  Visible="False"/>
 						</StackLayoutItem>
 					</StackLayout>
 				</TabPage>
@@ -256,27 +256,27 @@
 						<CheckBox ID="chkPCI" Enabled="False">Is PCI?</CheckBox>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblPCIVendor">Vendor ID</Label>
+								<Label ID="lblPCIVendor" Visible="False">Vendor ID</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtPCIVendor" />
+									<TextBox ID="txtPCIVendor"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblPCIProduct">Product ID</Label>
+								<Label ID="lblPCIProduct" Visible="False">Product ID</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtPCIProduct" />
+									<TextBox ID="txtPCIProduct"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="Configuration" ID="frmPCIConfiguration">
+							<GroupBox Text="Configuration" ID="frmPCIConfiguration" Visible="False">
 								<GridView ID="treeConfiguration" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="Option ROM" ID="frmOptionROM">
+							<GroupBox Text="Option ROM" ID="frmOptionROM" Visible="False">
 								<GridView ID="treeOptionROM" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
@@ -285,52 +285,52 @@
 				<TabPage Text="PCMCIA">
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkPCMCIA">Is PCMCIA?</CheckBox>
-						<CheckBox ID="chkCIS" Enabled="False">Has CIS?</CheckBox>
+						<CheckBox ID="chkCIS" Enabled="False" Visible="False">Has CIS?</CheckBox>
 						<StackLayoutItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Expand="True">
-							<GridView ID="treeCIS" />
+							<GridView ID="treeCIS"  Visible="False"/>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblPCMCIAManufacturer">Manufacturer name</Label>
+								<Label ID="lblPCMCIAManufacturer" Visible="False">Manufacturer name</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtPCMCIAManufacturer" />
+									<TextBox ID="txtPCMCIAManufacturer"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblMfgCode">Manufacturer code</Label>
+								<Label ID="lblMfgCode" Visible="False">Manufacturer code</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtMfgCode" />
+									<TextBox ID="txtMfgCode"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblPCMCIAProductName">Product name</Label>
+								<Label ID="lblPCMCIAProductName" Visible="False">Product name</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtPCMCIAProductName" />
+									<TextBox ID="txtPCMCIAProductName"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblCardCode">Card code</Label>
+								<Label ID="lblCardCode" Visible="False">Card code</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtCardCode" />
+									<TextBox ID="txtCardCode"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblCompliance">Compliance</Label>
+								<Label ID="lblCompliance" Visible="False">Compliance</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtCompliance" />
+									<TextBox ID="txtCompliance"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="Additional information" ID="lblAdditionalInformation">
+							<GroupBox Text="Additional information" ID="lblAdditionalInformation" Visible="False">
 								<GridView ID="treeAdditionalInformation" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
@@ -340,18 +340,18 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkSecureDigital" Enabled="False">Is Secure Digital or MMC?</CheckBox>
 						<StackLayoutItem HorizontalAlignment="Center">
-							<Label ID="lblCID">CID</Label>
+							<Label ID="lblCID" Visible="False">CID</Label>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeCID" Enabled="False" />
+							<GridView ID="treeCID" Enabled="False"  Visible="False"/>
 						</StackLayoutItem>
-						<CheckBox ID="chkCSD" Enabled="False">Has CSD?</CheckBox>
+						<CheckBox ID="chkCSD" Enabled="False" Visible="False">Has CSD?</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeCSD" Enabled="False" />
+							<GridView ID="treeCSD" Enabled="False"  Visible="False"/>
 						</StackLayoutItem>
-						<CheckBox ID="chkECSD" Enabled="False">Has Extended CSD?</CheckBox>
+						<CheckBox ID="chkECSD" Enabled="False" Visible="False">Has Extended CSD?</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeECSD" Enabled="False" />
+							<GridView ID="treeECSD" Enabled="False"  Visible="False"/>
 						</StackLayoutItem>
 					</StackLayout>
 				</TabPage>
@@ -359,27 +359,27 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkSCSI" Enabled="False">Is SCSI?</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="INQUIRY" ID="frmInquiry">
+							<GroupBox Text="INQUIRY" ID="frmInquiry" Visible="False">
 								<GridView ID="treeInquiry" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="MODE SENSE" ID="frmModeSense">
+							<GroupBox Text="MODE SENSE" ID="frmModeSense" Visible="False">
 								<GridView ID="treeModeSense" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="MODE SENSE (10)" ID="frmModeSense10">
+							<GroupBox Text="MODE SENSE (10)" ID="frmModeSense10" Visible="False">
 								<GridView ID="treeModeSense10" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="LOG SENSE" ID="frmLogSense">
+							<GroupBox Text="LOG SENSE" ID="frmLogSense" Visible="False">
 								<GridView ID="treeLogSense" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="EVPDs" ID="frmEVPDs">
+							<GroupBox Text="EVPDs" ID="frmEVPDs" Visible="False">
 								<GridView ID="treeEVPDs" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
@@ -390,22 +390,22 @@
 						<CheckBox ID="chkUSB" Enabled="False">Is USB?</CheckBox>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblUSBVendor">Vendor ID</Label>
+								<Label ID="lblUSBVendor" Visible="False">Vendor ID</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtUSBVendor" />
+									<TextBox ID="txtUSBVendor"  Visible="False"/>
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Stretch">
 							<StackLayout Orientation="Horizontal">
-								<Label ID="lblUSBProduct">Product ID</Label>
+								<Label ID="lblUSBProduct" Visible="False">Product ID</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtUSBProduct" />
+									<TextBox ID="txtUSBProduct" Visible="False" />
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="Descriptors" ID="frmDescriptors">
+							<GroupBox Text="Descriptors" ID="frmDescriptors" Visible="False">
 								<GridView ID="treeDescriptors" Enabled="False" />
 							</GroupBox>
 						</StackLayoutItem>
@@ -415,7 +415,7 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkMAM" Enabled="False">Has MAM?</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeMAM" Enabled="False" />
+							<GridView ID="treeMAM" Enabled="False"  Visible="False"/>
 						</StackLayoutItem>
 					</StackLayout>
 				</TabPage>
@@ -423,7 +423,7 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkTracks" Enabled="False">Has tracks?</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeTracks" Enabled="False" />
+							<GridView ID="treeTracks" Enabled="False"  Visible="False"/>
 						</StackLayoutItem>
 					</StackLayout>
 				</TabPage>
@@ -435,15 +435,15 @@
 							</StackLayoutItem>
 							<StackLayoutItem HorizontalAlignment="Right">
 								<StackLayout Orientation="Horizontal">
-									<Button ID="btnCancelPartition" Click="OnBtnCancelPartitionClicked">Cancel</Button>
+									<Button ID="btnCancelPartition" Click="OnBtnCancelPartitionClicked" Visible="False">Cancel</Button>
 									<Button ID="btnRemovePartition" Click="OnBtnRemovePartitionClicked">Remove</Button>
 									<Button ID="btnEditPartition" Click="OnBtnEditPartitionClicked">Edit</Button>
-									<Button ID="btnApplyPartition" Click="OnBtnApplyPartitionClicked">Apply</Button>
+									<Button ID="btnApplyPartition" Click="OnBtnApplyPartitionClicked" Visible="False">Apply</Button>
 									<Button ID="btnAddPartition" Click="OnBtnAddPartitionClicked">Add</Button>
 								</StackLayout>
 							</StackLayoutItem>
 							<StackLayoutItem HorizontalAlignment="Stretch">
-								<StackLayout Orientation="Horizontal" ID="stkPartitionFields1">
+								<StackLayout Orientation="Horizontal" ID="stkPartitionFields1" Visible="False">
 									<Label>Sequence</Label>
 									<StackLayoutItem Expand="True">
 										<NumericUpDown ID="spPartitionSequence" />
@@ -463,7 +463,7 @@
 								</StackLayout>
 							</StackLayoutItem>
 							<StackLayoutItem HorizontalAlignment="Stretch">
-								<StackLayout Orientation="Horizontal" ID="stkPartitionFields2">
+								<StackLayout Orientation="Horizontal" ID="stkPartitionFields2" Visible="False">
 									<Label>Name</Label>
 									<StackLayoutItem Expand="True">
 										<TextBox ID="txtPartitionName" />
@@ -475,7 +475,7 @@
 								</StackLayout>
 							</StackLayoutItem>
 							<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-								<GroupBox ID="frmFilesystems">
+								<GroupBox ID="frmFilesystems" Visible="False">
 									<StackLayout Orientation="Vertical">
 										<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 											<GridView ID="treeFilesystems" />
@@ -495,19 +495,19 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkDumpHardware" CheckedChanged="OnChkDumpHardwareToggled">Known dumping hardware</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeDumpHardware" />
+							<GridView ID="treeDumpHardware"  Visible="False"/>
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Right">
 							<StackLayout Orientation="Horizontal">
-								<Button ID="btnCancelHardware" Click="OnBtnCancelHardwareClicked">Cancel</Button>
-								<Button ID="btnRemoveHardware" Click="OnBtnRemoveHardwareClicked">Remove</Button>
-								<Button ID="btnEditHardware" Click="OnBtnEditHardwareClicked">Edit</Button>
-								<Button ID="btnApplyHardware" Click="OnBtnApplyHardwareClicked">Apply</Button>
-								<Button ID="btnAddHardware" Click="OnBtnAddHardwareClicked">Add</Button>
+								<Button ID="btnCancelHardware" Click="OnBtnCancelHardwareClicked" Visible="False">Cancel</Button>
+								<Button ID="btnRemoveHardware" Click="OnBtnRemoveHardwareClicked" Visible="False">Remove</Button>
+								<Button ID="btnEditHardware" Click="OnBtnEditHardwareClicked" Visible="False">Edit</Button>
+								<Button ID="btnApplyHardware" Click="OnBtnApplyHardwareClicked" Visible="False">Apply</Button>
+								<Button ID="btnAddHardware" Click="OnBtnAddHardwareClicked" Visible="False">Add</Button>
 							</StackLayout>
 						</StackLayoutItem>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox ID="frmHardware">
+							<GroupBox ID="frmHardware" Visible="False">
 								<StackLayout Orientation="Vertical">
 									<StackLayoutItem HorizontalAlignment="Stretch">
 										<StackLayout Orientation="Horizontal">
