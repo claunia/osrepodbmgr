@@ -39,7 +39,7 @@
 				<ButtonMenuItem Text="Add" Click="OnBtnAddClicked" Shortcut="CommonModifier+A" />
 				<ButtonMenuItem Text="Remove" Click="OnBtnRemoveClicked" Shortcut="CommonModifier+R" />
 				<ButtonMenuItem Text="Save As" Click="OnBtnSaveClicked" Shortcut="CommonModifier+S" />
-				<ButtonMenuItem Text="Compress" Click="OnBtnCompressClicked" Shortcut="CommonModifier+E" />
+				<ButtonMenuItem ID="mnuCompress" Text="Compress" Click="OnBtnCompressClicked" Shortcut="CommonModifier+E" />
 			</ButtonMenuItem>
 			<ButtonMenuItem Text="Help" ID="btnHelp" Click="OnBtnHelpClicked" />
 			<MenuBar.ApplicationItems>

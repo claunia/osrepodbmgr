@@ -36,6 +36,7 @@ namespace osrepodbmgr
         {
             Core.Settings.LoadSettings();
             Context.CheckUnar();
+            Context.usableDotNetZip = true;
             Application.Init();
             frmMain win = new frmMain();
             win.Show();

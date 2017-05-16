@@ -51,6 +51,7 @@ namespace osrepodbmgr.Core
         public static BlockMediaType workingDisk;
         public static CICMMetadataType metadata;
         public static bool userExtracting;
+        public static bool usableDotNetZip;
 
         public delegate void UnarChangeStatusDelegate();
         public static event UnarChangeStatusDelegate UnarChangeStatus;

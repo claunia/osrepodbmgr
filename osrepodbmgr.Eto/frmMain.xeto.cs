@@ -55,6 +55,7 @@ namespace osrepodbmgr.Eto
         Button btnStop;
         ButtonMenuItem btnSettings;
         ButtonMenuItem btnHelp;
+        ButtonMenuItem mnuCompress;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
@@ -144,6 +145,12 @@ namespace osrepodbmgr.Eto
 
             prgProgress.Indeterminate = true;
 
+            if(!Context.usableDotNetZip)
+            {
+                btnCompress.Visible = false;
+                mnuCompress.Enabled = false;
+            }
+
             Workers.Failed += LoadOSesFailed;
             Workers.Finished += LoadOSesFinished;
             Workers.UpdateProgress += UpdateProgress;
@@ -187,7 +194,7 @@ namespace osrepodbmgr.Eto
                 treeOSes.Enabled = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnCompress.Visible = true;
+                btnCompress.Visible = Context.usableDotNetZip;
                 btnSave.Visible = true;
                 btnHelp.Enabled = true;
                 btnSettings.Enabled = true;
@@ -318,7 +325,7 @@ namespace osrepodbmgr.Eto
                 treeOSes.Enabled = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnCompress.Visible = true;
+                btnCompress.Visible = Context.usableDotNetZip;
                 btnSave.Visible = true;
                 btnHelp.Enabled = true;
                 btnSettings.Enabled = true;
@@ -350,7 +357,7 @@ namespace osrepodbmgr.Eto
                 treeOSes.Enabled = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnCompress.Visible = true;
+                btnCompress.Visible = Context.usableDotNetZip;
                 btnSave.Visible = true;
                 btnHelp.Enabled = true;
                 btnSettings.Enabled = true;
@@ -461,7 +468,7 @@ namespace osrepodbmgr.Eto
                 treeOSes.Enabled = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnCompress.Visible = true;
+                btnCompress.Visible = Context.usableDotNetZip;
                 btnSave.Visible = true;
                 btnHelp.Enabled = true;
                 btnSettings.Enabled = true;
@@ -493,7 +500,7 @@ namespace osrepodbmgr.Eto
                 treeOSes.Enabled = true;
                 btnAdd.Visible = true;
                 btnRemove.Visible = true;
-                btnCompress.Visible = true;
+                btnCompress.Visible = Context.usableDotNetZip;
                 btnSave.Visible = true;
                 btnHelp.Enabled = true;
                 btnSettings.Enabled = true;

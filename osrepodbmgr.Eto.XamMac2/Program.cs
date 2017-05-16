@@ -39,6 +39,7 @@ namespace osrepodbmgr.Eto.XamMac2
         {
             Settings.LoadSettings();
             Context.CheckUnar();
+            Context.usableDotNetZip = false;
             new Application(Platforms.XamMac2).Run(new frmMain());
         }
     }

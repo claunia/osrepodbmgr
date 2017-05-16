@@ -1151,14 +1151,18 @@ namespace osrepodbmgr.Core
                 if(Context.archiveFormat == "Zip")
                 {
                     Context.unzipWithUnAr = true;
-                    ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
-                    foreach(ZipEntry ze in zf)
+
+                    if(Context.usableDotNetZip)
                     {
-                        // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
-                        if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
+                        ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
+                        foreach(ZipEntry ze in zf)
                         {
-                            Context.unzipWithUnAr = false;
-                            break;
+                            // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
+                            if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
+                            {
+                                Context.unzipWithUnAr = false;
+                                break;
+                            }
                         }
                     }
                 }
@@ -1215,7 +1219,7 @@ namespace osrepodbmgr.Core
             try
             {
                 // If it's a ZIP file not created by Mac OS X, use DotNetZip to uncompress (unar freaks out or corrupts certain ZIP features)
-                if(Context.archiveFormat == "Zip" && !Context.unzipWithUnAr)
+                if(Context.archiveFormat == "Zip" && !Context.unzipWithUnAr && Context.usableDotNetZip)
                 {
                     try
                     {
@@ -1588,6 +1592,13 @@ namespace osrepodbmgr.Core
                 {
                     if(Failed != null)
                         Failed("Operating system must be set");
+                    return;
+                }
+
+                if(!Context.usableDotNetZip)
+                {
+                    if(Failed != null)
+                        Failed("Cannot create ZIP files");
                     return;
                 }
 

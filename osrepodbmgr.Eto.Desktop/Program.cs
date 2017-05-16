@@ -39,6 +39,8 @@ namespace osrepodbmgr.Eto.Desktop
         {
             Settings.LoadSettings();
             Context.CheckUnar();
+            Context.usableDotNetZip = !Platform.Detect.IsMac && !Platform.Detect.IsIos;
+            
             new Application(Platform.Detect).Run(new frmMain());
         }
     }
