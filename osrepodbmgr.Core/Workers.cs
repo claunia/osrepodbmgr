@@ -1679,7 +1679,10 @@ namespace osrepodbmgr.Core
         {
             DBFile file;
             if(!Context.hashes.TryGetValue(entryName, out file))
-                throw new ArgumentException("Cannot find requested zip entry in hashes dictionary");
+            {
+                if (!Context.hashes.TryGetValue(entryName.Replace('/', '\\'), out file))
+                    throw new ArgumentException("Cannot find requested zip entry in hashes dictionary");
+            }
 
             // Special case for empty file, as it seems to crash when SharpCompress tries to unLZMA it.
             if(file.Length == 0)
