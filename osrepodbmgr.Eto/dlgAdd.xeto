@@ -112,20 +112,20 @@
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<StackLayout Orientation="Horizontal">
 				<StackLayoutItem HorizontalAlignment="Left">
-					<Label ID="lblProgress">Progress</Label>
+					<Label ID="lblProgress" Visible="False">Progress</Label>
 				</StackLayoutItem>
 				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-					<ProgressBar ID="prgProgress" />
+					<ProgressBar ID="prgProgress" Visible="False" />
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<StackLayout Orientation="Horizontal">
 				<StackLayoutItem HorizontalAlignment="Left">
-					<Label ID="lblProgress2">Progress2</Label>
+					<Label ID="lblProgress2" Visible="False">Progress2</Label>
 				</StackLayoutItem>
 				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-					<ProgressBar ID="prgProgress2" />
+					<ProgressBar ID="prgProgress2" Visible="False" />
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
