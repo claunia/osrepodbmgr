@@ -26,13 +26,11 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using System.Collections.Generic;
-using Eto.Forms;
-using Eto.Drawing;
-using Eto.Serialization.Xaml;
-using Schemas;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Eto.Forms;
+using Eto.Serialization.Xaml;
+using Schemas;
 
 namespace osrepodbmgr.Eto
 {

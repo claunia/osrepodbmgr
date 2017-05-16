@@ -26,9 +26,7 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using System.Collections.Generic;
 using Eto.Forms;
-using Eto.Drawing;
 using Eto.Serialization.Xaml;
 
 namespace osrepodbmgr.Eto

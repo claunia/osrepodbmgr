@@ -27,17 +27,17 @@
 //
 using System;
 using System.Collections.Generic;
-using Eto.Forms;
-using Eto.Drawing;
-using Eto.Serialization.Xaml;
-using System.Threading;
-using osrepodbmgr.Core;
 using System.Collections.ObjectModel;
-using Schemas;
-using System.IO;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
 using System.ComponentModel;
+using System.IO;
+using System.Threading;
+using System.Xml.Serialization;
+using Eto.Drawing;
+using Eto.Forms;
+using Eto.Serialization.Xaml;
+using Newtonsoft.Json;
+using osrepodbmgr.Core;
+using Schemas;
 
 namespace osrepodbmgr.Eto
 {

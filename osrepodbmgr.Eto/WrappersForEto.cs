@@ -1,5 +1,4 @@
-﻿using System;
-using osrepodbmgr.Core;
+﻿using osrepodbmgr.Core;
 using Schemas;
 
 namespace osrepodbmgr.Eto
