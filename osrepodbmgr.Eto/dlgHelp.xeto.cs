@@ -36,9 +36,9 @@ namespace osrepodbmgr.Eto
     public class dlgHelp : Dialog
     {
         #region XAML UI elements
-        #pragma warning disable 0649
+#pragma warning disable 0649
         TextArea txtHelp;
-        #pragma warning restore 0649
+#pragma warning restore 0649
         #endregion XAML UI elements
 
         public dlgHelp()

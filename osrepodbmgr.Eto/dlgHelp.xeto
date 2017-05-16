@@ -2,7 +2,7 @@
 <Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="300" Width="400">
 	<StackLayout Orientation="Vertical">
 		<StackLayoutItem VerticalAlignment="Stretch" Expand="True" HorizontalAlignment="Stretch">
-			<TextArea ReadOnly="True" ID="txtHelp"/>
+			<TextArea ReadOnly="True" ID="txtHelp" />
 		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Center">
 			<Button Click="OnBtnOKClicked">OK</Button>

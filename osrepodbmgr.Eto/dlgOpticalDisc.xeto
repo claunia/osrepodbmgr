@@ -9,7 +9,7 @@
 							<StackLayout Orientation="Horizontal">
 								<Label>Image:</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtImage" ReadOnly="True"/>
+									<TextBox ID="txtImage" ReadOnly="True" />
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
@@ -21,11 +21,11 @@
 								</StackLayoutItem>
 								<Label>Offset:</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtOffset"  ReadOnly="True"/>
+									<TextBox ID="txtOffset" ReadOnly="True" />
 								</StackLayoutItem>
 								<Label>Size:</Label>
 								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-									<TextBox ID="txtSize"  ReadOnly="True"/>
+									<TextBox ID="txtSize" ReadOnly="True" />
 								</StackLayoutItem>
 							</StackLayout>
 						</StackLayoutItem>
@@ -90,17 +90,17 @@
 												<Label ID="lblDiscTitle" Visible="False">Disc title</Label>
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-												<TextBox ID="txtDiscTitle"  Visible="False"/>
+												<TextBox ID="txtDiscTitle" Visible="False" />
 											</StackLayoutItem>
 											<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
 												<StackLayout Orientation="Horizontal">
 													<Label ID="lblSequence" Visible="False">Sequence:</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spSequence"  Visible="False"/>
+														<NumericUpDown ID="spSequence" Visible="False" />
 													</StackLayoutItem>
 													<Label ID="lblTotalMedia" Visible="False">of</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spTotalMedia"  Visible="False"/>
+														<NumericUpDown ID="spTotalMedia" Visible="False" />
 													</StackLayoutItem>
 												</StackLayout>
 											</StackLayoutItem>
@@ -108,7 +108,7 @@
 												<StackLayout Orientation="Horizontal">
 													<Label ID="lblSide" Visible="False">Side:</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spSide"  Visible="False"/>
+														<NumericUpDown ID="spSide" Visible="False" />
 													</StackLayoutItem>
 												</StackLayout>
 											</StackLayoutItem>
@@ -116,7 +116,7 @@
 												<StackLayout Orientation="Horizontal">
 													<Label ID="lblLayer" Visible="False">Layer:</Label>
 													<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-														<NumericUpDown ID="spLayer"  Visible="False"/>
+														<NumericUpDown ID="spLayer" Visible="False" />
 													</StackLayoutItem>
 												</StackLayout>
 											</StackLayoutItem>
@@ -595,7 +595,7 @@
 					<StackLayout Orientation="Vertical">
 						<CheckBox ID="chkDumpHardware" CheckedChanged="OnChkDumpHardwareToggled">Known dumping hardware</CheckBox>
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GridView ID="treeDumpHardware"  Visible="False"/>
+							<GridView ID="treeDumpHardware" Visible="False" />
 						</StackLayoutItem>
 						<StackLayoutItem HorizontalAlignment="Right">
 							<StackLayout Orientation="Horizontal">

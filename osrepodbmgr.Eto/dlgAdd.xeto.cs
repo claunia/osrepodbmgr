@@ -128,7 +128,8 @@ namespace osrepodbmgr.Eto
 
             treeFiles.AllowMultipleSelection = false;
 
-            treeFiles.CellFormatting += (sender, e) => {
+            treeFiles.CellFormatting += (sender, e) =>
+            {
                 if(((FileEntry)e.Item).known)
                     e.BackgroundColor = Colors.Green;
                 else

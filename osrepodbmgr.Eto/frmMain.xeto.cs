@@ -44,7 +44,7 @@ namespace osrepodbmgr.Eto
         Thread thdSaveAs;
 
         #region XAML UI elements
-        #pragma warning disable 0649
+#pragma warning disable 0649
         GridView treeOSes;
         Label lblProgress;
         ProgressBar prgProgress;
@@ -57,7 +57,7 @@ namespace osrepodbmgr.Eto
         Button btnStop;
         ButtonMenuItem btnSettings;
         ButtonMenuItem btnHelp;
-        #pragma warning restore 0649
+#pragma warning restore 0649
         #endregion XAML UI elements
 
         ObservableCollection<DBEntryForEto> lstOSes;

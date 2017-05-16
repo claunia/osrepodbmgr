@@ -635,7 +635,7 @@ namespace osrepodbmgr.Eto
             #endregion Set tracks table
 
             lstAdditionalInformation = new ObservableCollection<StringEntry>();
-treeAdditionalInformation.Columns.Add(new GridColumn
+            treeAdditionalInformation.Columns.Add(new GridColumn
             {
                 DataCell = new TextBoxCell { Binding = Binding.Property<StringEntry, string>(r => r.str) },
                 HeaderText = "Information"
