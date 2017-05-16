@@ -1477,7 +1477,7 @@ namespace osrepodbmgr.Eto
 
             Metadata = new BlockMediaType();
 
-            Metadata.Image = new Schemas.ImageType();
+            Metadata.Image = new ImageType();
             Metadata.Image.Value = txtImage.Text;
             Metadata.Image.format = txtFormat.Text;
             if(!string.IsNullOrWhiteSpace(txtOffset.Text) && long.TryParse(txtOffset.Text, out ltmp))

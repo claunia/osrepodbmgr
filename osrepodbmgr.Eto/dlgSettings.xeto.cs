@@ -105,7 +105,7 @@ namespace osrepodbmgr.Eto
         {
             SelectFolderDialog dlgFolder = new SelectFolderDialog();
             dlgFolder.Title = "Choose temporary folder";
-            dlgFolder.Directory = System.IO.Path.GetTempPath();
+            dlgFolder.Directory = Path.GetTempPath();
 
             if(dlgFolder.ShowDialog(this) == DialogResult.Ok)
                 txtTmp.Text = dlgFolder.Directory;
@@ -115,7 +115,7 @@ namespace osrepodbmgr.Eto
         {
             SelectFolderDialog dlgFolder = new SelectFolderDialog();
             dlgFolder.Title = "Choose repository folder";
-            dlgFolder.Directory = System.IO.Path.GetTempPath();
+            dlgFolder.Directory = Path.GetTempPath();
 
             if(dlgFolder.ShowDialog(this) == DialogResult.Ok)
                 txtRepository.Text = dlgFolder.Directory;
