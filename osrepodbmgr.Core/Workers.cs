@@ -1148,7 +1148,7 @@ namespace osrepodbmgr.Core
                     return;
                 }
 
-                if(ZipFile.IsZipFile(Context.path))
+                if(Context.archiveFormat == "Zip")
                 {
                     Context.unzipWithUnAr = true;
                     ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
@@ -1215,7 +1215,7 @@ namespace osrepodbmgr.Core
             try
             {
                 // If it's a ZIP file not created by Mac OS X, use DotNetZip to uncompress (unar freaks out or corrupts certain ZIP features)
-                if(ZipFile.IsZipFile(Context.path) && !Context.unzipWithUnAr)
+                if(Context.archiveFormat == "Zip" && !Context.unzipWithUnAr)
                 {
                     try
                     {
