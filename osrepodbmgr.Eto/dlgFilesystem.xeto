@@ -37,7 +37,7 @@
 			<StackLayout Orientation="Horizontal">
 				<CheckBox ID="chkCreationDate" ThreeState="False" CheckedChanged="OnChkCreationDateToggled">Creation date</CheckBox>
 				<StackLayoutItem Expand="True">
-					<DateTimePicker ID="cldCreationDate" Mode="DateTime" />
+					<DateTimePicker ID="cldCreationDate" Mode="DateTime" Enabled="False"/>
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
@@ -45,7 +45,7 @@
 			<StackLayout Orientation="Horizontal">
 				<CheckBox ID="chkModificationDate" ThreeState="False" CheckedChanged="OnChkModificationDateToggled">Modification date</CheckBox>
 				<StackLayoutItem Expand="True">
-					<DateTimePicker ID="cldModificationDate" Mode="DateTime" />
+					<DateTimePicker ID="cldModificationDate" Mode="DateTime"  Enabled="False"/>
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
@@ -53,7 +53,7 @@
 			<StackLayout Orientation="Horizontal">
 				<CheckBox ID="chkEffectiveDate" ThreeState="False" CheckedChanged="OnChkEffectiveDateToggled">Effective date</CheckBox>
 				<StackLayoutItem Expand="True">
-					<DateTimePicker ID="cldEffectiveDate" Mode="DateTime" />
+					<DateTimePicker ID="cldEffectiveDate" Mode="DateTime"  Enabled="False"/>
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
@@ -61,7 +61,7 @@
 			<StackLayout Orientation="Horizontal">
 				<CheckBox ID="chkExpirationDate" ThreeState="False" CheckedChanged="OnChkExpirationDateToggled">Expiration date</CheckBox>
 				<StackLayoutItem Expand="True">
-					<DateTimePicker ID="cldExpirationDate" Mode="DateTime" />
+					<DateTimePicker ID="cldExpirationDate" Mode="DateTime"  Enabled="False"/>
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
@@ -69,7 +69,7 @@
 			<StackLayout Orientation="Horizontal">
 				<CheckBox ID="chkBackupDate" ThreeState="False" CheckedChanged="OnChkBackupDateToggled">Last backup date</CheckBox>
 				<StackLayoutItem Expand="True">
-					<DateTimePicker ID="cldBackupDate" Mode="DateTime" />
+					<DateTimePicker ID="cldBackupDate" Mode="DateTime"  Enabled="False"/>
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
