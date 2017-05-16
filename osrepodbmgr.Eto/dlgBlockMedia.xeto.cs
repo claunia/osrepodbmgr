@@ -331,17 +331,6 @@ namespace osrepodbmgr.Eto
             });
             #endregion Set dump hardware table
 
-            GridColumn fileColumn = new GridColumn
-            {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
-                HeaderText = "File"
-            };
-            GridColumn sizeColumn = new GridColumn
-            {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
-                HeaderText = "Size"
-            };
-
             #region Set ATA IDENTIFY table
             lstAta = new ObservableCollection<DumpType>();
             treeATA.Columns.Add(new GridColumn
