@@ -1156,7 +1156,7 @@ namespace osrepodbmgr.Core
 
                 if(Context.archiveFormat == "Zip")
                 {
-                    Context.unzipWithUnAr = true;
+                    Context.unzipWithUnAr = false;
 
                     if(Context.usableDotNetZip)
                     {
@@ -1166,7 +1166,7 @@ namespace osrepodbmgr.Core
                             // ZIP created with Mac OS X, need to be extracted with The UnArchiver to get correct ResourceFork structure
                             if(ze.FileName.StartsWith("__MACOSX", StringComparison.CurrentCulture))
                             {
-                                Context.unzipWithUnAr = false;
+                                Context.unzipWithUnAr = true;
                                 break;
                             }
                         }
