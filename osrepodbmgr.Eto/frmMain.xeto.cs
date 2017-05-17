@@ -180,15 +180,15 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
+                Workers.Failed -= LoadOSesFailed;
+                Workers.Finished -= LoadOSesFinished;
+                Workers.UpdateProgress -= UpdateProgress;
+                Workers.AddOS -= AddOS;
                 if(thdPopulateOSes != null)
                 {
                     thdPopulateOSes.Abort();
                     thdPopulateOSes = null;
                 }
-                Workers.Failed -= LoadOSesFailed;
-                Workers.Finished -= LoadOSesFinished;
-                Workers.UpdateProgress -= UpdateProgress;
-                Workers.AddOS -= AddOS;
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
                 treeOSes.Enabled = true;
@@ -316,11 +316,6 @@ namespace osrepodbmgr.Eto
             Application.Instance.Invoke(delegate
             {
                 MessageBox.Show(text, MessageBoxButtons.OK, MessageBoxType.Error);
-                if(thdSaveAs != null)
-                {
-                    thdSaveAs.Abort();
-                    thdSaveAs = null;
-                }
 
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
@@ -340,6 +335,12 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
 
+                if(thdSaveAs != null)
+                {
+                    thdSaveAs.Abort();
+                    thdSaveAs = null;
+                }
+
                 Context.path = null;
             });
         }
@@ -348,12 +349,6 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(thdSaveAs != null)
-                {
-                    thdSaveAs.Abort();
-                    thdSaveAs = null;
-                }
-
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
                 lblProgress2.Visible = false;
@@ -370,6 +365,12 @@ namespace osrepodbmgr.Eto
                 Workers.Failed -= SaveAsFailed;
                 Workers.Finished -= SaveAsFinished;
                 Workers.UpdateProgress -= UpdateProgress;
+
+                if(thdSaveAs != null)
+                {
+                    thdSaveAs.Abort();
+                    thdSaveAs = null;
+                }
 
                 MessageBox.Show(string.Format("Correctly saved to {0}", Context.path));
 
@@ -397,6 +398,16 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnStopClicked(object sender, EventArgs e)
         {
+            Workers.AddOS -= AddOS;
+            Workers.Failed -= CompressToFailed;
+            Workers.Failed -= LoadOSesFailed;
+            Workers.Failed -= SaveAsFailed;
+            Workers.Finished -= CompressToFinished;
+            Workers.Finished -= LoadOSesFinished;
+            Workers.Finished -= SaveAsFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+
             if(thdPopulateOSes != null)
             {
                 thdPopulateOSes.Abort();
@@ -459,12 +470,6 @@ namespace osrepodbmgr.Eto
             Application.Instance.Invoke(delegate
             {
                 MessageBox.Show(text, MessageBoxButtons.OK, MessageBoxType.Error);
-                if(thdCompressTo != null)
-                {
-                    thdCompressTo.Abort();
-                    thdCompressTo = null;
-                }
-
                 lblProgress.Visible = false;
                 lblProgress2.Visible = false;
                 prgProgress.Visible = false;
@@ -482,6 +487,12 @@ namespace osrepodbmgr.Eto
                 Workers.Finished -= CompressToFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
+
+                if(thdCompressTo != null)
+                {
+                    thdCompressTo.Abort();
+                    thdCompressTo = null;
+                }
 
                 Context.path = null;
             });
@@ -491,12 +502,6 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(thdCompressTo != null)
-                {
-                    thdCompressTo.Abort();
-                    thdCompressTo = null;
-                }
-
                 lblProgress.Visible = false;
                 lblProgress2.Visible = false;
                 prgProgress.Visible = false;
@@ -514,6 +519,12 @@ namespace osrepodbmgr.Eto
                 Workers.Finished -= CompressToFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
+
+                if(thdCompressTo != null)
+                {
+                    thdCompressTo.Abort();
+                    thdCompressTo = null;
+                }
 
                 MessageBox.Show(string.Format("Correctly compressed as {0}", Context.path));
 

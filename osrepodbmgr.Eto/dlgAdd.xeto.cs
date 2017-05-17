@@ -348,8 +348,6 @@ namespace osrepodbmgr.Eto
             {
                 if(!stopped)
                     MessageBox.Show(text, MessageBoxType.Error);
-                if(thdCheckFiles != null)
-                    thdCheckFiles.Abort();
                 prgProgress.Visible = false;
                 btnStop.Visible = false;
                 btnClose.Visible = false;
@@ -360,6 +358,8 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 Workers.AddFile -= AddFile;
                 Workers.AddOS -= AddOS;
+                if(thdCheckFiles != null)
+                    thdCheckFiles.Abort();
                 thdHashFiles = null;
                 if(fileView != null)
                     fileView.Clear();
@@ -375,15 +375,15 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(thdCheckFiles != null)
-                    thdCheckFiles.Abort();
-
                 Workers.Failed -= ChkFilesFailed;
                 Workers.Finished -= ChkFilesFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 Workers.AddFile -= AddFile;
                 Workers.AddOS -= AddOS;
+
+                if(thdCheckFiles != null)
+                    thdCheckFiles.Abort();
 
                 thdHashFiles = null;
                 prgProgress.Visible = false;
@@ -604,6 +604,27 @@ namespace osrepodbmgr.Eto
         {
             stopped = true;
 
+            Workers.AddFile -= AddFile;
+            Workers.AddOS -= AddOS;
+            Workers.Failed -= AddFilesToDbFailed;
+            Workers.Failed -= ChkFilesFailed;
+            Workers.Failed -= ExtractArchiveFailed;
+            Workers.Failed -= FindFilesFailed;
+            Workers.Failed -= HashFilesFailed;
+            Workers.Failed -= OpenArchiveFailed;
+            Workers.Failed -= PackFilesFailed;
+            Workers.Failed -= RemoveTempFilesFailed;
+            Workers.Finished -= AddFilesToDbFinished;
+            Workers.Finished -= ChkFilesFinished;
+            Workers.Finished -= ExtractArchiveFinished;
+            Workers.Finished -= FindFilesFinished;
+            Workers.Finished -= HashFilesFinished;
+            Workers.Finished -= OpenArchiveFinished;
+            Workers.Finished -= RemoveTempFilesFinished;
+            Workers.FinishedWithText -= PackFilesFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+
             if(thdFindFiles != null)
             {
                 thdFindFiles.Abort();
@@ -793,12 +814,12 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(thdAddFiles != null)
-                    thdAddFiles.Abort();
-
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.Finished -= AddFilesToDbFinished;
                 Workers.Failed -= AddFilesToDbFailed;
+
+                if(thdAddFiles != null)
+                    thdAddFiles.Abort();
 
                 long counter = 0;
                 fileView.Clear();
@@ -833,12 +854,12 @@ namespace osrepodbmgr.Eto
                 if(!stopped)
                     MessageBox.Show(text, MessageBoxType.Error);
 
-                if(thdAddFiles != null)
-                    thdAddFiles.Abort();
-
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.Finished -= AddFilesToDbFinished;
                 Workers.Failed -= AddFilesToDbFailed;
+
+                if(thdAddFiles != null)
+                    thdAddFiles.Abort();
 
                 ChkFilesFinished();
             });
@@ -896,15 +917,15 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(thdPackFiles != null)
-                    thdPackFiles.Abort();
-
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 Workers.FinishedWithText -= PackFilesFinished;
                 Workers.Failed -= PackFilesFailed;
                 prgProgress2.Visible = false;
                 lblProgress2.Visible = false;
+
+                if(thdPackFiles != null)
+                    thdPackFiles.Abort();
 
                 AddToDatabase();
 
@@ -919,13 +940,13 @@ namespace osrepodbmgr.Eto
                 if(!stopped)
                     MessageBox.Show(text, MessageBoxType.Error);
 
-                if(thdPackFiles != null)
-                    thdPackFiles.Abort();
-
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 Workers.FinishedWithText -= PackFilesFinished;
                 Workers.Failed -= PackFilesFailed;
+
+                if(thdPackFiles != null)
+                    thdPackFiles.Abort();
 
                 btnRemoveFile.Enabled = true;
                 btnPack.Enabled = true;
@@ -1058,8 +1079,6 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(thdExtractArchive != null)
-                    thdExtractArchive.Abort();
                 stopped = false;
                 lblProgress.Text = "Finding files";
                 lblProgress.Visible = true;
@@ -1074,6 +1093,8 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 prgProgress.Indeterminate = true;
 
+                if(thdExtractArchive != null)
+                    thdExtractArchive.Abort();
                 thdFindFiles = new Thread(Workers.FindFiles);
                 Workers.Failed += FindFilesFailed;
                 Workers.Finished += FindFilesFinished;

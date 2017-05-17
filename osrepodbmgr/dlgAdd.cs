@@ -305,10 +305,6 @@ public partial class dlgAdd : Dialog
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            if(thdCheckFiles != null)
-                thdCheckFiles.Abort();
             prgProgress.Visible = false;
             btnStop.Visible = false;
             btnClose.Visible = false;
@@ -319,6 +315,10 @@ public partial class dlgAdd : Dialog
             Workers.UpdateProgress2 -= UpdateProgress2;
             Workers.AddFile -= AddFile;
             Workers.AddOS -= AddOS;
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
+            if(thdCheckFiles != null)
+                thdCheckFiles.Abort();
             thdHashFiles = null;
             if(fileView != null)
                 fileView.Clear();
@@ -334,9 +334,6 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
-            if(thdCheckFiles != null)
-                thdCheckFiles.Abort();
-
             Workers.Failed -= ChkFilesFailed;
             Workers.Finished -= ChkFilesFinished;
             Workers.UpdateProgress -= UpdateProgress;
@@ -344,6 +341,8 @@ public partial class dlgAdd : Dialog
             Workers.AddFile -= AddFile;
             Workers.AddOS -= AddOS;
 
+            if(thdCheckFiles != null)
+                thdCheckFiles.Abort();
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
             thdHashFiles = null;
@@ -557,6 +556,27 @@ public partial class dlgAdd : Dialog
     protected void OnBtnStopClicked(object sender, EventArgs e)
     {
         stopped = true;
+
+        Workers.AddFile -= AddFile;
+        Workers.AddOS -= AddOS;
+        Workers.Failed -= AddFilesToDbFailed;
+        Workers.Failed -= ChkFilesFailed;
+        Workers.Failed -= ExtractArchiveFailed;
+        Workers.Failed -= FindFilesFailed;
+        Workers.Failed -= HashFilesFailed;
+        Workers.Failed -= OpenArchiveFailed;
+        Workers.Failed -= PackFilesFailed;
+        Workers.Failed -= RemoveTempFilesFailed;
+        Workers.Finished -= AddFilesToDbFinished;
+        Workers.Finished -= ChkFilesFinished;
+        Workers.Finished -= ExtractArchiveFinished;
+        Workers.Finished -= FindFilesFinished;
+        Workers.Finished -= HashFilesFinished;
+        Workers.Finished -= OpenArchiveFinished;
+        Workers.Finished -= RemoveTempFilesFinished;
+        Workers.FinishedWithText -= PackFilesFinished;
+        Workers.UpdateProgress -= UpdateProgress;
+        Workers.UpdateProgress2 -= UpdateProgress2;
 
         if(thdPulseProgress != null)
         {
@@ -775,14 +795,14 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.Finished -= AddFilesToDbFinished;
+            Workers.Failed -= AddFilesToDbFailed;
+
             if(thdAddFiles != null)
                 thdAddFiles.Abort();
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
-
-            Workers.UpdateProgress -= UpdateProgress;
-            Workers.Finished -= AddFilesToDbFinished;
-            Workers.Failed -= AddFilesToDbFailed;
 
             long counter = 0;
             fileView.Clear();
@@ -820,14 +840,14 @@ public partial class dlgAdd : Dialog
                 dlgMsg.Destroy();
             }
 
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.Finished -= AddFilesToDbFinished;
+            Workers.Failed -= AddFilesToDbFailed;
+
             if(thdAddFiles != null)
                 thdAddFiles.Abort();
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
-
-            Workers.UpdateProgress -= UpdateProgress;
-            Workers.Finished -= AddFilesToDbFinished;
-            Workers.Failed -= AddFilesToDbFailed;
 
             ChkFilesFinished();
         });
@@ -886,17 +906,17 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
-            if(thdPackFiles != null)
-                thdPackFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
             Workers.FinishedWithText -= PackFilesFinished;
             Workers.Failed -= PackFilesFailed;
             prgProgress2.Visible = false;
             lblProgress2.Visible = false;
+
+            if(thdPackFiles != null)
+                thdPackFiles.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
 
             AddToDatabase();
 
@@ -917,15 +937,15 @@ public partial class dlgAdd : Dialog
                 dlgMsg.Destroy();
             }
 
-            if(thdPackFiles != null)
-                thdPackFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
             Workers.FinishedWithText -= PackFilesFinished;
             Workers.Failed -= PackFilesFailed;
+
+            if(thdPackFiles != null)
+                thdPackFiles.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
 
             btnRemoveFile.Sensitive = true;
             btnPack.Sensitive = true;
@@ -1098,10 +1118,6 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
-            if(thdExtractArchive != null)
-                thdExtractArchive.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
             stopped = false;
             lblProgress.Text = "Finding files";
             lblProgress.Visible = true;
@@ -1114,6 +1130,10 @@ public partial class dlgAdd : Dialog
             Workers.Finished -= ExtractArchiveFinished;
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
+            if(thdExtractArchive != null)
+                thdExtractArchive.Abort();
+            if(thdPulseProgress != null)
+                thdPulseProgress.Abort();
             thdPulseProgress = new Thread(() =>
             {
                 while(true)

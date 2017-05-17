@@ -130,6 +130,9 @@ namespace osrepodbmgr
                                                          string.Format("Error {0} when populating OSes file, exiting...", text));
                 dlgMsg.Run();
                 dlgMsg.Destroy();
+                Workers.Failed -= LoadOSesFailed;
+                Workers.Finished -= LoadOSesFinished;
+                Workers.UpdateProgress -= UpdateProgress;
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -140,9 +143,6 @@ namespace osrepodbmgr
                     thdPopulateOSes.Abort();
                     thdPopulateOSes = null;
                 }
-                Workers.Failed -= LoadOSesFailed;
-                Workers.Finished -= LoadOSesFinished;
-                Workers.UpdateProgress -= UpdateProgress;
                 Application.Quit();
             });
         }
@@ -151,6 +151,9 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
+                Workers.Failed -= LoadOSesFailed;
+                Workers.Finished -= LoadOSesFinished;
+                Workers.UpdateProgress -= UpdateProgress;
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -161,9 +164,6 @@ namespace osrepodbmgr
                     thdPopulateOSes.Abort();
                     thdPopulateOSes = null;
                 }
-                Workers.Failed -= LoadOSesFailed;
-                Workers.Finished -= LoadOSesFinished;
-                Workers.UpdateProgress -= UpdateProgress;
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
                 treeOSes.Sensitive = true;
@@ -305,17 +305,6 @@ namespace osrepodbmgr
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
-                if(thdPulseProgress != null)
-                {
-                    thdPulseProgress.Abort();
-                    thdPulseProgress = null;
-                }
-                if(thdSaveAs != null)
-                {
-                    thdSaveAs.Abort();
-                    thdSaveAs = null;
-                }
-
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
                 lblProgress2.Visible = false;
@@ -334,14 +323,6 @@ namespace osrepodbmgr
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
 
-                Context.path = null;
-            });
-        }
-
-        public void SaveAsFinished()
-        {
-            Application.Invoke(delegate
-            {
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -353,6 +334,14 @@ namespace osrepodbmgr
                     thdSaveAs = null;
                 }
 
+                Context.path = null;
+            });
+        }
+
+        public void SaveAsFinished()
+        {
+            Application.Invoke(delegate
+            {
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
                 lblProgress2.Visible = false;
@@ -369,6 +358,17 @@ namespace osrepodbmgr
                 Workers.Failed -= SaveAsFailed;
                 Workers.Finished -= SaveAsFinished;
                 Workers.UpdateProgress -= UpdateProgress;
+
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdSaveAs != null)
+                {
+                    thdSaveAs.Abort();
+                    thdSaveAs = null;
+                }
 
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
                                                          string.Format("Correctly saved to {0}", Context.path));
@@ -401,6 +401,15 @@ namespace osrepodbmgr
 
         protected void OnBtnStopClicked(object sender, EventArgs e)
         {
+            Workers.Failed -= CompressToFailed;
+            Workers.Failed -= LoadOSesFailed;
+            Workers.Failed -= SaveAsFailed;
+            Workers.Finished -= CompressToFinished;
+            Workers.Finished -= LoadOSesFinished;
+            Workers.Finished -= SaveAsFinished;
+            Workers.UpdateProgress -= UpdateProgress;
+            Workers.UpdateProgress2 -= UpdateProgress2;
+
             if(thdPulseProgress != null)
             {
                 thdPulseProgress.Abort();
@@ -482,16 +491,6 @@ namespace osrepodbmgr
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
-                if(thdPulseProgress != null)
-                {
-                    thdPulseProgress.Abort();
-                    thdPulseProgress = null;
-                }
-                if(thdCompressTo != null)
-                {
-                    thdCompressTo.Abort();
-                    thdCompressTo = null;
-                }
 
                 lblProgress.Visible = false;
                 lblProgress2.Visible = false;
@@ -510,6 +509,17 @@ namespace osrepodbmgr
                 Workers.Finished -= CompressToFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
+
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdCompressTo != null)
+                {
+                    thdCompressTo.Abort();
+                    thdCompressTo = null;
+                }
 
                 Context.path = null;
             });
@@ -519,17 +529,6 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                if(thdPulseProgress != null)
-                {
-                    thdPulseProgress.Abort();
-                    thdPulseProgress = null;
-                }
-                if(thdCompressTo != null)
-                {
-                    thdCompressTo.Abort();
-                    thdCompressTo = null;
-                }
-
                 lblProgress.Visible = false;
                 lblProgress2.Visible = false;
                 prgProgress.Visible = false;
@@ -547,6 +546,17 @@ namespace osrepodbmgr
                 Workers.Finished -= CompressToFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
+
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdCompressTo != null)
+                {
+                    thdCompressTo.Abort();
+                    thdCompressTo = null;
+                }
 
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
                                                          string.Format("Correctly compressed as {0}", Context.path));
