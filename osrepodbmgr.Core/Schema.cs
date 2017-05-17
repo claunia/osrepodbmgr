@@ -35,9 +35,18 @@ namespace osrepodbmgr.Core
             "DROP TABLE IF EXISTS `files` ;\n\n" +
             "CREATE TABLE IF NOT EXISTS `files` (\n" +
             "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-            "  `sha256` VARCHAR(64) NOT NULL);\n\n" +
+            "  `sha256` VARCHAR(64) NOT NULL,\n" +
+            "  `crack` BOOLEAN NOT NULL,\n" +
+            "  `virscan` BOOLEAN NULL,\n" +
+            "  `clamtime` DATETIME NULL,\n" +
+            "  `vtotaltime` DATETIME NULL,\n" +
+            "  `virus` VARCHAR(128) NULL,\n" +
+            "  `length` BIGINT NOT NULL);\n\n" +
             "CREATE UNIQUE INDEX `files_id_UNIQUE` ON `files` (`id` ASC);\n\n" +
-            "CREATE UNIQUE INDEX `files_sha256_UNIQUE` ON `files` (`sha256` ASC);";
+            "CREATE UNIQUE INDEX `files_sha256_UNIQUE` ON `files` (`sha256` ASC);\n\n" +
+            "CREATE INDEX `files_virscan_idx` ON `files` (`virscan` ASC);\n\n" +
+            "CREATE INDEX `files_virus_idx` ON `files` (`virus` ASC);\n\n" +
+            "CREATE INDEX `files_length_idx` ON `files` (`length` ASC);";
 
         public const string OSesTableSql = "-- -----------------------------------------------------\n" +
             "-- Table `oses`\n" +
@@ -54,12 +63,12 @@ namespace osrepodbmgr.Core
             "  `machine` VARCHAR(45) NULL,\n" +
             "  `format` VARCHAR(45) NULL,\n" +
             "  `description` VARCHAR(45) NULL,\n" +
-            "  `oem` BOOLEAN NULL,\n" +
-            "  `upgrade` BOOLEAN NULL,\n" +
-            "  `update` BOOLEAN NULL,\n" +
-            "  `source` BOOLEAN NULL,\n" +
-            "  `files` BOOLEAN NULL,\n" +
-            "  `netinstall` BOOLEAN NULL,\n" +
+            "  `oem` BOOLEAN NOT NULL,\n" +
+            "  `upgrade` BOOLEAN NOT NULL,\n" +
+            "  `update` BOOLEAN NOT NULL,\n" +
+            "  `source` BOOLEAN NOT NULL,\n" +
+            "  `files` BOOLEAN NOT NULL,\n" +
+            "  `netinstall` BOOLEAN NOT NULL,\n" +
             "  `xml` BLOB NULL,\n" +
             "  `json` BLOB NULL);\n\n" +
             "CREATE UNIQUE INDEX `oses_id_UNIQUE` ON `oses` (`id` ASC);\n\n" +

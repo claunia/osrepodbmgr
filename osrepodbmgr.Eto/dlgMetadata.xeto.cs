@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -258,7 +258,7 @@ namespace osrepodbmgr.Eto
 
         void FillFilesCombos()
         {
-            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
+            foreach(KeyValuePair<string, DBOSFile> files in Context.hashes)
                 lstFilesForMedia.Add(files.Key);
         }
 

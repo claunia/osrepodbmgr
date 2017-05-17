@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -786,7 +786,7 @@ public partial class dlgAdd : Dialog
 
             long counter = 0;
             fileView.Clear();
-            foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
+            foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
             {
                 UpdateProgress(null, "Updating table", counter, Context.hashes.Count);
                 fileView.AppendValues(kvp.Key, kvp.Value.Sha256, true, "green", "black");

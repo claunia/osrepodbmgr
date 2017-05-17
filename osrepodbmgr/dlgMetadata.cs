@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -217,7 +217,7 @@ namespace osrepodbmgr
 
         void FillFilesCombos()
         {
-            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
+            foreach(KeyValuePair<string, DBOSFile> files in Context.hashes)
             {
                 lstFilesForDisc.AppendValues(files.Key);
                 lstFilesForDisk.AppendValues(files.Key);
@@ -228,7 +228,7 @@ namespace osrepodbmgr
         {
             // TODO: Check that files are not already added as disks
             lstFilesForDisc.Clear();
-            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
+            foreach(KeyValuePair<string, DBOSFile> files in Context.hashes)
                 lstFilesForDisc.AppendValues(files.Key);
         }
 
@@ -236,7 +236,7 @@ namespace osrepodbmgr
         {
             // TODO: Check that files are not already added as discs
             lstFilesForDisk.Clear();
-            foreach(KeyValuePair<string, DBFile> files in Context.hashes)
+            foreach(KeyValuePair<string, DBOSFile> files in Context.hashes)
                 lstFilesForDisk.AppendValues(files.Key);
         }
 

@@ -57,6 +57,18 @@ namespace osrepodbmgr.Core
     public struct DBFile
     {
         public ulong Id;
+        public string Sha256;
+        public bool Crack;
+        public bool? VirusScanned;
+        public DateTime? ClamTime;
+        public DateTime? VirusTotalTime;
+        public string Virus;
+        public long Length;
+    }
+
+    public struct DBOSFile
+    {
+        public ulong Id;
         public string Path;
         public string Sha256;
         public long Length;
@@ -247,24 +259,67 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool AddFile(string hash)
+        IDbCommand GetFileCommand(DBFile entry)
         {
-            //Console.WriteLine("Adding {0}", hash);
             IDbCommand dbcmd = dbCon.CreateCommand();
 
             IDbDataParameter param1 = dbcmd.CreateParameter();
+            IDbDataParameter param2 = dbcmd.CreateParameter();
+            IDbDataParameter param3 = dbcmd.CreateParameter();
+            IDbDataParameter param4 = dbcmd.CreateParameter();
+            IDbDataParameter param5 = dbcmd.CreateParameter();
+            IDbDataParameter param6 = dbcmd.CreateParameter();
+            IDbDataParameter param7 = dbcmd.CreateParameter();
 
-            param1.ParameterName = "@hash";
+            param1.ParameterName = "@sha256";
+            param2.ParameterName = "@crack";
+            param3.ParameterName = "@virscan";
+            param4.ParameterName = "@clamtime";
+            param5.ParameterName = "@vtotaltime";
+            param6.ParameterName = "@virus";
+            param7.ParameterName = "@length";
 
             param1.DbType = DbType.String;
+            param2.DbType = DbType.Boolean;
+            param3.DbType = DbType.String;
+            param4.DbType = DbType.String;
+            param5.DbType = DbType.String;
+            param7.DbType = DbType.UInt64;
 
-            param1.Value = hash;
+            param1.Value = entry.Sha256;
+            param2.Value = entry.Crack;
+            param3.Value = entry.VirusScanned;
+            if(entry.ClamTime != null)
+                param4.Value = entry.ClamTime.Value.ToString("yyyy-MM-dd HH:mm");
+            else
+                param4.Value = null;
+            if(entry.VirusTotalTime != null)
+                param5.Value = entry.VirusTotalTime.Value.ToString("yyyy-MM-dd HH:mm");
+            else
+                param5.Value = null;
+            param6.Value = entry.Virus;
+            param7.Value = entry.Length;
 
             dbcmd.Parameters.Add(param1);
+            dbcmd.Parameters.Add(param2);
+            dbcmd.Parameters.Add(param3);
+            dbcmd.Parameters.Add(param4);
+            dbcmd.Parameters.Add(param5);
+            dbcmd.Parameters.Add(param6);
+            dbcmd.Parameters.Add(param7);
+
+            return dbcmd;
+        }
+
+
+        public bool AddFile(DBFile file)
+        {
+            IDbCommand dbcmd = GetFileCommand(file);
             IDbTransaction trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            const string sql = "INSERT INTO files (sha256) VALUES (@hash)";
+            const string sql = "INSERT INTO `files` (`sha256`, `crack`, `virscan`, `clamtime`, `vtotaltime`, `virus`, `length`)" +
+                                       " VALUES (@sha256, @crack, @virscan, @clamtime, @vtotaltime, @virus, @length)";
 
             dbcmd.CommandText = sql;
 
@@ -299,7 +354,62 @@ namespace osrepodbmgr.Core
             return false;
         }
 
-        IDbCommand GetFileCommand(DBFile person)
+        public ulong GetFilesCount()
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            dbcmd.CommandText = "SELECT COUNT(*) FROM files";
+            object count = dbcmd.ExecuteScalar();
+            dbcmd.Dispose();
+            try
+            {
+                return Convert.ToUInt64(count);
+            }
+            catch { return 0; }
+        }
+
+        public bool GetFiles(out List<DBFile> entries, long start, long count)
+        {
+            entries = new List<DBFile>();
+
+            string sql = string.Format("SELECT * FROM files LIMIT {0}, {1} ORDER BY id", count, start);
+
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dbcmd.CommandText = sql;
+            DataSet dataSet = new DataSet();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                DBFile fEntry = new DBFile();
+
+                fEntry.Id = ulong.Parse(dRow["id"].ToString());
+                fEntry.Sha256 = dRow["sha256"].ToString();
+                fEntry.Crack = bool.Parse(dRow["crack"].ToString());
+                if(dRow["virscan"] == DBNull.Value)
+                    fEntry.VirusScanned = null;
+                else
+                    fEntry.VirusScanned = bool.Parse(dRow["virscan"].ToString());
+                if(dRow["clamtime"] == DBNull.Value)
+                    fEntry.ClamTime = null;
+                else
+                    fEntry.ClamTime = DateTime.Parse(dRow["clamtime"].ToString());
+                if(dRow["vtotaltime"] == DBNull.Value)
+                    fEntry.VirusTotalTime = null;
+                else
+                    fEntry.VirusTotalTime = DateTime.Parse(dRow["vtotaltime"].ToString());
+                fEntry.Virus = dRow["virus"].ToString();
+                fEntry.Length = long.Parse(dRow["length"].ToString());
+
+                entries.Add(fEntry);
+            }
+
+            return true;
+        }
+
+        IDbCommand GetOSFileCommand(DBOSFile person)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
 
@@ -346,9 +456,9 @@ namespace osrepodbmgr.Core
             return dbcmd;
         }
 
-        public bool AddFileToOS(DBFile file, long os)
+        public bool AddFileToOS(DBOSFile file, long os)
         {
-            IDbCommand dbcmd = GetFileCommand(file);
+            IDbCommand dbcmd = GetOSFileCommand(file);
             IDbTransaction trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
@@ -557,9 +667,9 @@ namespace osrepodbmgr.Core
             return false;
         }
 
-        public bool GetAllFiles(out List<DBFile> entries, long id)
+        public bool GetAllFilesInOS(out List<DBOSFile> entries, long id)
         {
-            entries = new List<DBFile>();
+            entries = new List<DBOSFile>();
 
             string sql = string.Format("SELECT * from os_{0}", id);
 
@@ -573,7 +683,7 @@ namespace osrepodbmgr.Core
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBFile fEntry = new DBFile();
+                DBOSFile fEntry = new DBOSFile();
                 fEntry.Id = ulong.Parse(dRow["id"].ToString());
                 fEntry.Path = dRow["path"].ToString();
                 fEntry.Sha256 = dRow["sha256"].ToString();

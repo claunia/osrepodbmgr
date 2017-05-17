@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -112,7 +112,7 @@ namespace osrepodbmgr.Core
         {
             try
             {
-                Context.hashes = new Dictionary<string, DBFile>();
+                Context.hashes = new Dictionary<string, DBOSFile>();
                 Context.foldersDict = new Dictionary<string, DBFolder>();
                 List<string> alreadyMetadata = new List<string>();
                 bool foundMetadata = false;
@@ -375,7 +375,8 @@ namespace osrepodbmgr.Core
                         fileStream.Read(dataBuffer, 0, (int)remainder);
                         sha256Context.Update(dataBuffer);
                     }
-                    else {
+                    else
+                    {
                         if(UpdateProgress2 != null)
                             UpdateProgress2(string.Format("{0:P}", 0 / (double)fileStream.Length), relpath, 0, fileStream.Length);
                         dataBuffer = new byte[fileStream.Length];
@@ -386,7 +387,7 @@ namespace osrepodbmgr.Core
                     fileStream.Close();
                     string hash = stringify(sha256Context.Final());
 
-                    DBFile dbFile = new DBFile();
+                    DBOSFile dbFile = new DBOSFile();
                     dbFile.Attributes = fi.Attributes;
                     dbFile.CreationTimeUtc = fi.CreationTimeUtc;
                     dbFile.LastAccessTimeUtc = fi.LastAccessTimeUtc;
@@ -531,7 +532,7 @@ namespace osrepodbmgr.Core
             try
             {
                 long counter = 0;
-                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
+                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Checking files in database", counter, Context.hashes.Count);
@@ -559,7 +560,7 @@ namespace osrepodbmgr.Core
                             UpdateProgress(null, string.Format("Check OS id {0}", os.id), osCounter, osesArray.Length);
 
                         counter = 0;
-                        foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
+                        foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                         {
                             if(UpdateProgress2 != null)
                                 UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, Context.hashes.Count);
@@ -612,13 +613,17 @@ namespace osrepodbmgr.Core
             try
             {
                 long counter = 0;
-                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
+                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Adding files to database", counter, Context.hashes.Count);
 
                     if(!dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
-                        dbCore.DBOps.AddFile(kvp.Value.Sha256);
+                        dbCore.DBOps.AddFile(new DBFile
+                        {
+                            Sha256 = kvp.Value.Sha256, ClamTime = null, Crack = false,
+                            Length = kvp.Value.Length, Virus = null, VirusScanned = null, VirusTotalTime = null
+                        });
 
                     counter++;
                 }
@@ -631,7 +636,7 @@ namespace osrepodbmgr.Core
                 dbCore.DBOps.CreateTableForOS(Context.dbInfo.id);
 
                 counter = 0;
-                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
+                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Adding files to OS in database", counter, Context.hashes.Count);
@@ -701,7 +706,8 @@ namespace osrepodbmgr.Core
                         return;
                     }
                 }
-                else {
+                else
+                {
                     if(!dbCore.CreateDB(Settings.Current.DatabasePath, null, null, null))
                     {
                         if(Failed != null)
@@ -879,7 +885,7 @@ namespace osrepodbmgr.Core
                         break;
                 }
 
-                foreach(KeyValuePair<string, DBFile> file in Context.hashes)
+                foreach(KeyValuePair<string, DBOSFile> file in Context.hashes)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress("Compressing...", file.Value.Path, counter, Context.hashes.Count);
@@ -934,8 +940,8 @@ namespace osrepodbmgr.Core
 
                         if(UpdateProgress2 != null)
                             UpdateProgress2(string.Format("{0:P}", inFs.Length / (double)inFs.Length),
-                                            "Finishing...",inFs.Length, inFs.Length);
-                        
+                                            "Finishing...", inFs.Length, inFs.Length);
+
                         inFs.Close();
                         zStream.Close();
                     }
@@ -974,7 +980,7 @@ namespace osrepodbmgr.Core
                     jms.Position = 0;
                 }
 
-                if(FinishedWithText!= null)
+                if(FinishedWithText != null)
                     FinishedWithText(string.Format("Correctly added operating system with MDID {0}", mdid));
             }
             catch(Exception ex)
@@ -1419,14 +1425,14 @@ namespace osrepodbmgr.Core
                     return;
                 }
 
-                List<DBFile> files;
+                List<DBOSFile> files;
                 List<DBFolder> folders;
                 long counter;
 
                 if(UpdateProgress != null)
                     UpdateProgress("", "Asking DB for files...", 1, 100);
 
-                dbCore.DBOps.GetAllFiles(out files, Context.dbInfo.id);
+                dbCore.DBOps.GetAllFilesInOS(out files, Context.dbInfo.id);
 
                 if(UpdateProgress != null)
                     UpdateProgress("", "Asking DB for folders...", 2, 100);
@@ -1452,7 +1458,7 @@ namespace osrepodbmgr.Core
                 }
 
                 counter = 3;
-                foreach(DBFile file in files)
+                foreach(DBOSFile file in files)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress("", string.Format("Creating {0}...", file.Path), counter, 3 + files.Count);
@@ -1610,14 +1616,14 @@ namespace osrepodbmgr.Core
                 zf.EmitTimesInWindowsFormatWhenSaving = true;
                 zf.UseZip64WhenSaving = Zip64Option.AsNecessary;
                 zf.SortEntriesBeforeSaving = true;
-                List<DBFile> files;
+                List<DBOSFile> files;
                 List<DBFolder> folders;
                 long counter;
 
                 if(UpdateProgress != null)
                     UpdateProgress("", "Asking DB for files...", 1, 100);
 
-                dbCore.DBOps.GetAllFiles(out files, Context.dbInfo.id);
+                dbCore.DBOps.GetAllFilesInOS(out files, Context.dbInfo.id);
 
                 if(UpdateProgress != null)
                     UpdateProgress("", "Asking DB for folders...", 2, 100);
@@ -1644,8 +1650,8 @@ namespace osrepodbmgr.Core
                 }
 
                 counter = 3;
-                Context.hashes = new Dictionary<string, DBFile>();
-                foreach(DBFile file in files)
+                Context.hashes = new Dictionary<string, DBOSFile>();
+                foreach(DBOSFile file in files)
                 {
                     if(UpdateProgress != null)
                         UpdateProgress("", string.Format("Adding {0}...", file.Path), counter, 3 + files.Count);
@@ -1677,10 +1683,10 @@ namespace osrepodbmgr.Core
 
         static Stream Zf_HandleOpen(string entryName)
         {
-            DBFile file;
+            DBOSFile file;
             if(!Context.hashes.TryGetValue(entryName, out file))
             {
-                if (!Context.hashes.TryGetValue(entryName.Replace('/', '\\'), out file))
+                if(!Context.hashes.TryGetValue(entryName.Replace('/', '\\'), out file))
                     throw new ArgumentException("Cannot find requested zip entry in hashes dictionary");
             }
 
@@ -1771,7 +1777,7 @@ namespace osrepodbmgr.Core
 
             if(e.EventType == ZipProgressEventType.Error_Saving && Failed != null)
                 Failed("An error occurred creating ZIP file.");
-            
+
             if(e.EventType == ZipProgressEventType.Saving_Completed && Finished != null)
                 Finished();
         }

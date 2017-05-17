@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -798,7 +798,7 @@ namespace osrepodbmgr.Eto
 
                 long counter = 0;
                 fileView.Clear();
-                foreach(KeyValuePair<string, DBFile> kvp in Context.hashes)
+                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
                     UpdateProgress(null, "Updating table", counter, Context.hashes.Count);
                     fileView.Add(new FileEntry { path = kvp.Key, hash = kvp.Value.Sha256, known = true });
