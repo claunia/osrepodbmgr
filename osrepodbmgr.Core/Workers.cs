@@ -1315,6 +1315,12 @@ namespace osrepodbmgr.Core
                         Finished();
                 }
             }
+            catch(System.IO.IOException)
+            {
+                // Could not delete temporary files, do not crash.
+                if(Finished != null)
+                        Finished();
+            }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
