@@ -468,7 +468,6 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                Color color = known ? Colors.Green : Colors.Red;
                 fileView.Add(new FileEntry { path = filename, hash = hash, known = known });
                 btnPack.Enabled |= !known;
             });
@@ -478,7 +477,6 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                Color color = existsInRepo ? Colors.Green : Colors.Red;
                 tabOSes.Visible = true;
                 osView.Add(new DBEntryForEto(os));
             });

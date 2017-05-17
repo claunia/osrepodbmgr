@@ -258,7 +258,6 @@ namespace osrepodbmgr.Eto
             dlgAdd _dlgAdd = new dlgAdd();
             _dlgAdd.OnAddedOS += (os, existsInRepo, pathInRepo) =>
             {
-                Color color = existsInRepo ? Colors.Green : Colors.Red;
                 lstOSes.Add(new DBEntryForEto(os));
             };
             _dlgAdd.ShowModal(this);
