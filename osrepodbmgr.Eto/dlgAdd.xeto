@@ -110,24 +110,16 @@
 			</StackLayout>
 		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Stretch">
-			<StackLayout Orientation="Horizontal">
-				<StackLayoutItem HorizontalAlignment="Left">
-					<Label ID="lblProgress" Visible="False">Progress</Label>
-				</StackLayoutItem>
-				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-					<ProgressBar ID="prgProgress" Visible="False" />
-				</StackLayoutItem>
-			</StackLayout>
+			<Label ID="lblProgress" Visible="False">Progress</Label>
 		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Stretch">
-			<StackLayout Orientation="Horizontal">
-				<StackLayoutItem HorizontalAlignment="Left">
-					<Label ID="lblProgress2" Visible="False">Progress2</Label>
-				</StackLayoutItem>
-				<StackLayoutItem Expand="True" HorizontalAlignment="Right">
-					<ProgressBar ID="prgProgress2" Visible="False" />
-				</StackLayoutItem>
-			</StackLayout>
+			<ProgressBar ID="prgProgress" Visible="False" />
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<Label ID="lblProgress2" Visible="False">Progress2</Label>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<ProgressBar ID="prgProgress2" Visible="False" />
 		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Center">
 			<StackLayout Orientation="Horizontal">

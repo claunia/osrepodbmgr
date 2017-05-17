@@ -205,7 +205,9 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(!string.IsNullOrWhiteSpace(inner))
+                if(!string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(inner))
+                    lblProgress.Text = string.Format("{0}: {1}", text, inner);
+                else if(!string.IsNullOrWhiteSpace(inner))
                     lblProgress.Text = inner;
                 else
                     lblProgress.Text = text;
@@ -225,7 +227,9 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                if(!string.IsNullOrWhiteSpace(inner))
+                if(!string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(inner))
+                    lblProgress2.Text = string.Format("{0}: {1}", text, inner);
+                else if(!string.IsNullOrWhiteSpace(inner))
                     lblProgress2.Text = inner;
                 else
                     lblProgress2.Text = text;

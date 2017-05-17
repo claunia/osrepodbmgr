@@ -7,22 +7,18 @@
 				</GridView>
 			</GroupBox>
 		</StackLayoutItem>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<Label ID="lblProgress">lblProgress</Label>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
-				<ProgressBar ID="prgProgress" />
-			</StackLayoutItem>
-		</StackLayout>
-		<StackLayout Orientation="Horizontal">
-			<StackLayoutItem Expand="True" HorizontalAlignment="Left">
-				<Label ID="lblProgress2" Visible="False">lblProgress2</Label>
-			</StackLayoutItem>
-			<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
-				<ProgressBar ID="prgProgress2" Visible="False" />
-			</StackLayoutItem>
-		</StackLayout>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<Label ID="lblProgress">lblProgress</Label>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<ProgressBar ID="prgProgress" />
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<Label ID="lblProgress2" Visible="False">lblProgress2</Label>
+		</StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Stretch">
+			<ProgressBar ID="prgProgress2" Visible="False" />
+		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Center">
 			<StackLayout Orientation="Horizontal">
 				<Button x:Name="btnAdd" Click="OnBtnAddClicked" Visible="False">Add</Button>
