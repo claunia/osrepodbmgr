@@ -54,16 +54,16 @@ namespace osrepodbmgr.Core
         public string mdid;
     }
 
-    public struct DBFile
+    public class DBFile
     {
-        public ulong Id;
-        public string Sha256;
-        public bool Crack;
-        public bool? VirusScanned;
-        public DateTime? ClamTime;
-        public DateTime? VirusTotalTime;
-        public string Virus;
-        public long Length;
+        public ulong Id { get; set; }
+        public string Sha256 { get; set; }
+        public bool Crack { get; set; }
+        public bool? HasVirus { get; set; }
+        public DateTime? ClamTime { get; set; }
+        public DateTime? VirusTotalTime { get; set; }
+        public string Virus { get; set; }
+        public long Length { get; set; }
     }
 
     public struct DBOSFile
@@ -288,7 +288,7 @@ namespace osrepodbmgr.Core
 
             param1.Value = entry.Sha256;
             param2.Value = entry.Crack;
-            param3.Value = entry.VirusScanned;
+            param3.Value = entry.HasVirus;
             if(entry.ClamTime != null)
                 param4.Value = entry.ClamTime.Value.ToString("yyyy-MM-dd HH:mm");
             else
@@ -367,11 +367,11 @@ namespace osrepodbmgr.Core
             catch { return 0; }
         }
 
-        public bool GetFiles(out List<DBFile> entries, long start, long count)
+        public bool GetFiles(out List<DBFile> entries, ulong start, ulong count)
         {
             entries = new List<DBFile>();
 
-            string sql = string.Format("SELECT * FROM files LIMIT {0}, {1} ORDER BY id", count, start);
+            string sql = string.Format("SELECT * FROM files ORDER BY id LIMIT {0}, {1}", start, count);
 
             IDbCommand dbcmd = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
@@ -389,9 +389,9 @@ namespace osrepodbmgr.Core
                 fEntry.Sha256 = dRow["sha256"].ToString();
                 fEntry.Crack = bool.Parse(dRow["crack"].ToString());
                 if(dRow["virscan"] == DBNull.Value)
-                    fEntry.VirusScanned = null;
+                    fEntry.HasVirus = null;
                 else
-                    fEntry.VirusScanned = bool.Parse(dRow["virscan"].ToString());
+                    fEntry.HasVirus = bool.Parse(dRow["virscan"].ToString());
                 if(dRow["clamtime"] == DBNull.Value)
                     fEntry.ClamTime = null;
                 else

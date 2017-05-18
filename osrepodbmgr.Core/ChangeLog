@@ -1,3 +1,10 @@
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
+	* DBOps.cs:
+	  Corrected SQL syntax and names. Change DBFile to class to
+	  allow Eto direct access to it (converting a million entries
+	  takes too much memory and cycles).
+
 2017-05-12  Natalia Portillo  <claunia@claunia.com>
 
 	* DBOps.cs:
