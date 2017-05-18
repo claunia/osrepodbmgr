@@ -111,6 +111,8 @@ public partial class dlgAdd
 
 	private global::Gtk.Button btnMetadata;
 
+	private global::Gtk.Button btnToggleCrack;
+
 	private global::Gtk.Button btnRemoveFile;
 
 	private global::Gtk.Button btnDialog;
@@ -641,6 +643,18 @@ public partial class dlgAdd
 		w57.Expand = false;
 		w57.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
+		this.btnToggleCrack = new global::Gtk.Button();
+		this.btnToggleCrack.CanFocus = true;
+		this.btnToggleCrack.Name = "btnToggleCrack";
+		this.btnToggleCrack.UseUnderline = true;
+		this.btnToggleCrack.Label = global::Mono.Unix.Catalog.GetString("Mark as crack");
+		this.hbox1.Add(this.btnToggleCrack);
+		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnToggleCrack]));
+		w58.PackType = ((global::Gtk.PackType)(1));
+		w58.Position = 7;
+		w58.Expand = false;
+		w58.Fill = false;
+		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnRemoveFile = new global::Gtk.Button();
 		this.btnRemoveFile.CanFocus = true;
 		this.btnRemoveFile.Name = "btnRemoveFile";
@@ -648,19 +662,19 @@ public partial class dlgAdd
 		this.btnRemoveFile.UseUnderline = true;
 		this.btnRemoveFile.Label = "gtk-remove";
 		this.hbox1.Add(this.btnRemoveFile);
-		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnRemoveFile]));
-		w58.PackType = ((global::Gtk.PackType)(1));
-		w58.Position = 7;
-		w58.Expand = false;
-		w58.Fill = false;
-		w1.Add(this.hbox1);
-		global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(w1[this.hbox1]));
-		w59.Position = 12;
+		global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnRemoveFile]));
+		w59.PackType = ((global::Gtk.PackType)(1));
+		w59.Position = 8;
 		w59.Expand = false;
 		w59.Fill = false;
+		w1.Add(this.hbox1);
+		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(w1[this.hbox1]));
+		w60.Position = 12;
+		w60.Expand = false;
+		w60.Fill = false;
 		// Internal child dlgAdd.ActionArea
-		global::Gtk.HButtonBox w60 = this.ActionArea;
-		w60.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
+		global::Gtk.HButtonBox w61 = this.ActionArea;
+		w61.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
 		// Container child __gtksharp_108_Stetic_TopLevelDialog_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 		this.btnDialog = new global::Gtk.Button();
 		this.btnDialog.CanFocus = true;
@@ -668,9 +682,9 @@ public partial class dlgAdd
 		this.btnDialog.UseUnderline = true;
 		this.btnDialog.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
 		this.AddActionWidget(this.btnDialog, 0);
-		global::Gtk.ButtonBox.ButtonBoxChild w61 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w60[this.btnDialog]));
-		w61.Expand = false;
-		w61.Fill = false;
+		global::Gtk.ButtonBox.ButtonBoxChild w62 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w61[this.btnDialog]));
+		w62.Expand = false;
+		w62.Fill = false;
 		if((this.Child != null))
 		{
 			this.Child.ShowAll();
@@ -685,11 +699,13 @@ public partial class dlgAdd
 		this.btnPack.Hide();
 		this.btnStop.Hide();
 		this.btnMetadata.Hide();
+		this.btnToggleCrack.Hide();
 		this.btnRemoveFile.Hide();
-		w60.Hide();
+		w61.Hide();
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 		this.btnRemoveFile.Clicked += new global::System.EventHandler(this.OnBtnRemoveFileClicked);
+		this.btnToggleCrack.Clicked += new global::System.EventHandler(this.OnBtnToggleCrackClicked);
 		this.btnMetadata.Clicked += new global::System.EventHandler(this.OnBtnMetadataClicked);
 		this.btnStop.Clicked += new global::System.EventHandler(this.OnBtnStopClicked);
 		this.btnFolder.Clicked += new global::System.EventHandler(this.OnBtnFolderClicked);

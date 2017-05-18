@@ -62,17 +62,20 @@ public partial class dlgAdd : Dialog
         Context.CheckUnar();
 
         CellRendererText filenameCell = new CellRendererText();
+        CellRendererToggle crackCell = new CellRendererToggle();
         CellRendererText hashCell = new CellRendererText();
         CellRendererToggle dbCell = new CellRendererToggle();
 
         TreeViewColumn filenameColumn = new TreeViewColumn("Path", filenameCell, "text", 0, "background", 3, "foreground", 4);
+        TreeViewColumn crackColumn = new TreeViewColumn("Crack?", crackCell, "active", 5);
         TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 1, "background", 3, "foreground", 4);
         TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell, "active", 2);
 
-        fileView = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string));
+        fileView = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string), typeof(bool));
 
         treeFiles.Model = fileView;
         treeFiles.AppendColumn(filenameColumn);
+        treeFiles.AppendColumn(crackColumn);
         treeFiles.AppendColumn(hashColumn);
         treeFiles.AppendColumn(dbColumn);
 
@@ -129,6 +132,8 @@ public partial class dlgAdd : Dialog
         treeOSes.AppendColumn(filesColumn);
         treeOSes.AppendColumn(netinstallColumn);
         treeOSes.AppendColumn(pathColumn);
+
+        treeFiles.Selection.Changed += treeFilesSelectionChanged;
     }
 
     void UnarChangeStatus()
@@ -353,6 +358,7 @@ public partial class dlgAdd : Dialog
             btnPack.Visible = true;
             btnPack.Sensitive = true;
             btnRemoveFile.Visible = true;
+            btnToggleCrack.Visible = true;
 
             txtFormat.IsEditable = true;
             txtMachine.IsEditable = true;
@@ -424,12 +430,12 @@ public partial class dlgAdd : Dialog
         });
     }
 
-    void AddFile(string filename, string hash, bool known)
+    void AddFile(string filename, string hash, bool known, bool isCrack)
     {
         Application.Invoke(delegate
         {
             string color = known ? "green" : "red";
-            fileView.AppendValues(filename, hash, known, color, "black");
+            fileView.AppendValues(filename, hash, known, color, "black", isCrack);
             btnPack.Sensitive |= !known;
         });
     }
@@ -465,6 +471,7 @@ public partial class dlgAdd : Dialog
         btnPack.Visible = false;
         btnClose.Visible = false;
         btnRemoveFile.Visible = false;
+        btnToggleCrack.Visible = false;
         if(fileView != null)
             fileView.Clear();
         if(osView != null)
@@ -732,6 +739,7 @@ public partial class dlgAdd : Dialog
     void AddToDatabase()
     {
         btnRemoveFile.Sensitive = false;
+        btnToggleCrack.Sensitive = false;
         btnPack.Sensitive = false;
         btnClose.Sensitive = false;
         prgProgress.Visible = true;
@@ -856,6 +864,7 @@ public partial class dlgAdd : Dialog
     protected void OnBtnPackClicked(object sender, EventArgs e)
     {
         btnRemoveFile.Sensitive = false;
+        btnToggleCrack.Sensitive = false;
         btnPack.Sensitive = false;
         btnClose.Sensitive = false;
         prgProgress.Visible = true;
@@ -948,6 +957,7 @@ public partial class dlgAdd : Dialog
                 thdPulseProgress.Abort();
 
             btnRemoveFile.Sensitive = true;
+            btnToggleCrack.Sensitive = true;
             btnPack.Sensitive = true;
             btnClose.Sensitive = true;
             prgProgress.Visible = false;
@@ -1248,6 +1258,40 @@ public partial class dlgAdd : Dialog
             Context.hashes.Remove(name);
             Context.files.Remove(System.IO.Path.Combine(filesPath, name));
             fileView.Remove(ref fileIter);
+        }
+    }
+
+    protected void OnBtnToggleCrackClicked(object sender, EventArgs e)
+    {
+        TreeIter fileIter;
+        if(treeFiles.Selection.GetSelected(out fileIter))
+        {
+            string name = (string)fileView.GetValue(fileIter, 0);
+            bool known = (bool)fileView.GetValue(fileIter, 2);
+            string color = (string)fileView.GetValue(fileIter, 3);
+
+            DBOSFile osfile;
+
+            if(Context.hashes.TryGetValue(name, out osfile))
+            {
+                osfile.Crack = !osfile.Crack;
+                Context.hashes.Remove(name);
+                Context.hashes.Add(name, osfile);
+                fileView.Remove(ref fileIter);
+                fileView.AppendValues(name, osfile.Sha256, known, color, "black", osfile.Crack);
+            }
+        }
+    }
+
+    void treeFilesSelectionChanged(object sender, EventArgs e)
+    {
+        TreeIter fileIter;
+        if(treeFiles.Selection.GetSelected(out fileIter))
+        {
+            if((bool)fileView.GetValue(fileIter, 5))
+                btnToggleCrack.Label = "Mark as not crack";
+            else
+                btnToggleCrack.Label = "Mark as crack";
         }
     }
 }

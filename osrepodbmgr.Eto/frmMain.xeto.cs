@@ -65,7 +65,7 @@ namespace osrepodbmgr.Eto
         Label lblProgressFiles2;
         ProgressBar prgProgressFiles2;
         Button btnStopFiles;
-        Button btnMarkAsCrack;
+        Button btnToggleCrack;
         Button btnScanWithClamd;
         Button btnCheckInVirusTotal;
         Button btnPopulateFiles;
@@ -620,8 +620,19 @@ namespace osrepodbmgr.Eto
             }
         }
 
-        protected void OnBtnMarkAsCrackClicked(object sender, EventArgs e)
+        protected void OnBtnToggleCrackClicked(object sender, EventArgs e)
         {
+            if(treeFiles.SelectedItem != null)
+            {
+                DBFile file = (DBFile)treeFiles.SelectedItem;
+                bool crack = !file.Crack;
+
+                Workers.ToggleCrack(file.Sha256, crack);
+
+                lstFiles.Remove(file);
+                file.Crack = crack;
+                lstFiles.Add(file);
+            }
         }
 
         protected void OnBtnScanWithClamdClicked(object sender, EventArgs e)
@@ -635,7 +646,6 @@ namespace osrepodbmgr.Eto
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
             // TODO: Implement
-            btnMarkAsCrack.Enabled = false;
             btnScanWithClamd.Enabled = false;
             btnCheckInVirusTotal.Enabled = false;
 
@@ -739,7 +749,7 @@ namespace osrepodbmgr.Eto
                 lblProgressFiles2.Visible = false;
                 prgProgressFiles1.Visible = false;
                 prgProgressFiles2.Visible = false;
-                btnMarkAsCrack.Visible = true;
+                btnToggleCrack.Visible = true;
                 btnScanWithClamd.Visible = true;
                 btnCheckInVirusTotal.Visible = true;
                 btnStopFiles.Visible = false;
@@ -748,6 +758,17 @@ namespace osrepodbmgr.Eto
                 treeFiles.Enabled = true;
                 tabOSes.Enabled = true;
             });
+        }
+
+        void treeFilesSelectionChanged(object sender, EventArgs e)
+        {
+            if(treeFiles.SelectedItem != null)
+            {
+                if(((DBFile)treeFiles.SelectedItem).Crack)
+                    btnToggleCrack.Text = "Mark as not crack";
+                else
+                    btnToggleCrack.Text = "Mark as crack";
+            }
         }
     }
 }

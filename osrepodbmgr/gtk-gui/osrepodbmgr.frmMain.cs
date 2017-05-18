@@ -72,7 +72,7 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnScanWithClamd;
 
-		private global::Gtk.Button btnMarkAsCrack;
+		private global::Gtk.Button btnToggleCrack;
 
 		private global::Gtk.Button btnStopFiles;
 
@@ -389,13 +389,13 @@ namespace osrepodbmgr
 			w32.Expand = false;
 			w32.Fill = false;
 			// Container child hbox6.Gtk.Box+BoxChild
-			this.btnMarkAsCrack = new global::Gtk.Button();
-			this.btnMarkAsCrack.CanFocus = true;
-			this.btnMarkAsCrack.Name = "btnMarkAsCrack";
-			this.btnMarkAsCrack.UseUnderline = true;
-			this.btnMarkAsCrack.Label = global::Mono.Unix.Catalog.GetString("Mark as crack");
-			this.hbox6.Add(this.btnMarkAsCrack);
-			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnMarkAsCrack]));
+			this.btnToggleCrack = new global::Gtk.Button();
+			this.btnToggleCrack.CanFocus = true;
+			this.btnToggleCrack.Name = "btnToggleCrack";
+			this.btnToggleCrack.UseUnderline = true;
+			this.btnToggleCrack.Label = global::Mono.Unix.Catalog.GetString("Mark as crack");
+			this.hbox6.Add(this.btnToggleCrack);
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnToggleCrack]));
 			w33.PackType = ((global::Gtk.PackType)(1));
 			w33.Position = 3;
 			w33.Expand = false;
@@ -451,7 +451,7 @@ namespace osrepodbmgr
 			this.prgProgressFiles2.Hide();
 			this.btnCheckInVirusTotal.Hide();
 			this.btnScanWithClamd.Hide();
-			this.btnMarkAsCrack.Hide();
+			this.btnToggleCrack.Hide();
 			this.btnStopFiles.Hide();
 			this.Show();
 			this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
@@ -464,7 +464,7 @@ namespace osrepodbmgr
 			this.btnSettings.Clicked += new global::System.EventHandler(this.OnBtnSettingsClicked);
 			this.btnQuit.Clicked += new global::System.EventHandler(this.OnBtnQuitClicked);
 			this.btnStopFiles.Clicked += new global::System.EventHandler(this.OnBtnStopFilesClicked);
-			this.btnMarkAsCrack.Clicked += new global::System.EventHandler(this.OnBtnMarkAsCrackClicked);
+			this.btnToggleCrack.Clicked += new global::System.EventHandler(this.OnBtnToggleCrackClicked);
 			this.btnScanWithClamd.Clicked += new global::System.EventHandler(this.OnBtnScanWithClamdClicked);
 			this.btnCheckInVirusTotal.Clicked += new global::System.EventHandler(this.OnBtnCheckInVirusTotalClicked);
 			this.btnPopulateFiles.Clicked += new global::System.EventHandler(this.OnBtnPopulateFilesClicked);

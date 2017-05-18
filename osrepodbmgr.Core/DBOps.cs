@@ -76,6 +76,7 @@ namespace osrepodbmgr.Core
         public DateTime LastAccessTimeUtc;
         public DateTime LastWriteTimeUtc;
         public FileAttributes Attributes;
+        public bool Crack;
     }
 
     public struct DBFolder
@@ -371,7 +372,7 @@ namespace osrepodbmgr.Core
         {
             entries = new List<DBFile>();
 
-            string sql = string.Format("SELECT * FROM files ORDER BY id LIMIT {0}, {1}", start, count);
+            string sql = string.Format("SELECT * FROM files ORDER BY sha256 LIMIT {0}, {1}", start, count);
 
             IDbCommand dbcmd = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
@@ -725,6 +726,29 @@ namespace osrepodbmgr.Core
 
                 entries.Add(fEntry);
             }
+
+            return true;
+        }
+
+        public bool ToggleCrack(string hash, bool crack)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbTransaction trans = dbCon.BeginTransaction();
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+            IDbDataParameter param2 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@hash";
+            param1.DbType = DbType.String;
+            param1.Value = hash;
+            param2.ParameterName = "@crack";
+            param2.DbType = DbType.Boolean;
+            param2.Value = crack;
+            dbcmd.Parameters.Add(param1);
+            dbcmd.Parameters.Add(param2);
+            dbcmd.CommandText = "UPDATE files SET crack = @crack WHERE sha256 = @hash";
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
 
             return true;
         }

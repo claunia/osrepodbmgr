@@ -60,6 +60,7 @@ namespace osrepodbmgr.Eto
             public string path { get; set; }
             public string hash { get; set; }
             public bool known { get; set; }
+            public bool iscrack { get; set; }
         }
 
         #region XAML UI elements
@@ -93,6 +94,7 @@ namespace osrepodbmgr.Eto
         Button btnPack;
         Button btnClose;
         Button btnExit;
+        Button btnToggleCrack;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
@@ -114,6 +116,11 @@ namespace osrepodbmgr.Eto
             {
                 DataCell = new TextBoxCell { Binding = Binding.Property<FileEntry, string>(r => r.path) },
                 HeaderText = "Path"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new CheckBoxCell { Binding = Binding.Property<FileEntry, bool?>(r => r.iscrack) },
+                HeaderText = "Crack?"
             });
             treeFiles.Columns.Add(new GridColumn
             {
@@ -394,6 +401,7 @@ namespace osrepodbmgr.Eto
                 btnPack.Visible = true;
                 btnPack.Enabled = true;
                 btnRemoveFile.Visible = true;
+                btnToggleCrack.Visible = true;
 
                 txtFormat.ReadOnly = false;
                 txtMachine.ReadOnly = false;
@@ -465,11 +473,11 @@ namespace osrepodbmgr.Eto
             });
         }
 
-        void AddFile(string filename, string hash, bool known)
+        void AddFile(string filename, string hash, bool known, bool isCrack)
         {
             Application.Instance.Invoke(delegate
             {
-                fileView.Add(new FileEntry { path = filename, hash = hash, known = known });
+                fileView.Add(new FileEntry { path = filename, hash = hash, known = known, iscrack = isCrack });
                 btnPack.Enabled |= !known;
             });
         }
@@ -502,6 +510,7 @@ namespace osrepodbmgr.Eto
             btnPack.Visible = false;
             btnClose.Visible = false;
             btnRemoveFile.Visible = false;
+            btnToggleCrack.Visible = false;
             if(fileView != null)
                 fileView.Clear();
             if(osView != null)
@@ -750,6 +759,7 @@ namespace osrepodbmgr.Eto
         void AddToDatabase()
         {
             btnRemoveFile.Enabled = false;
+            btnToggleCrack.Enabled = false;
             btnPack.Enabled = false;
             btnClose.Enabled = false;
             prgProgress.Visible = true;
@@ -867,6 +877,7 @@ namespace osrepodbmgr.Eto
         protected void OnBtnPackClicked(object sender, EventArgs e)
         {
             btnRemoveFile.Enabled = false;
+            btnToggleCrack.Enabled = false;
             btnPack.Enabled = false;
             btnClose.Enabled = false;
             prgProgress.Visible = true;
@@ -948,6 +959,7 @@ namespace osrepodbmgr.Eto
                     thdPackFiles.Abort();
 
                 btnRemoveFile.Enabled = true;
+                btnToggleCrack.Enabled = true;
                 btnPack.Enabled = true;
                 btnClose.Enabled = true;
                 prgProgress.Visible = false;
@@ -1194,6 +1206,38 @@ namespace osrepodbmgr.Eto
                 Context.hashes.Remove(name);
                 Context.files.Remove(System.IO.Path.Combine(filesPath, name));
                 fileView.Remove((FileEntry)treeFiles.SelectedItem);
+            }
+        }
+
+        protected void OnBtnToggleCrackClicked(object sender, EventArgs e)
+        {
+            if(treeFiles.SelectedItem != null)
+            {
+                string name = ((FileEntry)treeFiles.SelectedItem).path;
+                bool known = ((FileEntry)treeFiles.SelectedItem).known;
+
+                DBOSFile osfile;
+
+                if(Context.hashes.TryGetValue(name, out osfile))
+                {
+                    osfile.Crack = !osfile.Crack;
+                    Context.hashes.Remove(name);
+                    Context.hashes.Add(name, osfile);
+                    ((FileEntry)treeFiles.SelectedItem).iscrack = osfile.Crack;
+                    fileView.Remove((FileEntry)treeFiles.SelectedItem);
+                    fileView.Add(new FileEntry { path = name, hash = osfile.Sha256, known = known, iscrack = osfile.Crack });
+                }
+            }
+        }
+
+        void treeFilesSelectionChanged(object sender, EventArgs e)
+        {
+            if(treeFiles.SelectedItem != null)
+            {
+                if(((FileEntry)treeFiles.SelectedItem).iscrack)
+                    btnToggleCrack.Text = "Mark as not crack";
+                else
+                    btnToggleCrack.Text = "Mark as crack";
             }
         }
     }

@@ -100,7 +100,7 @@
 				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<TabControl>
 						<TabPage Text="Files">
-							<GridView ID="treeFiles" />
+							<GridView ID="treeFiles" SelectionChanged="treeFilesSelectionChanged"/>
 						</TabPage>
 						<TabPage Text="OSes" ID="tabOSes" Visible="False">
 							<GridView ID="treeOSes" />
@@ -126,6 +126,9 @@
 				<StackLayoutItem HorizontalAlignment="Left">
 					<Button ID="btnRemoveFile" Click="OnBtnRemoveFileClicked" Visible="False">Remove</Button>
 				</StackLayoutItem>
+                <StackLayoutItem HorizontalAlignment="Left">
+                    <Button ID="btnToggleCrack" Click="OnBtnToggleCrackClicked" Visible="False">Mark as crack</Button>
+                </StackLayoutItem>
 				<StackLayoutItem HorizontalAlignment="Left">
 					<Button ID="btnMetadata" Click="OnBtnMetadataClicked" Visible="False">Metadata</Button>
 				</StackLayoutItem>

@@ -1,5 +1,11 @@
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
+	* DBOps.cs:
+	* Workers.cs:
+	  Added support for marking/unmarking/detecting cracks.
+
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers.cs:
 	  
 

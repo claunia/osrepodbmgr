@@ -135,7 +135,8 @@ namespace osrepodbmgr
             treeFiles.AppendColumn(vtottimeColumn);
             treeFiles.AppendColumn(virusColumn);
 
-            treeFiles.Selection.Mode = SelectionMode.Multiple;
+            treeFiles.Selection.Mode = SelectionMode.Single;
+            treeFiles.Selection.Changed += treeFilesSelectionChanged;
 
             thdPulseProgress = new Thread(() =>
             {
@@ -627,8 +628,26 @@ namespace osrepodbmgr
             }
         }
 
-        protected void OnBtnMarkAsCrackClicked(object sender, EventArgs e)
+        protected void OnBtnToggleCrackClicked(object sender, EventArgs e)
         {
+            TreeIter fileIter;
+            if(treeFiles.Selection.GetSelected(out fileIter))
+            {
+                string hash = (string)fileView.GetValue(fileIter, 0);
+                long length = (long)fileView.GetValue(fileIter, 1);
+                bool crack = !(bool)fileView.GetValue(fileIter, 2);
+                bool hasvirus = (bool)fileView.GetValue(fileIter, 3);
+                string clamtime = (string)fileView.GetValue(fileIter, 4);
+                string vttime = (string)fileView.GetValue(fileIter, 5);
+                string virus = (string)fileView.GetValue(fileIter, 6);
+                string color = (string)fileView.GetValue(fileIter, 7);
+                bool viruschecked = (bool)fileView.GetValue(fileIter, 9);
+
+                Workers.ToggleCrack(hash, crack);
+
+                fileView.Remove(ref fileIter);
+                fileView.AppendValues(hash, length, crack, hasvirus, clamtime, vttime, virus, color, "black", viruschecked);
+            }
         }
 
         protected void OnBtnScanWithClamdClicked(object sender, EventArgs e)
@@ -642,7 +661,6 @@ namespace osrepodbmgr
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
             // TODO: Implement
-            btnMarkAsCrack.Sensitive = false;
             btnScanWithClamd.Sensitive = false;
             btnCheckInVirusTotal.Sensitive = false;
 
@@ -795,7 +813,7 @@ namespace osrepodbmgr
                 lblProgressFiles2.Visible = false;
                 prgProgressFiles1.Visible = false;
                 prgProgressFiles2.Visible = false;
-                btnMarkAsCrack.Visible = true;
+                btnToggleCrack.Visible = true;
                 btnScanWithClamd.Visible = true;
                 btnCheckInVirusTotal.Visible = true;
                 btnStopFiles.Visible = false;
@@ -804,6 +822,18 @@ namespace osrepodbmgr
                 treeFiles.Sensitive = true;
                 notebook1.GetNthPage(0).Sensitive = true;
             });
+        }
+
+        void treeFilesSelectionChanged(object sender, EventArgs e)
+        {
+            TreeIter fileIter;
+            if(treeFiles.Selection.GetSelected(out fileIter))
+            {
+                if((bool)fileView.GetValue(fileIter, 2))
+                    btnToggleCrack.Label = "Mark as not crack";
+                else
+                    btnToggleCrack.Label = "Mark as crack";
+            }
         }
     }
 }

@@ -705,6 +705,24 @@
               </packing>
             </child>
             <child>
+              <widget class="Gtk.Button" id="btnToggleCrack">
+                <property name="MemberName" />
+                <property name="Visible">False</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Mark as crack</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnBtnToggleCrackClicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">7</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.Button" id="btnRemoveFile">
                 <property name="MemberName" />
                 <property name="Visible">False</property>
@@ -717,7 +735,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">7</property>
+                <property name="Position">8</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -12768,14 +12786,14 @@ QNX/QNX/20090229/source.zip</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gtk.Button" id="btnMarkAsCrack">
+                      <widget class="Gtk.Button" id="btnToggleCrack">
                         <property name="MemberName" />
                         <property name="Visible">False</property>
                         <property name="CanFocus">True</property>
                         <property name="Type">TextOnly</property>
                         <property name="Label" translatable="yes">Mark as crack</property>
                         <property name="UseUnderline">True</property>
-                        <signal name="Clicked" handler="OnBtnMarkAsCrackClicked" />
+                        <signal name="Clicked" handler="OnBtnToggleCrackClicked" />
                       </widget>
                       <packing>
                         <property name="PackType">End</property>

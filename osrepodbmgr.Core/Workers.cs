@@ -54,7 +54,7 @@ namespace osrepodbmgr.Core
         public delegate void FailedDelegate(string text);
         public delegate void FinishedWithoutErrorDelegate();
         public delegate void FinishedWithTextDelegate(string text);
-        public delegate void AddFileForOSDelegate(string filename, string hash, bool known);
+        public delegate void AddFileForOSDelegate(string filename, string hash, bool known, bool isCrack);
         public delegate void AddOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
         public delegate void AddFileDelegate(DBFile file);
 public delegate void AddFilesDelegate(List<DBFile> file);
@@ -401,6 +401,11 @@ public static event AddFilesDelegate AddFiles;
                     dbFile.Path = relpath;
                     dbFile.Sha256 = hash;
 
+                    // TODO: Add common cracker group names?
+                    dbFile.Crack |= (relpath.ToLowerInvariant().Contains("crack") || // Typical crack
+                       relpath.ToLowerInvariant().Contains("crack") || // Typical keygen
+                       relpath.ToLowerInvariant().Contains("[k]"));
+
                     Context.hashes.Add(relpath, dbFile);
                     counter++;
                 }
@@ -543,7 +548,7 @@ public static event AddFilesDelegate AddFiles;
                         UpdateProgress(null, "Checking files in database", counter, Context.hashes.Count);
 
                     if(AddFileForOS != null)
-                        AddFileForOS(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
+                        AddFileForOS(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256), kvp.Value.Crack);
 
                     counter++;
                 }
@@ -627,7 +632,7 @@ public static event AddFilesDelegate AddFiles;
                     {
                         DBFile file = new DBFile
                         {
-                            Sha256 = kvp.Value.Sha256, ClamTime = null, Crack = false,
+                            Sha256 = kvp.Value.Sha256, ClamTime = null, Crack = kvp.Value.Crack,
                             Length = kvp.Value.Length, Virus = null, HasVirus = null, VirusTotalTime = null
                         };
                         dbCore.DBOps.AddFile(file);
@@ -1839,6 +1844,24 @@ public static event AddFilesDelegate AddFiles;
                     throw;
                 if(Failed != null)
 					Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
+        }
+
+        public static void ToggleCrack(string hash, bool crack)
+        {
+            try
+            {
+                dbCore.DBOps.ToggleCrack(hash, crack);
+
+                if(Finished != null)
+                    Finished();
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
         }
     }
