@@ -1,5 +1,18 @@
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
+	* Workers.cs:
+	* Workers/Files.cs:
+	* Workers/Consts.cs:
+	* Workers/Database.cs:
+	* Workers/Delegates.cs:
+	* Workers/Compression.cs:
+	* osrepodbmgr.Core.csproj:
+	* Workers/DiscImageChef.cs:
+	* Workers/Miscellaneous.cs:
+	  Refactor: Separate workers per category.
+
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
 	* DBOps.cs:
 	* Workers.cs:
 	  Added support for marking/unmarking/detecting cracks.
