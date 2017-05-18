@@ -91,7 +91,8 @@ namespace osrepodbmgr.Eto
             OpenFileDialog dlgFile = new OpenFileDialog();
             dlgFile.Title = "Choose UnArchiver executable";
             dlgFile.MultiSelect = false;
-            dlgFile.Directory = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+            if(!string.IsNullOrWhiteSpace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)))
+               dlgFile.Directory = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
 
             if(dlgFile.ShowDialog(this) == DialogResult.Ok)
             {
