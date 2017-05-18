@@ -1,5 +1,17 @@
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
+	* DBOps.cs:
+	* Context.cs:
+	* Settings.cs:
+	* packages.config:
+	* Workers/Clamd.cs:
+	* Workers/Database.cs:
+	* Workers/Delegates.cs:
+	* osrepodbmgr.Core.csproj:
+	  Added support for clamd scanning.
+
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers.cs:
 	* Workers/Files.cs:
 	* Workers/Consts.cs:

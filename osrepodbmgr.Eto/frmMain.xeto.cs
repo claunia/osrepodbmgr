@@ -43,6 +43,8 @@ namespace osrepodbmgr.Eto
         Thread thdSaveAs;
         Thread thdPopulateFiles;
         bool populatingFiles;
+        Thread thdScanFile;
+        DBFile outIter;
 
         #region XAML UI elements
 #pragma warning disable 0649
@@ -637,6 +639,74 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnScanWithClamdClicked(object sender, EventArgs e)
         {
+            if(treeFiles.SelectedItem != null)
+            {
+                DBFile file = Workers.GetDBFile(((DBFile)treeFiles.SelectedItem).Sha256);
+                outIter = (osrepodbmgr.Core.DBFile)treeFiles.SelectedItem;
+
+                if(file == null)
+                {
+                    MessageBox.Show("Cannot get file from database", MessageBoxType.Error);
+                    return;
+                }
+
+                treeFiles.Enabled = false;
+                btnToggleCrack.Enabled = false;
+                btnScanWithClamd.Enabled = false;
+                btnCheckInVirusTotal.Enabled = false;
+                prgProgress.Visible = true;
+                lblProgress.Visible = true;
+                Workers.Failed += ClamdFailed;
+                Workers.ScanFinished += ClamdFinished;
+
+                lblProgress.Text = "Scanning file with clamd.";
+                prgProgress.Indeterminate = true;
+
+                thdScanFile = new Thread(() => Workers.ClamScanFileFromRepo(file));
+                thdScanFile.Start();
+            }
+        }
+
+        void ClamdFailed(string text)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                treeFiles.Enabled = true;
+                btnToggleCrack.Enabled = true;
+                btnScanWithClamd.Enabled = true;
+                btnCheckInVirusTotal.Enabled = true;
+                prgProgress.Visible = false;
+                lblProgress.Visible = false;
+                Workers.Failed -= ClamdFailed;
+                Workers.ScanFinished -= ClamdFinished;
+                lblProgress.Text = "";
+                if(thdScanFile != null)
+                {
+                    thdScanFile.Abort();
+                    thdScanFile = null;
+                }
+            });
+        }
+
+        void ClamdFinished(DBFile file)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                treeFiles.Enabled = true;
+                btnToggleCrack.Enabled = true;
+                btnScanWithClamd.Enabled = true;
+                btnCheckInVirusTotal.Enabled = true;
+                Workers.Failed -= ClamdFailed;
+                Workers.ScanFinished -= ClamdFinished;
+                lblProgress.Text = "";
+                prgProgress.Visible = false;
+                lblProgress.Visible = false;
+                if(thdScanFile != null)
+                    thdScanFile = null;
+
+                lstFiles.Remove(outIter);
+                AddFile(file);
+            });
         }
 
         protected void OnBtnCheckInVirusTotalClicked(object sender, EventArgs e)
@@ -646,7 +716,6 @@ namespace osrepodbmgr.Eto
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
             // TODO: Implement
-            btnScanWithClamd.Enabled = false;
             btnCheckInVirusTotal.Enabled = false;
 
             tabOSes.Enabled = false;

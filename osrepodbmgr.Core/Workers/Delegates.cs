@@ -41,6 +41,7 @@ namespace osrepodbmgr.Core
         public delegate void AddOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
         public delegate void AddFileDelegate(DBFile file);
         public delegate void AddFilesDelegate(List<DBFile> file);
+        public delegate void ScanFinishedDelegate(DBFile file);
 
         public static event UpdateProgressDelegate UpdateProgress;
         public static event UpdateProgress2Delegate UpdateProgress2;
@@ -51,5 +52,6 @@ namespace osrepodbmgr.Core
         public static event AddOSDelegate AddOS;
         public static event AddFileDelegate AddFile;
         public static event AddFilesDelegate AddFiles;
+        public static event ScanFinishedDelegate ScanFinished;
     }
 }

@@ -4,6 +4,10 @@ namespace osrepodbmgr
 {
 	public partial class dlgSettings
 	{
+		private global::Gtk.HBox hbox2;
+
+		private global::Gtk.VBox vbox3;
+
 		private global::Gtk.HBox hbox26;
 
 		private global::Gtk.Label lblDatabase;
@@ -44,6 +48,36 @@ namespace osrepodbmgr
 
 		private global::Gtk.ComboBox cmbCompAlg;
 
+		private global::Gtk.VBox vbox4;
+
+		private global::Gtk.CheckButton chkAntivirus;
+
+		private global::Gtk.Frame frmClamd;
+
+		private global::Gtk.Alignment GtkAlignment6;
+
+		private global::Gtk.VBox vbox6;
+
+		private global::Gtk.CheckButton chkClamd;
+
+		private global::Gtk.HBox hbox3;
+
+		private global::Gtk.Label lblClamdHost;
+
+		private global::Gtk.Entry txtClamdHost;
+
+		private global::Gtk.Label lblClamdPort;
+
+		private global::Gtk.SpinButton spClamdPort;
+
+		private global::Gtk.Button btnClamdTest;
+
+		private global::Gtk.Label lblClamdVersion;
+
+		private global::Gtk.CheckButton chkClamdIsLocal;
+
+		private global::Gtk.Label GtkLabel7;
+
 		private global::Gtk.HBox hbox18;
 
 		private global::Gtk.Button btnCancel;
@@ -64,6 +98,14 @@ namespace osrepodbmgr
 			w1.Name = "vbox5";
 			w1.Spacing = 6;
 			// Container child vbox5.Gtk.Box+BoxChild
+			this.hbox2 = new global::Gtk.HBox();
+			this.hbox2.Name = "hbox2";
+			this.hbox2.Spacing = 6;
+			// Container child hbox2.Gtk.Box+BoxChild
+			this.vbox3 = new global::Gtk.VBox();
+			this.vbox3.Name = "vbox3";
+			this.vbox3.Spacing = 6;
+			// Container child vbox3.Gtk.Box+BoxChild
 			this.hbox26 = new global::Gtk.HBox();
 			this.hbox26.Name = "hbox26";
 			this.hbox26.Spacing = 6;
@@ -99,12 +141,12 @@ namespace osrepodbmgr
 			w5.Position = 2;
 			w5.Expand = false;
 			w5.Fill = false;
-			w1.Add(this.hbox26);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(w1[this.hbox26]));
+			this.vbox3.Add(this.hbox26);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox26]));
 			w6.Position = 0;
 			w6.Expand = false;
 			w6.Fill = false;
-			// Container child vbox5.Gtk.Box+BoxChild
+			// Container child vbox3.Gtk.Box+BoxChild
 			this.hbox25 = new global::Gtk.HBox();
 			this.hbox25.Name = "hbox25";
 			this.hbox25.Spacing = 6;
@@ -140,12 +182,12 @@ namespace osrepodbmgr
 			w10.Position = 2;
 			w10.Expand = false;
 			w10.Fill = false;
-			w1.Add(this.hbox25);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(w1[this.hbox25]));
+			this.vbox3.Add(this.hbox25);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox25]));
 			w11.Position = 1;
 			w11.Expand = false;
 			w11.Fill = false;
-			// Container child vbox5.Gtk.Box+BoxChild
+			// Container child vbox3.Gtk.Box+BoxChild
 			this.hbox24 = new global::Gtk.HBox();
 			this.hbox24.Name = "hbox24";
 			this.hbox24.Spacing = 6;
@@ -181,12 +223,12 @@ namespace osrepodbmgr
 			w15.Position = 2;
 			w15.Expand = false;
 			w15.Fill = false;
-			w1.Add(this.hbox24);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(w1[this.hbox24]));
+			this.vbox3.Add(this.hbox24);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox24]));
 			w16.Position = 2;
 			w16.Expand = false;
 			w16.Fill = false;
-			// Container child vbox5.Gtk.Box+BoxChild
+			// Container child vbox3.Gtk.Box+BoxChild
 			this.hbox23 = new global::Gtk.HBox();
 			this.hbox23.Name = "hbox23";
 			this.hbox23.Spacing = 6;
@@ -222,21 +264,21 @@ namespace osrepodbmgr
 			w20.Position = 2;
 			w20.Expand = false;
 			w20.Fill = false;
-			w1.Add(this.hbox23);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(w1[this.hbox23]));
+			this.vbox3.Add(this.hbox23);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox23]));
 			w21.Position = 3;
 			w21.Expand = false;
 			w21.Fill = false;
-			// Container child vbox5.Gtk.Box+BoxChild
+			// Container child vbox3.Gtk.Box+BoxChild
 			this.lblUnarVersion = new global::Gtk.Label();
 			this.lblUnarVersion.Name = "lblUnarVersion";
 			this.lblUnarVersion.LabelProp = global::Mono.Unix.Catalog.GetString("label1");
-			w1.Add(this.lblUnarVersion);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(w1[this.lblUnarVersion]));
+			this.vbox3.Add(this.lblUnarVersion);
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.lblUnarVersion]));
 			w22.Position = 4;
 			w22.Expand = false;
 			w22.Fill = false;
-			// Container child vbox5.Gtk.Box+BoxChild
+			// Container child vbox3.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
@@ -257,11 +299,159 @@ namespace osrepodbmgr
 			w24.Position = 1;
 			w24.Expand = false;
 			w24.Fill = false;
-			w1.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(w1[this.hbox1]));
+			this.vbox3.Add(this.hbox1);
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox1]));
 			w25.Position = 5;
 			w25.Expand = false;
 			w25.Fill = false;
+			this.hbox2.Add(this.vbox3);
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbox3]));
+			w26.Position = 0;
+			w26.Expand = false;
+			w26.Fill = false;
+			// Container child hbox2.Gtk.Box+BoxChild
+			this.vbox4 = new global::Gtk.VBox();
+			this.vbox4.Name = "vbox4";
+			this.vbox4.Spacing = 6;
+			// Container child vbox4.Gtk.Box+BoxChild
+			this.chkAntivirus = new global::Gtk.CheckButton();
+			this.chkAntivirus.CanFocus = true;
+			this.chkAntivirus.Name = "chkAntivirus";
+			this.chkAntivirus.Label = global::Mono.Unix.Catalog.GetString("Use antivirus?");
+			this.chkAntivirus.DrawIndicator = true;
+			this.chkAntivirus.UseUnderline = true;
+			this.vbox4.Add(this.chkAntivirus);
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.chkAntivirus]));
+			w27.Position = 0;
+			w27.Expand = false;
+			w27.Fill = false;
+			// Container child vbox4.Gtk.Box+BoxChild
+			this.frmClamd = new global::Gtk.Frame();
+			this.frmClamd.Name = "frmClamd";
+			this.frmClamd.ShadowType = ((global::Gtk.ShadowType)(0));
+			// Container child frmClamd.Gtk.Container+ContainerChild
+			this.GtkAlignment6 = new global::Gtk.Alignment(0F, 0F, 1F, 1F);
+			this.GtkAlignment6.Name = "GtkAlignment6";
+			this.GtkAlignment6.LeftPadding = ((uint)(12));
+			// Container child GtkAlignment6.Gtk.Container+ContainerChild
+			this.vbox6 = new global::Gtk.VBox();
+			this.vbox6.Name = "vbox6";
+			this.vbox6.Spacing = 6;
+			// Container child vbox6.Gtk.Box+BoxChild
+			this.chkClamd = new global::Gtk.CheckButton();
+			this.chkClamd.CanFocus = true;
+			this.chkClamd.Name = "chkClamd";
+			this.chkClamd.Label = global::Mono.Unix.Catalog.GetString("Use clamd?");
+			this.chkClamd.DrawIndicator = true;
+			this.chkClamd.UseUnderline = true;
+			this.vbox6.Add(this.chkClamd);
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.vbox6[this.chkClamd]));
+			w28.Position = 0;
+			w28.Expand = false;
+			w28.Fill = false;
+			// Container child vbox6.Gtk.Box+BoxChild
+			this.hbox3 = new global::Gtk.HBox();
+			this.hbox3.Name = "hbox3";
+			this.hbox3.Spacing = 6;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.lblClamdHost = new global::Gtk.Label();
+			this.lblClamdHost.Name = "lblClamdHost";
+			this.lblClamdHost.LabelProp = global::Mono.Unix.Catalog.GetString("Host");
+			this.hbox3.Add(this.lblClamdHost);
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.lblClamdHost]));
+			w29.Position = 0;
+			w29.Expand = false;
+			w29.Fill = false;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.txtClamdHost = new global::Gtk.Entry();
+			this.txtClamdHost.CanFocus = true;
+			this.txtClamdHost.Name = "txtClamdHost";
+			this.txtClamdHost.IsEditable = true;
+			this.txtClamdHost.InvisibleChar = '●';
+			this.hbox3.Add(this.txtClamdHost);
+			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.txtClamdHost]));
+			w30.Position = 1;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.lblClamdPort = new global::Gtk.Label();
+			this.lblClamdPort.Name = "lblClamdPort";
+			this.lblClamdPort.LabelProp = global::Mono.Unix.Catalog.GetString("port");
+			this.hbox3.Add(this.lblClamdPort);
+			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.lblClamdPort]));
+			w31.Position = 2;
+			w31.Expand = false;
+			w31.Fill = false;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.spClamdPort = new global::Gtk.SpinButton(1, 65535, 1);
+			this.spClamdPort.CanFocus = true;
+			this.spClamdPort.Name = "spClamdPort";
+			this.spClamdPort.Adjustment.PageIncrement = 10;
+			this.spClamdPort.ClimbRate = 1;
+			this.spClamdPort.Numeric = true;
+			this.spClamdPort.Value = 3310;
+			this.hbox3.Add(this.spClamdPort);
+			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.spClamdPort]));
+			w32.Position = 3;
+			w32.Expand = false;
+			w32.Fill = false;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.btnClamdTest = new global::Gtk.Button();
+			this.btnClamdTest.CanFocus = true;
+			this.btnClamdTest.Name = "btnClamdTest";
+			this.btnClamdTest.UseUnderline = true;
+			this.btnClamdTest.Label = global::Mono.Unix.Catalog.GetString("Test");
+			this.hbox3.Add(this.btnClamdTest);
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.btnClamdTest]));
+			w33.Position = 4;
+			w33.Expand = false;
+			w33.Fill = false;
+			this.vbox6.Add(this.hbox3);
+			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.vbox6[this.hbox3]));
+			w34.Position = 1;
+			w34.Expand = false;
+			w34.Fill = false;
+			// Container child vbox6.Gtk.Box+BoxChild
+			this.lblClamdVersion = new global::Gtk.Label();
+			this.lblClamdVersion.Name = "lblClamdVersion";
+			this.lblClamdVersion.LabelProp = global::Mono.Unix.Catalog.GetString("label4");
+			this.vbox6.Add(this.lblClamdVersion);
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.vbox6[this.lblClamdVersion]));
+			w35.Position = 2;
+			w35.Expand = false;
+			w35.Fill = false;
+			// Container child vbox6.Gtk.Box+BoxChild
+			this.chkClamdIsLocal = new global::Gtk.CheckButton();
+			this.chkClamdIsLocal.CanFocus = true;
+			this.chkClamdIsLocal.Name = "chkClamdIsLocal";
+			this.chkClamdIsLocal.Label = global::Mono.Unix.Catalog.GetString("Clamd is local?");
+			this.chkClamdIsLocal.DrawIndicator = true;
+			this.chkClamdIsLocal.UseUnderline = true;
+			this.vbox6.Add(this.chkClamdIsLocal);
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox6[this.chkClamdIsLocal]));
+			w36.Position = 3;
+			w36.Expand = false;
+			w36.Fill = false;
+			this.GtkAlignment6.Add(this.vbox6);
+			this.frmClamd.Add(this.GtkAlignment6);
+			this.GtkLabel7 = new global::Gtk.Label();
+			this.GtkLabel7.Name = "GtkLabel7";
+			this.GtkLabel7.LabelProp = global::Mono.Unix.Catalog.GetString("<b>clamd</b>");
+			this.GtkLabel7.UseMarkup = true;
+			this.frmClamd.LabelWidget = this.GtkLabel7;
+			this.vbox4.Add(this.frmClamd);
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.frmClamd]));
+			w39.Position = 1;
+			w39.Expand = false;
+			w39.Fill = false;
+			this.hbox2.Add(this.vbox4);
+			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbox4]));
+			w40.Position = 1;
+			w40.Expand = false;
+			w40.Fill = false;
+			w1.Add(this.hbox2);
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(w1[this.hbox2]));
+			w41.Position = 0;
+			w41.Expand = false;
+			w41.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox18 = new global::Gtk.HBox();
 			this.hbox18.Name = "hbox18";
@@ -274,10 +464,10 @@ namespace osrepodbmgr
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = "gtk-cancel";
 			this.hbox18.Add(this.btnCancel);
-			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
-			w26.Position = 0;
-			w26.Expand = false;
-			w26.Fill = false;
+			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
+			w42.Position = 0;
+			w42.Expand = false;
+			w42.Fill = false;
 			// Container child hbox18.Gtk.Box+BoxChild
 			this.btnApply = new global::Gtk.Button();
 			this.btnApply.CanFocus = true;
@@ -286,19 +476,19 @@ namespace osrepodbmgr
 			this.btnApply.UseUnderline = true;
 			this.btnApply.Label = "gtk-apply";
 			this.hbox18.Add(this.btnApply);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
-			w27.PackType = ((global::Gtk.PackType)(1));
-			w27.Position = 1;
-			w27.Expand = false;
-			w27.Fill = false;
+			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
+			w43.PackType = ((global::Gtk.PackType)(1));
+			w43.Position = 1;
+			w43.Expand = false;
+			w43.Fill = false;
 			w1.Add(this.hbox18);
-			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(w1[this.hbox18]));
-			w28.Position = 6;
-			w28.Expand = false;
-			w28.Fill = false;
+			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(w1[this.hbox18]));
+			w44.Position = 1;
+			w44.Expand = false;
+			w44.Fill = false;
 			// Internal child osrepodbmgr.dlgSettings.ActionArea
-			global::Gtk.HButtonBox w29 = this.ActionArea;
-			w29.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
+			global::Gtk.HButtonBox w45 = this.ActionArea;
+			w45.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
 			// Container child __gtksharp_108_Stetic_TopLevelDialog_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.btnDialog = new global::Gtk.Button();
 			this.btnDialog.CanFocus = true;
@@ -306,22 +496,25 @@ namespace osrepodbmgr
 			this.btnDialog.UseUnderline = true;
 			this.btnDialog.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
 			this.AddActionWidget(this.btnDialog, 0);
-			global::Gtk.ButtonBox.ButtonBoxChild w30 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.btnDialog]));
-			w30.Expand = false;
-			w30.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w46 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w45[this.btnDialog]));
+			w46.Expand = false;
+			w46.Fill = false;
 			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 400;
+			this.DefaultWidth = 680;
 			this.DefaultHeight = 250;
 			this.lblUnarVersion.Hide();
-			w29.Hide();
+			w45.Hide();
 			this.Show();
 			this.btnDatabase.Clicked += new global::System.EventHandler(this.OnBtnDatabaseClicked);
 			this.btnRepository.Clicked += new global::System.EventHandler(this.OnBtnRepositoryClicked);
 			this.btnTmp.Clicked += new global::System.EventHandler(this.OnBtnTmpClicked);
 			this.btnUnar.Clicked += new global::System.EventHandler(this.OnBtnUnarClicked);
+			this.chkAntivirus.Toggled += new global::System.EventHandler(this.OnChkAntivirusToggled);
+			this.chkClamd.Toggled += new global::System.EventHandler(this.OnChkClamdToggled);
+			this.btnClamdTest.Clicked += new global::System.EventHandler(this.OnBtnClamdTestClicked);
 			this.btnCancel.Clicked += new global::System.EventHandler(this.OnBtnCancelClicked);
 			this.btnApply.Clicked += new global::System.EventHandler(this.OnBtnApplyClicked);
 		}

@@ -37,6 +37,11 @@ namespace osrepodbmgr
             Core.Settings.LoadSettings();
             Context.CheckUnar();
             Context.usableDotNetZip = true;
+            if(Core.Settings.Current.UseAntivirus)
+            {
+                if(Core.Settings.Current.UseClamd)
+                    Workers.InitClamd();
+            }
             Application.Init();
             frmMain win = new frmMain();
             win.Show();

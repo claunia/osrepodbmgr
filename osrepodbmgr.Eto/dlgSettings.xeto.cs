@@ -45,6 +45,14 @@ namespace osrepodbmgr.Eto
         Label lblUnarVersion;
         EnumDropDown<AlgoEnum> cmbCompAlg;
         StackLayout StackLayoutForAlgoEnum;
+        GroupBox frmClamd;
+        CheckBox chkAntivirus;
+        CheckBox chkClamd;
+        TextBox txtClamdHost;
+        NumericUpDown spClamdPort;
+        Button btnClamdTest;
+        Label lblClamdVersion;
+        CheckBox chkClamdIsLocal;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
@@ -64,6 +72,17 @@ namespace osrepodbmgr.Eto
             cmbCompAlg = new EnumDropDown<AlgoEnum>();
             StackLayoutForAlgoEnum.Items.Add(new StackLayoutItem(cmbCompAlg, HorizontalAlignment.Stretch, true));
             cmbCompAlg.SelectedValue = Settings.Current.CompressionAlgorithm;
+
+            spClamdPort.Value = 3310;
+            chkAntivirus.Checked = Core.Settings.Current.UseAntivirus;
+            frmClamd.Visible = chkAntivirus.Checked.Value;
+            if(Core.Settings.Current.UseAntivirus && Core.Settings.Current.UseClamd)
+            {
+                chkClamd.Checked = Core.Settings.Current.UseClamd;
+                txtClamdHost.Text = Core.Settings.Current.ClamdHost;
+                spClamdPort.Value = Core.Settings.Current.ClamdPort;
+                chkClamdIsLocal.Checked = Core.Settings.Current.ClamdIsLocal;
+            }
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -79,9 +98,18 @@ namespace osrepodbmgr.Eto
             Settings.Current.DatabasePath = txtDatabase.Text;
             Settings.Current.RepositoryPath = txtRepository.Text;
             Settings.Current.CompressionAlgorithm = cmbCompAlg.SelectedValue;
+            if(!chkClamd.Checked.Value || !chkAntivirus.Checked.Value)
+            {
+                Core.Settings.Current.UseClamd = false;
+                Core.Settings.Current.ClamdHost = null;
+                Core.Settings.Current.ClamdPort = 3310;
+                Core.Settings.Current.ClamdIsLocal = false;
+            }
             Settings.SaveSettings();
             Workers.CloseDB();
             Workers.InitDB();
+            Context.clamdVersion = null;
+            Core.Workers.InitClamd();
             Context.CheckUnar();
             Close();
         }
@@ -217,6 +245,54 @@ namespace osrepodbmgr.Eto
                 Settings.Current.UnArchiverPath = oldUnarPath;
                 MessageBox.Show(text, MessageBoxType.Error);
             });
+        }
+
+        protected void OnChkAntivirusToggled(object sender, EventArgs e)
+        {
+            frmClamd.Visible = chkAntivirus.Checked.Value;
+        }
+
+        protected void OnChkClamdToggled(object sender, EventArgs e)
+        {
+            txtClamdHost.Enabled = chkClamd.Checked.Value;
+            spClamdPort.Enabled = chkClamd.Checked.Value;
+            btnClamdTest.Enabled = chkClamd.Checked.Value;
+            lblClamdVersion.Visible = false;
+            chkClamdIsLocal.Enabled = chkClamd.Checked.Value;
+        }
+
+        protected void OnBtnClamdTestClicked(object sender, EventArgs e)
+        {
+            lblClamdVersion.Visible = false;
+
+            if(string.IsNullOrEmpty(txtClamdHost.Text))
+            {
+                MessageBox.Show("clamd host cannot be empty", MessageBoxType.Error);
+                return;
+            }
+
+            string oldVersion = Context.clamdVersion;
+            Context.clamdVersion = null;
+
+            string oldHost = Core.Settings.Current.ClamdHost;
+            ushort oldPort = Core.Settings.Current.ClamdPort;
+            Core.Settings.Current.ClamdHost = txtClamdHost.Text;
+            Core.Settings.Current.ClamdPort = (ushort)spClamdPort.Value;
+
+            Workers.TestClamd();
+
+            Core.Settings.Current.ClamdHost = oldHost;
+            Core.Settings.Current.ClamdPort = oldPort;
+
+            if(string.IsNullOrEmpty(Context.clamdVersion))
+            {
+                MessageBox.Show("Cannot connect to clamd", MessageBoxType.Error);
+                return;
+            }
+
+            lblClamdVersion.Text = Context.clamdVersion;
+            Context.clamdVersion = oldVersion;
+            lblClamdVersion.Visible = true;
         }
     }
 }

@@ -349,5 +349,10 @@ namespace osrepodbmgr.Core
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
         }
+
+        public static DBFile GetDBFile(string hash)
+        {
+            return dbCore.DBOps.GetFile(hash);
+        }
     }
 }

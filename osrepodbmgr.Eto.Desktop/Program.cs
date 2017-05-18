@@ -39,6 +39,11 @@ namespace osrepodbmgr.Eto.Desktop
         {
             Settings.LoadSettings();
             Context.CheckUnar();
+            if(Core.Settings.Current.UseAntivirus)
+            {
+                if(Core.Settings.Current.UseClamd)
+                    Workers.InitClamd();
+            }
             Context.usableDotNetZip = !Platform.Detect.IsMac && !Platform.Detect.IsIos;
             
             new Application(Platform.Detect).Run(new frmMain());

@@ -44,6 +44,8 @@ namespace osrepodbmgr
         Thread thdSaveAs;
         Thread thdPopulateFiles;
         bool populatingFiles;
+        Thread thdScanFile;
+        TreeIter outIter;
 
         public frmMain() :
                 base(WindowType.Toplevel)
@@ -652,6 +654,93 @@ namespace osrepodbmgr
 
         protected void OnBtnScanWithClamdClicked(object sender, EventArgs e)
         {
+            if(treeFiles.Selection.GetSelected(out outIter))
+            {
+                DBFile file = Workers.GetDBFile((string)fileView.GetValue(outIter, 0));
+
+                if(file == null)
+                {
+                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                                 "Cannot get file from database");
+                    dlgMsg.Run();
+                    dlgMsg.Destroy();
+                    return;
+                }
+
+                treeFiles.Sensitive = false;
+                btnToggleCrack.Sensitive = false;
+                btnScanWithClamd.Sensitive = false;
+                btnCheckInVirusTotal.Sensitive = false;
+                prgProgress.Visible = true;
+                Workers.Failed += ClamdFailed;
+                Workers.ScanFinished += ClamdFinished;
+
+                prgProgress.Text = "Scanning file with clamd.";
+                thdPulseProgress = new Thread(() =>
+                {
+                    while(true)
+                    {
+                        Application.Invoke(delegate
+                        {
+                            prgProgress.Pulse();
+                        });
+                        Thread.Sleep(66);
+                    }
+                });
+
+                thdScanFile = new Thread(() => Workers.ClamScanFileFromRepo(file));
+                thdScanFile.Start();
+            }
+        }
+
+        void ClamdFailed(string text)
+        {
+            Application.Invoke(delegate
+            {
+                treeFiles.Sensitive = true;
+                btnToggleCrack.Sensitive = true;
+                btnScanWithClamd.Sensitive = true;
+                btnCheckInVirusTotal.Sensitive = true;
+                prgProgress.Visible = false;
+                Workers.Failed -= ClamdFailed;
+                Workers.ScanFinished -= ClamdFinished;
+                prgProgress.Text = "";
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdScanFile != null)
+                {
+                    thdScanFile.Abort();
+                    thdScanFile = null;
+                }
+            });
+        }
+
+        void ClamdFinished(DBFile file)
+        {
+            Application.Invoke(delegate
+            {
+                treeFiles.Sensitive = true;
+                btnToggleCrack.Sensitive = true;
+                btnScanWithClamd.Sensitive = true;
+                btnCheckInVirusTotal.Sensitive = true;
+                Workers.Failed -= ClamdFailed;
+                Workers.ScanFinished -= ClamdFinished;
+                prgProgress.Text = "";
+                prgProgress.Visible = false;
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdScanFile != null)
+                    thdScanFile = null;
+
+                fileView.Remove(ref outIter);
+                AddFile(file);
+            });
         }
 
         protected void OnBtnCheckInVirusTotalClicked(object sender, EventArgs e)
@@ -661,7 +750,6 @@ namespace osrepodbmgr
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
             // TODO: Implement
-            btnScanWithClamd.Sensitive = false;
             btnCheckInVirusTotal.Sensitive = false;
 
             notebook1.GetNthPage(0).Sensitive = false;

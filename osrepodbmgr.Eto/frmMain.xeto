@@ -32,7 +32,7 @@
 		<TabPage Text="Files" ID="tabFiles">
 			<StackLayout Orientation="Vertical">
 				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
-					<GridView ID="treeFiles" Enabled="False"  SelectionChanged="treeFilesSelectionChanged"/>
+					<GridView ID="treeFiles" Enabled="False" SelectionChanged="treeFilesSelectionChanged" />
 				</StackLayoutItem>
 				<StackLayoutItem HorizontalAlignment="Stretch">
 					<Label ID="lblProgressFiles1" Visible="False">lblProgress</Label>

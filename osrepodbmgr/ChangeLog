@@ -1,5 +1,14 @@
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.cs:
+	* Program.cs:
+	* dlgSettings.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.dlgSettings.cs:
+	  Added support for clamd scanning.
+
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.cs:
 	* frmMain.cs:
 	* gtk-gui/dlgAdd.cs:

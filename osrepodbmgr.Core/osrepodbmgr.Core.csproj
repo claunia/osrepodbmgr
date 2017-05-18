@@ -44,6 +44,9 @@
     <Reference Include="SharpCompress">
       <HintPath>..\packages\SharpCompress.0.15.2\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
+    <Reference Include="nClam">
+      <HintPath>..\packages\nClam.3.0.0\lib\net45\nClam.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="Workers\Compression.cs" />
     <Compile Include="Workers\Miscellaneous.cs" />
     <Compile Include="Workers\DiscImageChef.cs" />
+    <Compile Include="Workers\Clamd.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

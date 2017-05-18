@@ -40,6 +40,11 @@ namespace osrepodbmgr.Core
         public string RepositoryPath;
         public string UnArchiverPath;
         public AlgoEnum CompressionAlgorithm;
+        public bool UseAntivirus;
+        public bool UseClamd;
+        public string ClamdHost;
+        public ushort ClamdPort;
+        public bool ClamdIsLocal;
     }
 
     public static class Settings
@@ -112,6 +117,41 @@ namespace osrepodbmgr.Core
                                 else
                                     Current.CompressionAlgorithm = AlgoEnum.GZip;
 
+                                if(parsedPreferences.TryGetValue("UseAntivirus", out obj))
+                                {
+                                    Current.UseAntivirus = ((NSNumber)obj).ToBool();
+                                }
+                                else
+                                    Current.UseAntivirus = false;
+
+                                if(parsedPreferences.TryGetValue("UseClamd", out obj))
+                                {
+                                    Current.UseClamd = ((NSNumber)obj).ToBool();
+                                }
+                                else
+                                    Current.UseClamd = false;
+
+                                if(parsedPreferences.TryGetValue("ClamdHost", out obj))
+                                {
+                                    Current.ClamdHost = ((NSString)obj).ToString();
+                                }
+                                else
+                                    Current.ClamdHost = null;
+
+                                if(parsedPreferences.TryGetValue("ClamdPort", out obj))
+                                {
+                                    Current.ClamdPort = (ushort)((NSNumber)obj).ToLong();
+                                }
+                                else
+                                    Current.ClamdPort = 3310;
+
+                                if(parsedPreferences.TryGetValue("ClamdIsLocal", out obj))
+                                {
+                                    Current.ClamdIsLocal = ((NSNumber)obj).ToBool();
+                                }
+                                else
+                                    Current.ClamdIsLocal = false;
+
                                 prefsFs.Close();
                             }
                             else {
@@ -150,6 +190,11 @@ namespace osrepodbmgr.Core
                             Current.UnArchiverPath = (string)key.GetValue("UnArchiverPath");
                             if(!Enum.TryParse((string)key.GetValue("CompressionAlgorithm"), true, out Current.CompressionAlgorithm))
                                 Current.CompressionAlgorithm = AlgoEnum.GZip;
+                            Current.UseAntivirus = (bool)key.GetValue("UseAntivirus");
+                            Current.UseClamd = (bool)key.GetValue("UseClamd");
+                            Current.ClamdHost = (string)key.GetValue("ClamdHost");
+                            Current.ClamdPort = (ushort)key.GetValue("ClamdPort");
+                            Current.ClamdIsLocal = (bool)key.GetValue("ClamdIsLocal");
                         }
                         break;
                     default:
@@ -201,6 +246,11 @@ namespace osrepodbmgr.Core
                             root.Add("RepositoryPath", Current.RepositoryPath);
                             root.Add("UnArchiverPath", Current.UnArchiverPath);
                             root.Add("CompressionAlgorithm", Current.CompressionAlgorithm.ToString());
+                            root.Add("UseAntivirus", Current.UseAntivirus);
+                            root.Add("UseClamd", Current.UseClamd);
+                            root.Add("ClamdHost", Current.ClamdHost);
+                            root.Add("ClamdPort", Current.ClamdPort);
+                            root.Add("ClamdIsLocal", Current.ClamdIsLocal);
 
                             string preferencesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Preferences");
                             string preferencesFilePath = Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
@@ -225,6 +275,11 @@ namespace osrepodbmgr.Core
                             if (Current.UnArchiverPath != null)
                                 key.SetValue("UnArchiverPath", Current.UnArchiverPath);
                             key.SetValue("CompressionAlgorithm", Current.CompressionAlgorithm);
+                            key.SetValue("UseAntivirus", Current.UseAntivirus);
+                            key.SetValue("UseClamd", Current.UseClamd);
+                            key.SetValue("ClamdHost", Current.ClamdHost);
+                            key.SetValue("ClamdPort", Current.ClamdPort);
+                            key.SetValue("ClamdIsLocal", Current.ClamdIsLocal);
                         }
                         break;
                     default:
@@ -260,6 +315,11 @@ namespace osrepodbmgr.Core
             Current.RepositoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepo");
             Current.UnArchiverPath = null;
             Current.CompressionAlgorithm = AlgoEnum.GZip;
+            Current.UseAntivirus = false;
+            Current.UseClamd = false;
+            Current.ClamdHost = null;
+            Current.ClamdPort = 3310;
+            Current.ClamdIsLocal = false;
         }
     }
 }

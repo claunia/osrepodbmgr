@@ -1,5 +1,10 @@
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
+	* Program.cs:
+	  Added support for clamd scanning.
+
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
 	* osrepodbmgr.Eto.XamMac2.csproj:
 	  Added missing project files.
 

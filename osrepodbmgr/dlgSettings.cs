@@ -71,6 +71,17 @@ namespace osrepodbmgr
                 }
             }
             while(cmbCompAlg.Model.IterNext(ref iter));
+
+            spClamdPort.Value = 3310;
+            chkAntivirus.Active = Core.Settings.Current.UseAntivirus;
+            frmClamd.Visible = chkAntivirus.Active;
+            if(Core.Settings.Current.UseAntivirus && Core.Settings.Current.UseClamd)
+            {
+                chkClamd.Active = Core.Settings.Current.UseClamd;
+                txtClamdHost.Text = Core.Settings.Current.ClamdHost;
+                spClamdPort.Value = Core.Settings.Current.ClamdPort;
+                chkClamdIsLocal.Active = Core.Settings.Current.ClamdIsLocal;
+            }
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -80,15 +91,41 @@ namespace osrepodbmgr
 
         protected void OnBtnApplyClicked(object sender, EventArgs e)
         {
+            if(chkAntivirus.Active && chkClamd.Active)
+            {
+                if(string.IsNullOrEmpty(txtClamdHost.Text))
+                {
+                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "clamd host cannot be empty");
+                    dlgMsg.Run();
+                    dlgMsg.Destroy();
+                    return;
+                }
+
+            }
+
             // TODO: Check sanity
             Core.Settings.Current.TemporaryFolder = txtTmp.Text;
             Core.Settings.Current.UnArchiverPath = txtUnar.Text;
             Core.Settings.Current.DatabasePath = txtDatabase.Text;
             Core.Settings.Current.RepositoryPath = txtRepository.Text;
+            Core.Settings.Current.UseAntivirus = chkAntivirus.Active;
+            Core.Settings.Current.UseClamd = chkClamd.Active;
+            Core.Settings.Current.ClamdHost = txtClamdHost.Text;
+            Core.Settings.Current.ClamdPort = (ushort)spClamdPort.Value;
+            Core.Settings.Current.ClamdIsLocal = chkClamdIsLocal.Active;
             Core.Settings.Current.CompressionAlgorithm = (AlgoEnum)Enum.Parse(typeof(AlgoEnum), cmbCompAlg.ActiveText);
+            if(!chkClamd.Active || !chkAntivirus.Active)
+            {
+                Core.Settings.Current.UseClamd = false;
+                Core.Settings.Current.ClamdHost = null;
+                Core.Settings.Current.ClamdPort = 3310;
+                Core.Settings.Current.ClamdIsLocal = false;
+            }
             Core.Settings.SaveSettings();
             Core.Workers.CloseDB();
             Core.Workers.InitDB();
+            Context.clamdVersion = null;
+            Core.Workers.InitClamd();
             Context.CheckUnar();
             btnDialog.Click();
         }
@@ -244,6 +281,58 @@ namespace osrepodbmgr
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             });
+        }
+
+        protected void OnChkAntivirusToggled(object sender, EventArgs e)
+        {
+            frmClamd.Visible = chkAntivirus.Active;
+        }
+
+        protected void OnChkClamdToggled(object sender, EventArgs e)
+        {
+            txtClamdHost.Sensitive = chkClamd.Active;
+            spClamdPort.Sensitive = chkClamd.Active;
+            btnClamdTest.Sensitive = chkClamd.Active;
+            lblClamdVersion.Visible = false;
+            chkClamdIsLocal.Sensitive = chkClamd.Active;
+        }
+
+        protected void OnBtnClamdTestClicked(object sender, EventArgs e)
+        {
+            lblClamdVersion.Visible = false;
+
+            if(string.IsNullOrEmpty(txtClamdHost.Text))
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "clamd host cannot be empty");
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+                return;
+            }
+
+            string oldVersion = Context.clamdVersion;
+            Context.clamdVersion = null;
+
+            string oldHost = Core.Settings.Current.ClamdHost;
+            ushort oldPort = Core.Settings.Current.ClamdPort;
+            Core.Settings.Current.ClamdHost = txtClamdHost.Text;
+            Core.Settings.Current.ClamdPort = (ushort)spClamdPort.Value;
+
+            Workers.TestClamd();
+
+            Core.Settings.Current.ClamdHost = oldHost;
+            Core.Settings.Current.ClamdPort = oldPort;
+
+            if(string.IsNullOrEmpty(Context.clamdVersion))
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot connect to clamd");
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+                return;
+            }
+
+            lblClamdVersion.Text = Context.clamdVersion;
+            Context.clamdVersion = oldVersion;
+            lblClamdVersion.Visible = true;
         }
     }
 }

@@ -52,6 +52,7 @@ namespace osrepodbmgr.Core
         public static CICMMetadataType metadata;
         public static bool userExtracting;
         public static bool usableDotNetZip;
+        public static string clamdVersion;
 
         public delegate void UnarChangeStatusDelegate();
         public static event UnarChangeStatusDelegate UnarChangeStatus;
