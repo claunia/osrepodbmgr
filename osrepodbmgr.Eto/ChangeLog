@@ -1,5 +1,12 @@
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.xeto:
+	* dlgAdd.xeto.cs:
+	* frmMain.xeto.cs:
+	  
+
+2017-05-18  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgSettings.xeto.cs:
 	  If program files folder does not exist do not try to create
 	  an Uri from null.

@@ -40,6 +40,7 @@ using Schemas;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.LZMA;
+using System.Threading;
 
 namespace osrepodbmgr.Core
 {
@@ -53,16 +54,20 @@ namespace osrepodbmgr.Core
         public delegate void FailedDelegate(string text);
         public delegate void FinishedWithoutErrorDelegate();
         public delegate void FinishedWithTextDelegate(string text);
-        public delegate void AddFileDelegate(string filename, string hash, bool known);
+        public delegate void AddFileForOSDelegate(string filename, string hash, bool known);
         public delegate void AddOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
+        public delegate void AddFileDelegate(DBFile file);
+public delegate void AddFilesDelegate(List<DBFile> file);
 
         public static event UpdateProgressDelegate UpdateProgress;
         public static event UpdateProgress2Delegate UpdateProgress2;
         public static event FailedDelegate Failed;
         public static event FinishedWithoutErrorDelegate Finished;
         public static event FinishedWithTextDelegate FinishedWithText;
-        public static event AddFileDelegate AddFile;
+        public static event AddFileForOSDelegate AddFileForOS;
         public static event AddOSDelegate AddOS;
+public static event AddFileDelegate AddFile;
+public static event AddFilesDelegate AddFiles;
 
         static DBCore dbCore;
 
@@ -537,8 +542,8 @@ namespace osrepodbmgr.Core
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Checking files in database", counter, Context.hashes.Count);
 
-                    if(AddFile != null)
-                        AddFile(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
+                    if(AddFileForOS != null)
+                        AddFileForOS(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256));
 
                     counter++;
                 }
@@ -619,11 +624,17 @@ namespace osrepodbmgr.Core
                         UpdateProgress(null, "Adding files to database", counter, Context.hashes.Count);
 
                     if(!dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
-                        dbCore.DBOps.AddFile(new DBFile
+                    {
+                        DBFile file = new DBFile
                         {
                             Sha256 = kvp.Value.Sha256, ClamTime = null, Crack = false,
-                            Length = kvp.Value.Length, Virus = null, VirusScanned = null, VirusTotalTime = null
-                        });
+                            Length = kvp.Value.Length, Virus = null, HasVirus = null, VirusTotalTime = null
+                        };
+                        dbCore.DBOps.AddFile(file);
+
+                        if(AddFile != null)
+                            AddFile(file);
+                    }
 
                     counter++;
                 }
@@ -1235,12 +1246,18 @@ namespace osrepodbmgr.Core
                         zipCounter = 0;
                         zipCurrentEntryName = "";
                         zf.ExtractAll(tmpFolder);
-                    }
-                    catch
-                    {
-                        if(Failed != null)
-                            Failed("Failed extraction");
                         return;
+                    }
+                    catch(ThreadAbortException)
+                    {
+                        return;
+                    }
+                    catch(Exception ex)
+                    {
+                        if(Debugger.IsAttached)
+                            throw;
+                        if(Failed != null)
+                            Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
                     }
                 }
                 else
@@ -1786,6 +1803,43 @@ namespace osrepodbmgr.Core
 
             if(e.EventType == ZipProgressEventType.Saving_Completed && Finished != null)
                 Finished();
+        }
+
+        public static void GetFilesFromDb()
+        {
+            try
+            {
+                ulong count = dbCore.DBOps.GetFilesCount();
+                const ulong page = 2500;
+                ulong offset = 0;
+
+                List<DBFile> files;
+
+                while(dbCore.DBOps.GetFiles(out files, offset, page))
+                {
+                    if(files.Count == 0)
+                        break;
+
+                    if(UpdateProgress != null)
+                            UpdateProgress(null, string.Format("Loaded file {0} of {1}", offset, count), (long)offset, (long)count);
+
+                        if(AddFiles != null)
+
+							AddFiles(files);
+
+                    offset += page;
+                }
+
+                if(Finished != null)
+                    Finished();
+            }
+            catch(Exception ex)
+            {
+                if(Debugger.IsAttached)
+                    throw;
+                if(Failed != null)
+					Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+            }
         }
     }
 }

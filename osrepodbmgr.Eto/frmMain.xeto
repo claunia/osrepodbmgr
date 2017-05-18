@@ -1,34 +1,63 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Form xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="365" Width="612">
-	<StackLayout Orientation="Vertical">
-		<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
-			<GroupBox Text="Operating systems">
-				<GridView ID="treeOSes" Enabled="False">
-				</GridView>
-			</GroupBox>
-		</StackLayoutItem>
-		<StackLayoutItem HorizontalAlignment="Stretch">
-			<Label ID="lblProgress">lblProgress</Label>
-		</StackLayoutItem>
-		<StackLayoutItem HorizontalAlignment="Stretch">
-			<ProgressBar ID="prgProgress" />
-		</StackLayoutItem>
-		<StackLayoutItem HorizontalAlignment="Stretch">
-			<Label ID="lblProgress2" Visible="False">lblProgress2</Label>
-		</StackLayoutItem>
-		<StackLayoutItem HorizontalAlignment="Stretch">
-			<ProgressBar ID="prgProgress2" Visible="False" />
-		</StackLayoutItem>
-		<StackLayoutItem HorizontalAlignment="Center">
-			<StackLayout Orientation="Horizontal">
-				<Button x:Name="btnAdd" Click="OnBtnAddClicked" Visible="False">Add</Button>
-				<Button x:Name="btnRemove" Click="OnBtnRemoveClicked" Visible="False">Remove</Button>
-				<Button x:Name="btnStop" Click="OnBtnStopClicked" Visible="False">Stop</Button>
-				<Button x:Name="btnCompress" Click="OnBtnCompressClicked" Visible="False">Compress to</Button>
-				<Button x:Name="btnSave" Click="OnBtnSaveClicked" Visible="False">Save As</Button>
+	<TabControl>
+		<TabPage Text="Operating systems" ID="tabOSes">
+			<StackLayout Orientation="Vertical">
+				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
+					<GridView ID="treeOSes" Enabled="False" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<Label ID="lblProgress">lblProgress</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<ProgressBar ID="prgProgress" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<Label ID="lblProgress2" Visible="False">lblProgress2</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<ProgressBar ID="prgProgress2" Visible="False" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Center">
+					<StackLayout Orientation="Horizontal">
+						<Button x:Name="btnAdd" Click="OnBtnAddClicked" Visible="False">Add</Button>
+						<Button x:Name="btnRemove" Click="OnBtnRemoveClicked" Visible="False">Remove</Button>
+						<Button x:Name="btnStop" Click="OnBtnStopClicked" Visible="False">Stop</Button>
+						<Button x:Name="btnCompress" Click="OnBtnCompressClicked" Visible="False">Compress to</Button>
+						<Button x:Name="btnSave" Click="OnBtnSaveClicked" Visible="False">Save As</Button>
+					</StackLayout>
+				</StackLayoutItem>
 			</StackLayout>
-		</StackLayoutItem>
-	</StackLayout>
+		</TabPage>
+		<TabPage Text="Files" ID="tabFiles">
+			<StackLayout Orientation="Vertical">
+				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
+					<GridView ID="treeFiles" Enabled="False" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<Label ID="lblProgressFiles1" Visible="False">lblProgress</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<ProgressBar ID="prgProgressFiles1" Visible="False" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<Label ID="lblProgressFiles2" Visible="False">lblProgress2</Label>
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Stretch">
+					<ProgressBar ID="prgProgressFiles2" Visible="False" />
+				</StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Center">
+					<StackLayout Orientation="Horizontal">
+						<Button x:Name="btnStopFiles" Click="OnBtnStopFilesClicked" Visible="False">Stop</Button>
+						<Button x:Name="btnMarkAsCrack" Click="OnBtnMarkAsCrackClicked" Visible="False">Mark as crack</Button>
+						<Button x:Name="btnScanWithClamd" Click="OnBtnScanWithClamdClicked" Visible="False">Scan with clamd</Button>
+						<Button x:Name="btnCheckInVirusTotal" Click="OnBtnCheckInVirusTotalClicked" Visible="False">Check with VirusTotal</Button>
+						<Button x:Name="btnPopulateFiles" Click="OnBtnPopulateFilesClicked">Populate</Button>
+					</StackLayout>
+				</StackLayoutItem>
+			</StackLayout>
+		</TabPage>
+	</TabControl>
 	<Form.Menu>
 		<MenuBar>
 			<ButtonMenuItem Text="&amp;File" ID="mnuFile">

@@ -26,6 +26,7 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using Eto.Drawing;
@@ -40,6 +41,8 @@ namespace osrepodbmgr.Eto
         Thread thdPopulateOSes;
         Thread thdCompressTo;
         Thread thdSaveAs;
+        Thread thdPopulateFiles;
+        bool populatingFiles;
 
         #region XAML UI elements
 #pragma warning disable 0649
@@ -56,10 +59,22 @@ namespace osrepodbmgr.Eto
         ButtonMenuItem btnSettings;
         ButtonMenuItem btnHelp;
         ButtonMenuItem mnuCompress;
+        GridView treeFiles;
+        Label lblProgressFiles1;
+        ProgressBar prgProgressFiles1;
+        Label lblProgressFiles2;
+        ProgressBar prgProgressFiles2;
+        Button btnStopFiles;
+        Button btnMarkAsCrack;
+        Button btnScanWithClamd;
+        Button btnCheckInVirusTotal;
+        Button btnPopulateFiles;
+        TabPage tabOSes;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
         ObservableCollection<DBEntryForEto> lstOSes;
+        ObservableCollection<DBFile> lstFiles;
 
         public frmMain()
         {
@@ -142,6 +157,58 @@ namespace osrepodbmgr.Eto
             });
 
             treeOSes.AllowMultipleSelection = false;
+
+            lstFiles = new ObservableCollection<DBFile>();
+
+            treeFiles.DataStore = lstFiles;
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new TextBoxCell { Binding = Binding.Property<DBFile, string>(r => r.Sha256) },
+                HeaderText = "SHA256"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new TextBoxCell { Binding = Binding.Property<DBFile, long>(r => r.Length).Convert(s => s.ToString()) },
+                HeaderText = "Length"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new CheckBoxCell { Binding = Binding.Property<DBFile, bool?>(r => r.Crack) },
+                HeaderText = "Crack?"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new CheckBoxCell { Binding = Binding.Property<DBFile, bool?>(r => r.HasVirus) },
+                HeaderText = "Scanned for virus?"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new TextBoxCell { Binding = Binding.Property<DBFile, DateTime?>(r => r.ClamTime).Convert(s => s == null ? "Never" : s.Value.ToString()) },
+                HeaderText = "Last scanned with clamd"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new TextBoxCell { Binding = Binding.Property<DBFile, DateTime?>(r => r.VirusTotalTime).Convert(s => s == null ? "Never" : s.Value.ToString()) },
+                HeaderText = "Last checked on VirusTotal"
+            });
+            treeFiles.Columns.Add(new GridColumn
+            {
+                DataCell = new TextBoxCell { Binding = Binding.Property<DBFile, string>(r => r.Virus).Convert(s => s ?? "None") },
+                HeaderText = "Virus"
+            });
+
+            treeFiles.AllowMultipleSelection = false;
+            treeFiles.CellFormatting += (sender, e) =>
+            {
+                if(((DBFile)e.Item).HasVirus.HasValue)
+                {
+                    e.BackgroundColor = ((DBFile)e.Item).HasVirus.Value ? Colors.Red : Colors.Green;
+                }
+                else
+                    e.BackgroundColor = Colors.Yellow;
+
+                e.ForegroundColor = Colors.Black;
+            };
 
             prgProgress.Indeterminate = true;
 
@@ -528,6 +595,158 @@ namespace osrepodbmgr.Eto
                 MessageBox.Show(string.Format("Correctly compressed as {0}", Context.path));
 
                 Context.path = null;
+            });
+        }
+
+        protected void OnBtnStopFilesClicked(object sender, EventArgs e)
+        {
+            if(populatingFiles)
+            {
+                Workers.Failed -= LoadFilesFailed;
+                Workers.Finished -= LoadFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                Workers.AddFile -= AddFile;
+                Workers.AddFiles -= AddFiles;
+
+                if(thdPopulateFiles != null)
+                {
+                    thdPopulateFiles.Abort();
+                    thdPopulateFiles = null;
+                }
+
+                lstFiles.Clear();
+                btnStopFiles.Visible = false;
+                btnPopulateFiles.Visible = true;
+            }
+        }
+
+        protected void OnBtnMarkAsCrackClicked(object sender, EventArgs e)
+        {
+        }
+
+        protected void OnBtnScanWithClamdClicked(object sender, EventArgs e)
+        {
+        }
+
+        protected void OnBtnCheckInVirusTotalClicked(object sender, EventArgs e)
+        {
+        }
+
+        protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
+        {
+            // TODO: Implement
+            btnMarkAsCrack.Enabled = false;
+            btnScanWithClamd.Enabled = false;
+            btnCheckInVirusTotal.Enabled = false;
+
+            tabOSes.Enabled = false;
+            btnStopFiles.Visible = true;
+            btnPopulateFiles.Visible = false;
+
+            lblProgressFiles1.Text = "Loading files from database";
+            lblProgressFiles1.Visible = true;
+            lblProgressFiles2.Visible = true;
+            prgProgressFiles1.Visible = true;
+            prgProgressFiles2.Visible = true;
+            prgProgressFiles1.Indeterminate = true;
+            Workers.Failed += LoadFilesFailed;
+            Workers.Finished += LoadFilesFinished;
+            Workers.UpdateProgress += UpdateFileProgress;
+            Workers.AddFile += AddFile;
+            Workers.AddFiles += AddFiles;
+            populatingFiles = true;
+            thdPopulateFiles = new Thread(Workers.GetFilesFromDb);
+            thdPopulateFiles.Start();
+        }
+
+        public void UpdateFileProgress(string text, string inner, long current, long maximum)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                if(!string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(inner))
+                    lblProgressFiles2.Text = string.Format("{0}: {1}", text, inner);
+                else if(!string.IsNullOrWhiteSpace(inner))
+                    lblProgressFiles2.Text = inner;
+                else
+                    lblProgressFiles2.Text = text;
+                if(maximum > 0)
+                {
+                    prgProgressFiles2.Indeterminate = false;
+                    prgProgressFiles2.MinValue = 0;
+                    prgProgressFiles2.MaxValue = (int)maximum;
+                    prgProgressFiles2.Value = (int)current;
+                }
+                else
+                    prgProgressFiles2.Indeterminate = true;
+            });
+        }
+
+        void AddFile(Core.DBFile file)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                lstFiles.Add(file);
+            });
+        }
+
+        void AddFiles(List<DBFile> files)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                List<DBFile> foo = new List<DBFile>();
+                foo.AddRange(lstFiles);
+                foo.AddRange(files);
+                lstFiles = new ObservableCollection<DBFile>(foo);
+            });
+        }
+
+
+        void LoadFilesFailed(string text)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                MessageBox.Show(string.Format("Error {0} when populating files, exiting...", text), MessageBoxType.Error);
+                Workers.Failed -= LoadFilesFailed;
+                Workers.Finished -= LoadFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                if(thdPopulateFiles != null)
+                {
+                    thdPopulateFiles.Abort();
+                    thdPopulateFiles = null;
+                }
+                tabOSes.Enabled = true;
+                lstFiles.Clear();
+                btnStopFiles.Visible = false;
+                btnPopulateFiles.Visible = true;
+                populatingFiles = false;
+            });
+        }
+
+        void LoadFilesFinished()
+        {
+            Application.Instance.Invoke(delegate
+            {
+                Workers.Failed -= LoadFilesFailed;
+                Workers.Finished -= LoadFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                if(thdPopulateFiles != null)
+                {
+                    thdPopulateFiles.Abort();
+                    thdPopulateFiles = null;
+                }
+                treeFiles.DataStore = lstFiles;
+                lblProgressFiles1.Visible = false;
+                lblProgressFiles2.Visible = false;
+                prgProgressFiles1.Visible = false;
+                prgProgressFiles2.Visible = false;
+                btnMarkAsCrack.Visible = true;
+                btnScanWithClamd.Visible = true;
+                btnCheckInVirusTotal.Visible = true;
+                btnStopFiles.Visible = false;
+                btnPopulateFiles.Visible = false;
+                populatingFiles = false;
+                treeFiles.Enabled = true;
+                tabOSes.Enabled = true;
             });
         }
     }

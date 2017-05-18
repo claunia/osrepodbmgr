@@ -329,6 +329,7 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 thdHashFiles = null;
 
+                lblProgress.Visible = false;
                 prgProgress.Visible = true;
 
                 thdCheckFiles = new Thread(Workers.CheckDbForFiles);
@@ -336,7 +337,7 @@ namespace osrepodbmgr.Eto
                 Workers.Finished += ChkFilesFinished;
                 Workers.UpdateProgress += UpdateProgress;
                 Workers.UpdateProgress2 += UpdateProgress2;
-                Workers.AddFile += AddFile;
+                Workers.AddFileForOS += AddFile;
                 Workers.AddOS += AddOS;
                 thdCheckFiles.Start();
             });
@@ -356,7 +357,7 @@ namespace osrepodbmgr.Eto
                 Workers.Finished -= ChkFilesFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
-                Workers.AddFile -= AddFile;
+                Workers.AddFileForOS -= AddFile;
                 Workers.AddOS -= AddOS;
                 if(thdCheckFiles != null)
                     thdCheckFiles.Abort();
@@ -379,7 +380,7 @@ namespace osrepodbmgr.Eto
                 Workers.Finished -= ChkFilesFinished;
                 Workers.UpdateProgress -= UpdateProgress;
                 Workers.UpdateProgress2 -= UpdateProgress2;
-                Workers.AddFile -= AddFile;
+                Workers.AddFileForOS -= AddFile;
                 Workers.AddOS -= AddOS;
 
                 if(thdCheckFiles != null)
@@ -602,7 +603,7 @@ namespace osrepodbmgr.Eto
         {
             stopped = true;
 
-            Workers.AddFile -= AddFile;
+            Workers.AddFileForOS -= AddFile;
             Workers.AddOS -= AddOS;
             Workers.Failed -= AddFilesToDbFailed;
             Workers.Failed -= ChkFilesFailed;

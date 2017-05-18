@@ -26,6 +26,7 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Gtk;
@@ -36,10 +37,13 @@ namespace osrepodbmgr
     public partial class frmMain : Window
     {
         ListStore osView;
+        ListStore fileView;
         Thread thdPulseProgress;
         Thread thdPopulateOSes;
         Thread thdCompressTo;
         Thread thdSaveAs;
+        Thread thdPopulateFiles;
+        bool populatingFiles;
 
         public frmMain() :
                 base(WindowType.Toplevel)
@@ -103,6 +107,36 @@ namespace osrepodbmgr
 
             treeOSes.Selection.Mode = SelectionMode.Single;
 
+            CellRendererText hashCell = new CellRendererText();
+            CellRendererText lengthCell = new CellRendererText();
+            CellRendererToggle crackCell = new CellRendererToggle();
+            CellRendererToggle virscanCell = new CellRendererToggle();
+            CellRendererText clamtimeCell = new CellRendererText();
+            CellRendererText vtottimeCell = new CellRendererText();
+            CellRendererText virusCell = new CellRendererText();
+
+            TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 0, "background", 7, "foreground", 8);
+            TreeViewColumn lengthColumn = new TreeViewColumn("Length", lengthCell, "text", 1, "background", 7, "foreground", 8);
+            TreeViewColumn crackColumn = new TreeViewColumn("Crack?", crackCell, "active", 2);
+            TreeViewColumn virscanColumn = new TreeViewColumn("Scanned for virus?", virscanCell, "active", 3, "inconsistent", 9);
+            TreeViewColumn clamtimeColumn = new TreeViewColumn("Last scanned with clamd", clamtimeCell, "text", 4, "background", 7, "foreground", 8);
+            TreeViewColumn vtottimeColumn = new TreeViewColumn("Last checked on VirusTotal", vtottimeCell, "text", 5, "background", 7, "foreground", 8);
+            TreeViewColumn virusColumn = new TreeViewColumn("Virus", virusCell, "text", 6, "background", 7, "foreground", 8);
+
+            fileView = new ListStore(typeof(string), typeof(long), typeof(bool), typeof(bool), typeof(string), typeof(string),
+                                     typeof(string), typeof(string), typeof(string), typeof(bool), typeof(bool));
+
+            treeFiles.Model = fileView;
+            treeFiles.AppendColumn(hashColumn);
+            treeFiles.AppendColumn(lengthColumn);
+            treeFiles.AppendColumn(crackColumn);
+            treeFiles.AppendColumn(virscanColumn);
+            treeFiles.AppendColumn(clamtimeColumn);
+            treeFiles.AppendColumn(vtottimeColumn);
+            treeFiles.AppendColumn(virusColumn);
+
+            treeFiles.Selection.Mode = SelectionMode.Multiple;
+
             thdPulseProgress = new Thread(() =>
             {
                 while(true)
@@ -127,7 +161,7 @@ namespace osrepodbmgr
             Application.Invoke(delegate
             {
                 MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
-                                                         string.Format("Error {0} when populating OSes file, exiting...", text));
+                                                         string.Format("Error {0} when populating OSes tree, exiting...", text));
                 dlgMsg.Run();
                 dlgMsg.Destroy();
                 Workers.Failed -= LoadOSesFailed;
@@ -564,6 +598,211 @@ namespace osrepodbmgr
                 dlgMsg.Destroy();
 
                 Context.path = null;
+            });
+        }
+
+        protected void OnBtnStopFilesClicked(object sender, EventArgs e)
+        {
+            if(populatingFiles)
+            {
+                Workers.Failed -= LoadFilesFailed;
+                Workers.Finished -= LoadFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                Workers.AddFile -= AddFile;
+
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdPopulateFiles != null)
+                {
+                    thdPopulateFiles.Abort();
+                    thdPopulateFiles = null;
+                }
+
+                fileView.Clear();
+                btnStopFiles.Visible = false;
+                btnPopulateFiles.Visible = true;
+            }
+        }
+
+        protected void OnBtnMarkAsCrackClicked(object sender, EventArgs e)
+        {
+        }
+
+        protected void OnBtnScanWithClamdClicked(object sender, EventArgs e)
+        {
+        }
+
+        protected void OnBtnCheckInVirusTotalClicked(object sender, EventArgs e)
+        {
+        }
+
+        protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
+        {
+            // TODO: Implement
+            btnMarkAsCrack.Sensitive = false;
+            btnScanWithClamd.Sensitive = false;
+            btnCheckInVirusTotal.Sensitive = false;
+
+            notebook1.GetNthPage(0).Sensitive = false;
+            btnStopFiles.Visible = true;
+            btnPopulateFiles.Visible = false;
+
+            thdPulseProgress = new Thread(() =>
+            {
+                while(true)
+                {
+                    Application.Invoke(delegate
+                    {
+                        prgProgressFiles1.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
+            });
+            lblProgressFiles1.Text = "Loading files from database";
+            lblProgressFiles1.Visible = true;
+            lblProgressFiles2.Visible = true;
+            prgProgressFiles1.Visible = true;
+            prgProgressFiles2.Visible = true;
+            Workers.Failed += LoadFilesFailed;
+            Workers.Finished += LoadFilesFinished;
+            Workers.UpdateProgress += UpdateFileProgress;
+            Workers.AddFile += AddFile;
+            Workers.AddFiles += AddFiles;
+            populatingFiles = true;
+            thdPulseProgress.Start();
+            thdPopulateFiles = new Thread(Workers.GetFilesFromDb);
+            thdPopulateFiles.Start();
+        }
+
+        public void UpdateFileProgress(string text, string inner, long current, long maximum)
+        {
+            Application.Invoke(delegate
+            {
+                lblProgressFiles2.Text = text;
+                prgProgressFiles2.Text = inner;
+                if(maximum > 0)
+                    prgProgressFiles2.Fraction = current / (double)maximum;
+                else
+                    prgProgressFiles2.Pulse();
+            });
+        }
+
+        void AddFile(DBFile file)
+        {
+            Application.Invoke(delegate
+            {
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+
+                string color;
+
+                if(file.HasVirus.HasValue)
+                {
+                    color = file.HasVirus.Value ? "red" : "green";
+                }
+                else
+                    color = "yellow";
+
+                fileView.AppendValues(file.Sha256, file.Length, file.Crack, file.HasVirus.HasValue ? file.HasVirus.Value : false,
+                                      file.ClamTime == null ? "Never" : file.ClamTime.Value.ToString(),
+                                      file.VirusTotalTime == null ? "Never" : file.VirusTotalTime.Value.ToString(),
+                                      file.Virus, color, "black", !file.HasVirus.HasValue);
+            });
+        }
+
+        void AddFiles(List<DBFile> files)
+        {
+            Application.Invoke(delegate
+            {
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+
+                foreach(DBFile file in files)
+                {
+                    string color;
+
+                    if(file.HasVirus.HasValue)
+                    {
+                        color = file.HasVirus.Value ? "red" : "green";
+                    }
+                    else
+                        color = "yellow";
+
+                    fileView.AppendValues(file.Sha256, file.Length, file.Crack, file.HasVirus.HasValue ? file.HasVirus.Value : false,
+                                          file.ClamTime == null ? "Never" : file.ClamTime.Value.ToString(),
+                                          file.VirusTotalTime == null ? "Never" : file.VirusTotalTime.Value.ToString(),
+                                          file.Virus, color, "black", !file.HasVirus.HasValue);
+                }
+            });
+        }
+
+        void LoadFilesFailed(string text)
+        {
+            Application.Invoke(delegate
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                             string.Format("Error {0} when populating files, exiting...", text));
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+                Workers.Failed -= LoadFilesFailed;
+                Workers.Finished -= LoadFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdPopulateFiles != null)
+                {
+                    thdPopulateFiles.Abort();
+                    thdPopulateFiles = null;
+                }
+                notebook1.GetNthPage(0).Sensitive = true;
+                fileView.Clear();
+                btnStopFiles.Visible = false;
+                btnPopulateFiles.Visible = true;
+                populatingFiles = false;
+            });
+        }
+
+        void LoadFilesFinished()
+        {
+            Application.Invoke(delegate
+            {
+                Workers.Failed -= LoadFilesFailed;
+                Workers.Finished -= LoadFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdPopulateFiles != null)
+                {
+                    thdPopulateFiles.Abort();
+                    thdPopulateFiles = null;
+                }
+                lblProgressFiles1.Visible = false;
+                lblProgressFiles2.Visible = false;
+                prgProgressFiles1.Visible = false;
+                prgProgressFiles2.Visible = false;
+                btnMarkAsCrack.Visible = true;
+                btnScanWithClamd.Visible = true;
+                btnCheckInVirusTotal.Visible = true;
+                btnStopFiles.Visible = false;
+                btnPopulateFiles.Visible = false;
+                populatingFiles = false;
+                treeFiles.Sensitive = true;
+                notebook1.GetNthPage(0).Sensitive = true;
             });
         }
     }

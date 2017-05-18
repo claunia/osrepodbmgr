@@ -289,7 +289,7 @@ public partial class dlgAdd : Dialog
             Workers.Finished += ChkFilesFinished;
             Workers.UpdateProgress += UpdateProgress;
             Workers.UpdateProgress2 += UpdateProgress2;
-            Workers.AddFile += AddFile;
+            Workers.AddFileForOS += AddFile;
             Workers.AddOS += AddOS;
             thdCheckFiles.Start();
         });
@@ -313,7 +313,7 @@ public partial class dlgAdd : Dialog
             Workers.Finished -= ChkFilesFinished;
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            Workers.AddFile -= AddFile;
+            Workers.AddFileForOS -= AddFile;
             Workers.AddOS -= AddOS;
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
@@ -338,7 +338,7 @@ public partial class dlgAdd : Dialog
             Workers.Finished -= ChkFilesFinished;
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            Workers.AddFile -= AddFile;
+            Workers.AddFileForOS -= AddFile;
             Workers.AddOS -= AddOS;
 
             if(thdCheckFiles != null)
@@ -557,7 +557,7 @@ public partial class dlgAdd : Dialog
     {
         stopped = true;
 
-        Workers.AddFile -= AddFile;
+        Workers.AddFileForOS -= AddFile;
         Workers.AddOS -= AddOS;
         Workers.Failed -= AddFilesToDbFailed;
         Workers.Failed -= ChkFilesFailed;
