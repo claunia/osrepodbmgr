@@ -42,7 +42,7 @@ namespace osrepodbmgr
                 if(Core.Settings.Current.UseClamd)
                     Workers.InitClamd();
                 if(Core.Settings.Current.UseVirusTotal)
-                   Context.virusTotalEnabled = Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
+                    Context.virusTotalEnabled = Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
             }
             Application.Init();
             frmMain win = new frmMain();

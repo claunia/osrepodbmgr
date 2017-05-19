@@ -128,7 +128,8 @@ namespace osrepodbmgr.Eto
             {
                 Core.Settings.Current.UseVirusTotal = false;
                 Core.Settings.Current.VirusTotalKey = null;
-            }            Settings.SaveSettings();
+            }
+            Settings.SaveSettings();
             Workers.CloseDB();
             Workers.InitDB();
             Context.clamdVersion = null;
@@ -143,7 +144,7 @@ namespace osrepodbmgr.Eto
             dlgFile.Title = "Choose UnArchiver executable";
             dlgFile.MultiSelect = false;
             if(!string.IsNullOrWhiteSpace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)))
-               dlgFile.Directory = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
+                dlgFile.Directory = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
 
             if(dlgFile.ShowDialog(this) == DialogResult.Ok)
             {

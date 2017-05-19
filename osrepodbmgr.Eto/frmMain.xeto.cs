@@ -1045,7 +1045,7 @@ namespace osrepodbmgr.Eto
                                                      "belong to any OS and remove it from the database.\n\n" +
                                                      "It will then search the repository for any file not on the database and remove it.\n\n" +
                                                      "THIS OPERATION MAY VERY LONG, CANNOT BE CANCELED AND REMOVES DATA ON DISK.\n\n" +
-                                                     "Are you sure to continue?", MessageBoxButtons.YesNo, MessageBoxType.Question); 
+                                                     "Are you sure to continue?", MessageBoxButtons.YesNo, MessageBoxType.Question);
             if(result == DialogResult.Yes)
             {
                 btnCleanFiles.Visible = false;

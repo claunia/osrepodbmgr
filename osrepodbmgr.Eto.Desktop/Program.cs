@@ -47,7 +47,7 @@ namespace osrepodbmgr.Eto.Desktop
                     Context.virusTotalEnabled = Workers.InitVirusTotal(Settings.Current.VirusTotalKey);
             }
             Context.usableDotNetZip = !Platform.Detect.IsMac && !Platform.Detect.IsIos;
-            
+
             new Application(Platform.Detect).Run(new frmMain());
         }
     }

@@ -472,7 +472,7 @@ namespace osrepodbmgr.Eto
                 }
                 else
                     btnMetadata.BackgroundColor = Colors.Red;
-                
+
                 lblStatus.Visible = true;
                 lblStatus.Text = string.Format("{0} files ({1} already known)", fileView.Count, knownFiles);
             });

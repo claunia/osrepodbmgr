@@ -311,7 +311,7 @@ namespace osrepodbmgr.Core
                     // Timeout...
                     if(counter == 10)
                         break;
-                    
+
                     // Wait 15 seconds so we fall in the 4 requests/minute
                     Thread.Sleep(15000);
 

@@ -100,7 +100,7 @@
 				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<TabControl>
 						<TabPage Text="Files">
-							<GridView ID="treeFiles" SelectionChanged="treeFilesSelectionChanged"/>
+							<GridView ID="treeFiles" SelectionChanged="treeFilesSelectionChanged" />
 						</TabPage>
 						<TabPage Text="OSes" ID="tabOSes" Visible="False">
 							<GridView ID="treeOSes" />
@@ -109,9 +109,9 @@
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
-        <StackLayoutItem HorizontalAlignment="Center">
-            <Label ID="lblStatus" Visible="False">lblStatus</Label>
-        </StackLayoutItem>
+		<StackLayoutItem HorizontalAlignment="Center">
+			<Label ID="lblStatus" Visible="False">lblStatus</Label>
+		</StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<Label ID="lblProgress" Visible="False">Progress</Label>
 		</StackLayoutItem>
@@ -129,9 +129,9 @@
 				<StackLayoutItem HorizontalAlignment="Left">
 					<Button ID="btnRemoveFile" Click="OnBtnRemoveFileClicked" Visible="False">Remove</Button>
 				</StackLayoutItem>
-                <StackLayoutItem HorizontalAlignment="Left">
-                    <Button ID="btnToggleCrack" Click="OnBtnToggleCrackClicked" Visible="False">Mark as crack</Button>
-                </StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Left">
+					<Button ID="btnToggleCrack" Click="OnBtnToggleCrackClicked" Visible="False">Mark as crack</Button>
+				</StackLayoutItem>
 				<StackLayoutItem HorizontalAlignment="Left">
 					<Button ID="btnMetadata" Click="OnBtnMetadataClicked" Visible="False">Metadata</Button>
 				</StackLayoutItem>

@@ -1,6 +1,13 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* frmMain.cs:
+	* Program.cs:
+	* packages.config:
+	  Refactor: Format document.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* frmMain.cs:
 	  Refactor: Sort and remove usings.
 
 2017-05-19  Natalia Portillo  <claunia@claunia.com>

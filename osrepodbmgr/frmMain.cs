@@ -635,7 +635,7 @@ namespace osrepodbmgr
                     thdScanFile = null;
                 }
             }
-                AllClamdFinished();
+            AllClamdFinished();
         }
 
         protected void OnBtnToggleCrackClicked(object sender, EventArgs e)

@@ -6,9 +6,9 @@
 				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
 					<GridView ID="treeOSes" Enabled="False" />
 				</StackLayoutItem>
-                <StackLayoutItem HorizontalAlignment="Center">
-                    <Label ID="lblOSStatus" Visible="False">lblOSStatus</Label>
-                </StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Center">
+					<Label ID="lblOSStatus" Visible="False">lblOSStatus</Label>
+				</StackLayoutItem>
 				<StackLayoutItem HorizontalAlignment="Stretch">
 					<Label ID="lblProgress">lblProgress</Label>
 				</StackLayoutItem>
@@ -37,9 +37,9 @@
 				<StackLayoutItem Expand="True" HorizontalAlignment="Stretch">
 					<GridView ID="treeFiles" Enabled="False" SelectionChanged="treeFilesSelectionChanged" />
 				</StackLayoutItem>
-                <StackLayoutItem HorizontalAlignment="Center">
-                    <Label ID="lblFileStatus" Visible="False">lblFileStatus</Label>
-                </StackLayoutItem>
+				<StackLayoutItem HorizontalAlignment="Center">
+					<Label ID="lblFileStatus" Visible="False">lblFileStatus</Label>
+				</StackLayoutItem>
 				<StackLayoutItem HorizontalAlignment="Stretch">
 					<Label ID="lblProgressFiles1" Visible="False">lblProgress</Label>
 				</StackLayoutItem>
@@ -55,10 +55,10 @@
 				<StackLayoutItem HorizontalAlignment="Center">
 					<StackLayout Orientation="Horizontal">
 						<Button x:Name="btnStopFiles" Click="OnBtnStopFilesClicked" Visible="False">Stop</Button>
-                        <Button x:Name="btnCleanFiles" Click="OnBtnCleanFilesClicked" Visible="False">Clean files</Button>
+						<Button x:Name="btnCleanFiles" Click="OnBtnCleanFilesClicked" Visible="False">Clean files</Button>
 						<Button x:Name="btnToggleCrack" Click="OnBtnToggleCrackClicked" Visible="False">Mark as crack</Button>
-                        <Button x:Name="btnScanAllPending" Click="OnBtnScanAllPendingClicked" Visible="False">Scan all with clamd</Button>
-                        <Button x:Name="btnScanWithClamd" Click="OnBtnScanWithClamdClicked" Visible="False">Scan with clamd</Button>
+						<Button x:Name="btnScanAllPending" Click="OnBtnScanAllPendingClicked" Visible="False">Scan all with clamd</Button>
+						<Button x:Name="btnScanWithClamd" Click="OnBtnScanWithClamdClicked" Visible="False">Scan with clamd</Button>
 						<Button x:Name="btnCheckInVirusTotal" Click="OnBtnCheckInVirusTotalClicked" Visible="False">Check with VirusTotal</Button>
 						<Button x:Name="btnPopulateFiles" Click="OnBtnPopulateFilesClicked">Populate</Button>
 					</StackLayout>

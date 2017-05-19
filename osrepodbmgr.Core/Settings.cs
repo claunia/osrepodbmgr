@@ -241,7 +241,7 @@ namespace osrepodbmgr.Core
                     prefsFs.Close();
                 if(prefsSr != null)
                     prefsSr.Close();
-                
+
                 SetDefaultSettings();
                 SaveSettings();
             }
@@ -292,7 +292,7 @@ namespace osrepodbmgr.Core
                             key.SetValue("TemporaryFolder", Current.TemporaryFolder);
                             key.SetValue("DatabasePath", Current.DatabasePath);
                             key.SetValue("RepositoryPath", Current.RepositoryPath);
-                            if (Current.UnArchiverPath != null)
+                            if(Current.UnArchiverPath != null)
                                 key.SetValue("UnArchiverPath", Current.UnArchiverPath);
                             key.SetValue("CompressionAlgorithm", Current.CompressionAlgorithm);
                             key.SetValue("UseAntivirus", Current.UseAntivirus);
