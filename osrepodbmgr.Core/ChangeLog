@@ -1,5 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* Workers/VirusTotal.cs:
+	  Do not upload if it is already queued. Also wait some
+	  seconds after upload.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers/Clamd.cs:
 	  
 
