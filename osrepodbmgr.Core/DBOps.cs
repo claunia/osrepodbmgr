@@ -274,7 +274,7 @@ namespace osrepodbmgr.Core
 
             param1.ParameterName = "@sha256";
             param2.ParameterName = "@crack";
-            param3.ParameterName = "@virscan";
+            param3.ParameterName = "@hasvirus";
             param4.ParameterName = "@clamtime";
             param5.ParameterName = "@vtotaltime";
             param6.ParameterName = "@virus";
@@ -318,7 +318,7 @@ namespace osrepodbmgr.Core
             IDbTransaction trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            const string sql = "UPDATE files SET crack = @crack, virscan = @virscan, clamtime = @clamtime, vtotaltime = @vtotaltime, virus = @virus, length = @length " +
+            const string sql = "UPDATE files SET crack = @crack, hasvirus = @hasvirus, clamtime = @clamtime, vtotaltime = @vtotaltime, virus = @virus, length = @length " +
                 "WHERE sha256 = @sha256";
 
             dbcmd.CommandText = sql;
@@ -336,8 +336,8 @@ namespace osrepodbmgr.Core
             IDbTransaction trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            const string sql = "INSERT INTO `files` (`sha256`, `crack`, `virscan`, `clamtime`, `vtotaltime`, `virus`, `length`)" +
-                                       " VALUES (@sha256, @crack, @virscan, @clamtime, @vtotaltime, @virus, @length)";
+            const string sql = "INSERT INTO `files` (`sha256`, `crack`, `hasvirus`, `clamtime`, `vtotaltime`, `virus`, `length`)" +
+                                       " VALUES (@sha256, @crack, @hasvirus, @clamtime, @vtotaltime, @virus, @length)";
 
             dbcmd.CommandText = sql;
 
@@ -404,10 +404,10 @@ namespace osrepodbmgr.Core
                 fEntry.Id = ulong.Parse(dRow["id"].ToString());
                 fEntry.Sha256 = dRow["sha256"].ToString();
                 fEntry.Crack = bool.Parse(dRow["crack"].ToString());
-                if(dRow["virscan"] == DBNull.Value)
+                if(dRow["hasvirus"] == DBNull.Value)
                     fEntry.HasVirus = null;
                 else
-                    fEntry.HasVirus = bool.Parse(dRow["virscan"].ToString());
+                    fEntry.HasVirus = bool.Parse(dRow["hasvirus"].ToString());
                 if(dRow["clamtime"] == DBNull.Value)
                     fEntry.ClamTime = null;
                 else
@@ -446,10 +446,10 @@ namespace osrepodbmgr.Core
                 fEntry.Id = ulong.Parse(dRow["id"].ToString());
                 fEntry.Sha256 = dRow["sha256"].ToString();
                 fEntry.Crack = bool.Parse(dRow["crack"].ToString());
-                if(dRow["virscan"] == DBNull.Value)
+                if(dRow["hasvirus"] == DBNull.Value)
                     fEntry.HasVirus = null;
                 else
-                    fEntry.HasVirus = bool.Parse(dRow["virscan"].ToString());
+                    fEntry.HasVirus = bool.Parse(dRow["hasvirus"].ToString());
                 if(dRow["clamtime"] == DBNull.Value)
                     fEntry.ClamTime = null;
                 else
@@ -471,7 +471,7 @@ namespace osrepodbmgr.Core
         {
             entries = new List<DBFile>();
 
-            const string sql = "SELECT * FROM files WHERE virscan IS NULL ORDER BY sha256";
+            const string sql = "SELECT * FROM files WHERE hasvirus IS NULL ORDER BY sha256";
 
             IDbCommand dbcmd = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
@@ -488,10 +488,10 @@ namespace osrepodbmgr.Core
                 fEntry.Id = ulong.Parse(dRow["id"].ToString());
                 fEntry.Sha256 = dRow["sha256"].ToString();
                 fEntry.Crack = bool.Parse(dRow["crack"].ToString());
-                if(dRow["virscan"] == DBNull.Value)
+                if(dRow["hasvirus"] == DBNull.Value)
                     fEntry.HasVirus = null;
                 else
-                    fEntry.HasVirus = bool.Parse(dRow["virscan"].ToString());
+                    fEntry.HasVirus = bool.Parse(dRow["hasvirus"].ToString());
                 if(dRow["clamtime"] == DBNull.Value)
                     fEntry.ClamTime = null;
                 else

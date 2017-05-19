@@ -1,5 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* DBOps.cs:
+	* Schema.cs:
+	  Change db field name
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers/Database.cs:
 	* Workers/Delegates.cs:
 	  Do not color OS tables. Has no sense to be on the opaque

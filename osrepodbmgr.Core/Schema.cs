@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -37,14 +37,14 @@ namespace osrepodbmgr.Core
             "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             "  `sha256` VARCHAR(64) NOT NULL,\n" +
             "  `crack` BOOLEAN NOT NULL,\n" +
-            "  `virscan` BOOLEAN NULL,\n" +
+            "  `hasvirus` BOOLEAN NULL,\n" +
             "  `clamtime` DATETIME NULL,\n" +
             "  `vtotaltime` DATETIME NULL,\n" +
             "  `virus` VARCHAR(128) NULL,\n" +
             "  `length` BIGINT NOT NULL);\n\n" +
             "CREATE UNIQUE INDEX `files_id_UNIQUE` ON `files` (`id` ASC);\n\n" +
             "CREATE UNIQUE INDEX `files_sha256_UNIQUE` ON `files` (`sha256` ASC);\n\n" +
-            "CREATE INDEX `files_virscan_idx` ON `files` (`virscan` ASC);\n\n" +
+            "CREATE INDEX `files_hasvirus_idx` ON `files` (`hasvirus` ASC);\n\n" +
             "CREATE INDEX `files_virus_idx` ON `files` (`virus` ASC);\n\n" +
             "CREATE INDEX `files_length_idx` ON `files` (`length` ASC);";
 
