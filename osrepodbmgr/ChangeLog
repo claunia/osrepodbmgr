@@ -1,5 +1,10 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.cs:
+	  Change column name to correspong to database.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.cs:
 	* frmMain.cs:
 	  Corrected delegate.
