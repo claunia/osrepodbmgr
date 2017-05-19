@@ -608,7 +608,7 @@ namespace osrepodbmgr
 			global::Gtk.ButtonBox.ButtonBoxChild w55 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w54[this.btnDialog]));
 			w55.Expand = false;
 			w55.Fill = false;
-			if((this.Child != null))
+			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
