@@ -147,17 +147,31 @@ namespace osrepodbmgr.Core
                         if(UpdateProgress != null)
                             UpdateProgress("Uncompressing file...", null, 0, 0);
 
+#if DEBUG
+                        stopwatch.Restart();
+#endif
                         zStream.CopyTo(outFs);
                         zStream.Close();
                         outFs.Close();
+#if DEBUG
+                        stopwatch.Stop();
+                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Uncompressing took {1} seconds", file, stopwatch.Elapsed.TotalSeconds);
+#endif
 
                         if(UpdateProgress != null)
                             UpdateProgress("Requesting local scan to clamd server...", null, 0, 0);
 
+#if DEBUG
+                        stopwatch.Restart();
+#endif
                         Task.Run(async () =>
                         {
                             result = await clam.ScanFileOnServerMultithreadedAsync(tmpFile);
                         }).Wait();
+#if DEBUG
+                        stopwatch.Stop();
+                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file, stopwatch.Elapsed.TotalSeconds);
+#endif
 
                         File.Delete(tmpFile);
                     }
@@ -166,10 +180,17 @@ namespace osrepodbmgr.Core
                         if(UpdateProgress != null)
                             UpdateProgress("Requesting local scan to clamd server...", null, 0, 0);
 
+#if DEBUG
+                        stopwatch.Restart();
+#endif
                         Task.Run(async () =>
                         {
                             result = await clam.ScanFileOnServerMultithreadedAsync(repoPath);
                         }).Wait();
+#if DEBUG
+                        stopwatch.Stop();
+                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file, stopwatch.Elapsed.TotalSeconds);
+#endif
                     }
                 }
                 else
@@ -195,10 +216,17 @@ namespace osrepodbmgr.Core
                     if(UpdateProgress != null)
                         UpdateProgress("Uploading file to clamd server...", null, 0, 0);
 
+#if DEBUG
+                    stopwatch.Restart();
+#endif
                     Task.Run(async () =>
                     {
                         result = await clam.SendAndScanFileAsync(zStream);
                     }).Wait();
+#if DEBUG
+                    stopwatch.Stop();
+                    Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file, stopwatch.Elapsed.TotalSeconds);
+#endif
                     zStream.Close();
                 }
 

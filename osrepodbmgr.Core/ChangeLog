@@ -1,6 +1,14 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* Workers/Clamd.cs:
+	  
+
+	* Workers/Miscellaneous.cs:
+	  Added debug timers.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* Workers/Clamd.cs:
 	  Added progress messages to clamd core.
 
 2017-05-19  Natalia Portillo  <claunia@claunia.com>

@@ -39,6 +39,10 @@ namespace osrepodbmgr.Core
         static int zipCounter;
         static string zipCurrentEntryName;
 
+#if DEBUG
+        static Stopwatch stopwatch = new Stopwatch();
+#endif
+
         static string stringify(byte[] hash)
         {
             StringBuilder hashOutput = new StringBuilder();
