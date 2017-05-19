@@ -7,7 +7,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/osrepodbmgr.exe" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="dlgAdd" design-size="857 544">
+  <widget class="Gtk.Dialog" id="dlgAdd" design-size="857 564">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add operating system</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -501,6 +501,19 @@
           </packing>
         </child>
         <child>
+          <widget class="Gtk.Label" id="lblStatus">
+            <property name="MemberName" />
+            <property name="Visible">False</property>
+            <property name="LabelProp" translatable="yes">label3</property>
+          </widget>
+          <packing>
+            <property name="Position">10</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
           <widget class="Gtk.HBox" id="hbox2">
             <property name="MemberName" />
             <property name="Spacing">6</property>
@@ -529,7 +542,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">10</property>
+            <property name="Position">11</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -564,7 +577,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">11</property>
+            <property name="Position">12</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -743,7 +756,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">12</property>
+            <property name="Position">13</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -3562,7 +3575,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">10</property>
+            <property name="CurrentPage">0</property>
             <child>
               <widget class="Gtk.VBox" id="vbox2">
                 <property name="MemberName" />
@@ -12716,7 +12729,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">1</property>
             <child>
               <widget class="Gtk.VBox" id="vbox3">
                 <property name="MemberName" />
@@ -12737,6 +12750,19 @@ QNX/QNX/20090229/source.zip</property>
                   <packing>
                     <property name="Position">0</property>
                     <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="lblOSStatus">
+                    <property name="MemberName" />
+                    <property name="Visible">False</property>
+                    <property name="LabelProp" translatable="yes">label1</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
                   </packing>
                 </child>
                 <child>
@@ -12766,7 +12792,7 @@ QNX/QNX/20090229/source.zip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">1</property>
+                    <property name="Position">2</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -12801,7 +12827,7 @@ QNX/QNX/20090229/source.zip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">2</property>
+                    <property name="Position">3</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -12961,7 +12987,7 @@ QNX/QNX/20090229/source.zip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">3</property>
+                    <property name="Position">4</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -13001,6 +13027,19 @@ QNX/QNX/20090229/source.zip</property>
                   </packing>
                 </child>
                 <child>
+                  <widget class="Gtk.Label" id="lblFileStatus">
+                    <property name="MemberName" />
+                    <property name="Visible">False</property>
+                    <property name="LabelProp" translatable="yes">label2</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
                   <widget class="Gtk.HBox" id="hbox4">
                     <property name="MemberName" />
                     <property name="Spacing">6</property>
@@ -13029,7 +13068,7 @@ QNX/QNX/20090229/source.zip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">1</property>
+                    <property name="Position">2</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -13064,7 +13103,7 @@ QNX/QNX/20090229/source.zip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">2</property>
+                    <property name="Position">3</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -13202,7 +13241,7 @@ QNX/QNX/20090229/source.zip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">3</property>
+                    <property name="Position">4</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>

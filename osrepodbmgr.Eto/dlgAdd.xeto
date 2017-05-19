@@ -109,6 +109,9 @@
 				</StackLayoutItem>
 			</StackLayout>
 		</StackLayoutItem>
+        <StackLayoutItem HorizontalAlignment="Center">
+            <Label ID="lblStatus" Visible="False">lblStatus</Label>
+        </StackLayoutItem>
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<Label ID="lblProgress" Visible="False">Progress</Label>
 		</StackLayoutItem>

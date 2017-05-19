@@ -47,6 +47,7 @@ namespace osrepodbmgr.Eto
         DBFile outIter;
         bool scanningFiles;
         Thread thdCleanFiles;
+        int infectedFiles;
 
         #region XAML UI elements
 #pragma warning disable 0649
@@ -78,6 +79,8 @@ namespace osrepodbmgr.Eto
         Button btnCleanFiles;
         ButtonMenuItem btnQuit;
         ButtonMenuItem mnuFile;
+        Label lblOSStatus;
+        Label lblFileStatus;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
@@ -273,6 +276,8 @@ namespace osrepodbmgr.Eto
                 btnSave.Visible = true;
                 btnHelp.Enabled = true;
                 btnSettings.Enabled = true;
+                lblOSStatus.Visible = true;
+                lblOSStatus.Text = string.Format("{0} operating systems", lstOSes.Count);
             });
         }
 
@@ -723,8 +728,13 @@ namespace osrepodbmgr.Eto
                 if(thdScanFile != null)
                     thdScanFile = null;
 
+                if((!outIter.HasVirus.HasValue || (outIter.HasVirus.HasValue && !outIter.HasVirus.Value)) && file.HasVirus.HasValue && file.HasVirus.Value)
+                    infectedFiles++;
+
                 lstFiles.Remove(outIter);
                 AddFile(file);
+
+                lblFileStatus.Text = string.Format("{0} files ({1} infected)", lstFiles.Count, infectedFiles);
             });
         }
 
@@ -794,8 +804,13 @@ namespace osrepodbmgr.Eto
                 if(thdScanFile != null)
                     thdScanFile = null;
 
+                if((!outIter.HasVirus.HasValue || (outIter.HasVirus.HasValue && !outIter.HasVirus.Value)) && file.HasVirus.HasValue && file.HasVirus.Value)
+                    infectedFiles++;
+
                 lstFiles.Remove(outIter);
                 AddFile(file);
+
+                lblFileStatus.Text = string.Format("{0} files ({1} infected)", lstFiles.Count, infectedFiles);
             });
         }
 
@@ -826,6 +841,7 @@ namespace osrepodbmgr.Eto
             Workers.AddFile += AddFile;
             Workers.AddFiles += AddFiles;
             populatingFiles = true;
+            infectedFiles = 0;
             thdPopulateFiles = new Thread(Workers.GetFilesFromDb);
             thdPopulateFiles.Start();
         }
@@ -878,6 +894,9 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
+                if(file.HasVirus.HasValue && file.HasVirus.Value)
+                    infectedFiles++;
+
                 lstFiles.Add(file);
             });
         }
@@ -890,6 +909,10 @@ namespace osrepodbmgr.Eto
                 foo.AddRange(lstFiles);
                 foo.AddRange(files);
                 lstFiles = new ObservableCollection<DBFile>(foo);
+
+                foreach(DBFile file in files)
+                    if(file.HasVirus.HasValue && file.HasVirus.Value)
+                        infectedFiles++;
             });
         }
 
@@ -942,6 +965,8 @@ namespace osrepodbmgr.Eto
                 tabOSes.Enabled = true;
                 btnScanAllPending.Visible = true;
                 btnCleanFiles.Visible = true;
+                lblFileStatus.Visible = true;
+                lblFileStatus.Text = string.Format("{0} files ({1} infected)", lstFiles.Count, infectedFiles);
             });
         }
 

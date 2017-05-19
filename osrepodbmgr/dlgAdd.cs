@@ -50,6 +50,7 @@ public partial class dlgAdd : Dialog
     bool stopped;
     ListStore fileView;
     ListStore osView;
+    int knownFiles;
 
     public delegate void OnAddedOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
     public event OnAddedOSDelegate OnAddedOS;
@@ -160,6 +161,7 @@ public partial class dlgAdd : Dialog
 
         if(dlgFolder.Run() == (int)ResponseType.Accept)
         {
+            knownFiles = 0;
             stopped = false;
             lblProgress.Text = "Finding files";
             lblProgress.Visible = true;
@@ -424,6 +426,9 @@ public partial class dlgAdd : Dialog
             }
             else
                 btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(127, 0, 0));
+
+            lblStatus.Visible = true;
+            lblStatus.Text = string.Format("{0} files ({1} already known)", fileView.IterNChildren(), knownFiles);
         });
     }
 
@@ -434,6 +439,8 @@ public partial class dlgAdd : Dialog
             string color = known ? "green" : "red";
             fileView.AppendValues(filename, hash, known, color, "black", isCrack);
             btnPack.Sensitive |= !known;
+            if(known)
+                knownFiles++;
         });
     }
 
@@ -528,6 +535,7 @@ public partial class dlgAdd : Dialog
 
         btnMetadata.Visible = false;
         Context.metadata = null;
+        lblStatus.Visible = false;
     }
 
     public void UpdateProgress(string text, string inner, long current, long maximum)
@@ -993,6 +1001,7 @@ public partial class dlgAdd : Dialog
 
         if(dlgFolder.Run() == (int)ResponseType.Accept)
         {
+            knownFiles = 0;
             stopped = false;
             prgProgress.Text = "Opening archive";
             lblProgress.Visible = false;

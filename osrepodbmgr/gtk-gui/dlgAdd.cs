@@ -83,6 +83,8 @@ public partial class dlgAdd
 
 	private global::Gtk.Label lblTabOSes;
 
+	private global::Gtk.Label lblStatus;
+
 	private global::Gtk.HBox hbox2;
 
 	private global::Gtk.Label lblProgress;
@@ -490,6 +492,15 @@ public partial class dlgAdd
 		global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(w1[this.tabTabs]));
 		w39.Position = 9;
 		// Container child vbox1.Gtk.Box+BoxChild
+		this.lblStatus = new global::Gtk.Label();
+		this.lblStatus.Name = "lblStatus";
+		this.lblStatus.LabelProp = global::Mono.Unix.Catalog.GetString("label3");
+		w1.Add(this.lblStatus);
+		global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(w1[this.lblStatus]));
+		w40.Position = 10;
+		w40.Expand = false;
+		w40.Fill = false;
+		// Container child vbox1.Gtk.Box+BoxChild
 		this.hbox2 = new global::Gtk.HBox();
 		this.hbox2.Name = "hbox2";
 		this.hbox2.Spacing = 6;
@@ -498,21 +509,21 @@ public partial class dlgAdd
 		this.lblProgress.Name = "lblProgress";
 		this.lblProgress.LabelProp = global::Mono.Unix.Catalog.GetString("label2");
 		this.hbox2.Add(this.lblProgress);
-		global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.lblProgress]));
-		w40.Position = 0;
-		w40.Expand = false;
-		w40.Fill = false;
+		global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.lblProgress]));
+		w41.Position = 0;
+		w41.Expand = false;
+		w41.Fill = false;
 		// Container child hbox2.Gtk.Box+BoxChild
 		this.prgProgress = new global::Gtk.ProgressBar();
 		this.prgProgress.Name = "prgProgress";
 		this.hbox2.Add(this.prgProgress);
-		global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.prgProgress]));
-		w41.Position = 1;
+		global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.prgProgress]));
+		w42.Position = 1;
 		w1.Add(this.hbox2);
-		global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(w1[this.hbox2]));
-		w42.Position = 10;
-		w42.Expand = false;
-		w42.Fill = false;
+		global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(w1[this.hbox2]));
+		w43.Position = 11;
+		w43.Expand = false;
+		w43.Fill = false;
 		// Container child vbox1.Gtk.Box+BoxChild
 		this.hbox27 = new global::Gtk.HBox();
 		this.hbox27.Name = "hbox27";
@@ -522,21 +533,21 @@ public partial class dlgAdd
 		this.lblProgress2.Name = "lblProgress2";
 		this.lblProgress2.LabelProp = global::Mono.Unix.Catalog.GetString("label22");
 		this.hbox27.Add(this.lblProgress2);
-		global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hbox27[this.lblProgress2]));
-		w43.Position = 0;
-		w43.Expand = false;
-		w43.Fill = false;
+		global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.hbox27[this.lblProgress2]));
+		w44.Position = 0;
+		w44.Expand = false;
+		w44.Fill = false;
 		// Container child hbox27.Gtk.Box+BoxChild
 		this.prgProgress2 = new global::Gtk.ProgressBar();
 		this.prgProgress2.Name = "prgProgress2";
 		this.hbox27.Add(this.prgProgress2);
-		global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.hbox27[this.prgProgress2]));
-		w44.Position = 1;
+		global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.hbox27[this.prgProgress2]));
+		w45.Position = 1;
 		w1.Add(this.hbox27);
-		global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(w1[this.hbox27]));
-		w45.Position = 11;
-		w45.Expand = false;
-		w45.Fill = false;
+		global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(w1[this.hbox27]));
+		w46.Position = 12;
+		w46.Expand = false;
+		w46.Fill = false;
 		// Container child vbox1.Gtk.Box+BoxChild
 		this.hbox1 = new global::Gtk.HBox();
 		this.hbox1.Name = "hbox1";
@@ -549,71 +560,71 @@ public partial class dlgAdd
 		this.btnExit.UseUnderline = true;
 		this.btnExit.Label = "gtk-ok";
 		this.hbox1.Add(this.btnExit);
-		global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnExit]));
-		w46.PackType = ((global::Gtk.PackType)(1));
-		w46.Position = 0;
-		w46.Expand = false;
-		w46.Fill = false;
+		global::Gtk.Box.BoxChild w47 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnExit]));
+		w47.PackType = ((global::Gtk.PackType)(1));
+		w47.Position = 0;
+		w47.Expand = false;
+		w47.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnClose = new global::Gtk.Button();
 		this.btnClose.CanFocus = true;
 		this.btnClose.Name = "btnClose";
 		this.btnClose.UseUnderline = true;
 		this.btnClose.Label = global::Mono.Unix.Catalog.GetString("_Close");
-		global::Gtk.Image w47 = new global::Gtk.Image();
-		w47.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-close", global::Gtk.IconSize.Menu);
-		this.btnClose.Image = w47;
+		global::Gtk.Image w48 = new global::Gtk.Image();
+		w48.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-close", global::Gtk.IconSize.Menu);
+		this.btnClose.Image = w48;
 		this.hbox1.Add(this.btnClose);
-		global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnClose]));
-		w48.PackType = ((global::Gtk.PackType)(1));
-		w48.Position = 1;
-		w48.Expand = false;
-		w48.Fill = false;
+		global::Gtk.Box.BoxChild w49 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnClose]));
+		w49.PackType = ((global::Gtk.PackType)(1));
+		w49.Position = 1;
+		w49.Expand = false;
+		w49.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnPack = new global::Gtk.Button();
 		this.btnPack.CanFocus = true;
 		this.btnPack.Name = "btnPack";
 		this.btnPack.UseUnderline = true;
 		this.btnPack.Label = global::Mono.Unix.Catalog.GetString("_Add to repository...");
-		global::Gtk.Image w49 = new global::Gtk.Image();
-		w49.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-save", global::Gtk.IconSize.Menu);
-		this.btnPack.Image = w49;
+		global::Gtk.Image w50 = new global::Gtk.Image();
+		w50.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-save", global::Gtk.IconSize.Menu);
+		this.btnPack.Image = w50;
 		this.hbox1.Add(this.btnPack);
-		global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnPack]));
-		w50.PackType = ((global::Gtk.PackType)(1));
-		w50.Position = 2;
-		w50.Expand = false;
-		w50.Fill = false;
+		global::Gtk.Box.BoxChild w51 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnPack]));
+		w51.PackType = ((global::Gtk.PackType)(1));
+		w51.Position = 2;
+		w51.Expand = false;
+		w51.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnArchive = new global::Gtk.Button();
 		this.btnArchive.CanFocus = true;
 		this.btnArchive.Name = "btnArchive";
 		this.btnArchive.UseUnderline = true;
 		this.btnArchive.Label = global::Mono.Unix.Catalog.GetString("Open _archive");
-		global::Gtk.Image w51 = new global::Gtk.Image();
-		w51.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
-		this.btnArchive.Image = w51;
+		global::Gtk.Image w52 = new global::Gtk.Image();
+		w52.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
+		this.btnArchive.Image = w52;
 		this.hbox1.Add(this.btnArchive);
-		global::Gtk.Box.BoxChild w52 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnArchive]));
-		w52.PackType = ((global::Gtk.PackType)(1));
-		w52.Position = 3;
-		w52.Expand = false;
-		w52.Fill = false;
+		global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnArchive]));
+		w53.PackType = ((global::Gtk.PackType)(1));
+		w53.Position = 3;
+		w53.Expand = false;
+		w53.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnFolder = new global::Gtk.Button();
 		this.btnFolder.CanFocus = true;
 		this.btnFolder.Name = "btnFolder";
 		this.btnFolder.UseUnderline = true;
 		this.btnFolder.Label = global::Mono.Unix.Catalog.GetString("Open _folder");
-		global::Gtk.Image w53 = new global::Gtk.Image();
-		w53.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
-		this.btnFolder.Image = w53;
+		global::Gtk.Image w54 = new global::Gtk.Image();
+		w54.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Menu);
+		this.btnFolder.Image = w54;
 		this.hbox1.Add(this.btnFolder);
-		global::Gtk.Box.BoxChild w54 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnFolder]));
-		w54.PackType = ((global::Gtk.PackType)(1));
-		w54.Position = 4;
-		w54.Expand = false;
-		w54.Fill = false;
+		global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnFolder]));
+		w55.PackType = ((global::Gtk.PackType)(1));
+		w55.Position = 4;
+		w55.Expand = false;
+		w55.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnStop = new global::Gtk.Button();
 		this.btnStop.CanFocus = true;
@@ -622,26 +633,26 @@ public partial class dlgAdd
 		this.btnStop.UseUnderline = true;
 		this.btnStop.Label = "gtk-stop";
 		this.hbox1.Add(this.btnStop);
-		global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnStop]));
-		w55.PackType = ((global::Gtk.PackType)(1));
-		w55.Position = 5;
-		w55.Expand = false;
-		w55.Fill = false;
+		global::Gtk.Box.BoxChild w56 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnStop]));
+		w56.PackType = ((global::Gtk.PackType)(1));
+		w56.Position = 5;
+		w56.Expand = false;
+		w56.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnMetadata = new global::Gtk.Button();
 		this.btnMetadata.CanFocus = true;
 		this.btnMetadata.Name = "btnMetadata";
 		this.btnMetadata.UseUnderline = true;
 		this.btnMetadata.Label = global::Mono.Unix.Catalog.GetString("Metadata");
-		global::Gtk.Image w56 = new global::Gtk.Image();
-		w56.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-properties", global::Gtk.IconSize.Menu);
-		this.btnMetadata.Image = w56;
+		global::Gtk.Image w57 = new global::Gtk.Image();
+		w57.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-properties", global::Gtk.IconSize.Menu);
+		this.btnMetadata.Image = w57;
 		this.hbox1.Add(this.btnMetadata);
-		global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnMetadata]));
-		w57.PackType = ((global::Gtk.PackType)(1));
-		w57.Position = 6;
-		w57.Expand = false;
-		w57.Fill = false;
+		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnMetadata]));
+		w58.PackType = ((global::Gtk.PackType)(1));
+		w58.Position = 6;
+		w58.Expand = false;
+		w58.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnToggleCrack = new global::Gtk.Button();
 		this.btnToggleCrack.CanFocus = true;
@@ -649,11 +660,11 @@ public partial class dlgAdd
 		this.btnToggleCrack.UseUnderline = true;
 		this.btnToggleCrack.Label = global::Mono.Unix.Catalog.GetString("Mark as crack");
 		this.hbox1.Add(this.btnToggleCrack);
-		global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnToggleCrack]));
-		w58.PackType = ((global::Gtk.PackType)(1));
-		w58.Position = 7;
-		w58.Expand = false;
-		w58.Fill = false;
+		global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnToggleCrack]));
+		w59.PackType = ((global::Gtk.PackType)(1));
+		w59.Position = 7;
+		w59.Expand = false;
+		w59.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
 		this.btnRemoveFile = new global::Gtk.Button();
 		this.btnRemoveFile.CanFocus = true;
@@ -662,19 +673,19 @@ public partial class dlgAdd
 		this.btnRemoveFile.UseUnderline = true;
 		this.btnRemoveFile.Label = "gtk-remove";
 		this.hbox1.Add(this.btnRemoveFile);
-		global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnRemoveFile]));
-		w59.PackType = ((global::Gtk.PackType)(1));
-		w59.Position = 8;
-		w59.Expand = false;
-		w59.Fill = false;
-		w1.Add(this.hbox1);
-		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(w1[this.hbox1]));
-		w60.Position = 12;
+		global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnRemoveFile]));
+		w60.PackType = ((global::Gtk.PackType)(1));
+		w60.Position = 8;
 		w60.Expand = false;
 		w60.Fill = false;
+		w1.Add(this.hbox1);
+		global::Gtk.Box.BoxChild w61 = ((global::Gtk.Box.BoxChild)(w1[this.hbox1]));
+		w61.Position = 13;
+		w61.Expand = false;
+		w61.Fill = false;
 		// Internal child dlgAdd.ActionArea
-		global::Gtk.HButtonBox w61 = this.ActionArea;
-		w61.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
+		global::Gtk.HButtonBox w62 = this.ActionArea;
+		w62.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
 		// Container child __gtksharp_108_Stetic_TopLevelDialog_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 		this.btnDialog = new global::Gtk.Button();
 		this.btnDialog.CanFocus = true;
@@ -682,15 +693,16 @@ public partial class dlgAdd
 		this.btnDialog.UseUnderline = true;
 		this.btnDialog.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
 		this.AddActionWidget(this.btnDialog, 0);
-		global::Gtk.ButtonBox.ButtonBoxChild w62 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w61[this.btnDialog]));
-		w62.Expand = false;
-		w62.Fill = false;
+		global::Gtk.ButtonBox.ButtonBoxChild w63 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w62[this.btnDialog]));
+		w63.Expand = false;
+		w63.Fill = false;
 		if ((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}
 		this.DefaultWidth = 857;
-		this.DefaultHeight = 544;
+		this.DefaultHeight = 564;
+		this.lblStatus.Hide();
 		this.lblProgress.Hide();
 		this.prgProgress.Hide();
 		this.lblProgress2.Hide();
@@ -701,7 +713,7 @@ public partial class dlgAdd
 		this.btnMetadata.Hide();
 		this.btnToggleCrack.Hide();
 		this.btnRemoveFile.Hide();
-		w61.Hide();
+		w62.Hide();
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 		this.btnRemoveFile.Clicked += new global::System.EventHandler(this.OnBtnRemoveFileClicked);

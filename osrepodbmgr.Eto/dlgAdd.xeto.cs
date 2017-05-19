@@ -54,6 +54,7 @@ namespace osrepodbmgr.Eto
         bool stopped;
         ObservableCollection<FileEntry> fileView;
         ObservableCollection<DBEntryForEto> osView;
+        int knownFiles;
 
         class FileEntry
         {
@@ -95,6 +96,7 @@ namespace osrepodbmgr.Eto
         Button btnClose;
         Button btnExit;
         Button btnToggleCrack;
+        Label lblStatus;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
@@ -244,6 +246,7 @@ namespace osrepodbmgr.Eto
 
             if(dlgFolder.ShowDialog(this) == DialogResult.Ok)
             {
+                knownFiles = 0;
                 stopped = false;
                 lblProgress.Text = "Finding files";
                 lblProgress.Visible = true;
@@ -469,6 +472,9 @@ namespace osrepodbmgr.Eto
                 }
                 else
                     btnMetadata.BackgroundColor = Colors.Red;
+                
+                lblStatus.Visible = true;
+                lblStatus.Text = string.Format("{0} files ({1} already known)", fileView.Count, knownFiles);
             });
         }
 
@@ -478,6 +484,8 @@ namespace osrepodbmgr.Eto
             {
                 fileView.Add(new FileEntry { path = filename, hash = hash, known = known, iscrack = isCrack });
                 btnPack.Enabled |= !known;
+                if(known)
+                    knownFiles++;
             });
         }
 
@@ -561,6 +569,7 @@ namespace osrepodbmgr.Eto
 
             btnMetadata.Visible = false;
             Context.metadata = null;
+            lblStatus.Visible = false;
         }
 
         public void UpdateProgress(string text, string inner, long current, long maximum)
@@ -996,6 +1005,7 @@ namespace osrepodbmgr.Eto
 
             if(dlgFile.ShowDialog(this) == DialogResult.Ok)
             {
+                knownFiles = 0;
                 stopped = false;
                 lblProgress.Text = "Opening archive";
                 lblProgress.Visible = false;

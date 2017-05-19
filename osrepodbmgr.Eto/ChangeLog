@@ -1,5 +1,13 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.xeto:
+	* frmMain.xeto:
+	* dlgAdd.xeto.cs:
+	* frmMain.xeto.cs:
+	  Added status fields.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.xeto.cs:
 	* dlgBlockMedia.xeto:
 	* dlgBlockMedia.xeto.cs:

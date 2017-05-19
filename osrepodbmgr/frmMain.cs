@@ -48,6 +48,7 @@ namespace osrepodbmgr
         Thread thdScanFile;
         TreeIter outIter;
         Thread thdCleanFiles;
+        int infectedFiles;
 
         public frmMain() :
                 base(WindowType.Toplevel)
@@ -208,6 +209,8 @@ namespace osrepodbmgr
                 btnSave.Visible = true;
                 btnHelp.Visible = true;
                 btnSettings.Visible = true;
+                lblOSStatus.Visible = true;
+                lblOSStatus.Text = string.Format("{0} operating systems", osView.IterNChildren());
             });
         }
 
@@ -748,8 +751,13 @@ namespace osrepodbmgr
                 if(thdScanFile != null)
                     thdScanFile = null;
 
+                if(!(bool)fileView.GetValue(outIter, 3) && file.HasVirus.HasValue && file.HasVirus.Value)
+                    infectedFiles++;
+
                 fileView.Remove(ref outIter);
                 AddFile(file);
+
+                lblFileStatus.Text = string.Format("{0} files ({1} infected)", fileView.IterNChildren(), infectedFiles);
             });
         }
 
@@ -845,8 +853,13 @@ namespace osrepodbmgr
                 if(thdScanFile != null)
                     thdScanFile = null;
 
+                if(!(bool)fileView.GetValue(outIter, 3) && file.HasVirus.HasValue && file.HasVirus.Value)
+                    infectedFiles++;
+
                 fileView.Remove(ref outIter);
                 AddFile(file);
+
+                lblFileStatus.Text = string.Format("{0} files ({1} infected)", fileView.IterNChildren(), infectedFiles);
             });
         }
 
@@ -887,6 +900,7 @@ namespace osrepodbmgr
             Workers.AddFile += AddFile;
             Workers.AddFiles += AddFiles;
             populatingFiles = true;
+            infectedFiles = 0;
             thdPulseProgress.Start();
             thdPopulateFiles = new Thread(Workers.GetFilesFromDb);
             thdPopulateFiles.Start();
@@ -937,6 +951,9 @@ namespace osrepodbmgr
                 else
                     color = "yellow";
 
+                if(file.HasVirus.HasValue && file.HasVirus.Value)
+                    infectedFiles++;
+
                 fileView.AppendValues(file.Sha256, file.Length, file.Crack, file.HasVirus.HasValue ? file.HasVirus.Value : false,
                                       file.ClamTime == null ? "Never" : file.ClamTime.Value.ToString(),
                                       file.VirusTotalTime == null ? "Never" : file.VirusTotalTime.Value.ToString(),
@@ -964,6 +981,9 @@ namespace osrepodbmgr
                     }
                     else
                         color = "yellow";
+
+                    if(file.HasVirus.HasValue && file.HasVirus.Value)
+                        infectedFiles++;
 
                     fileView.AppendValues(file.Sha256, file.Length, file.Crack, file.HasVirus.HasValue ? file.HasVirus.Value : false,
                                           file.ClamTime == null ? "Never" : file.ClamTime.Value.ToString(),
@@ -1033,6 +1053,8 @@ namespace osrepodbmgr
                 treeFiles.Sensitive = true;
                 notebook1.GetNthPage(0).Sensitive = true;
                 btnCleanFiles.Visible = true;
+                lblFileStatus.Visible = true;
+                lblFileStatus.Text = string.Format("{0} files ({1} infected)", fileView.IterNChildren(), infectedFiles);
             });
         }
 
