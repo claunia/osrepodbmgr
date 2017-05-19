@@ -1,6 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* frmMain.cs:
+	  Corrected column name.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* frmMain.cs:
 	  Added progress messages to clamd core.
 
 2017-05-19  Natalia Portillo  <claunia@claunia.com>

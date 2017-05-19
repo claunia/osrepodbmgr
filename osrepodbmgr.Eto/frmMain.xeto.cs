@@ -181,7 +181,7 @@ namespace osrepodbmgr.Eto
             treeFiles.Columns.Add(new GridColumn
             {
                 DataCell = new CheckBoxCell { Binding = Binding.Property<DBFile, bool?>(r => r.HasVirus) },
-                HeaderText = "Scanned for virus?"
+                HeaderText = "Has virus?"
             });
             treeFiles.Columns.Add(new GridColumn
             {

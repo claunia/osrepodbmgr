@@ -120,7 +120,7 @@ namespace osrepodbmgr
             TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 0, "background", 7, "foreground", 8);
             TreeViewColumn lengthColumn = new TreeViewColumn("Length", lengthCell, "text", 1, "background", 7, "foreground", 8);
             TreeViewColumn crackColumn = new TreeViewColumn("Crack?", crackCell, "active", 2);
-            TreeViewColumn virscanColumn = new TreeViewColumn("Scanned for virus?", virscanCell, "active", 3, "inconsistent", 9);
+            TreeViewColumn virscanColumn = new TreeViewColumn("Has virus?", virscanCell, "active", 3, "inconsistent", 9);
             TreeViewColumn clamtimeColumn = new TreeViewColumn("Last scanned with clamd", clamtimeCell, "text", 4, "background", 7, "foreground", 8);
             TreeViewColumn vtottimeColumn = new TreeViewColumn("Last checked on VirusTotal", vtottimeCell, "text", 5, "background", 7, "foreground", 8);
             TreeViewColumn virusColumn = new TreeViewColumn("Virus", virusCell, "text", 6, "background", 7, "foreground", 8);
