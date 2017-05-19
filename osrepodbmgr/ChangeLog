@@ -1,5 +1,12 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.frmMain.cs:
+	  Added an option to scan all pending files with clamd.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.cs:
 	* frmMain.cs:
 	* gtk-gui/osrepodbmgr.dlgSettings.cs:

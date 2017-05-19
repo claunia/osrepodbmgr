@@ -1,5 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.xeto:
+	* frmMain.xeto.cs:
+	  Added an option to scan all pending files with clamd.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.xeto.cs:
 	* frmMain.xeto.cs:
 	  Corrected GUI behaviour.

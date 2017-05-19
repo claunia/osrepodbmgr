@@ -72,6 +72,8 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnScanWithClamd;
 
+		private global::Gtk.Button btnScanAllPending;
+
 		private global::Gtk.Button btnToggleCrack;
 
 		private global::Gtk.Button btnStopFiles;
@@ -93,7 +95,7 @@ namespace osrepodbmgr
 			this.notebook1 = new global::Gtk.Notebook();
 			this.notebook1.CanFocus = true;
 			this.notebook1.Name = "notebook1";
-			this.notebook1.CurrentPage = 0;
+			this.notebook1.CurrentPage = 1;
 			// Container child notebook1.Gtk.Notebook+NotebookChild
 			this.vbox3 = new global::Gtk.VBox();
 			this.vbox3.Name = "vbox3";
@@ -389,17 +391,29 @@ namespace osrepodbmgr
 			w32.Expand = false;
 			w32.Fill = false;
 			// Container child hbox6.Gtk.Box+BoxChild
+			this.btnScanAllPending = new global::Gtk.Button();
+			this.btnScanAllPending.CanFocus = true;
+			this.btnScanAllPending.Name = "btnScanAllPending";
+			this.btnScanAllPending.UseUnderline = true;
+			this.btnScanAllPending.Label = global::Mono.Unix.Catalog.GetString("Scan all with clamd");
+			this.hbox6.Add(this.btnScanAllPending);
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnScanAllPending]));
+			w33.PackType = ((global::Gtk.PackType)(1));
+			w33.Position = 3;
+			w33.Expand = false;
+			w33.Fill = false;
+			// Container child hbox6.Gtk.Box+BoxChild
 			this.btnToggleCrack = new global::Gtk.Button();
 			this.btnToggleCrack.CanFocus = true;
 			this.btnToggleCrack.Name = "btnToggleCrack";
 			this.btnToggleCrack.UseUnderline = true;
 			this.btnToggleCrack.Label = global::Mono.Unix.Catalog.GetString("Mark as crack");
 			this.hbox6.Add(this.btnToggleCrack);
-			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnToggleCrack]));
-			w33.PackType = ((global::Gtk.PackType)(1));
-			w33.Position = 3;
-			w33.Expand = false;
-			w33.Fill = false;
+			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnToggleCrack]));
+			w34.PackType = ((global::Gtk.PackType)(1));
+			w34.Position = 4;
+			w34.Expand = false;
+			w34.Fill = false;
 			// Container child hbox6.Gtk.Box+BoxChild
 			this.btnStopFiles = new global::Gtk.Button();
 			this.btnStopFiles.CanFocus = true;
@@ -408,19 +422,19 @@ namespace osrepodbmgr
 			this.btnStopFiles.UseUnderline = true;
 			this.btnStopFiles.Label = "gtk-stop";
 			this.hbox6.Add(this.btnStopFiles);
-			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnStopFiles]));
-			w34.PackType = ((global::Gtk.PackType)(1));
-			w34.Position = 4;
-			w34.Expand = false;
-			w34.Fill = false;
-			this.vbox4.Add(this.hbox6);
-			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox6]));
-			w35.Position = 3;
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnStopFiles]));
+			w35.PackType = ((global::Gtk.PackType)(1));
+			w35.Position = 5;
 			w35.Expand = false;
 			w35.Fill = false;
+			this.vbox4.Add(this.hbox6);
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox6]));
+			w36.Position = 3;
+			w36.Expand = false;
+			w36.Fill = false;
 			this.notebook1.Add(this.vbox4);
-			global::Gtk.Notebook.NotebookChild w36 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox4]));
-			w36.Position = 1;
+			global::Gtk.Notebook.NotebookChild w37 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox4]));
+			w37.Position = 1;
 			// Notebook tab
 			this.label3 = new global::Gtk.Label();
 			this.label3.Name = "label3";
@@ -428,8 +442,8 @@ namespace osrepodbmgr
 			this.notebook1.SetTabLabel(this.vbox4, this.label3);
 			this.label3.ShowAll();
 			this.vbox2.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.notebook1]));
-			w37.Position = 0;
+			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.notebook1]));
+			w38.Position = 0;
 			this.Add(this.vbox2);
 			if((this.Child != null))
 			{
@@ -451,6 +465,7 @@ namespace osrepodbmgr
 			this.prgProgressFiles2.Hide();
 			this.btnCheckInVirusTotal.Hide();
 			this.btnScanWithClamd.Hide();
+			this.btnScanAllPending.Hide();
 			this.btnToggleCrack.Hide();
 			this.btnStopFiles.Hide();
 			this.Show();
@@ -465,6 +480,7 @@ namespace osrepodbmgr
 			this.btnQuit.Clicked += new global::System.EventHandler(this.OnBtnQuitClicked);
 			this.btnStopFiles.Clicked += new global::System.EventHandler(this.OnBtnStopFilesClicked);
 			this.btnToggleCrack.Clicked += new global::System.EventHandler(this.OnBtnToggleCrackClicked);
+			this.btnScanAllPending.Clicked += new global::System.EventHandler(this.OnBtnScanAllPendingClicked);
 			this.btnScanWithClamd.Clicked += new global::System.EventHandler(this.OnBtnScanWithClamdClicked);
 			this.btnCheckInVirusTotal.Clicked += new global::System.EventHandler(this.OnBtnCheckInVirusTotalClicked);
 			this.btnPopulateFiles.Clicked += new global::System.EventHandler(this.OnBtnPopulateFilesClicked);

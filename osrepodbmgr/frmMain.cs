@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -44,6 +44,7 @@ namespace osrepodbmgr
         Thread thdSaveAs;
         Thread thdPopulateFiles;
         bool populatingFiles;
+        bool scanningFiles;
         Thread thdScanFile;
         TreeIter outIter;
 
@@ -610,7 +611,7 @@ namespace osrepodbmgr
             {
                 Workers.Failed -= LoadFilesFailed;
                 Workers.Finished -= LoadFilesFinished;
-                Workers.UpdateProgress -= UpdateFileProgress;
+                Workers.UpdateProgress -= UpdateFileProgress2;
                 Workers.AddFile -= AddFile;
 
                 if(thdPulseProgress != null)
@@ -628,6 +629,16 @@ namespace osrepodbmgr
                 btnStopFiles.Visible = false;
                 btnPopulateFiles.Visible = true;
             }
+
+            if(scanningFiles)
+            {
+                if(thdScanFile != null)
+                {
+                    thdScanFile.Abort();
+                    thdScanFile = null;
+                }
+            }
+                AllClamdFinished();
         }
 
         protected void OnBtnToggleCrackClicked(object sender, EventArgs e)
@@ -688,7 +699,7 @@ namespace osrepodbmgr
                         Thread.Sleep(66);
                     }
                 });
-
+                thdPulseProgress.Start();
                 thdScanFile = new Thread(() => Workers.ClamScanFileFromRepo(file));
                 thdScanFile.Start();
             }
@@ -782,7 +793,7 @@ namespace osrepodbmgr
                         Thread.Sleep(66);
                     }
                 });
-
+                thdPulseProgress.Start();
                 thdScanFile = new Thread(() => Workers.VirusTotalFileFromRepo(file));
                 thdScanFile.Start();
             }
@@ -853,6 +864,7 @@ namespace osrepodbmgr
 
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
+            fileView.Clear();
             notebook1.GetNthPage(0).Sensitive = false;
             btnStopFiles.Visible = true;
             btnPopulateFiles.Visible = false;
@@ -875,7 +887,7 @@ namespace osrepodbmgr
             prgProgressFiles2.Visible = true;
             Workers.Failed += LoadFilesFailed;
             Workers.Finished += LoadFilesFinished;
-            Workers.UpdateProgress += UpdateFileProgress;
+            Workers.UpdateProgress += UpdateFileProgress2;
             Workers.AddFile += AddFile;
             Workers.AddFiles += AddFiles;
             populatingFiles = true;
@@ -885,6 +897,19 @@ namespace osrepodbmgr
         }
 
         public void UpdateFileProgress(string text, string inner, long current, long maximum)
+        {
+            Application.Invoke(delegate
+            {
+                lblProgressFiles1.Text = text;
+                prgProgressFiles1.Text = inner;
+                if(maximum > 0)
+                    prgProgressFiles1.Fraction = current / (double)maximum;
+                else
+                    prgProgressFiles1.Pulse();
+            });
+        }
+
+        public void UpdateFileProgress2(string text, string inner, long current, long maximum)
         {
             Application.Invoke(delegate
             {
@@ -962,7 +987,7 @@ namespace osrepodbmgr
                 dlgMsg.Destroy();
                 Workers.Failed -= LoadFilesFailed;
                 Workers.Finished -= LoadFilesFinished;
-                Workers.UpdateProgress -= UpdateFileProgress;
+                Workers.UpdateProgress -= UpdateFileProgress2;
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -987,7 +1012,7 @@ namespace osrepodbmgr
             {
                 Workers.Failed -= LoadFilesFailed;
                 Workers.Finished -= LoadFilesFinished;
-                Workers.UpdateProgress -= UpdateFileProgress;
+                Workers.UpdateProgress -= UpdateFileProgress2;
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -1007,6 +1032,7 @@ namespace osrepodbmgr
                 btnCheckInVirusTotal.Visible = true;
                 btnStopFiles.Visible = false;
                 btnPopulateFiles.Visible = false;
+                btnScanAllPending.Visible = true;
                 populatingFiles = false;
                 treeFiles.Sensitive = true;
                 notebook1.GetNthPage(0).Sensitive = true;
@@ -1023,6 +1049,77 @@ namespace osrepodbmgr
                 else
                     btnToggleCrack.Label = "Mark as crack";
             }
+        }
+
+        protected void OnBtnScanAllPendingClicked(object sender, EventArgs e)
+        {
+            treeFiles.Sensitive = false;
+            btnToggleCrack.Sensitive = false;
+            btnScanWithClamd.Sensitive = false;
+            btnCheckInVirusTotal.Sensitive = false;
+            lblProgressFiles1.Visible = true;
+            prgProgressFiles1.Visible = true;
+            prgProgressFiles2.Visible = true;
+            btnScanAllPending.Sensitive = false;
+            Workers.Finished += AllClamdFinished;
+            Workers.UpdateProgress += UpdateVirusProgress2;
+            Workers.UpdateProgress2 += UpdateFileProgress;
+            btnStopFiles.Visible = true;
+            scanningFiles = true;
+
+            prgProgressFiles2.Text = "Scanning file with clamd.";
+            thdPulseProgress = new Thread(() =>
+            {
+                while(true)
+                {
+                    Application.Invoke(delegate
+                    {
+                        prgProgressFiles2.Pulse();
+                    });
+                    Thread.Sleep(66);
+                }
+            });
+            thdPulseProgress.Start();
+            thdScanFile = new Thread(Workers.ClamScanAllFiles);
+            thdScanFile.Start();
+        }
+
+        void AllClamdFinished()
+        {
+            Application.Invoke(delegate
+            {
+                treeFiles.Sensitive = true;
+                btnToggleCrack.Sensitive = true;
+                btnScanWithClamd.Sensitive = true;
+                btnCheckInVirusTotal.Sensitive = true;
+                btnScanAllPending.Sensitive = true;
+                Workers.Finished -= AllClamdFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress2;
+                Workers.UpdateProgress2 -= UpdateFileProgress;
+                prgProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = false;
+                prgProgressFiles2.Text = "";
+                prgProgressFiles2.Visible = false;
+                btnStopFiles.Visible = false;
+                scanningFiles = false;
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdScanFile != null)
+                    thdScanFile = null;
+
+                btnPopulateFiles.Click();
+            });
+        }
+
+        public void UpdateVirusProgress2(string text, string inner, long current, long maximum)
+        {
+            Application.Invoke(delegate
+            {
+                prgProgressFiles2.Text = text;
+            });
         }
     }
 }
