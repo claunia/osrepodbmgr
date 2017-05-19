@@ -33,6 +33,7 @@ using SharpCompress.Compressors.LZMA;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.BZip2;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace osrepodbmgr.Core
 {
@@ -256,6 +257,45 @@ namespace osrepodbmgr.Core
                 if(Failed != null)
                     Failed(string.Format("Exception {0} when calling clamd", ex.Message));
             }
+        }
+
+        public static void ClamScanAllFiles()
+        {
+            if(UpdateProgress2 != null)
+                UpdateProgress2("Asking database for files", null, 0, 0);
+
+#if DEBUG
+            stopwatch.Restart();
+#endif
+            List<DBFile> files;
+
+            if(!dbCore.DBOps.GetNotAvFiles(out files))
+            {
+                if(Failed != null)
+                    Failed("Could not get files from database.");
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.ClamScanAllFiles(): Took {0} seconds to get files from database", stopwatch.Elapsed.TotalSeconds);
+            stopwatch.Restart();
+#endif
+            int counter = 0;
+            foreach(DBFile file in files)
+            {
+                if(UpdateProgress2 != null)
+                    UpdateProgress2(string.Format("Scanning file {0} of {1}", counter, files.Count), null, counter, files.Count);
+
+                ClamScanFileFromRepo(file);
+
+                counter++;
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.ClamScanAllFiles(): Took {0} seconds scan all pending files", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+            if(Finished != null)
+                Finished();
         }
     }
 }

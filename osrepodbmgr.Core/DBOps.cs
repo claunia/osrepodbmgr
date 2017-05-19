@@ -1,4 +1,4 @@
-﻿//
+//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -430,6 +430,48 @@ namespace osrepodbmgr.Core
             entries = new List<DBFile>();
 
             string sql = string.Format("SELECT * FROM files ORDER BY sha256 LIMIT {0}, {1}", start, count);
+
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dbcmd.CommandText = sql;
+            DataSet dataSet = new DataSet();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                DBFile fEntry = new DBFile();
+
+                fEntry.Id = ulong.Parse(dRow["id"].ToString());
+                fEntry.Sha256 = dRow["sha256"].ToString();
+                fEntry.Crack = bool.Parse(dRow["crack"].ToString());
+                if(dRow["virscan"] == DBNull.Value)
+                    fEntry.HasVirus = null;
+                else
+                    fEntry.HasVirus = bool.Parse(dRow["virscan"].ToString());
+                if(dRow["clamtime"] == DBNull.Value)
+                    fEntry.ClamTime = null;
+                else
+                    fEntry.ClamTime = DateTime.Parse(dRow["clamtime"].ToString());
+                if(dRow["vtotaltime"] == DBNull.Value)
+                    fEntry.VirusTotalTime = null;
+                else
+                    fEntry.VirusTotalTime = DateTime.Parse(dRow["vtotaltime"].ToString());
+                fEntry.Virus = dRow["virus"].ToString();
+                fEntry.Length = long.Parse(dRow["length"].ToString());
+
+                entries.Add(fEntry);
+            }
+
+            return true;
+        }
+
+        public bool GetNotAvFiles(out List<DBFile> entries)
+        {
+            entries = new List<DBFile>();
+
+            const string sql = "SELECT * FROM files WHERE virscan IS NULL ORDER BY sha256";
 
             IDbCommand dbcmd = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
