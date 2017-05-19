@@ -70,27 +70,24 @@ namespace osrepodbmgr
             CellRendererToggle sourceCell = new CellRendererToggle();
             CellRendererToggle filesCell = new CellRendererToggle();
             CellRendererToggle netinstallCell = new CellRendererToggle();
-            CellRendererText pathCell = new CellRendererText();
 
-            TreeViewColumn developerColumn = new TreeViewColumn("Developer", developerCell, "text", 0, "background", 14, "foreground", 15);
-            TreeViewColumn productColumn = new TreeViewColumn("Product", productCell, "text", 1, "background", 14, "foreground", 15);
-            TreeViewColumn versionColumn = new TreeViewColumn("Version", versionCell, "text", 2, "background", 14, "foreground", 15);
-            TreeViewColumn languagesColumn = new TreeViewColumn("Languages", languagesCell, "text", 3, "background", 14, "foreground", 15);
-            TreeViewColumn architectureColumn = new TreeViewColumn("Architecture", architectureCell, "text", 4, "background", 14, "foreground", 15);
-            TreeViewColumn machineColumn = new TreeViewColumn("Machine", machineCell, "text", 5, "background", 14, "foreground", 15);
-            TreeViewColumn formatColumn = new TreeViewColumn("Format", formatCell, "text", 6, "background", 14, "foreground", 15);
-            TreeViewColumn descriptionColumn = new TreeViewColumn("Description", descriptionCell, "text", 7, "background", 14, "foreground", 15);
+            TreeViewColumn developerColumn = new TreeViewColumn("Developer", developerCell, "text", 0);
+            TreeViewColumn productColumn = new TreeViewColumn("Product", productCell, "text", 1);
+            TreeViewColumn versionColumn = new TreeViewColumn("Version", versionCell, "text", 2);
+            TreeViewColumn languagesColumn = new TreeViewColumn("Languages", languagesCell, "text", 3);
+            TreeViewColumn architectureColumn = new TreeViewColumn("Architecture", architectureCell, "text", 4);
+            TreeViewColumn machineColumn = new TreeViewColumn("Machine", machineCell, "text", 5);
+            TreeViewColumn formatColumn = new TreeViewColumn("Format", formatCell, "text", 6);
+            TreeViewColumn descriptionColumn = new TreeViewColumn("Description", descriptionCell, "text");
             TreeViewColumn oemColumn = new TreeViewColumn("OEM?", oemCell, "active", 8);
             TreeViewColumn upgradeColumn = new TreeViewColumn("Upgrade?", upgradeCell, "active", 9);
             TreeViewColumn updateColumn = new TreeViewColumn("Update?", updateCell, "active", 10);
             TreeViewColumn sourceColumn = new TreeViewColumn("Source?", sourceCell, "active", 11);
             TreeViewColumn filesColumn = new TreeViewColumn("Files?", filesCell, "active", 12);
             TreeViewColumn netinstallColumn = new TreeViewColumn("NetInstall?", netinstallCell, "active", 13);
-            TreeViewColumn pathColumn = new TreeViewColumn("Path in repo", pathCell, "text", 16, "background", 14, "foreground", 15);
 
             osView = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string),
-                                     typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(string), typeof(string), typeof(string),
-                                   typeof(long), typeof(string));
+                                     typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(long), typeof(string));
 
             treeOSes.Model = osView;
             treeOSes.AppendColumn(developerColumn);
@@ -107,7 +104,6 @@ namespace osrepodbmgr
             treeOSes.AppendColumn(sourceColumn);
             treeOSes.AppendColumn(filesColumn);
             treeOSes.AppendColumn(netinstallColumn);
-            treeOSes.AppendColumn(pathColumn);
 
             treeOSes.Selection.Mode = SelectionMode.Single;
 
@@ -241,7 +237,7 @@ namespace osrepodbmgr
             });
         }
 
-        void AddOS(DBEntry os, bool existsInRepo, string pathInRepo)
+        void AddOS(DBEntry os)
         {
             Application.Invoke(delegate
             {
@@ -251,10 +247,9 @@ namespace osrepodbmgr
                     thdPulseProgress = null;
                 }
 
-                string color = existsInRepo ? "green" : "red";
                 osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
                                     os.format, os.description, os.oem, os.upgrade, os.update, os.source,
-                                    os.files, os.netinstall, color, "black", pathInRepo, os.id, os.mdid);
+                                    os.files, os.netinstall, os.id, os.mdid);
             });
         }
 
@@ -266,7 +261,7 @@ namespace osrepodbmgr
                 string color = existsInRepo ? "green" : "red";
                 osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
                                     os.format, os.description, os.oem, os.upgrade, os.update, os.source,
-                                    os.files, os.netinstall, color, "black", pathInRepo, os.id, os.mdid);
+                                    os.files, os.netinstall, os.id, os.mdid);
             };
             _dlgAdd.Run();
             _dlgAdd.Destroy();
@@ -282,7 +277,7 @@ namespace osrepodbmgr
 
                 if(dlgMsg.Run() == (int)ResponseType.Yes)
                 {
-                    Workers.RemoveOS((long)osView.GetValue(osIter, 17), (string)osView.GetValue(osIter, 18));
+                    Workers.RemoveOS((long)osView.GetValue(osIter, 14), (string)osView.GetValue(osIter, 15));
                     osView.Remove(ref osIter);
                 }
 
@@ -295,7 +290,7 @@ namespace osrepodbmgr
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
-                Context.dbInfo.id = (long)osView.GetValue(osIter, 17);
+                Context.dbInfo.id = (long)osView.GetValue(osIter, 14);
 
                 FileChooserDialog dlgFolder = new FileChooserDialog("Save to...", this, FileChooserAction.SelectFolder,
                                                      "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
@@ -481,7 +476,7 @@ namespace osrepodbmgr
             TreeIter osIter;
             if(treeOSes.Selection.GetSelected(out osIter))
             {
-                Context.dbInfo.id = (long)osView.GetValue(osIter, 17);
+                Context.dbInfo.id = (long)osView.GetValue(osIter, 14);
 
                 FileChooserDialog dlgFolder = new FileChooserDialog("Compress to...", this, FileChooserAction.Save,
                                                      "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);

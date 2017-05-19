@@ -320,7 +320,7 @@ namespace osrepodbmgr.Eto
             });
         }
 
-        void AddOS(DBEntry os, bool existsInRepo, string pathInRepo)
+        void AddOS(DBEntry os)
         {
             Application.Instance.Invoke(delegate
             {

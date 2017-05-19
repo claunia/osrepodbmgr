@@ -38,7 +38,7 @@ namespace osrepodbmgr.Core
         public delegate void FinishedWithoutErrorDelegate();
         public delegate void FinishedWithTextDelegate(string text);
         public delegate void AddFileForOSDelegate(string filename, string hash, bool known, bool isCrack);
-        public delegate void AddOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
+        public delegate void AddOSDelegate(DBEntry os);
         public delegate void AddFileDelegate(DBFile file);
         public delegate void AddFilesDelegate(List<DBFile> file);
         public delegate void ScanFinishedDelegate(DBFile file);

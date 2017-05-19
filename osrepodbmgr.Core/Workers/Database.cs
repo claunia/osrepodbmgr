@@ -64,7 +64,7 @@ namespace osrepodbmgr.Core
                                                           os.mdid[4].ToString(), os.mdid) + ".zip";
 
                         if(AddOS != null)
-                            AddOS(os, File.Exists(destination), destination);
+                            AddOS(os);
 
                         counter++;
                     }
@@ -169,7 +169,7 @@ namespace osrepodbmgr.Core
                                                           os.mdid[4].ToString(), os.mdid) + ".zip";
 
                         if(AddOS != null)
-                            AddOS(os, File.Exists(destination), destination);
+                            AddOS(os);
                     }
                 }
 

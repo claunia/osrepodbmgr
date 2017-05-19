@@ -685,7 +685,7 @@ public partial class dlgAdd
 		global::Gtk.ButtonBox.ButtonBoxChild w62 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w61[this.btnDialog]));
 		w62.Expand = false;
 		w62.Fill = false;
-		if((this.Child != null))
+		if ((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}

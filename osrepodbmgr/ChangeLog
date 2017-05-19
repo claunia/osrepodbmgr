@@ -1,5 +1,14 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.cs:
+	* frmMain.cs:
+	* gtk-gui/dlgAdd.cs:
+	* gtk-gui/osrepodbmgr.frmMain.cs:
+	  Do not color OS tables. Has no sense to be on the opaque
+	  repo.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* frmMain.cs:
 	* gtk-gui/gui.stetic:
 	* gtk-gui/generated.cs:

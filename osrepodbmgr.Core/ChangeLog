@@ -1,5 +1,12 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* Workers/Database.cs:
+	* Workers/Delegates.cs:
+	  Do not color OS tables. Has no sense to be on the opaque
+	  repo.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* DBOps.cs:
 	* Workers/Files.cs:
 	  Added code to clean database and repository.
