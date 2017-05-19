@@ -1,5 +1,10 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.xeto.cs:
+	  Make sure the OnBtnPopulateFilesClicked() is called.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* frmMain.xeto:
 	* frmMain.xeto.cs:
 	  Added an option to scan all pending files with clamd.

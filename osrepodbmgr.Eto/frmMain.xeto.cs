@@ -997,7 +997,7 @@ namespace osrepodbmgr.Eto
                 if(thdScanFile != null)
                     thdScanFile = null;
 
-                btnPopulateFiles.PerformClick();
+                OnBtnPopulateFilesClicked(null, new EventArgs());
             });
         }
 

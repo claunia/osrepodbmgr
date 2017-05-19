@@ -1110,7 +1110,7 @@ namespace osrepodbmgr
                 if(thdScanFile != null)
                     thdScanFile = null;
 
-                btnPopulateFiles.Click();
+                OnBtnPopulateFilesClicked(null, new EventArgs());
             });
         }
 
