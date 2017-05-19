@@ -1,5 +1,10 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* osrepodbmgr.Core.csproj:
+	  Added README.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* Settings.cs:
 	* packages.config:
 	* Workers/VirusTotal.cs:
