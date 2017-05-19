@@ -658,6 +658,7 @@ namespace osrepodbmgr.Eto
                 lblProgressFiles1.Visible = true;
                 Workers.Failed += ClamdFailed;
                 Workers.ScanFinished += ClamdFinished;
+                Workers.UpdateProgress += UpdateVirusProgress;
 
                 lblProgressFiles1.Text = "Scanning file with clamd.";
                 prgProgressFiles1.Indeterminate = true;
@@ -679,6 +680,7 @@ namespace osrepodbmgr.Eto
                 lblProgressFiles1.Visible = false;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
                 lblProgressFiles1.Text = "";
                 if(thdScanFile != null)
                 {
@@ -698,6 +700,7 @@ namespace osrepodbmgr.Eto
                 btnCheckInVirusTotal.Enabled = true;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
                 lblProgressFiles1.Text = "";
                 prgProgressFiles1.Visible = false;
                 lblProgressFiles1.Visible = false;
@@ -755,10 +758,7 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress -= UpdateVirusProgress;
                 lblProgressFiles1.Text = "";
                 if(thdScanFile != null)
-                {
-                    thdScanFile.Abort();
                     thdScanFile = null;
-                }
             });
         }
 

@@ -1,5 +1,10 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* Workers/Clamd.cs:
+	  Added progress messages to clamd core.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* Context.cs:
 	* Settings.cs:
 	* packages.config:

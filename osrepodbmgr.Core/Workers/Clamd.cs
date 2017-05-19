@@ -144,9 +144,15 @@ namespace osrepodbmgr.Core
                         inFs.Seek(8, SeekOrigin.Current);
                         zStream = new LzmaStream(properties, inFs);
 
+                        if(UpdateProgress != null)
+                            UpdateProgress("Uncompressing file...", null, 0, 0);
+
                         zStream.CopyTo(outFs);
                         zStream.Close();
                         outFs.Close();
+
+                        if(UpdateProgress != null)
+                            UpdateProgress("Requesting local scan to clamd server...", null, 0, 0);
 
                         Task.Run(async () =>
                         {
@@ -156,10 +162,15 @@ namespace osrepodbmgr.Core
                         File.Delete(tmpFile);
                     }
                     else
+                    {
+                        if(UpdateProgress != null)
+                            UpdateProgress("Requesting local scan to clamd server...", null, 0, 0);
+
                         Task.Run(async () =>
                         {
                             result = await clam.ScanFileOnServerMultithreadedAsync(repoPath);
                         }).Wait();
+                    }
                 }
                 else
                 {
@@ -180,6 +191,9 @@ namespace osrepodbmgr.Core
                             zStream = new LzmaStream(properties, inFs);
                             break;
                     }
+
+                    if(UpdateProgress != null)
+                        UpdateProgress("Uploading file to clamd server...", null, 0, 0);
 
                     Task.Run(async () =>
                     {

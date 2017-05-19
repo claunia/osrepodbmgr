@@ -674,6 +674,7 @@ namespace osrepodbmgr
                 prgProgressFiles1.Visible = true;
                 Workers.Failed += ClamdFailed;
                 Workers.ScanFinished += ClamdFinished;
+                Workers.UpdateProgress += UpdateVirusProgress;
 
                 prgProgressFiles1.Text = "Scanning file with clamd.";
                 thdPulseProgress = new Thread(() =>
@@ -704,6 +705,7 @@ namespace osrepodbmgr
                 prgProgressFiles1.Visible = false;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
                 prgProgressFiles1.Text = "";
                 if(thdPulseProgress != null)
                 {
@@ -728,6 +730,7 @@ namespace osrepodbmgr
                 btnCheckInVirusTotal.Sensitive = true;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
                 prgProgressFiles1.Text = "";
                 prgProgressFiles1.Visible = false;
                 if(thdPulseProgress != null)
