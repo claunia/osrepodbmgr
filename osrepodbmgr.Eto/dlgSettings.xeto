@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="650" Height="225" xmlns:e="clr-namespace:osrepodbmgr.Core;assembly=osrepodbmgr.Core">
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="650" Height="225" xmlns:e="clr-namespace:osrepodbmgr.Core;assembly=osrepodbmgr.Core" Title="Settings">
 	<StackLayout Orientation="Vertical">
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<StackLayout Orientation="Horizontal">

@@ -1,5 +1,15 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.xeto:
+	* dlgHelp.xeto:
+	* frmMain.xeto:
+	* dlgMetadata.xeto:
+	* dlgSettings.xeto:
+	* dlgFilesystem.xeto:
+	  Added window titles.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.xeto.cs:
 	* frmMain.xeto.cs:
 	  Do not color OS tables. Has no sense to be on the opaque

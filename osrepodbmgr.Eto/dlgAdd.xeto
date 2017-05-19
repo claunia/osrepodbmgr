@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="544" Width="857" Closing="OnDeleteEvent" Resizable="True">
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="544" Width="857" Closing="OnDeleteEvent" Resizable="True" Title="Add operating system">
 	<StackLayout Orientation="Vertical">
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<StackLayout Orientation="Horizontal">
