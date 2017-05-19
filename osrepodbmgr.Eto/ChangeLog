@@ -1,5 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.xeto.cs:
+	* frmMain.xeto.cs:
+	  Corrected delegate.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.xeto:
 	* frmMain.xeto:
 	* dlgAdd.xeto.cs:

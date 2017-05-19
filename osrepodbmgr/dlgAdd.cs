@@ -52,7 +52,7 @@ public partial class dlgAdd : Dialog
     ListStore osView;
     int knownFiles;
 
-    public delegate void OnAddedOSDelegate(DBEntry os, bool existsInRepo, string pathInRepo);
+    public delegate void OnAddedOSDelegate(DBEntry os);
     public event OnAddedOSDelegate OnAddedOS;
 
     public dlgAdd()
@@ -828,13 +828,7 @@ public partial class dlgAdd : Dialog
             // TODO: Update OS table
 
             if(OnAddedOS != null)
-                OnAddedOS(Context.dbInfo, true, System.IO.Path.Combine(osrepodbmgr.Core.Settings.Current.RepositoryPath,
-                                                                       Context.dbInfo.mdid[0].ToString(),
-                                                                       Context.dbInfo.mdid[1].ToString(),
-                                                                       Context.dbInfo.mdid[2].ToString(),
-                                                                       Context.dbInfo.mdid[3].ToString(),
-                                                                       Context.dbInfo.mdid[4].ToString(),
-                                                                       Context.dbInfo.mdid) + ".zip");
+                OnAddedOS(Context.dbInfo);
 
             prgProgress.Visible = false;
             btnClose.Sensitive = true;

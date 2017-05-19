@@ -2,6 +2,12 @@
 
 	* dlgAdd.cs:
 	* frmMain.cs:
+	  Corrected delegate.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* dlgAdd.cs:
+	* frmMain.cs:
 	* gtk-gui/dlgAdd.cs:
 	* gtk-gui/gui.stetic:
 	* gtk-gui/osrepodbmgr.frmMain.cs:

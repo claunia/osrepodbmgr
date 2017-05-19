@@ -336,7 +336,7 @@ namespace osrepodbmgr.Eto
         protected void OnBtnAddClicked(object sender, EventArgs e)
         {
             dlgAdd _dlgAdd = new dlgAdd();
-            _dlgAdd.OnAddedOS += (os, existsInRepo, pathInRepo) =>
+            _dlgAdd.OnAddedOS += (os) =>
             {
                 lstOSes.Add(new DBEntryForEto(os));
             };

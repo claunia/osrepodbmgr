@@ -259,9 +259,8 @@ namespace osrepodbmgr
         protected void OnBtnAddClicked(object sender, EventArgs e)
         {
             dlgAdd _dlgAdd = new dlgAdd();
-            _dlgAdd.OnAddedOS += (os, existsInRepo, pathInRepo) =>
+            _dlgAdd.OnAddedOS += (os) =>
             {
-                string color = existsInRepo ? "green" : "red";
                 osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
                                     os.format, os.description, os.oem, os.upgrade, os.update, os.source,
                                     os.files, os.netinstall, os.id, os.mdid);
