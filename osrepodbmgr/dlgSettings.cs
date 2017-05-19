@@ -81,6 +81,19 @@ namespace osrepodbmgr
                 txtClamdHost.Text = Core.Settings.Current.ClamdHost;
                 spClamdPort.Value = Core.Settings.Current.ClamdPort;
                 chkClamdIsLocal.Active = Core.Settings.Current.ClamdIsLocal;
+                chkClamd.Sensitive = true;
+                chkClamdIsLocal.Sensitive = true;
+                txtClamdHost.Sensitive = true;
+                spClamdPort.Sensitive = true;
+                btnClamdTest.Sensitive = true;
+            }
+            if(Core.Settings.Current.UseAntivirus && Core.Settings.Current.UseVirusTotal)
+            {
+                chkVirusTotal.Active = true;
+                chkVirusTotal.Sensitive = true;
+                txtVirusTotal.Sensitive = true;
+                txtVirusTotal.Text = Core.Settings.Current.VirusTotalKey;
+                btnVirusTotal.Sensitive = true;
             }
         }
 
@@ -120,6 +133,17 @@ namespace osrepodbmgr
                 Core.Settings.Current.ClamdHost = null;
                 Core.Settings.Current.ClamdPort = 3310;
                 Core.Settings.Current.ClamdIsLocal = false;
+            }
+            if(chkVirusTotal.Active && chkAntivirus.Active)
+            {
+                Core.Settings.Current.UseVirusTotal = true;
+                Core.Settings.Current.VirusTotalKey = txtVirusTotal.Text;
+                Core.Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
+            }
+            else
+            {
+                Core.Settings.Current.UseVirusTotal = false;
+                Core.Settings.Current.VirusTotalKey = null;
             }
             Core.Settings.SaveSettings();
             Core.Workers.CloseDB();
@@ -286,6 +310,7 @@ namespace osrepodbmgr
         protected void OnChkAntivirusToggled(object sender, EventArgs e)
         {
             frmClamd.Visible = chkAntivirus.Active;
+            frmVirusTotal.Visible = chkAntivirus.Active;
         }
 
         protected void OnChkClamdToggled(object sender, EventArgs e)
@@ -333,6 +358,30 @@ namespace osrepodbmgr
             lblClamdVersion.Text = Context.clamdVersion;
             Context.clamdVersion = oldVersion;
             lblClamdVersion.Visible = true;
+        }
+
+        protected void OnChkVirusTotalToggled(object sender, EventArgs e)
+        {
+            txtVirusTotal.Sensitive = chkVirusTotal.Active;
+            btnVirusTotal.Sensitive = chkVirusTotal.Active;
+            lblVirusTotal.Visible = false;
+        }
+
+        protected void OnBtnVirusTotalClicked(object sender, EventArgs e)
+        {
+            Workers.Failed += VirusTotalTestFailed;
+            if(Workers.TestVirusTotal(txtVirusTotal.Text))
+            {
+                lblVirusTotal.Visible = true;
+                lblVirusTotal.Text = "Working!";
+            }
+        }
+
+        void VirusTotalTestFailed(string text)
+        {
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+            dlgMsg.Run();
+            dlgMsg.Destroy();
         }
     }
 }

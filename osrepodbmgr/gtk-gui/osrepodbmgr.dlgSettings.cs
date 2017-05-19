@@ -76,7 +76,27 @@ namespace osrepodbmgr
 
 		private global::Gtk.CheckButton chkClamdIsLocal;
 
-		private global::Gtk.Label GtkLabel7;
+		private global::Gtk.Label GtkLabel8;
+
+		private global::Gtk.Frame frame2;
+
+		private global::Gtk.Alignment GtkAlignment7;
+
+		private global::Gtk.VBox vbox7;
+
+		private global::Gtk.CheckButton chkVirusTotal;
+
+		private global::Gtk.HBox hbox4;
+
+		private global::Gtk.Label label6;
+
+		private global::Gtk.Entry txtVirusTotal;
+
+		private global::Gtk.Button btnVirusTotal;
+
+		private global::Gtk.Label lblVirusTotal;
+
+		private global::Gtk.Label GtkLabel12;
 
 		private global::Gtk.HBox hbox18;
 
@@ -364,6 +384,7 @@ namespace osrepodbmgr
 			w29.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.txtClamdHost = new global::Gtk.Entry();
+			this.txtClamdHost.Sensitive = false;
 			this.txtClamdHost.CanFocus = true;
 			this.txtClamdHost.Name = "txtClamdHost";
 			this.txtClamdHost.IsEditable = true;
@@ -382,6 +403,7 @@ namespace osrepodbmgr
 			w31.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.spClamdPort = new global::Gtk.SpinButton(1, 65535, 1);
+			this.spClamdPort.Sensitive = false;
 			this.spClamdPort.CanFocus = true;
 			this.spClamdPort.Name = "spClamdPort";
 			this.spClamdPort.Adjustment.PageIncrement = 10;
@@ -395,6 +417,7 @@ namespace osrepodbmgr
 			w32.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.btnClamdTest = new global::Gtk.Button();
+			this.btnClamdTest.Sensitive = false;
 			this.btnClamdTest.CanFocus = true;
 			this.btnClamdTest.Name = "btnClamdTest";
 			this.btnClamdTest.UseUnderline = true;
@@ -420,6 +443,7 @@ namespace osrepodbmgr
 			w35.Fill = false;
 			// Container child vbox6.Gtk.Box+BoxChild
 			this.chkClamdIsLocal = new global::Gtk.CheckButton();
+			this.chkClamdIsLocal.Sensitive = false;
 			this.chkClamdIsLocal.CanFocus = true;
 			this.chkClamdIsLocal.Name = "chkClamdIsLocal";
 			this.chkClamdIsLocal.Label = global::Mono.Unix.Catalog.GetString("Clamd is local?");
@@ -432,26 +456,111 @@ namespace osrepodbmgr
 			w36.Fill = false;
 			this.GtkAlignment6.Add(this.vbox6);
 			this.frmClamd.Add(this.GtkAlignment6);
-			this.GtkLabel7 = new global::Gtk.Label();
-			this.GtkLabel7.Name = "GtkLabel7";
-			this.GtkLabel7.LabelProp = global::Mono.Unix.Catalog.GetString("<b>clamd</b>");
-			this.GtkLabel7.UseMarkup = true;
-			this.frmClamd.LabelWidget = this.GtkLabel7;
+			this.GtkLabel8 = new global::Gtk.Label();
+			this.GtkLabel8.Name = "GtkLabel8";
+			this.GtkLabel8.LabelProp = global::Mono.Unix.Catalog.GetString("<b>clamd</b>");
+			this.GtkLabel8.UseMarkup = true;
+			this.frmClamd.LabelWidget = this.GtkLabel8;
 			this.vbox4.Add(this.frmClamd);
 			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.frmClamd]));
 			w39.Position = 1;
 			w39.Expand = false;
 			w39.Fill = false;
-			this.hbox2.Add(this.vbox4);
-			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbox4]));
-			w40.Position = 1;
+			// Container child vbox4.Gtk.Box+BoxChild
+			this.frame2 = new global::Gtk.Frame();
+			this.frame2.Name = "frame2";
+			this.frame2.ShadowType = ((global::Gtk.ShadowType)(0));
+			// Container child frame2.Gtk.Container+ContainerChild
+			this.GtkAlignment7 = new global::Gtk.Alignment(0F, 0F, 1F, 1F);
+			this.GtkAlignment7.Name = "GtkAlignment7";
+			this.GtkAlignment7.LeftPadding = ((uint)(12));
+			// Container child GtkAlignment7.Gtk.Container+ContainerChild
+			this.vbox7 = new global::Gtk.VBox();
+			this.vbox7.Name = "vbox7";
+			this.vbox7.Spacing = 6;
+			// Container child vbox7.Gtk.Box+BoxChild
+			this.chkVirusTotal = new global::Gtk.CheckButton();
+			this.chkVirusTotal.CanFocus = true;
+			this.chkVirusTotal.Name = "chkVirusTotal";
+			this.chkVirusTotal.Label = global::Mono.Unix.Catalog.GetString("Use VirusTotal?");
+			this.chkVirusTotal.DrawIndicator = true;
+			this.chkVirusTotal.UseUnderline = true;
+			this.vbox7.Add(this.chkVirusTotal);
+			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.vbox7[this.chkVirusTotal]));
+			w40.Position = 0;
 			w40.Expand = false;
 			w40.Fill = false;
-			w1.Add(this.hbox2);
-			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(w1[this.hbox2]));
+			// Container child vbox7.Gtk.Box+BoxChild
+			this.hbox4 = new global::Gtk.HBox();
+			this.hbox4.Name = "hbox4";
+			this.hbox4.Spacing = 6;
+			// Container child hbox4.Gtk.Box+BoxChild
+			this.label6 = new global::Gtk.Label();
+			this.label6.Name = "label6";
+			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString("API Key");
+			this.hbox4.Add(this.label6);
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox4[this.label6]));
 			w41.Position = 0;
 			w41.Expand = false;
 			w41.Fill = false;
+			// Container child hbox4.Gtk.Box+BoxChild
+			this.txtVirusTotal = new global::Gtk.Entry();
+			this.txtVirusTotal.Sensitive = false;
+			this.txtVirusTotal.CanFocus = true;
+			this.txtVirusTotal.Name = "txtVirusTotal";
+			this.txtVirusTotal.IsEditable = true;
+			this.txtVirusTotal.InvisibleChar = '●';
+			this.hbox4.Add(this.txtVirusTotal);
+			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox4[this.txtVirusTotal]));
+			w42.Position = 1;
+			// Container child hbox4.Gtk.Box+BoxChild
+			this.btnVirusTotal = new global::Gtk.Button();
+			this.btnVirusTotal.Sensitive = false;
+			this.btnVirusTotal.CanFocus = true;
+			this.btnVirusTotal.Name = "btnVirusTotal";
+			this.btnVirusTotal.UseUnderline = true;
+			this.btnVirusTotal.Label = global::Mono.Unix.Catalog.GetString("Test");
+			this.hbox4.Add(this.btnVirusTotal);
+			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hbox4[this.btnVirusTotal]));
+			w43.Position = 2;
+			w43.Expand = false;
+			w43.Fill = false;
+			this.vbox7.Add(this.hbox4);
+			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.vbox7[this.hbox4]));
+			w44.Position = 1;
+			w44.Expand = false;
+			w44.Fill = false;
+			// Container child vbox7.Gtk.Box+BoxChild
+			this.lblVirusTotal = new global::Gtk.Label();
+			this.lblVirusTotal.Name = "lblVirusTotal";
+			this.lblVirusTotal.LabelProp = global::Mono.Unix.Catalog.GetString("label5");
+			this.vbox7.Add(this.lblVirusTotal);
+			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.vbox7[this.lblVirusTotal]));
+			w45.Position = 2;
+			w45.Expand = false;
+			w45.Fill = false;
+			this.GtkAlignment7.Add(this.vbox7);
+			this.frame2.Add(this.GtkAlignment7);
+			this.GtkLabel12 = new global::Gtk.Label();
+			this.GtkLabel12.Name = "GtkLabel12";
+			this.GtkLabel12.LabelProp = global::Mono.Unix.Catalog.GetString("<b>VirusTotal</b>");
+			this.GtkLabel12.UseMarkup = true;
+			this.frame2.LabelWidget = this.GtkLabel12;
+			this.vbox4.Add(this.frame2);
+			global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.frame2]));
+			w48.Position = 2;
+			w48.Expand = false;
+			w48.Fill = false;
+			this.hbox2.Add(this.vbox4);
+			global::Gtk.Box.BoxChild w49 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbox4]));
+			w49.Position = 1;
+			w49.Expand = false;
+			w49.Fill = false;
+			w1.Add(this.hbox2);
+			global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(w1[this.hbox2]));
+			w50.Position = 0;
+			w50.Expand = false;
+			w50.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.hbox18 = new global::Gtk.HBox();
 			this.hbox18.Name = "hbox18";
@@ -464,10 +573,10 @@ namespace osrepodbmgr
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = "gtk-cancel";
 			this.hbox18.Add(this.btnCancel);
-			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
-			w42.Position = 0;
-			w42.Expand = false;
-			w42.Fill = false;
+			global::Gtk.Box.BoxChild w51 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnCancel]));
+			w51.Position = 0;
+			w51.Expand = false;
+			w51.Fill = false;
 			// Container child hbox18.Gtk.Box+BoxChild
 			this.btnApply = new global::Gtk.Button();
 			this.btnApply.CanFocus = true;
@@ -476,19 +585,19 @@ namespace osrepodbmgr
 			this.btnApply.UseUnderline = true;
 			this.btnApply.Label = "gtk-apply";
 			this.hbox18.Add(this.btnApply);
-			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
-			w43.PackType = ((global::Gtk.PackType)(1));
-			w43.Position = 1;
-			w43.Expand = false;
-			w43.Fill = false;
+			global::Gtk.Box.BoxChild w52 = ((global::Gtk.Box.BoxChild)(this.hbox18[this.btnApply]));
+			w52.PackType = ((global::Gtk.PackType)(1));
+			w52.Position = 1;
+			w52.Expand = false;
+			w52.Fill = false;
 			w1.Add(this.hbox18);
-			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(w1[this.hbox18]));
-			w44.Position = 1;
-			w44.Expand = false;
-			w44.Fill = false;
+			global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(w1[this.hbox18]));
+			w53.Position = 1;
+			w53.Expand = false;
+			w53.Fill = false;
 			// Internal child osrepodbmgr.dlgSettings.ActionArea
-			global::Gtk.HButtonBox w45 = this.ActionArea;
-			w45.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
+			global::Gtk.HButtonBox w54 = this.ActionArea;
+			w54.Name = "__gtksharp_108_Stetic_TopLevelDialog_ActionArea";
 			// Container child __gtksharp_108_Stetic_TopLevelDialog_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.btnDialog = new global::Gtk.Button();
 			this.btnDialog.CanFocus = true;
@@ -496,17 +605,18 @@ namespace osrepodbmgr
 			this.btnDialog.UseUnderline = true;
 			this.btnDialog.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
 			this.AddActionWidget(this.btnDialog, 0);
-			global::Gtk.ButtonBox.ButtonBoxChild w46 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w45[this.btnDialog]));
-			w46.Expand = false;
-			w46.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w55 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w54[this.btnDialog]));
+			w55.Expand = false;
+			w55.Fill = false;
 			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 680;
-			this.DefaultHeight = 250;
+			this.DefaultHeight = 320;
 			this.lblUnarVersion.Hide();
-			w45.Hide();
+			this.lblVirusTotal.Hide();
+			w54.Hide();
 			this.Show();
 			this.btnDatabase.Clicked += new global::System.EventHandler(this.OnBtnDatabaseClicked);
 			this.btnRepository.Clicked += new global::System.EventHandler(this.OnBtnRepositoryClicked);
@@ -515,6 +625,8 @@ namespace osrepodbmgr
 			this.chkAntivirus.Toggled += new global::System.EventHandler(this.OnChkAntivirusToggled);
 			this.chkClamd.Toggled += new global::System.EventHandler(this.OnChkClamdToggled);
 			this.btnClamdTest.Clicked += new global::System.EventHandler(this.OnBtnClamdTestClicked);
+			this.chkVirusTotal.Toggled += new global::System.EventHandler(this.OnChkVirusTotalToggled);
+			this.btnVirusTotal.Clicked += new global::System.EventHandler(this.OnBtnVirusTotalClicked);
 			this.btnCancel.Clicked += new global::System.EventHandler(this.OnBtnCancelClicked);
 			this.btnApply.Clicked += new global::System.EventHandler(this.OnBtnApplyClicked);
 		}

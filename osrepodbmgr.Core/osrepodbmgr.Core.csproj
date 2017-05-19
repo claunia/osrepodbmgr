@@ -47,6 +47,11 @@
     <Reference Include="nClam">
       <HintPath>..\packages\nClam.3.0.0\lib\net45\nClam.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="VirusTotal.NET">
+      <HintPath>..\packages\VirusTotal.NET.1.5.3\lib\net45\VirusTotal.NET.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,6 +75,7 @@
     <Compile Include="Workers\Miscellaneous.cs" />
     <Compile Include="Workers\DiscImageChef.cs" />
     <Compile Include="Workers\Clamd.cs" />
+    <Compile Include="Workers\VirusTotal.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

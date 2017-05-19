@@ -43,6 +43,8 @@ namespace osrepodbmgr.Eto.XamMac2
             {
                 if(Core.Settings.Current.UseClamd)
                     Workers.InitClamd();
+                if(Core.Settings.Current.UseVirusTotal)
+                    Context.virusTotalEnabled = Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
             }
             Context.usableDotNetZip = false;
             new Application(Platforms.XamMac2).Run(new frmMain());

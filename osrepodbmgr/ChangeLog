@@ -1,3 +1,13 @@
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* Program.cs:
+	* frmMain.cs:
+	* dlgSettings.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.frmMain.cs:
+	* gtk-gui/osrepodbmgr.dlgSettings.cs:
+	  Added support for VirusTotal.
+
 2017-05-18  Natalia Portillo  <claunia@claunia.com>
 
 	* frmMain.cs:

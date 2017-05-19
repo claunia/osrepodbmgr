@@ -654,13 +654,13 @@ namespace osrepodbmgr.Eto
                 btnToggleCrack.Enabled = false;
                 btnScanWithClamd.Enabled = false;
                 btnCheckInVirusTotal.Enabled = false;
-                prgProgress.Visible = true;
-                lblProgress.Visible = true;
+                prgProgressFiles1.Visible = true;
+                lblProgressFiles1.Visible = true;
                 Workers.Failed += ClamdFailed;
                 Workers.ScanFinished += ClamdFinished;
 
-                lblProgress.Text = "Scanning file with clamd.";
-                prgProgress.Indeterminate = true;
+                lblProgressFiles1.Text = "Scanning file with clamd.";
+                prgProgressFiles1.Indeterminate = true;
 
                 thdScanFile = new Thread(() => Workers.ClamScanFileFromRepo(file));
                 thdScanFile.Start();
@@ -675,11 +675,11 @@ namespace osrepodbmgr.Eto
                 btnToggleCrack.Enabled = true;
                 btnScanWithClamd.Enabled = true;
                 btnCheckInVirusTotal.Enabled = true;
-                prgProgress.Visible = false;
-                lblProgress.Visible = false;
+                prgProgressFiles1.Visible = false;
+                lblProgressFiles1.Visible = false;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
-                lblProgress.Text = "";
+                lblProgressFiles1.Text = "";
                 if(thdScanFile != null)
                 {
                     thdScanFile.Abort();
@@ -698,9 +698,9 @@ namespace osrepodbmgr.Eto
                 btnCheckInVirusTotal.Enabled = true;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
-                lblProgress.Text = "";
-                prgProgress.Visible = false;
-                lblProgress.Visible = false;
+                lblProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = false;
+                lblProgressFiles1.Visible = false;
                 if(thdScanFile != null)
                     thdScanFile = null;
 
@@ -711,13 +711,88 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnCheckInVirusTotalClicked(object sender, EventArgs e)
         {
+            if(treeFiles.SelectedItem != null)
+            {
+                DBFile file = Workers.GetDBFile(((DBFile)treeFiles.SelectedItem).Sha256);
+                outIter = (osrepodbmgr.Core.DBFile)treeFiles.SelectedItem;
+
+                if(file == null)
+                {
+                    MessageBox.Show("Cannot get file from database", MessageBoxType.Error);
+                    return;
+                }
+
+                treeFiles.Enabled = false;
+                btnToggleCrack.Enabled = false;
+                btnScanWithClamd.Enabled = false;
+                btnCheckInVirusTotal.Enabled = false;
+                prgProgressFiles1.Visible = true;
+                lblProgressFiles1.Visible = true;
+                Workers.Failed += VirusTotalFailed;
+                Workers.ScanFinished += VirusTotalFinished;
+                Workers.UpdateProgress += UpdateVirusProgress;
+
+                lblProgressFiles1.Text = "Scanning file with VirusTotal.";
+                prgProgressFiles1.Indeterminate = true;
+
+                thdScanFile = new Thread(() => Workers.VirusTotalFileFromRepo(file));
+                thdScanFile.Start();
+            }
+        }
+
+        void VirusTotalFailed(string text)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                MessageBox.Show(text, MessageBoxType.Error);
+                treeFiles.Enabled = true;
+                btnToggleCrack.Enabled = true;
+                btnScanWithClamd.Enabled = true;
+                btnCheckInVirusTotal.Enabled = true;
+                prgProgressFiles1.Visible = false;
+                Workers.Failed -= VirusTotalFailed;
+                Workers.ScanFinished -= VirusTotalFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
+                lblProgressFiles1.Text = "";
+                if(thdScanFile != null)
+                {
+                    thdScanFile.Abort();
+                    thdScanFile = null;
+                }
+            });
+        }
+
+        void VirusTotalFinished(DBFile file)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                treeFiles.Enabled = true;
+                btnToggleCrack.Enabled = true;
+                btnScanWithClamd.Enabled = true;
+                btnCheckInVirusTotal.Enabled = true;
+                Workers.Failed -= VirusTotalFailed;
+                Workers.ScanFinished -= VirusTotalFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
+                lblProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = false;
+                if(thdScanFile != null)
+                    thdScanFile = null;
+
+                lstFiles.Remove(outIter);
+                AddFile(file);
+            });
+        }
+
+        public void UpdateVirusProgress(string text, string inner, long current, long maximum)
+        {
+            Application.Instance.Invoke(delegate
+            {
+                lblProgressFiles1.Text = text;
+            });
         }
 
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
-            // TODO: Implement
-            btnCheckInVirusTotal.Enabled = false;
-
             tabOSes.Enabled = false;
             btnStopFiles.Visible = true;
             btnPopulateFiles.Visible = false;

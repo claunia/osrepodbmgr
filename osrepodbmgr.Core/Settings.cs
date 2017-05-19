@@ -45,6 +45,8 @@ namespace osrepodbmgr.Core
         public string ClamdHost;
         public ushort ClamdPort;
         public bool ClamdIsLocal;
+        public bool UseVirusTotal;
+        public string VirusTotalKey;
     }
 
     public static class Settings
@@ -152,6 +154,20 @@ namespace osrepodbmgr.Core
                                 else
                                     Current.ClamdIsLocal = false;
 
+                                if(parsedPreferences.TryGetValue("UseVirusTotal", out obj))
+                                {
+                                    Current.ClamdIsLocal = ((NSNumber)obj).ToBool();
+                                }
+                                else
+                                    Current.ClamdIsLocal = false;
+
+                                if(parsedPreferences.TryGetValue("VirusTotalKey", out obj))
+                                {
+                                    Current.ClamdHost = ((NSString)obj).ToString();
+                                }
+                                else
+                                    Current.ClamdHost = null;
+
                                 prefsFs.Close();
                             }
                             else {
@@ -195,6 +211,8 @@ namespace osrepodbmgr.Core
                             Current.ClamdHost = (string)key.GetValue("ClamdHost");
                             Current.ClamdPort = (ushort)key.GetValue("ClamdPort");
                             Current.ClamdIsLocal = (bool)key.GetValue("ClamdIsLocal");
+                            Current.UseVirusTotal = (bool)key.GetValue("UseVirusTotal");
+                            Current.VirusTotalKey = (string)key.GetValue("VirusTotalKey");
                         }
                         break;
                     default:
@@ -251,6 +269,8 @@ namespace osrepodbmgr.Core
                             root.Add("ClamdHost", Current.ClamdHost);
                             root.Add("ClamdPort", Current.ClamdPort);
                             root.Add("ClamdIsLocal", Current.ClamdIsLocal);
+                            root.Add("UseVirusTotal", Current.UseVirusTotal);
+                            root.Add("VirusTotalKey", Current.VirusTotalKey);
 
                             string preferencesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Preferences");
                             string preferencesFilePath = Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
@@ -280,6 +300,8 @@ namespace osrepodbmgr.Core
                             key.SetValue("ClamdHost", Current.ClamdHost);
                             key.SetValue("ClamdPort", Current.ClamdPort);
                             key.SetValue("ClamdIsLocal", Current.ClamdIsLocal);
+                            key.SetValue("UseVirusTotal", Current.UseVirusTotal);
+                            key.SetValue("VirusTotalKey", Current.VirusTotalKey);
                         }
                         break;
                     default:
@@ -320,6 +342,8 @@ namespace osrepodbmgr.Core
             Current.ClamdHost = null;
             Current.ClamdPort = 3310;
             Current.ClamdIsLocal = false;
+            Current.UseVirusTotal = false;
+            Current.VirusTotalKey = null;
         }
     }
 }

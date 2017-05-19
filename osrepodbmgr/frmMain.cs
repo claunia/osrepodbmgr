@@ -671,18 +671,18 @@ namespace osrepodbmgr
                 btnToggleCrack.Sensitive = false;
                 btnScanWithClamd.Sensitive = false;
                 btnCheckInVirusTotal.Sensitive = false;
-                prgProgress.Visible = true;
+                prgProgressFiles1.Visible = true;
                 Workers.Failed += ClamdFailed;
                 Workers.ScanFinished += ClamdFinished;
 
-                prgProgress.Text = "Scanning file with clamd.";
+                prgProgressFiles1.Text = "Scanning file with clamd.";
                 thdPulseProgress = new Thread(() =>
                 {
                     while(true)
                     {
                         Application.Invoke(delegate
                         {
-                            prgProgress.Pulse();
+                            prgProgressFiles1.Pulse();
                         });
                         Thread.Sleep(66);
                     }
@@ -701,10 +701,10 @@ namespace osrepodbmgr
                 btnToggleCrack.Sensitive = true;
                 btnScanWithClamd.Sensitive = true;
                 btnCheckInVirusTotal.Sensitive = true;
-                prgProgress.Visible = false;
+                prgProgressFiles1.Visible = false;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
-                prgProgress.Text = "";
+                prgProgressFiles1.Text = "";
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -728,8 +728,8 @@ namespace osrepodbmgr
                 btnCheckInVirusTotal.Sensitive = true;
                 Workers.Failed -= ClamdFailed;
                 Workers.ScanFinished -= ClamdFinished;
-                prgProgress.Text = "";
-                prgProgress.Visible = false;
+                prgProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = false;
                 if(thdPulseProgress != null)
                 {
                     thdPulseProgress.Abort();
@@ -745,13 +745,111 @@ namespace osrepodbmgr
 
         protected void OnBtnCheckInVirusTotalClicked(object sender, EventArgs e)
         {
+            if(treeFiles.Selection.GetSelected(out outIter))
+            {
+                DBFile file = Workers.GetDBFile((string)fileView.GetValue(outIter, 0));
+
+                if(file == null)
+                {
+                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                                 "Cannot get file from database");
+                    dlgMsg.Run();
+                    dlgMsg.Destroy();
+                    return;
+                }
+
+                treeFiles.Sensitive = false;
+                btnToggleCrack.Sensitive = false;
+                btnScanWithClamd.Sensitive = false;
+                btnCheckInVirusTotal.Sensitive = false;
+                prgProgressFiles1.Visible = true;
+                Workers.Failed += VirusTotalFailed;
+                Workers.ScanFinished += VirusTotalFinished;
+                Workers.UpdateProgress += UpdateVirusProgress;
+
+                prgProgressFiles1.Text = "Scanning file with VirusTotal.";
+                thdPulseProgress = new Thread(() =>
+                {
+                    while(true)
+                    {
+                        Application.Invoke(delegate
+                        {
+                            prgProgressFiles1.Pulse();
+                        });
+                        Thread.Sleep(66);
+                    }
+                });
+
+                thdScanFile = new Thread(() => Workers.VirusTotalFileFromRepo(file));
+                thdScanFile.Start();
+            }
+        }
+
+        void VirusTotalFailed(string text)
+        {
+            Application.Invoke(delegate
+            {
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
+                treeFiles.Sensitive = true;
+                btnToggleCrack.Sensitive = true;
+                btnScanWithClamd.Sensitive = true;
+                btnCheckInVirusTotal.Sensitive = true;
+                prgProgressFiles1.Visible = false;
+                Workers.Failed -= VirusTotalFailed;
+                Workers.ScanFinished -= VirusTotalFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
+                prgProgressFiles1.Text = "";
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdScanFile != null)
+                {
+                    thdScanFile.Abort();
+                    thdScanFile = null;
+                }
+            });
+        }
+
+        void VirusTotalFinished(DBFile file)
+        {
+            Application.Invoke(delegate
+            {
+                treeFiles.Sensitive = true;
+                btnToggleCrack.Sensitive = true;
+                btnScanWithClamd.Sensitive = true;
+                btnCheckInVirusTotal.Sensitive = true;
+                Workers.Failed -= VirusTotalFailed;
+                Workers.ScanFinished -= VirusTotalFinished;
+                Workers.UpdateProgress -= UpdateVirusProgress;
+                prgProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = false;
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdScanFile != null)
+                    thdScanFile = null;
+
+                fileView.Remove(ref outIter);
+                AddFile(file);
+            });
+        }
+
+        public void UpdateVirusProgress(string text, string inner, long current, long maximum)
+        {
+            Application.Invoke(delegate
+            {
+                prgProgressFiles1.Text = text;
+            });
         }
 
         protected void OnBtnPopulateFilesClicked(object sender, EventArgs e)
         {
-            // TODO: Implement
-            btnCheckInVirusTotal.Sensitive = false;
-
             notebook1.GetNthPage(0).Sensitive = false;
             btnStopFiles.Visible = true;
             btnPopulateFiles.Visible = false;

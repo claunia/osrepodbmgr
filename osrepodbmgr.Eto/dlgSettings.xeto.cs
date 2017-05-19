@@ -53,6 +53,11 @@ namespace osrepodbmgr.Eto
         Button btnClamdTest;
         Label lblClamdVersion;
         CheckBox chkClamdIsLocal;
+        GroupBox frmVirusTotal;
+        CheckBox chkVirusTotal;
+        TextBox txtVirusTotal;
+        Button btnVirusTotal;
+        Label lblVirusTotal;
 #pragma warning restore 0649
         #endregion XAML UI elements
 
@@ -83,6 +88,14 @@ namespace osrepodbmgr.Eto
                 spClamdPort.Value = Core.Settings.Current.ClamdPort;
                 chkClamdIsLocal.Checked = Core.Settings.Current.ClamdIsLocal;
             }
+            if(Core.Settings.Current.UseAntivirus && Core.Settings.Current.UseVirusTotal)
+            {
+                chkVirusTotal.Checked = true;
+                chkVirusTotal.Enabled = true;
+                txtVirusTotal.Enabled = true;
+                txtVirusTotal.Text = Core.Settings.Current.VirusTotalKey;
+                btnVirusTotal.Enabled = true;
+            }
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -105,7 +118,17 @@ namespace osrepodbmgr.Eto
                 Core.Settings.Current.ClamdPort = 3310;
                 Core.Settings.Current.ClamdIsLocal = false;
             }
-            Settings.SaveSettings();
+            if(chkVirusTotal.Checked.Value && chkAntivirus.Checked.Value)
+            {
+                Core.Settings.Current.UseVirusTotal = true;
+                Core.Settings.Current.VirusTotalKey = txtVirusTotal.Text;
+                Core.Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
+            }
+            else
+            {
+                Core.Settings.Current.UseVirusTotal = false;
+                Core.Settings.Current.VirusTotalKey = null;
+            }            Settings.SaveSettings();
             Workers.CloseDB();
             Workers.InitDB();
             Context.clamdVersion = null;
@@ -250,6 +273,7 @@ namespace osrepodbmgr.Eto
         protected void OnChkAntivirusToggled(object sender, EventArgs e)
         {
             frmClamd.Visible = chkAntivirus.Checked.Value;
+            frmVirusTotal.Visible = chkAntivirus.Checked.Value;
         }
 
         protected void OnChkClamdToggled(object sender, EventArgs e)
@@ -293,6 +317,28 @@ namespace osrepodbmgr.Eto
             lblClamdVersion.Text = Context.clamdVersion;
             Context.clamdVersion = oldVersion;
             lblClamdVersion.Visible = true;
+        }
+
+        protected void OnChkVirusTotalToggled(object sender, EventArgs e)
+        {
+            txtVirusTotal.Enabled = chkVirusTotal.Checked.Value;
+            btnVirusTotal.Enabled = chkVirusTotal.Checked.Value;
+            lblVirusTotal.Visible = false;
+        }
+
+        protected void OnBtnVirusTotalClicked(object sender, EventArgs e)
+        {
+            Workers.Failed += VirusTotalTestFailed;
+            if(Workers.TestVirusTotal(txtVirusTotal.Text))
+            {
+                lblVirusTotal.Visible = true;
+                lblVirusTotal.Text = "Working!";
+            }
+        }
+
+        void VirusTotalTestFailed(string text)
+        {
+            MessageBox.Show(text, MessageBoxType.Error);
         }
     }
 }

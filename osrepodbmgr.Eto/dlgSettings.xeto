@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="650" Height="175" xmlns:e="clr-namespace:osrepodbmgr.Core;assembly=osrepodbmgr.Core">
+<Dialog xmlns="http://schema.picoe.ca/eto.forms" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="650" Height="225" xmlns:e="clr-namespace:osrepodbmgr.Core;assembly=osrepodbmgr.Core">
 	<StackLayout Orientation="Vertical">
 		<StackLayoutItem HorizontalAlignment="Stretch">
 			<StackLayout Orientation="Horizontal">
@@ -69,38 +69,65 @@
 				</StackLayout>
 				<StackLayout Orientation="Vertical">
 					<CheckBox ID="chkAntivirus" CheckedChanged="OnChkAntivirusToggled" ThreeState="False">Use antivirus?</CheckBox>
-					<GroupBox Text="clamd" ID="frmClamd">
-						<StackLayout Orientation="Vertical">
-							<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-								<CheckBox ID="chkClamd" CheckedChanged="OnChkClamdToggled" ThreeState="False">Use clamd?</CheckBox>
-							</StackLayoutItem>
-							<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-								<StackLayout Orientation="Horizontal">
-									<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-										<Label>Host</Label>
-									</StackLayoutItem>
-									<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-										<TextBox ID="txtClamdHost" />
-									</StackLayoutItem>
-									<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-										<Label>port</Label>
-									</StackLayoutItem>
-									<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-										<NumericUpDown ID="spClamdPort" MaxValue="65535" MinValue="1" Value="3310" />
-									</StackLayoutItem>
-									<StackLayoutItem HorizontalAlignment="Stretch">
-										<Button ID="btnClamdTest" Click="OnBtnClamdTestClicked">Test</Button>
-									</StackLayoutItem>
-								</StackLayout>
-							</StackLayoutItem>
-							<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-								<Label Visible="False" ID="lblClamdVersion" />
-							</StackLayoutItem>
-							<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
-								<CheckBox ID="chkClamdIsLocal" ThreeState="False">Clamd is local?</CheckBox>
-							</StackLayoutItem>
-						</StackLayout>
-					</GroupBox>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<GroupBox Text="clamd" ID="frmClamd">
+							<StackLayout Orientation="Vertical">
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<CheckBox ID="chkClamd" CheckedChanged="OnChkClamdToggled" ThreeState="False">Use clamd?</CheckBox>
+								</StackLayoutItem>
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<StackLayout Orientation="Horizontal">
+										<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+											<Label>Host</Label>
+										</StackLayoutItem>
+										<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+											<TextBox ID="txtClamdHost" Enabled="False" />
+										</StackLayoutItem>
+										<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+											<Label>port</Label>
+										</StackLayoutItem>
+										<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+											<NumericUpDown ID="spClamdPort" MaxValue="65535" MinValue="1" Value="3310" Enabled="False" />
+										</StackLayoutItem>
+										<StackLayoutItem HorizontalAlignment="Stretch">
+											<Button ID="btnClamdTest" Click="OnBtnClamdTestClicked" Enabled="False">Test</Button>
+										</StackLayoutItem>
+									</StackLayout>
+								</StackLayoutItem>
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<Label Visible="False" ID="lblClamdVersion" />
+								</StackLayoutItem>
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<CheckBox ID="chkClamdIsLocal" ThreeState="False" Enabled="False">Clamd is local?</CheckBox>
+								</StackLayoutItem>
+							</StackLayout>
+						</GroupBox>
+					</StackLayoutItem>
+					<StackLayoutItem HorizontalAlignment="Stretch">
+						<GroupBox Text="VirusTotal" ID="frmVirusTotal">
+							<StackLayout Orientation="Vertical">
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<CheckBox ID="chkVirusTotal" CheckedChanged="OnChkVirusTotalToggled" ThreeState="False">Use VirusTotal?</CheckBox>
+								</StackLayoutItem>
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<StackLayout Orientation="Horizontal">
+										<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+											<Label>API Key</Label>
+										</StackLayoutItem>
+										<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+											<TextBox ID="txtVirusTotal" Enabled="False" />
+										</StackLayoutItem>
+										<StackLayoutItem HorizontalAlignment="Stretch">
+											<Button ID="btnVirusTotal" Click="OnBtnVirusTotalClicked" Enabled="False">Test</Button>
+										</StackLayoutItem>
+									</StackLayout>
+								</StackLayoutItem>
+								<StackLayoutItem HorizontalAlignment="Stretch" Expand="True">
+									<Label Visible="False" ID="lblVirusTotal" />
+								</StackLayoutItem>
+							</StackLayout>
+						</GroupBox>
+					</StackLayoutItem>
 				</StackLayout>
 			</StackLayout>
 		</StackLayoutItem>
