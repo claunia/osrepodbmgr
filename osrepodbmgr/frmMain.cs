@@ -792,9 +792,6 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
-                dlgMsg.Run();
-                dlgMsg.Destroy();
                 treeFiles.Sensitive = true;
                 btnToggleCrack.Sensitive = true;
                 btnScanWithClamd.Sensitive = true;
@@ -814,6 +811,9 @@ namespace osrepodbmgr
                     thdScanFile.Abort();
                     thdScanFile = null;
                 }
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                dlgMsg.Run();
+                dlgMsg.Destroy();
             });
         }
 

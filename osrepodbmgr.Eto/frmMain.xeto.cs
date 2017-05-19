@@ -747,7 +747,6 @@ namespace osrepodbmgr.Eto
         {
             Application.Instance.Invoke(delegate
             {
-                MessageBox.Show(text, MessageBoxType.Error);
                 treeFiles.Enabled = true;
                 btnToggleCrack.Enabled = true;
                 btnScanWithClamd.Enabled = true;
@@ -759,6 +758,7 @@ namespace osrepodbmgr.Eto
                 lblProgressFiles1.Text = "";
                 if(thdScanFile != null)
                     thdScanFile = null;
+                MessageBox.Show(text, MessageBoxType.Error);
             });
         }
 

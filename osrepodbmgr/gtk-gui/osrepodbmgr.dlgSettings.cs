@@ -78,7 +78,7 @@ namespace osrepodbmgr
 
 		private global::Gtk.Label GtkLabel8;
 
-		private global::Gtk.Frame frame2;
+		private global::Gtk.Frame frmVirusTotal;
 
 		private global::Gtk.Alignment GtkAlignment7;
 
@@ -467,10 +467,10 @@ namespace osrepodbmgr
 			w39.Expand = false;
 			w39.Fill = false;
 			// Container child vbox4.Gtk.Box+BoxChild
-			this.frame2 = new global::Gtk.Frame();
-			this.frame2.Name = "frame2";
-			this.frame2.ShadowType = ((global::Gtk.ShadowType)(0));
-			// Container child frame2.Gtk.Container+ContainerChild
+			this.frmVirusTotal = new global::Gtk.Frame();
+			this.frmVirusTotal.Name = "frmVirusTotal";
+			this.frmVirusTotal.ShadowType = ((global::Gtk.ShadowType)(0));
+			// Container child frmVirusTotal.Gtk.Container+ContainerChild
 			this.GtkAlignment7 = new global::Gtk.Alignment(0F, 0F, 1F, 1F);
 			this.GtkAlignment7.Name = "GtkAlignment7";
 			this.GtkAlignment7.LeftPadding = ((uint)(12));
@@ -540,14 +540,14 @@ namespace osrepodbmgr
 			w45.Expand = false;
 			w45.Fill = false;
 			this.GtkAlignment7.Add(this.vbox7);
-			this.frame2.Add(this.GtkAlignment7);
+			this.frmVirusTotal.Add(this.GtkAlignment7);
 			this.GtkLabel12 = new global::Gtk.Label();
 			this.GtkLabel12.Name = "GtkLabel12";
 			this.GtkLabel12.LabelProp = global::Mono.Unix.Catalog.GetString("<b>VirusTotal</b>");
 			this.GtkLabel12.UseMarkup = true;
-			this.frame2.LabelWidget = this.GtkLabel12;
-			this.vbox4.Add(this.frame2);
-			global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.frame2]));
+			this.frmVirusTotal.LabelWidget = this.GtkLabel12;
+			this.vbox4.Add(this.frmVirusTotal);
+			global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.frmVirusTotal]));
 			w48.Position = 2;
 			w48.Expand = false;
 			w48.Fill = false;

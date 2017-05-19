@@ -1141,7 +1141,7 @@ public partial class dlgAdd : Dialog
             Workers.UpdateProgress -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
             if(thdExtractArchive != null)
-                thdExtractArchive.Abort();
+                thdExtractArchive = null;
             if(thdPulseProgress != null)
                 thdPulseProgress.Abort();
             thdPulseProgress = new Thread(() =>

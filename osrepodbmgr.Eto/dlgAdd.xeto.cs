@@ -336,7 +336,7 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 thdHashFiles = null;
 
-                lblProgress.Visible = false;
+                lblProgress.Visible = true;
                 prgProgress.Visible = true;
 
                 thdCheckFiles = new Thread(Workers.CheckDbForFiles);
@@ -1104,8 +1104,7 @@ namespace osrepodbmgr.Eto
                 Workers.UpdateProgress2 -= UpdateProgress2;
                 prgProgress.Indeterminate = true;
 
-                if(thdExtractArchive != null)
-                    thdExtractArchive.Abort();
+                thdExtractArchive = null;
                 thdFindFiles = new Thread(Workers.FindFiles);
                 Workers.Failed += FindFilesFailed;
                 Workers.Finished += FindFilesFinished;
