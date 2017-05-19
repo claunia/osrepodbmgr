@@ -96,7 +96,9 @@ namespace osrepodbmgr.Core
                 SQLiteCommand dbCmd = dbCon.CreateCommand();
                 string sql;
 
+#if DEBUG
                 Console.WriteLine("Creating osrepodbmgr table");
+#endif
 
                 sql = "CREATE TABLE osrepodbmgr ( version INTEGER, name TEXT )";
                 dbCmd.CommandText = sql;
@@ -106,11 +108,15 @@ namespace osrepodbmgr.Core
                 dbCmd.CommandText = sql;
                 dbCmd.ExecuteNonQuery();
 
+#if DEBUG
                 Console.WriteLine("Creating oses table");
+#endif
                 dbCmd.CommandText = Schema.OSesTableSql;
                 dbCmd.ExecuteNonQuery();
 
+#if DEBUG
                 Console.WriteLine("Creating files table");
+#endif
                 dbCmd.CommandText = Schema.FilesTableSql;
                 dbCmd.ExecuteNonQuery();
 

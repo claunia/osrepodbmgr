@@ -306,8 +306,13 @@ namespace osrepodbmgr.Core
 #if DEBUG
                 stopwatch.Restart();
 #endif
+                int counter = 0;
                 while(fResult.ResponseCode == VirusTotalNET.ResponseCodes.ReportResponseCode.StillQueued)
                 {
+                    // Timeout...
+                    if(counter == 10)
+                        break;
+                    
                     // Wait 15 seconds so we fall in the 4 requests/minute
                     Thread.Sleep(15000);
 
@@ -315,6 +320,8 @@ namespace osrepodbmgr.Core
                     {
                         fResult = await vTotal.GetFileReport(file.Sha256);
                     }).Wait();
+
+                    counter++;
                 }
 #if DEBUG
                 stopwatch.Stop();

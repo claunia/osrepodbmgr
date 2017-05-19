@@ -90,9 +90,16 @@ namespace osrepodbmgr.Core
 
             try
             {
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Detecting image format", 2, maxProgress);
                 _imageFormat = ImageFormat.Detect(inputFilter);
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.AddMedia(): Took {0} seconds to detect image format", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(_imageFormat == null)
                 {
@@ -127,6 +134,9 @@ namespace osrepodbmgr.Core
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Hashing image file", 3, maxProgress);
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 byte[] data;
                 long position = 0;
                 while(position < (fi.Length - 524288))
@@ -151,6 +161,10 @@ namespace osrepodbmgr.Core
                 imgChkWorker.Update(data);
 
                 fs.Close();
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash image file", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 List<ChecksumType> imgChecksums = imgChkWorker.End();
 
@@ -192,6 +206,9 @@ namespace osrepodbmgr.Core
 
                             currentProgress = 3;
 
+#if DEBUG
+                            stopwatch.Restart();
+#endif
                             foreach(MediaTagType tagType in _imageFormat.ImageInfo.readableMediaTags)
                             {
                                 currentProgress++;
@@ -342,6 +359,10 @@ namespace osrepodbmgr.Core
                                         break;
                                 }
                             }
+#if DEBUG
+                            stopwatch.Stop();
+                            Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash media tags", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                             try
                             {
@@ -451,6 +472,9 @@ namespace osrepodbmgr.Core
                                 ulong sectors = (ulong)(xmlTrk.EndSector - xmlTrk.StartSector + 1);
                                 ulong doneSectors = 0;
 
+#if DEBUG
+                                stopwatch.Restart();
+#endif
                                 while(doneSectors < sectors)
                                 {
                                     byte[] sector;
@@ -474,6 +498,10 @@ namespace osrepodbmgr.Core
                                 }
 
                                 List<ChecksumType> trkChecksums = trkChkWorker.End();
+#if DEBUG
+                                stopwatch.Stop();
+                                Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash track {1}", stopwatch.Elapsed.TotalSeconds, trk.TrackSequence);
+#endif
 
                                 xmlTrk.Checksums = trkChecksums.ToArray();
 
@@ -518,6 +546,9 @@ namespace osrepodbmgr.Core
                                     sectors = (ulong)(xmlTrk.EndSector - xmlTrk.StartSector + 1);
                                     doneSectors = 0;
 
+#if DEBUG
+                                    stopwatch.Restart();
+#endif
                                     while(doneSectors < sectors)
                                     {
                                         byte[] sector;
@@ -543,6 +574,10 @@ namespace osrepodbmgr.Core
                                     List<ChecksumType> subChecksums = subChkWorker.End();
 
                                     xmlTrk.SubChannel.Checksums = subChecksums.ToArray();
+#if DEBUG
+                                    stopwatch.Stop();
+                                    Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash subchannel of track {1}", stopwatch.Elapsed.TotalSeconds, trk.TrackSequence);
+#endif
 
                                     if(UpdateProgress2 != null)
                                         UpdateProgress2(null, null, 0, 0);
@@ -551,6 +586,9 @@ namespace osrepodbmgr.Core
                                 if(UpdateProgress != null)
                                     UpdateProgress(null, "Checking filesystems", maxProgress - 1, maxProgress);
 
+#if DEBUG
+                                stopwatch.Restart();
+#endif
                                 List<Partition> partitions = new List<Partition>();
 
                                 foreach(PartPlugin _partplugin in plugins.PartPluginsList.Values)
@@ -648,6 +686,10 @@ namespace osrepodbmgr.Core
                                     if(lstFs.Count > 0)
                                         xmlTrk.FileSystemInformation[0].FileSystems = lstFs.ToArray();
                                 }
+#if DEBUG
+                                stopwatch.Stop();
+                                Console.WriteLine("Core.AddMedia(): Took {0} seconds to check all filesystems on track {1}", stopwatch.Elapsed.TotalSeconds, trk.TrackSequence);
+#endif
 
                                 trksLst.Add(xmlTrk);
                             }
@@ -716,6 +758,9 @@ namespace osrepodbmgr.Core
 
                             currentProgress = 3;
 
+#if DEBUG
+                            stopwatch.Restart();
+#endif
                             foreach(MediaTagType tagType in _imageFormat.ImageInfo.readableMediaTags)
                             {
                                 currentProgress++;
@@ -803,6 +848,10 @@ namespace osrepodbmgr.Core
                                         break;
                                 }
                             }
+#if DEBUG
+                            stopwatch.Stop();
+                            Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash media tags", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                             string dskType, dskSubType;
                             DiscImageChef.Metadata.MediaType.MediaTypeToString(_imageFormat.ImageInfo.mediaType, out dskType, out dskSubType);
@@ -819,6 +868,9 @@ namespace osrepodbmgr.Core
                             if(UpdateProgress != null)
                                 UpdateProgress(null, "Checking filesystems", maxProgress - 1, maxProgress);
 
+#if DEBUG
+                            stopwatch.Restart();
+#endif
                             List<Partition> partitions = new List<Partition>();
 
                             foreach(PartPlugin _partplugin in plugins.PartPluginsList.Values)
@@ -901,6 +953,10 @@ namespace osrepodbmgr.Core
                                 if(lstFs.Count > 0)
                                     sidecar.BlockMedia[0].FileSystemInformation[0].FileSystems = lstFs.ToArray();
                             }
+#if DEBUG
+                            stopwatch.Stop();
+                            Console.WriteLine("Core.AddMedia(): Took {0} seconds to check all filesystems", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                             // TODO: Implement support for getting CHS
                             if(UpdateProgress != null)

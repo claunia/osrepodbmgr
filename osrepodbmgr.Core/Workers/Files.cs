@@ -66,10 +66,22 @@ namespace osrepodbmgr.Core
 
             try
             {
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 Context.files = new List<string>(Directory.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories));
                 Context.files.Sort();
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.FindFiles(): Took {0} seconds to find all files", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
                 Context.folders = new List<string>(Directory.EnumerateDirectories(filesPath, "*", SearchOption.AllDirectories));
                 Context.folders.Sort();
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.FindFiles(): Took {0} seconds to find all folders", stopwatch.Elapsed.TotalSeconds);
+#endif
                 if(Finished != null)
                     Finished();
             }
@@ -116,6 +128,9 @@ namespace osrepodbmgr.Core
 
                 // End for metadata
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 long counter = 1;
                 foreach(string file in Context.files)
                 {
@@ -378,7 +393,11 @@ namespace osrepodbmgr.Core
                     Context.hashes.Add(relpath, dbFile);
                     counter++;
                 }
-
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.HashFiles(): Took {0} seconds to hash all files", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
                 counter = 1;
                 foreach(string folder in Context.folders)
                 {
@@ -405,6 +424,10 @@ namespace osrepodbmgr.Core
                     Context.foldersDict.Add(relpath, dbFolder);
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.HashFiles(): Took {0} seconds to iterate all folders", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(foundMetadata)
                 {
@@ -522,6 +545,9 @@ namespace osrepodbmgr.Core
                 FileStream inFs = new FileStream(Context.path, FileMode.Open, FileAccess.Read);
                 FileStream outFs = new FileStream(Context.tmpFolder, FileMode.Create, FileAccess.Write);
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 byte[] buffer = new byte[bufferSize];
 
                 while((inFs.Position + bufferSize) <= inFs.Length)
@@ -542,6 +568,10 @@ namespace osrepodbmgr.Core
 
                 inFs.Close();
                 outFs.Close();
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.CopyFile(): Took {0} seconds to copy file", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(Finished != null)
                     Finished();
@@ -597,6 +627,9 @@ namespace osrepodbmgr.Core
                 if(UpdateProgress != null)
                     UpdateProgress("", "Creating folders...", 3, 100);
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 counter = 0;
                 foreach(DBFolder folder in folders)
                 {
@@ -611,7 +644,14 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.SaveAs(): Took {0} seconds to create all folders", stopwatch.Elapsed.TotalSeconds);
+#endif
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 counter = 3;
                 foreach(DBOSFile file in files)
                 {
@@ -718,6 +758,10 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.SaveAs(): Took {0} seconds to create all files", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(Finished != null)
                     Finished();

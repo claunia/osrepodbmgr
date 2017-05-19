@@ -188,6 +188,9 @@ namespace osrepodbmgr.Core
                         break;
                 }
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 foreach(KeyValuePair<string, DBOSFile> file in Context.hashes)
                 {
                     if(UpdateProgress != null)
@@ -251,6 +254,10 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.CompressFiles(): Took {0} seconds to compress files", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(Context.metadata != null)
                 {
@@ -319,6 +326,9 @@ namespace osrepodbmgr.Core
                 string lsarfilename = unarfilename.Replace("unar", "lsar");
                 string lsarPath = Path.Combine(unarFolder, lsarfilename + extension);
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 Process lsarProcess = new Process();
                 lsarProcess.StartInfo.FileName = lsarPath;
                 lsarProcess.StartInfo.CreateNoWindow = true;
@@ -328,7 +338,11 @@ namespace osrepodbmgr.Core
                 lsarProcess.Start();
                 string lsarOutput = lsarProcess.StandardOutput.ReadToEnd();
                 lsarProcess.WaitForExit();
-
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.OpenArchive(): Took {0} seconds to list archive contents", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
                 long counter = 0;
                 string format = null;
                 JsonTextReader jsReader = new JsonTextReader(new StringReader(lsarOutput));
@@ -343,6 +357,10 @@ namespace osrepodbmgr.Core
                             format = jsReader.Value.ToString();
                     }
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.OpenArchive(): Took {0} seconds to process archive contents", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 Context.unzipWithUnAr = false;
                 Context.archiveFormat = format;
@@ -368,6 +386,9 @@ namespace osrepodbmgr.Core
 
                     if(Context.usableDotNetZip)
                     {
+#if DEBUG
+                        stopwatch.Restart();
+#endif
                         ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
                         foreach(ZipEntry ze in zf)
                         {
@@ -378,6 +399,10 @@ namespace osrepodbmgr.Core
                                 break;
                             }
                         }
+#if DEBUG
+                        stopwatch.Stop();
+                        Console.WriteLine("Core.OpenArchive(): Took {0} seconds to navigate in search of Mac OS X metadata", stopwatch.Elapsed.TotalSeconds);
+#endif
                     }
                 }
 
@@ -437,6 +462,9 @@ namespace osrepodbmgr.Core
                 {
                     try
                     {
+#if DEBUG
+                        stopwatch.Restart();
+#endif
                         ZipFile zf = ZipFile.Read(Context.path, new ReadOptions { Encoding = Encoding.UTF8 });
                         zf.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
                         zf.ExtractProgress += Zf_ExtractProgress;
@@ -466,6 +494,9 @@ namespace osrepodbmgr.Core
                         return;
                     }
 
+#if DEBUG
+                    stopwatch.Restart();
+#endif
                     Context.unarProcess = new Process();
                     Context.unarProcess.StartInfo.FileName = Settings.Current.UnArchiverPath;
                     Context.unarProcess.StartInfo.CreateNoWindow = true;
@@ -484,6 +515,10 @@ namespace osrepodbmgr.Core
                     Context.unarProcess.WaitForExit();
                     Context.unarProcess.Close();
                     Context.unarProcess = null;
+#if DEBUG
+                    stopwatch.Stop();
+                    Console.WriteLine("Core.ExtractArchive(): Took {0} seconds to extract archive contents using UnAr", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                     if(Finished != null)
                         Finished();
@@ -513,9 +548,14 @@ namespace osrepodbmgr.Core
                                 string.Format("{0} / {1}", e.BytesTransferred, e.TotalBytesToTransfer),
                                 e.BytesTransferred, e.TotalBytesToTransfer);
 
-            Console.WriteLine("{0}", e.EventType);
             if(e.EventType == ZipProgressEventType.Extracting_AfterExtractAll && Finished != null)
+            {
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.Zf_ExtractProgress(): Took {0} seconds to extract archive contents using DotNetZip", stopwatch.Elapsed.TotalSeconds);
+#endif
                 Finished();
+            }
         }
 
         public static void CompressTo()
@@ -575,6 +615,9 @@ namespace osrepodbmgr.Core
                 if(UpdateProgress != null)
                     UpdateProgress("", "Creating folders...", 3, 100);
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 counter = 0;
                 foreach(DBFolder folder in folders)
                 {
@@ -590,9 +633,16 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.CompressTo(): Took {0} seconds to add folders to ZIP", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 counter = 3;
                 Context.hashes = new Dictionary<string, DBOSFile>();
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 foreach(DBOSFile file in files)
                 {
                     if(UpdateProgress != null)
@@ -609,7 +659,11 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
-
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.CompressTo(): Took {0} seconds to add files to ZIP", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
                 zipCounter = 0;
                 zipCurrentEntryName = "";
                 zf.Save();
@@ -721,7 +775,13 @@ namespace osrepodbmgr.Core
                 Failed("An error occurred creating ZIP file.");
 
             if(e.EventType == ZipProgressEventType.Saving_Completed && Finished != null)
+            {
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.Zf_SaveProgress(): Took {0} seconds to compress files to ZIP", stopwatch.Elapsed.TotalSeconds);
+#endif
                 Finished();
+            }
         }
     }
 }

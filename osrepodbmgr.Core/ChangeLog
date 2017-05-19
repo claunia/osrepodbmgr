@@ -1,5 +1,15 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* SQLite.cs:
+	* Workers/Files.cs:
+	* Workers/Database.cs:
+	* Workers/VirusTotal.cs:
+	* Workers/Compression.cs:
+	* Workers/DiscImageChef.cs:
+	  Added some performance counters.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers/VirusTotal.cs:
 	  Do not upload if it is already queued. Also wait some
 	  seconds after upload.

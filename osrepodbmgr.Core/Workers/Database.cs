@@ -38,11 +38,21 @@ namespace osrepodbmgr.Core
         {
             try
             {
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 List<DBEntry> oses;
                 dbCore.DBOps.GetAllOSes(out oses);
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.GetAllOSes(): Took {0} seconds to get OSes from database", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(AddOS != null)
                 {
+#if DEBUG
+                    stopwatch.Restart();
+#endif
                     int counter = 0;
                     // TODO: Check file name and existence
                     foreach(DBEntry os in oses)
@@ -58,6 +68,10 @@ namespace osrepodbmgr.Core
 
                         counter++;
                     }
+#if DEBUG
+                    stopwatch.Stop();
+                    Console.WriteLine("Core.GetAllOSes(): Took {0} seconds to add OSes to the GUI", stopwatch.Elapsed.TotalSeconds);
+#endif
                 }
 
                 if(Finished != null)
@@ -77,6 +91,9 @@ namespace osrepodbmgr.Core
             try
             {
                 long counter = 0;
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
@@ -87,11 +104,19 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
-
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds to checks for file knowledge in the DB", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Retrieving OSes from database", counter, Context.hashes.Count);
                 List<DBEntry> oses;
                 dbCore.DBOps.GetAllOSes(out oses);
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds get all OSes from DB", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(oses != null && oses.Count > 0)
                 {
@@ -99,6 +124,9 @@ namespace osrepodbmgr.Core
                     oses.CopyTo(osesArray);
 
                     long osCounter = 0;
+#if DEBUG
+                    stopwatch.Restart();
+#endif
                     foreach(DBEntry os in osesArray)
                     {
                         if(UpdateProgress != null)
@@ -125,6 +153,10 @@ namespace osrepodbmgr.Core
                         if(oses.Count == 0)
                             break; // No OSes left
                     }
+#if DEBUG
+                    stopwatch.Stop();
+                    Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds correlate all files with all known OSes", stopwatch.Elapsed.TotalSeconds);
+#endif
                 }
 
                 if(AddOS != null)
@@ -158,6 +190,9 @@ namespace osrepodbmgr.Core
             try
             {
                 long counter = 0;
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
                     if(UpdateProgress != null)
@@ -178,6 +213,10 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all files to the database", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Adding OS information", counter, Context.hashes.Count);
@@ -186,6 +225,9 @@ namespace osrepodbmgr.Core
                     UpdateProgress(null, "Creating OS table", counter, Context.hashes.Count);
                 dbCore.DBOps.CreateTableForOS(Context.dbInfo.id);
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 counter = 0;
                 foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
@@ -196,7 +238,11 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
-
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all files to the OS in the database", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
                 counter = 0;
                 foreach(KeyValuePair<string, DBFolder> kvp in Context.foldersDict)
                 {
@@ -207,6 +253,10 @@ namespace osrepodbmgr.Core
 
                     counter++;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all folders to the database", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(Finished != null)
                     Finished();
@@ -305,6 +355,9 @@ namespace osrepodbmgr.Core
 
                 List<DBFile> files;
 
+#if DEBUG
+                stopwatch.Restart();
+#endif
                 while(dbCore.DBOps.GetFiles(out files, offset, page))
                 {
                     if(files.Count == 0)
@@ -319,6 +372,10 @@ namespace osrepodbmgr.Core
 
                     offset += page;
                 }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.GetFilesFromDb(): Took {0} seconds to get all files from the database", stopwatch.Elapsed.TotalSeconds);
+#endif
 
                 if(Finished != null)
                     Finished();
