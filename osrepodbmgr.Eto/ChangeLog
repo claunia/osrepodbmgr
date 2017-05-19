@@ -1,5 +1,10 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* frmMain.xeto.cs:
+	  Don't readd delegates every time.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.xeto:
 	* frmMain.xeto:
 	* dlgAdd.xeto.cs:

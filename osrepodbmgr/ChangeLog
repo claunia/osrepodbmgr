@@ -1,6 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* frmMain.cs:
+	  Don't readd delegates every time.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* frmMain.cs:
 	* Program.cs:
 	* packages.config:
 	  Refactor: Format document.

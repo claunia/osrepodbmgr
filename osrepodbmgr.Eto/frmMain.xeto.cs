@@ -233,6 +233,8 @@ namespace osrepodbmgr.Eto
             Workers.Finished += LoadOSesFinished;
             Workers.UpdateProgress += UpdateProgress;
             Workers.AddOS += AddOS;
+            Workers.AddFile += AddFile;
+            Workers.AddFiles += AddFiles;
             thdPopulateOSes = new Thread(Workers.GetAllOSes);
             thdPopulateOSes.Start();
         }
@@ -838,8 +840,6 @@ namespace osrepodbmgr.Eto
             Workers.Failed += LoadFilesFailed;
             Workers.Finished += LoadFilesFinished;
             Workers.UpdateProgress += UpdateFileProgress2;
-            Workers.AddFile += AddFile;
-            Workers.AddFiles += AddFiles;
             populatingFiles = true;
             infectedFiles = 0;
             thdPopulateFiles = new Thread(Workers.GetFilesFromDb);
