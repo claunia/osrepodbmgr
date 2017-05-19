@@ -1091,6 +1091,7 @@ namespace osrepodbmgr.Eto
                 chkDumpHardware.Checked = true;
                 treeDumpHardware.Visible = true;
                 btnAddHardware.Visible = true;
+                btnEditHardware.Visible = true;
                 btnRemoveHardware.Visible = true;
 
                 lstDumpHw = new ObservableCollection<DumpHardwareType>(Metadata.DumpHardwareArray);
@@ -1415,9 +1416,9 @@ namespace osrepodbmgr.Eto
             treeDumpHardware.Visible = chkDumpHardware.Checked.Value;
             btnAddHardware.Visible = chkDumpHardware.Checked.Value;
             btnRemoveHardware.Visible = chkDumpHardware.Checked.Value;
+            btnEditHardware.Visible = chkDumpHardware.Checked.Value;
 
             btnCancelHardware.Visible = false;
-            btnEditHardware.Visible = false;
             btnApplyHardware.Visible = false;
             frmHardware.Visible = false;
         }

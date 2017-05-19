@@ -284,7 +284,7 @@
 				</TabPage>
 				<TabPage Text="PCMCIA">
 					<StackLayout Orientation="Vertical">
-						<CheckBox ID="chkPCMCIA">Is PCMCIA?</CheckBox>
+						<CheckBox ID="chkPCMCIA" CheckedChanged="OnChkPCMCIAToggled">Is PCMCIA?</CheckBox>
 						<CheckBox ID="chkCIS" Enabled="False" Visible="False">Has CIS?</CheckBox>
 						<StackLayoutItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Expand="True">
 							<GridView ID="treeCIS" Visible="False" Enabled="False" />

@@ -1,5 +1,13 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgAdd.xeto.cs:
+	* dlgBlockMedia.xeto:
+	* dlgBlockMedia.xeto.cs:
+	* dlgOpticalDisc.xeto.cs:
+	  Corrected GUI behaviour.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* dlgAdd.xeto:
 	* dlgHelp.xeto:
 	* frmMain.xeto:

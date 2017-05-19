@@ -326,8 +326,6 @@ namespace osrepodbmgr.Eto
             {
                 lblProgress.Visible = false;
                 prgProgress.Visible = false;
-                lblProgress.Visible = false;
-                prgProgress.Visible = false;
                 lblProgress2.Visible = false;
                 prgProgress2.Visible = false;
                 Workers.Failed -= HashFilesFailed;
@@ -394,6 +392,7 @@ namespace osrepodbmgr.Eto
                     thdCheckFiles.Abort();
 
                 thdHashFiles = null;
+                lblProgress.Visible = false;
                 prgProgress.Visible = false;
                 btnStop.Visible = false;
                 btnClose.Visible = true;

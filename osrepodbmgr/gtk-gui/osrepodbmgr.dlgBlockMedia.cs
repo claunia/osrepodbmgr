@@ -614,7 +614,7 @@ namespace osrepodbmgr
 			this.notebook1 = new global::Gtk.Notebook();
 			this.notebook1.CanFocus = true;
 			this.notebook1.Name = "notebook1";
-			this.notebook1.CurrentPage = 5;
+			this.notebook1.CurrentPage = 10;
 			// Container child notebook1.Gtk.Notebook+NotebookChild
 			this.vbox2 = new global::Gtk.VBox();
 			this.vbox2.Name = "vbox2";
@@ -3154,7 +3154,7 @@ namespace osrepodbmgr
 			w277.Position = 1;
 			w277.Expand = false;
 			w277.Fill = false;
-			if((this.Child != null))
+			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
@@ -3243,6 +3243,7 @@ namespace osrepodbmgr
 			this.btnRemoveHardware.Hide();
 			this.btnAddHardware.Hide();
 			this.btnApplyHardware.Hide();
+			this.btnEditHardware.Hide();
 			this.lblHWManufacturer.Hide();
 			this.txtHWManufacturer.Hide();
 			this.lblHWModel.Hide();

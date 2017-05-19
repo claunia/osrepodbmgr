@@ -3562,7 +3562,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">5</property>
+            <property name="CurrentPage">10</property>
             <child>
               <widget class="Gtk.VBox" id="vbox2">
                 <property name="MemberName" />
@@ -6532,6 +6532,7 @@ QNX/QNX/20090229/source.zip</property>
                     <child>
                       <widget class="Gtk.Button" id="btnEditHardware">
                         <property name="MemberName" />
+                        <property name="Visible">False</property>
                         <property name="CanFocus">True</property>
                         <property name="Type">TextAndIcon</property>
                         <property name="Icon">stock:gtk-edit Menu</property>
@@ -8007,7 +8008,7 @@ QNX/QNX/20090229/source.zip</property>
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">13</property>
             <child>
               <widget class="Gtk.VBox" id="vbox2">
                 <property name="MemberName" />

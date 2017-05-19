@@ -718,6 +718,7 @@ namespace osrepodbmgr
                 treeDumpHardware.Visible = true;
                 btnAddHardware.Visible = true;
                 btnRemoveHardware.Visible = true;
+                btnEditHardware.Visible = true;
 
                 foreach(DumpHardwareType hw in Metadata.DumpHardwareArray)
                 {
@@ -1170,9 +1171,9 @@ namespace osrepodbmgr
             treeDumpHardware.Visible = chkDumpHardware.Active;
             btnAddHardware.Visible = chkDumpHardware.Active;
             btnRemoveHardware.Visible = chkDumpHardware.Active;
+            btnEditHardware.Visible = chkDumpHardware.Active;
 
             btnCancelHardware.Visible = false;
-            btnEditHardware.Visible = false;
             btnApplyHardware.Visible = false;
             lblHWManufacturer.Visible = false;
             txtHWManufacturer.Visible = false;
@@ -1193,7 +1194,7 @@ namespace osrepodbmgr
             btnAddHardware.Visible = true;
             btnRemoveHardware.Visible = true;
             btnCancelHardware.Visible = false;
-            btnEditHardware.Visible = false;
+            btnEditHardware.Visible = true;
             btnApplyHardware.Visible = false;
             lblHWManufacturer.Visible = false;
             txtHWManufacturer.Visible = false;

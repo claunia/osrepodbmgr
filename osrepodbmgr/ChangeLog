@@ -1,5 +1,14 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* dlgBlockMedia.cs:
+	* dlgOpticalDisc.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/osrepodbmgr.dlgBlockMedia.cs:
+	* gtk-gui/osrepodbmgr.dlgOpticalDisc.cs:
+	  Corrected GUI behaviour.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* gtk-gui/osrepodbmgr.dlgHelp.cs:
 	* gtk-gui/osrepodbmgr.dlgSettings.cs:
 	* gtk-gui/osrepodbmgr.dlgMetadata.cs:
