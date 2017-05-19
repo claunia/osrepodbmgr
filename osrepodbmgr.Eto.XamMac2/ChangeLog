@@ -1,6 +1,11 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* Program.cs:
+	  Refactor: Sort and remove usings.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* Program.cs:
 	  Added support for VirusTotal.
 
 2017-05-18  Natalia Portillo  <claunia@claunia.com>

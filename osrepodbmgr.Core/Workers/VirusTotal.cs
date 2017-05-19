@@ -26,17 +26,16 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using VirusTotalNET;
-using VirusTotalNET.Results;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using VirusTotalNET.Objects;
 using System.Collections.Generic;
-using SharpCompress.Compressors.Deflate;
-using SharpCompress.Compressors.BZip2;
-using SharpCompress.Compressors.LZMA;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using SharpCompress.Compressors.BZip2;
+using SharpCompress.Compressors.Deflate;
+using SharpCompress.Compressors.LZMA;
+using VirusTotalNET;
+using VirusTotalNET.Objects;
+using VirusTotalNET.Results;
 
 namespace osrepodbmgr.Core
 {

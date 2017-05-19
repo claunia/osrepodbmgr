@@ -1,5 +1,15 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
+	* AlgoEnum.cs:
+	* Workers/Clamd.cs:
+	* Workers/Files.cs:
+	* Workers/Consts.cs:
+	* Workers/Delegates.cs:
+	* Workers/VirusTotal.cs:
+	  Refactor: Sort and remove usings.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
 	* DBOps.cs:
 	* Schema.cs:
 	  Change db field name

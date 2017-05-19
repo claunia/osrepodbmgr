@@ -39,12 +39,12 @@ namespace osrepodbmgr.Eto.Desktop
         {
             Settings.LoadSettings();
             Context.CheckUnar();
-            if(Core.Settings.Current.UseAntivirus)
+            if(Settings.Current.UseAntivirus)
             {
-                if(Core.Settings.Current.UseClamd)
+                if(Settings.Current.UseClamd)
                     Workers.InitClamd();
-                if(Core.Settings.Current.UseVirusTotal)
-                    Context.virusTotalEnabled = Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
+                if(Settings.Current.UseVirusTotal)
+                    Context.virusTotalEnabled = Workers.InitVirusTotal(Settings.Current.VirusTotalKey);
             }
             Context.usableDotNetZip = !Platform.Detect.IsMac && !Platform.Detect.IsIos;
             

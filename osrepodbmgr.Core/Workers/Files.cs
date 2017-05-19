@@ -935,7 +935,8 @@ namespace osrepodbmgr.Core
                 }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body                {
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+                {
                     // Do not crash
                 }
 

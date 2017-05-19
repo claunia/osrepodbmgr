@@ -26,14 +26,13 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 using System;
-using nClam;
-using System.Threading.Tasks;
-using System.IO;
-using SharpCompress.Compressors.LZMA;
-using SharpCompress.Compressors.Deflate;
-using SharpCompress.Compressors.BZip2;
-using System.Threading;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using nClam;
+using SharpCompress.Compressors.BZip2;
+using SharpCompress.Compressors.Deflate;
+using SharpCompress.Compressors.LZMA;
 
 namespace osrepodbmgr.Core
 {
