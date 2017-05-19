@@ -12702,7 +12702,7 @@ QNX/QNX/20090229/source.zip</property>
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="osrepodbmgr.frmMain" design-size="612 365">
+  <widget class="Gtk.Window" id="osrepodbmgr.frmMain" design-size="686 365">
     <property name="MemberName" />
     <property name="Title" translatable="yes">OS Repository DB Manager</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -13163,6 +13163,24 @@ QNX/QNX/20090229/source.zip</property>
                       </packing>
                     </child>
                     <child>
+                      <widget class="Gtk.Button" id="btnCleanFiles">
+                        <property name="MemberName" />
+                        <property name="Visible">False</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">Clean files</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnBtnCleanFilesClicked" />
+                      </widget>
+                      <packing>
+                        <property name="PackType">End</property>
+                        <property name="Position">5</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="Gtk.Button" id="btnStopFiles">
                         <property name="MemberName" />
                         <property name="Visible">False</property>
@@ -13175,7 +13193,7 @@ QNX/QNX/20090229/source.zip</property>
                       </widget>
                       <packing>
                         <property name="PackType">End</property>
-                        <property name="Position">5</property>
+                        <property name="Position">6</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>

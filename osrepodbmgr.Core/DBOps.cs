@@ -851,6 +851,21 @@ namespace osrepodbmgr.Core
 
             return true;
         }
+
+        public bool DeleteFile(string hash)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@sha256";
+            param1.DbType = DbType.String;
+            param1.Value = hash;
+            dbcmd.Parameters.Add(param1);
+            dbcmd.CommandText = "DELETE FROM `files` WHERE sha256 = @sha256";
+            dbcmd.ExecuteNonQuery();
+
+            return true;
+        }
     }
 }
 

@@ -1,6 +1,14 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* frmMain.cs:
+	* gtk-gui/gui.stetic:
+	* gtk-gui/generated.cs:
+	* gtk-gui/osrepodbmgr.frmMain.cs:
+	  Added code to clean database and repository.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* frmMain.cs:
 	  Make sure the OnBtnPopulateFilesClicked() is called.
 
 2017-05-19  Natalia Portillo  <claunia@claunia.com>

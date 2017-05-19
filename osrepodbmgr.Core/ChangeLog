@@ -1,6 +1,12 @@
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* DBOps.cs:
+	* Workers/Files.cs:
+	  Added code to clean database and repository.
+
+2017-05-19  Natalia Portillo  <claunia@claunia.com>
+
+	* DBOps.cs:
 	* Workers/Clamd.cs:
 	  Added code to retrieve and scan all files not previously
 	  scanned for viruses, using clamd.

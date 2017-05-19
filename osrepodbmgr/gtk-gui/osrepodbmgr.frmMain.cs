@@ -76,6 +76,8 @@ namespace osrepodbmgr
 
 		private global::Gtk.Button btnToggleCrack;
 
+		private global::Gtk.Button btnCleanFiles;
+
 		private global::Gtk.Button btnStopFiles;
 
 		private global::Gtk.Label label3;
@@ -415,6 +417,16 @@ namespace osrepodbmgr
 			w34.Expand = false;
 			w34.Fill = false;
 			// Container child hbox6.Gtk.Box+BoxChild
+			this.btnCleanFiles = new global::Gtk.Button();
+			this.btnCleanFiles.CanFocus = true;
+			this.btnCleanFiles.Name = "btnCleanFiles";
+			this.btnCleanFiles.UseUnderline = true;
+			this.btnCleanFiles.Label = global::Mono.Unix.Catalog.GetString("Clean files");
+			this.hbox6.Add(this.btnCleanFiles);
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnCleanFiles]));
+			w35.PackType = ((global::Gtk.PackType)(1));
+			w35.Position = 5;
+			// Container child hbox6.Gtk.Box+BoxChild
 			this.btnStopFiles = new global::Gtk.Button();
 			this.btnStopFiles.CanFocus = true;
 			this.btnStopFiles.Name = "btnStopFiles";
@@ -422,19 +434,19 @@ namespace osrepodbmgr
 			this.btnStopFiles.UseUnderline = true;
 			this.btnStopFiles.Label = "gtk-stop";
 			this.hbox6.Add(this.btnStopFiles);
-			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnStopFiles]));
-			w35.PackType = ((global::Gtk.PackType)(1));
-			w35.Position = 5;
-			w35.Expand = false;
-			w35.Fill = false;
-			this.vbox4.Add(this.hbox6);
-			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox6]));
-			w36.Position = 3;
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.hbox6[this.btnStopFiles]));
+			w36.PackType = ((global::Gtk.PackType)(1));
+			w36.Position = 6;
 			w36.Expand = false;
 			w36.Fill = false;
+			this.vbox4.Add(this.hbox6);
+			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox6]));
+			w37.Position = 3;
+			w37.Expand = false;
+			w37.Fill = false;
 			this.notebook1.Add(this.vbox4);
-			global::Gtk.Notebook.NotebookChild w37 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox4]));
-			w37.Position = 1;
+			global::Gtk.Notebook.NotebookChild w38 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox4]));
+			w38.Position = 1;
 			// Notebook tab
 			this.label3 = new global::Gtk.Label();
 			this.label3.Name = "label3";
@@ -442,14 +454,14 @@ namespace osrepodbmgr
 			this.notebook1.SetTabLabel(this.vbox4, this.label3);
 			this.label3.ShowAll();
 			this.vbox2.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.notebook1]));
-			w38.Position = 0;
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.notebook1]));
+			w39.Position = 0;
 			this.Add(this.vbox2);
-			if((this.Child != null))
+			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 612;
+			this.DefaultWidth = 686;
 			this.DefaultHeight = 365;
 			this.lblProgress2.Hide();
 			this.prgProgress2.Hide();
@@ -467,6 +479,7 @@ namespace osrepodbmgr
 			this.btnScanWithClamd.Hide();
 			this.btnScanAllPending.Hide();
 			this.btnToggleCrack.Hide();
+			this.btnCleanFiles.Hide();
 			this.btnStopFiles.Hide();
 			this.Show();
 			this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
@@ -479,6 +492,7 @@ namespace osrepodbmgr
 			this.btnSettings.Clicked += new global::System.EventHandler(this.OnBtnSettingsClicked);
 			this.btnQuit.Clicked += new global::System.EventHandler(this.OnBtnQuitClicked);
 			this.btnStopFiles.Clicked += new global::System.EventHandler(this.OnBtnStopFilesClicked);
+			this.btnCleanFiles.Clicked += new global::System.EventHandler(this.OnBtnCleanFilesClicked);
 			this.btnToggleCrack.Clicked += new global::System.EventHandler(this.OnBtnToggleCrackClicked);
 			this.btnScanAllPending.Clicked += new global::System.EventHandler(this.OnBtnScanAllPendingClicked);
 			this.btnScanWithClamd.Clicked += new global::System.EventHandler(this.OnBtnScanWithClamdClicked);

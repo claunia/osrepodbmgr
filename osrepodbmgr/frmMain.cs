@@ -47,6 +47,7 @@ namespace osrepodbmgr
         bool scanningFiles;
         Thread thdScanFile;
         TreeIter outIter;
+        Thread thdCleanFiles;
 
         public frmMain() :
                 base(WindowType.Toplevel)
@@ -1036,6 +1037,7 @@ namespace osrepodbmgr
                 populatingFiles = false;
                 treeFiles.Sensitive = true;
                 notebook1.GetNthPage(0).Sensitive = true;
+                btnCleanFiles.Visible = true;
             });
         }
 
@@ -1119,6 +1121,82 @@ namespace osrepodbmgr
             Application.Invoke(delegate
             {
                 prgProgressFiles2.Text = text;
+            });
+        }
+
+        protected void OnBtnCleanFilesClicked(object sender, EventArgs e)
+        {
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.YesNo,
+                                                     "This option will search the database for any known file that doesn't\n" +
+                                                     "belong to any OS and remove it from the database.\n\n" +
+                                                     "It will then search the repository for any file not on the database and remove it.\n\n" +
+                                                     "THIS OPERATION MAY VERY LONG, CANNOT BE CANCELED AND REMOVES DATA ON DISK.\n\n" +
+                                                     "Are you sure to continue?");
+
+            if(dlgMsg.Run() == (int)ResponseType.Yes)
+            {
+                dlgMsg.Destroy();
+                btnCleanFiles.Visible = false;
+                btnToggleCrack.Visible = false;
+                btnScanWithClamd.Visible = false;
+                btnScanAllPending.Visible = false;
+                btnCheckInVirusTotal.Visible = false;
+                notebook1.GetNthPage(0).Sensitive = false;
+                treeFiles.Sensitive = false;
+                Workers.Finished += CleanFilesFinished;
+                Workers.UpdateProgress += UpdateFileProgress;
+                Workers.UpdateProgress2 += UpdateFileProgress2;
+                prgProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = true;
+                prgProgressFiles2.Text = "";
+                prgProgressFiles2.Visible = true;
+                btnStopFiles.Visible = false;
+                thdPulseProgress = new Thread(() =>
+                {
+                    while(true)
+                    {
+                        Application.Invoke(delegate
+                        {
+                            prgProgressFiles2.Pulse();
+                        });
+                        Thread.Sleep(66);
+                    }
+                });
+                thdPulseProgress.Start();
+                thdCleanFiles = new Thread(Workers.CleanFiles);
+                thdCleanFiles.Start();
+            }
+            else
+                dlgMsg.Destroy();
+        }
+
+        void CleanFilesFinished()
+        {
+            Application.Invoke(delegate
+            {
+                btnCleanFiles.Visible = true;
+                btnToggleCrack.Visible = true;
+                btnScanWithClamd.Visible = true;
+                btnScanAllPending.Visible = true;
+                btnCheckInVirusTotal.Visible = true;
+                notebook1.GetNthPage(0).Sensitive = true;
+                treeFiles.Sensitive = true;
+                Workers.Finished -= CleanFilesFinished;
+                Workers.UpdateProgress -= UpdateFileProgress;
+                Workers.UpdateProgress2 -= UpdateFileProgress2;
+                prgProgressFiles1.Text = "";
+                prgProgressFiles1.Visible = false;
+                prgProgressFiles2.Text = "";
+                prgProgressFiles2.Visible = false;
+                if(thdPulseProgress != null)
+                {
+                    thdPulseProgress.Abort();
+                    thdPulseProgress = null;
+                }
+                if(thdCleanFiles != null)
+                    thdCleanFiles = null;
+
+                OnBtnPopulateFilesClicked(null, new EventArgs());
             });
         }
     }

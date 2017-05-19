@@ -774,5 +774,180 @@ namespace osrepodbmgr.Core
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
             }
         }
+
+        public static void CleanFiles()
+        {
+            ulong count = dbCore.DBOps.GetFilesCount();
+            const ulong page = 2500;
+            ulong offset = 0;
+
+            List<DBFile> filesPage, allFiles;
+            allFiles = new List<DBFile>();
+
+#if DEBUG
+            stopwatch.Restart();
+#endif
+            while(dbCore.DBOps.GetFiles(out filesPage, offset, page))
+            {
+                if(filesPage.Count == 0)
+                    break;
+
+                if(UpdateProgress != null)
+                    UpdateProgress(null, string.Format("Loaded file {0} of {1}", offset, count), (long)offset, (long)count);
+
+                allFiles.AddRange(filesPage);
+
+                offset += page;
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to get all files from the database", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+            filesPage = null;
+
+            if(UpdateProgress != null)
+                UpdateProgress(null, "Getting OSes from the database", 0, 0);
+#if DEBUG
+            stopwatch.Restart();
+#endif
+            List<DBEntry> oses;
+            dbCore.DBOps.GetAllOSes(out oses);
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to get OSes from database", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+            List<string> orphanFiles = new List<string>();
+
+#if DEBUG
+            stopwatch.Restart();
+            Stopwatch stopwatch2 = new Stopwatch();
+#endif
+            int counterF = 0;
+            foreach(DBFile file in allFiles)
+            {
+                if(UpdateProgress != null)
+                    UpdateProgress(null, string.Format("Checking file {0} of {1}", counterF, allFiles.Count), counterF, allFiles.Count);
+
+                bool fileExists = false;
+                int counterO = 0;
+#if DEBUG
+                stopwatch2.Restart();
+#endif
+                foreach(DBEntry os in oses)
+                {
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2(null, string.Format("Checking OS {0} of {1}", counterO, oses.Count), counterO, oses.Count);
+
+                    if(dbCore.DBOps.ExistsFileInOS(file.Sha256, os.id))
+                    {
+                        fileExists = true;
+                        break;
+                    }
+
+                    counterO++;
+                }
+#if DEBUG
+                stopwatch2.Stop();
+                Console.WriteLine("Core.CleanFiles(): Took {0} seconds to check file in all OSes", stopwatch2.Elapsed.TotalSeconds);
+#endif
+
+                if(!fileExists)
+                    orphanFiles.Add(file.Sha256);
+
+                counterF++;
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to check all files", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+            if(UpdateProgress2 != null)
+                UpdateProgress2(null, null, 0, 0);
+
+#if DEBUG
+            stopwatch.Restart();
+#endif
+            counterF = 0;
+            foreach(string hash in orphanFiles)
+            {
+                if(UpdateProgress != null)
+                    UpdateProgress(null, string.Format("Deleting file {0} of {1} from database", counterF, orphanFiles.Count), counterF, orphanFiles.Count);
+
+                dbCore.DBOps.DeleteFile(hash);
+                counterF++;
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to remove all orphan files from database", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+            if(UpdateProgress != null)
+                UpdateProgress(null, "Listing files in repository", 0, 0);
+
+#if DEBUG
+            stopwatch.Restart();
+#endif
+            List<string> repoFiles = new List<string>(Directory.EnumerateFiles(Settings.Current.RepositoryPath, "*", SearchOption.AllDirectories));
+            repoFiles.Sort();
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to find all files", stopwatch.Elapsed.TotalSeconds);
+            stopwatch.Restart();
+#endif
+            counterF = 0;
+            List<string> filesToDelete = new List<string>();
+            foreach(string file in repoFiles)
+            {
+                if(UpdateProgress != null)
+                    UpdateProgress(null, string.Format("Checking file {0} of {1} from repository", counterF, repoFiles.Count), counterF, repoFiles.Count);
+
+                // Allow database to be inside repo
+                if(file == Settings.Current.DatabasePath)
+                    continue;
+
+                if(Path.GetExtension(file).ToLowerInvariant() == ".xml" ||
+                   Path.GetExtension(file).ToLowerInvariant() == ".json")
+                {
+                    if(!dbCore.DBOps.ExistsOS(Path.GetFileNameWithoutExtension(file)))
+                        filesToDelete.Add(file);
+                }
+                else if(!dbCore.DBOps.ExistsFile(Path.GetFileNameWithoutExtension(file)))
+                    filesToDelete.Add(file);
+
+                counterF++;
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to check all repository files", stopwatch.Elapsed.TotalSeconds);
+            stopwatch.Restart();
+#endif
+            counterF = 0;
+            foreach(string file in filesToDelete)
+            {
+                if(UpdateProgress != null)
+                    UpdateProgress(null, string.Format("Deleting file {0} of {1} from repository", counterF, filesToDelete.Count), counterF, filesToDelete.Count);
+
+                try
+                {
+                    File.Delete(file);
+                }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                catch
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body                {
+                    // Do not crash
+                }
+
+                counterF++;
+            }
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("Core.CleanFiles(): Took {0} seconds to delete all orphan files", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+            if(Finished != null)
+                Finished();
+        }
     }
 }
