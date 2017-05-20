@@ -1,3 +1,9 @@
+2017-05-20  Natalia Portillo  <claunia@claunia.com>
+
+	* packages.config:
+	* osrepodbmgr.Core.csproj:
+	  Update dependencies.
+
 2017-05-19  Natalia Portillo  <claunia@claunia.com>
 
 	* osrepodbmgr.Core.csproj:
