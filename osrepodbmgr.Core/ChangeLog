@@ -1,3 +1,8 @@
+2017-05-21  Natalia Portillo  <claunia@claunia.com>
+
+	* Context.cs:
+	  Correct handling of unar detection.
+
 2017-05-20  Natalia Portillo  <claunia@claunia.com>
 
 	* packages.config:
