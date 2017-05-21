@@ -142,7 +142,7 @@ namespace osrepodbmgr.Core
                         byte[] properties = new byte[5];
                         inFs.Read(properties, 0, 5);
                         inFs.Seek(8, SeekOrigin.Current);
-                        zStream = new LzmaStream(properties, inFs);
+                        zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
 
                         if(UpdateProgress != null)
                             UpdateProgress("Uncompressing file...", null, 0, 0);
@@ -209,7 +209,8 @@ namespace osrepodbmgr.Core
                             byte[] properties = new byte[5];
                             inFs.Read(properties, 0, 5);
                             inFs.Seek(8, SeekOrigin.Current);
-                            zStream = new LzmaStream(properties, inFs);
+                            zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
+
                             break;
                     }
 

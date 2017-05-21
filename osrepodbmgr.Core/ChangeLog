@@ -1,5 +1,11 @@
 2017-05-21  Natalia Portillo  <claunia@claunia.com>
 
+	* Workers/Clamd.cs:
+	* Workers/VirusTotal.cs:
+	  Corrected virus scanning of LZMA files.
+
+2017-05-21  Natalia Portillo  <claunia@claunia.com>
+
 	* Context.cs:
 	  Correct handling of unar detection.
 
