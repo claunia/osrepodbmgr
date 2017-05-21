@@ -274,6 +274,7 @@ namespace osrepodbmgr.Eto
                 btnExit.Enabled = true;
                 btnFolder.Visible = true;
                 btnArchive.Visible = true;
+                btnStop.Visible = false;
                 Workers.Failed -= FindFilesFailed;
                 Workers.Finished -= FindFilesFinished;
                 thdFindFiles = null;
@@ -319,6 +320,7 @@ namespace osrepodbmgr.Eto
                 btnExit.Enabled = true;
                 btnFolder.Visible = true;
                 btnArchive.Visible = true;
+                btnStop.Visible = false;
                 thdHashFiles = null;
             });
         }
@@ -404,6 +406,8 @@ namespace osrepodbmgr.Eto
                 btnPack.Enabled = true;
                 btnRemoveFile.Visible = true;
                 btnToggleCrack.Visible = true;
+                btnRemoveFile.Enabled = true;
+                btnToggleCrack.Enabled = true;
 
                 txtFormat.ReadOnly = false;
                 txtMachine.ReadOnly = false;
@@ -1029,6 +1033,7 @@ namespace osrepodbmgr.Eto
                 btnExit.Enabled = true;
                 btnFolder.Visible = true;
                 btnArchive.Visible = true;
+                btnStop.Visible = false;
                 Workers.Failed -= OpenArchiveFailed;
                 Workers.Finished -= OpenArchiveFinished;
                 thdOpenArchive = null;
@@ -1130,11 +1135,14 @@ namespace osrepodbmgr.Eto
 
                 if(string.IsNullOrWhiteSpace(txtDeveloper.Text))
                 {
-                    foreach(string developer in Context.metadata.Developer)
+                    if(Context.metadata.Developer != null)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
-                            txtDeveloper.Text += ",";
-                        txtDeveloper.Text += developer;
+                        foreach(string developer in Context.metadata.Developer)
+                        {
+                            if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
+                                txtDeveloper.Text += ",";
+                            txtDeveloper.Text += developer;
+                        }
                     }
                 }
 

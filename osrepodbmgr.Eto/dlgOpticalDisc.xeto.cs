@@ -1219,7 +1219,10 @@ namespace osrepodbmgr.Eto
             txtPartitionType.Text = partitionIter.Type;
             txtPartitionName.Text = partitionIter.Name;
             txtPartitionDescription.Text = partitionIter.Description;
-            treeFilesystems.DataStore = new ObservableCollection<FileSystemType>(partitionIter.FileSystems);
+            if(partitionIter.FileSystems != null)
+                treeFilesystems.DataStore = new ObservableCollection<FileSystemType>(partitionIter.FileSystems);
+            else
+                treeFilesystems.DataStore = new ObservableCollection<FileSystemType>();
             btnCancelPartition.Visible = true;
             btnApplyPartition.Visible = true;
             btnRemovePartition.Visible = false;

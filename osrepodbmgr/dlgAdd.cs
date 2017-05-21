@@ -210,6 +210,7 @@ public partial class dlgAdd : Dialog
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
+            btnStop.Visible = false;
             Workers.Failed -= FindFilesFailed;
             Workers.Finished -= FindFilesFinished;
             thdFindFiles = null;
@@ -257,6 +258,7 @@ public partial class dlgAdd : Dialog
             prgProgress.Visible = false;
             lblProgress2.Visible = false;
             prgProgress2.Visible = false;
+            btnStop.Visible = false;
             Workers.Failed -= HashFilesFailed;
             Workers.Finished -= HashFilesFinished;
             Workers.UpdateProgress -= UpdateProgress;
@@ -358,6 +360,8 @@ public partial class dlgAdd : Dialog
             btnPack.Sensitive = true;
             btnRemoveFile.Visible = true;
             btnToggleCrack.Visible = true;
+            btnRemoveFile.Sensitive = true;
+            btnToggleCrack.Sensitive = true;
 
             txtFormat.IsEditable = true;
             txtMachine.IsEditable = true;
@@ -1044,6 +1048,7 @@ public partial class dlgAdd : Dialog
             btnExit.Sensitive = true;
             btnFolder.Visible = true;
             btnArchive.Visible = true;
+            btnStop.Visible = false;
             Workers.Failed -= OpenArchiveFailed;
             Workers.Finished -= OpenArchiveFinished;
             thdOpenArchive = null;
@@ -1176,11 +1181,14 @@ public partial class dlgAdd : Dialog
 
             if(string.IsNullOrWhiteSpace(txtDeveloper.Text))
             {
-                foreach(string developer in Context.metadata.Developer)
+                if(Context.metadata.Developer != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
-                        txtDeveloper.Text += ",";
-                    txtDeveloper.Text += developer;
+                    foreach(string developer in Context.metadata.Developer)
+                    {
+                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
+                            txtDeveloper.Text += ",";
+                        txtDeveloper.Text += developer;
+                    }
                 }
             }
 
