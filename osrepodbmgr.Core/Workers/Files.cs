@@ -338,6 +338,15 @@ namespace osrepodbmgr.Core
                         filesPath = Context.path;
 
                     string relpath = file.Substring(filesPath.Length + 1);
+
+                    // TODO: Support symlinks, devices, hardlinks, whatever?
+                    if(fi.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                    {
+                        if(Failed != null)
+                            Failed(string.Format("{0} is an unsupported symbolic link, not continuing.", relpath));
+                        return;
+                    }
+
                     if(UpdateProgress != null)
                         UpdateProgress(string.Format("Hashing file {0} of {1}", counter, Context.files.Count), null, counter, Context.files.Count);
                     FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);

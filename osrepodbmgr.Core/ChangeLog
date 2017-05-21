@@ -1,5 +1,11 @@
 2017-05-21  Natalia Portillo  <claunia@claunia.com>
 
+	* Workers/Files.cs:
+	* Workers/Compression.cs:
+	  Do not continue with symbolic links, not yet supported.
+
+2017-05-21  Natalia Portillo  <claunia@claunia.com>
+
 	* Workers/Clamd.cs:
 	* Workers/VirusTotal.cs:
 	  Corrected virus scanning of LZMA files.
