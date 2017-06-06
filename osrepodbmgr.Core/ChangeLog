@@ -1,3 +1,14 @@
+2017-06-06  Natalia Portillo  <claunia@claunia.com>
+
+	* AlgoEnum.cs:
+	* packages.config:
+	* Workers/Clamd.cs:
+	* Workers/Files.cs:
+	* Workers/VirusTotal.cs:
+	* Workers/Compression.cs:
+	* osrepodbmgr.Core.csproj:
+	  Added support for LZip.
+
 2017-05-21  Natalia Portillo  <claunia@claunia.com>
 
 	* Workers/Files.cs:

@@ -31,6 +31,7 @@ namespace osrepodbmgr.Core
     {
         GZip,
         BZip2,
-        LZMA
+        LZMA,
+        LZip
     }
 }

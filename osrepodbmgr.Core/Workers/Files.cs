@@ -704,6 +704,17 @@ namespace osrepodbmgr.Core
                                                 file.Sha256 + ".lzma");
                         algorithm = AlgoEnum.LZMA;
                     }
+                    else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".lz")))
+                    {
+                        repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                file.Sha256 + ".lz");
+                        algorithm = AlgoEnum.LZip;
+                    }
                     else
                     {
                         if(Failed != null)
@@ -727,6 +738,9 @@ namespace osrepodbmgr.Core
                             inFs.Read(properties, 0, 5);
                             inFs.Seek(8, SeekOrigin.Current);
                             zStream = new LzmaStream(properties, inFs);
+                            break;
+                        case AlgoEnum.LZip:
+                            zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
                             break;
                     }
 

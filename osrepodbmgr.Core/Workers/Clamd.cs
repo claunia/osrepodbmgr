@@ -120,6 +120,17 @@ namespace osrepodbmgr.Core
                                             file.Sha256 + ".lzma");
                     algorithm = AlgoEnum.LZMA;
                 }
+                else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                            file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                            file.Sha256 + ".lz")))
+                {
+                    repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                            file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                            file.Sha256 + ".lz");
+                    algorithm = AlgoEnum.LZip;
+                }
                 else
                 {
                     if(Failed != null)
@@ -133,16 +144,21 @@ namespace osrepodbmgr.Core
                 if(Settings.Current.ClamdIsLocal)
                 {
                     // clamd supports gzip and bzip2 but not lzma
-                    if(algorithm == AlgoEnum.LZMA)
+                    if(algorithm == AlgoEnum.LZMA || algorithm == AlgoEnum.LZip)
                     {
                         string tmpFile = Path.Combine(Settings.Current.TemporaryFolder, Path.GetTempFileName());
                         FileStream outFs = new FileStream(tmpFile, FileMode.Create, FileAccess.Write);
                         FileStream inFs = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
 
-                        byte[] properties = new byte[5];
-                        inFs.Read(properties, 0, 5);
-                        inFs.Seek(8, SeekOrigin.Current);
-                        zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
+                        if(algorithm == AlgoEnum.LZMA)
+                        {
+                            byte[] properties = new byte[5];
+                            inFs.Read(properties, 0, 5);
+                            inFs.Seek(8, SeekOrigin.Current);
+                            zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
+                        }
+                        else
+                            zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
 
                         if(UpdateProgress != null)
                             UpdateProgress("Uncompressing file...", null, 0, 0);
@@ -210,7 +226,9 @@ namespace osrepodbmgr.Core
                             inFs.Read(properties, 0, 5);
                             inFs.Seek(8, SeekOrigin.Current);
                             zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
-
+                            break;
+                        case AlgoEnum.LZip:
+                            zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
                             break;
                     }
 

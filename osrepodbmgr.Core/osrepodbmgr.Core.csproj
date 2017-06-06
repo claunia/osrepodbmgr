@@ -38,9 +38,6 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Data" />
-    <Reference Include="SharpCompress">
-      <HintPath>..\packages\SharpCompress.0.15.2\lib\net45\SharpCompress.dll</HintPath>
-    </Reference>
     <Reference Include="nClam">
       <HintPath>..\packages\nClam.3.0.0\lib\net45\nClam.dll</HintPath>
     </Reference>
@@ -51,6 +48,9 @@
     </Reference>
     <Reference Include="plist-cil">
       <HintPath>..\packages\plist-cil.1.16.0\lib\net45\plist-cil.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\SharpCompress.0.17.0\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +126,10 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild">
+            <inheritsSet />
+            <inheritsScope />
+          </DotNetNamingPolicy>
         </Policies>
       </Properties>
     </MonoDevelop>

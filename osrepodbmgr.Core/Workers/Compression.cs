@@ -186,6 +186,9 @@ namespace osrepodbmgr.Core
                     case AlgoEnum.LZMA:
                         extension = ".lzma";
                         break;
+                    case AlgoEnum.LZip:
+                        extension = ".lz";
+                        break;
                 }
 
 #if DEBUG
@@ -219,6 +222,9 @@ namespace osrepodbmgr.Core
                                 zStream = new LzmaStream(new LzmaEncoderProperties(), false, outFs);
                                 outFs.Write(((LzmaStream)zStream).Properties, 0, ((LzmaStream)zStream).Properties.Length);
                                 outFs.Write(BitConverter.GetBytes(inFs.Length), 0, 8);
+                                break;
+                            case AlgoEnum.LZip:
+                                zStream = new LZipStream(outFs, SharpCompress.Compressors.CompressionMode.Compress);
                                 break;
                         }
 
@@ -745,6 +751,17 @@ namespace osrepodbmgr.Core
                                         file.Sha256 + ".lzma");
                 algorithm = AlgoEnum.LZMA;
             }
+            else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".lz")))
+            {
+                repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
+                                        file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                        file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                        file.Sha256 + ".lz");
+                algorithm = AlgoEnum.LZip;
+            }
             else
                 throw new ArgumentException(string.Format("Cannot find file with hash {0} in the repository", file.Sha256));
 
@@ -763,6 +780,9 @@ namespace osrepodbmgr.Core
                     inFs.Read(properties, 0, 5);
                     inFs.Seek(8, SeekOrigin.Current);
                     zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
+                    break;
+                case AlgoEnum.LZip:
+                    zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
                     break;
             }
 
