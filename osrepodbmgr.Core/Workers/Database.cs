@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace osrepodbmgr.Core
 {
@@ -77,12 +78,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -176,12 +182,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -261,12 +272,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -315,12 +331,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -380,12 +401,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -398,12 +424,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 

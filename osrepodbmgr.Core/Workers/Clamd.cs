@@ -270,10 +270,15 @@ namespace osrepodbmgr.Core
 
                 return;
             }
+            catch(System.Threading.ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Failed != null)
                     Failed(string.Format("Exception {0} when calling clamd", ex.Message));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 

@@ -299,12 +299,17 @@ namespace osrepodbmgr.Core
                 if(FinishedWithText != null)
                     FinishedWithText(string.Format("Correctly added operating system with MDID {0}", mdid));
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -433,12 +438,17 @@ namespace osrepodbmgr.Core
                 if(Finished != null)
                     Finished();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -471,6 +481,8 @@ namespace osrepodbmgr.Core
 
                 Context.tmpFolder = tmpFolder;
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception)
             {
                 if(Debugger.IsAttached)
@@ -507,6 +519,9 @@ namespace osrepodbmgr.Core
                             throw;
                         if(Failed != null)
                             Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                        Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
                     }
                 }
                 else
@@ -548,12 +563,17 @@ namespace osrepodbmgr.Core
                         Finished();
                 }
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 
@@ -692,12 +712,17 @@ namespace osrepodbmgr.Core
                 zipCurrentEntryName = "";
                 zf.Save();
             }
+            catch(ThreadAbortException)
+            { }
             catch(Exception ex)
             {
                 if(Debugger.IsAttached)
                     throw;
                 if(Failed != null)
                     Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 

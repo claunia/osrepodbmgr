@@ -1,3 +1,13 @@
+2017-06-13  Natalia Portillo  <claunia@claunia.com>
+
+	* Workers/Clamd.cs:
+	* Workers/Files.cs:
+	* Workers/Database.cs:
+	* Workers/VirusTotal.cs:
+	* Workers/Compression.cs:
+	* Workers/DiscImageChef.cs:
+	  Do not exception on thread abort.
+
 2017-06-06  Natalia Portillo  <claunia@claunia.com>
 
 	* AlgoEnum.cs:

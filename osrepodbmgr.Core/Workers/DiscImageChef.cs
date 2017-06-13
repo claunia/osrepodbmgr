@@ -123,6 +123,9 @@ namespace osrepodbmgr.Core
                     if(Failed != null)
                         Failed(string.Format("Unable to open image format\n" +
                                              "Error: {0}", ex.Message));
+#if DEBUG
+                    Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
                     return;
                 }
 
@@ -989,6 +992,9 @@ namespace osrepodbmgr.Core
             {
                 if(Failed != null)
                     Failed(string.Format("Error reading file: {0}\n{1}", ex.Message, ex.StackTrace));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
 

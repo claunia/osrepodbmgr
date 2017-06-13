@@ -389,6 +389,9 @@ namespace osrepodbmgr.Core
             {
                 if(Failed != null)
                     Failed(string.Format("Exception {0} when calling VirusTotal", ex.InnerException.Message));
+#if DEBUG
+                Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
+#endif
             }
         }
     }
