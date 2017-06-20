@@ -688,6 +688,13 @@ namespace osrepodbmgr.Eto
                     lblAddDisc1.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgAddDisc1.Indeterminate = false;
                     prgAddDisc1.MinValue = 0;
                     prgAddDisc1.MaxValue = (int)maximum;
@@ -708,6 +715,13 @@ namespace osrepodbmgr.Eto
                     lblAddDisc2.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgAddDisc2.Indeterminate = false;
                     prgAddDisc2.MinValue = 0;
                     prgAddDisc2.MaxValue = (int)maximum;
@@ -912,6 +926,13 @@ namespace osrepodbmgr.Eto
                     lblAddDisk1.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgAddDisk1.Indeterminate = false;
                     prgAddDisk1.MinValue = 0;
                     prgAddDisk1.MaxValue = (int)maximum;
@@ -932,6 +953,13 @@ namespace osrepodbmgr.Eto
                     lblAddDisk2.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgAddDisk2.Indeterminate = false;
                     prgAddDisk2.MinValue = 0;
                     prgAddDisk2.MaxValue = (int)maximum;

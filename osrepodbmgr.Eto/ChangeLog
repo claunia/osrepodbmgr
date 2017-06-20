@@ -1,3 +1,8 @@
+* dlgAdd.xeto.cs:
+* frmMain.xeto.cs:
+* dlgMetadata.xeto.cs:
+  Corrected progress bars when value is outside of int bounds.
+
 * dlgMetadata.xeto:
 * dlgMetadata.xeto.cs:
 * dlgOpticalDisc.xeto:

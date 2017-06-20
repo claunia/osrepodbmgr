@@ -588,6 +588,13 @@ namespace osrepodbmgr.Eto
                     lblProgress.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgProgress.Indeterminate = false;
                     prgProgress.MinValue = 0;
                     prgProgress.MaxValue = (int)maximum;
@@ -610,6 +617,13 @@ namespace osrepodbmgr.Eto
                     lblProgress2.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgProgress2.Indeterminate = false;
                     prgProgress2.MinValue = 0;
                     prgProgress2.MaxValue = (int)maximum;

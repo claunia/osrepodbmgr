@@ -295,6 +295,13 @@ namespace osrepodbmgr.Eto
                     lblProgress.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgProgress.Indeterminate = false;
                     prgProgress.MinValue = 0;
                     prgProgress.MaxValue = (int)maximum;
@@ -317,6 +324,13 @@ namespace osrepodbmgr.Eto
                     lblProgress2.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgProgress2.Indeterminate = false;
                     prgProgress2.MinValue = 0;
                     prgProgress2.MaxValue = (int)maximum;
@@ -858,6 +872,13 @@ namespace osrepodbmgr.Eto
                     lblProgressFiles1.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgProgressFiles1.Indeterminate = false;
                     prgProgressFiles1.MinValue = 0;
                     prgProgressFiles1.MaxValue = (int)maximum;
@@ -880,6 +901,13 @@ namespace osrepodbmgr.Eto
                     lblProgressFiles2.Text = text;
                 if(maximum > 0)
                 {
+                    if(current < int.MinValue || current > int.MaxValue ||
+                       maximum < int.MinValue || maximum > int.MaxValue)
+                    {
+                        current /= 100;
+                        maximum /= 100;
+                    }
+
                     prgProgressFiles2.Indeterminate = false;
                     prgProgressFiles2.MinValue = 0;
                     prgProgressFiles2.MaxValue = (int)maximum;
