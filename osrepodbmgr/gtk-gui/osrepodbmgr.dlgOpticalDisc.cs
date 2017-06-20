@@ -550,34 +550,6 @@ namespace osrepodbmgr
 
 		private global::Gtk.Label label117;
 
-		private global::Gtk.Frame frmXboxSS;
-
-		private global::Gtk.Alignment GtkAlignment41;
-
-		private global::Gtk.VBox vbox39;
-
-		private global::Gtk.ScrolledWindow GtkScrolledWindow24;
-
-		private global::Gtk.TreeView treeXboxSS;
-
-		private global::Gtk.HBox hbox94;
-
-		private global::Gtk.Label lblSSStart;
-
-		private global::Gtk.Entry txtSSStart;
-
-		private global::Gtk.Label lblSSEnd;
-
-		private global::Gtk.Entry txtSSEnd;
-
-		private global::Gtk.Button btnRemoveSS;
-
-		private global::Gtk.Button btnAddSS;
-
-		private global::Gtk.Label GtkLabel46;
-
-		private global::Gtk.Label label118;
-
 		private global::Gtk.Frame frmPS3;
 
 		private global::Gtk.Alignment GtkAlignment44;
@@ -858,7 +830,7 @@ namespace osrepodbmgr
 			this.notebook1 = new global::Gtk.Notebook();
 			this.notebook1.CanFocus = true;
 			this.notebook1.Name = "notebook1";
-			this.notebook1.CurrentPage = 13;
+			this.notebook1.CurrentPage = 10;
 			// Container child notebook1.Gtk.Notebook+NotebookChild
 			this.vbox2 = new global::Gtk.VBox();
 			this.vbox2.Name = "vbox2";
@@ -2849,115 +2821,6 @@ namespace osrepodbmgr
 			this.notebook1.SetTabLabel(this.vbox38, this.label117);
 			this.label117.ShowAll();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
-			this.frmXboxSS = new global::Gtk.Frame();
-			this.frmXboxSS.Name = "frmXboxSS";
-			this.frmXboxSS.ShadowType = ((global::Gtk.ShadowType)(0));
-			// Container child frmXboxSS.Gtk.Container+ContainerChild
-			this.GtkAlignment41 = new global::Gtk.Alignment(0F, 0F, 1F, 1F);
-			this.GtkAlignment41.Name = "GtkAlignment41";
-			this.GtkAlignment41.LeftPadding = ((uint)(12));
-			// Container child GtkAlignment41.Gtk.Container+ContainerChild
-			this.vbox39 = new global::Gtk.VBox();
-			this.vbox39.Name = "vbox39";
-			this.vbox39.Spacing = 6;
-			// Container child vbox39.Gtk.Box+BoxChild
-			this.GtkScrolledWindow24 = new global::Gtk.ScrolledWindow();
-			this.GtkScrolledWindow24.Name = "GtkScrolledWindow24";
-			this.GtkScrolledWindow24.ShadowType = ((global::Gtk.ShadowType)(1));
-			// Container child GtkScrolledWindow24.Gtk.Container+ContainerChild
-			this.treeXboxSS = new global::Gtk.TreeView();
-			this.treeXboxSS.CanFocus = true;
-			this.treeXboxSS.Name = "treeXboxSS";
-			this.GtkScrolledWindow24.Add(this.treeXboxSS);
-			this.vbox39.Add(this.GtkScrolledWindow24);
-			global::Gtk.Box.BoxChild w237 = ((global::Gtk.Box.BoxChild)(this.vbox39[this.GtkScrolledWindow24]));
-			w237.Position = 0;
-			// Container child vbox39.Gtk.Box+BoxChild
-			this.hbox94 = new global::Gtk.HBox();
-			this.hbox94.Name = "hbox94";
-			this.hbox94.Spacing = 6;
-			// Container child hbox94.Gtk.Box+BoxChild
-			this.lblSSStart = new global::Gtk.Label();
-			this.lblSSStart.Name = "lblSSStart";
-			this.lblSSStart.LabelProp = global::Mono.Unix.Catalog.GetString("Start");
-			this.hbox94.Add(this.lblSSStart);
-			global::Gtk.Box.BoxChild w238 = ((global::Gtk.Box.BoxChild)(this.hbox94[this.lblSSStart]));
-			w238.Position = 0;
-			w238.Expand = false;
-			w238.Fill = false;
-			// Container child hbox94.Gtk.Box+BoxChild
-			this.txtSSStart = new global::Gtk.Entry();
-			this.txtSSStart.CanFocus = true;
-			this.txtSSStart.Name = "txtSSStart";
-			this.txtSSStart.IsEditable = true;
-			this.txtSSStart.InvisibleChar = '●';
-			this.hbox94.Add(this.txtSSStart);
-			global::Gtk.Box.BoxChild w239 = ((global::Gtk.Box.BoxChild)(this.hbox94[this.txtSSStart]));
-			w239.Position = 1;
-			// Container child hbox94.Gtk.Box+BoxChild
-			this.lblSSEnd = new global::Gtk.Label();
-			this.lblSSEnd.Name = "lblSSEnd";
-			this.lblSSEnd.LabelProp = global::Mono.Unix.Catalog.GetString("End");
-			this.hbox94.Add(this.lblSSEnd);
-			global::Gtk.Box.BoxChild w240 = ((global::Gtk.Box.BoxChild)(this.hbox94[this.lblSSEnd]));
-			w240.Position = 2;
-			w240.Expand = false;
-			w240.Fill = false;
-			// Container child hbox94.Gtk.Box+BoxChild
-			this.txtSSEnd = new global::Gtk.Entry();
-			this.txtSSEnd.CanFocus = true;
-			this.txtSSEnd.Name = "txtSSEnd";
-			this.txtSSEnd.IsEditable = true;
-			this.txtSSEnd.InvisibleChar = '●';
-			this.hbox94.Add(this.txtSSEnd);
-			global::Gtk.Box.BoxChild w241 = ((global::Gtk.Box.BoxChild)(this.hbox94[this.txtSSEnd]));
-			w241.Position = 3;
-			// Container child hbox94.Gtk.Box+BoxChild
-			this.btnRemoveSS = new global::Gtk.Button();
-			this.btnRemoveSS.CanFocus = true;
-			this.btnRemoveSS.Name = "btnRemoveSS";
-			this.btnRemoveSS.UseStock = true;
-			this.btnRemoveSS.UseUnderline = true;
-			this.btnRemoveSS.Label = "gtk-remove";
-			this.hbox94.Add(this.btnRemoveSS);
-			global::Gtk.Box.BoxChild w242 = ((global::Gtk.Box.BoxChild)(this.hbox94[this.btnRemoveSS]));
-			w242.Position = 4;
-			w242.Expand = false;
-			w242.Fill = false;
-			// Container child hbox94.Gtk.Box+BoxChild
-			this.btnAddSS = new global::Gtk.Button();
-			this.btnAddSS.CanFocus = true;
-			this.btnAddSS.Name = "btnAddSS";
-			this.btnAddSS.UseStock = true;
-			this.btnAddSS.UseUnderline = true;
-			this.btnAddSS.Label = "gtk-add";
-			this.hbox94.Add(this.btnAddSS);
-			global::Gtk.Box.BoxChild w243 = ((global::Gtk.Box.BoxChild)(this.hbox94[this.btnAddSS]));
-			w243.Position = 5;
-			w243.Expand = false;
-			w243.Fill = false;
-			this.vbox39.Add(this.hbox94);
-			global::Gtk.Box.BoxChild w244 = ((global::Gtk.Box.BoxChild)(this.vbox39[this.hbox94]));
-			w244.Position = 1;
-			w244.Expand = false;
-			w244.Fill = false;
-			this.GtkAlignment41.Add(this.vbox39);
-			this.frmXboxSS.Add(this.GtkAlignment41);
-			this.GtkLabel46 = new global::Gtk.Label();
-			this.GtkLabel46.Name = "GtkLabel46";
-			this.GtkLabel46.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Security sectors</b>");
-			this.GtkLabel46.UseMarkup = true;
-			this.frmXboxSS.LabelWidget = this.GtkLabel46;
-			this.notebook1.Add(this.frmXboxSS);
-			global::Gtk.Notebook.NotebookChild w247 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.frmXboxSS]));
-			w247.Position = 10;
-			// Notebook tab
-			this.label118 = new global::Gtk.Label();
-			this.label118.Name = "label118";
-			this.label118.LabelProp = global::Mono.Unix.Catalog.GetString("Xbox");
-			this.notebook1.SetTabLabel(this.frmXboxSS, this.label118);
-			this.label118.ShowAll();
-			// Container child notebook1.Gtk.Notebook+NotebookChild
 			this.frmPS3 = new global::Gtk.Frame();
 			this.frmPS3.Name = "frmPS3";
 			this.frmPS3.ShadowType = ((global::Gtk.ShadowType)(0));
@@ -2978,10 +2841,10 @@ namespace osrepodbmgr
 			this.lblPS3Key.Name = "lblPS3Key";
 			this.lblPS3Key.LabelProp = global::Mono.Unix.Catalog.GetString("Key");
 			this.hbox96.Add(this.lblPS3Key);
-			global::Gtk.Box.BoxChild w248 = ((global::Gtk.Box.BoxChild)(this.hbox96[this.lblPS3Key]));
-			w248.Position = 0;
-			w248.Expand = false;
-			w248.Fill = false;
+			global::Gtk.Box.BoxChild w236 = ((global::Gtk.Box.BoxChild)(this.hbox96[this.lblPS3Key]));
+			w236.Position = 0;
+			w236.Expand = false;
+			w236.Fill = false;
 			// Container child hbox96.Gtk.Box+BoxChild
 			this.txtPS3Key = new global::Gtk.Entry();
 			this.txtPS3Key.CanFocus = true;
@@ -2989,13 +2852,13 @@ namespace osrepodbmgr
 			this.txtPS3Key.IsEditable = true;
 			this.txtPS3Key.InvisibleChar = '●';
 			this.hbox96.Add(this.txtPS3Key);
-			global::Gtk.Box.BoxChild w249 = ((global::Gtk.Box.BoxChild)(this.hbox96[this.txtPS3Key]));
-			w249.Position = 1;
+			global::Gtk.Box.BoxChild w237 = ((global::Gtk.Box.BoxChild)(this.hbox96[this.txtPS3Key]));
+			w237.Position = 1;
 			this.vbox40.Add(this.hbox96);
-			global::Gtk.Box.BoxChild w250 = ((global::Gtk.Box.BoxChild)(this.vbox40[this.hbox96]));
-			w250.Position = 0;
-			w250.Expand = false;
-			w250.Fill = false;
+			global::Gtk.Box.BoxChild w238 = ((global::Gtk.Box.BoxChild)(this.vbox40[this.hbox96]));
+			w238.Position = 0;
+			w238.Expand = false;
+			w238.Fill = false;
 			// Container child vbox40.Gtk.Box+BoxChild
 			this.hbox95 = new global::Gtk.HBox();
 			this.hbox95.Name = "hbox95";
@@ -3005,10 +2868,10 @@ namespace osrepodbmgr
 			this.lblPS3Serial.Name = "lblPS3Serial";
 			this.lblPS3Serial.LabelProp = global::Mono.Unix.Catalog.GetString("Serial");
 			this.hbox95.Add(this.lblPS3Serial);
-			global::Gtk.Box.BoxChild w251 = ((global::Gtk.Box.BoxChild)(this.hbox95[this.lblPS3Serial]));
-			w251.Position = 0;
-			w251.Expand = false;
-			w251.Fill = false;
+			global::Gtk.Box.BoxChild w239 = ((global::Gtk.Box.BoxChild)(this.hbox95[this.lblPS3Serial]));
+			w239.Position = 0;
+			w239.Expand = false;
+			w239.Fill = false;
 			// Container child hbox95.Gtk.Box+BoxChild
 			this.txtPS3Serial = new global::Gtk.Entry();
 			this.txtPS3Serial.CanFocus = true;
@@ -3016,13 +2879,13 @@ namespace osrepodbmgr
 			this.txtPS3Serial.IsEditable = true;
 			this.txtPS3Serial.InvisibleChar = '●';
 			this.hbox95.Add(this.txtPS3Serial);
-			global::Gtk.Box.BoxChild w252 = ((global::Gtk.Box.BoxChild)(this.hbox95[this.txtPS3Serial]));
-			w252.Position = 1;
+			global::Gtk.Box.BoxChild w240 = ((global::Gtk.Box.BoxChild)(this.hbox95[this.txtPS3Serial]));
+			w240.Position = 1;
 			this.vbox40.Add(this.hbox95);
-			global::Gtk.Box.BoxChild w253 = ((global::Gtk.Box.BoxChild)(this.vbox40[this.hbox95]));
-			w253.Position = 1;
-			w253.Expand = false;
-			w253.Fill = false;
+			global::Gtk.Box.BoxChild w241 = ((global::Gtk.Box.BoxChild)(this.vbox40[this.hbox95]));
+			w241.Position = 1;
+			w241.Expand = false;
+			w241.Fill = false;
 			this.GtkAlignment44.Add(this.vbox40);
 			this.frmPS3.Add(this.GtkAlignment44);
 			this.GtkLabel49 = new global::Gtk.Label();
@@ -3031,8 +2894,8 @@ namespace osrepodbmgr
 			this.GtkLabel49.UseMarkup = true;
 			this.frmPS3.LabelWidget = this.GtkLabel49;
 			this.notebook1.Add(this.frmPS3);
-			global::Gtk.Notebook.NotebookChild w256 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.frmPS3]));
-			w256.Position = 11;
+			global::Gtk.Notebook.NotebookChild w244 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.frmPS3]));
+			w244.Position = 10;
 			// Notebook tab
 			this.label119 = new global::Gtk.Label();
 			this.label119.Name = "label119";
@@ -3053,8 +2916,8 @@ namespace osrepodbmgr
 			this.treeTracks.Name = "treeTracks";
 			this.GtkScrolledWindow25.Add(this.treeTracks);
 			this.vbox42.Add(this.GtkScrolledWindow25);
-			global::Gtk.Box.BoxChild w258 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.GtkScrolledWindow25]));
-			w258.Position = 0;
+			global::Gtk.Box.BoxChild w246 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.GtkScrolledWindow25]));
+			w246.Position = 0;
 			// Container child vbox42.Gtk.Box+BoxChild
 			this.hbox101 = new global::Gtk.HBox();
 			this.hbox101.Name = "hbox101";
@@ -3064,10 +2927,10 @@ namespace osrepodbmgr
 			this.lblTrackStart.Name = "lblTrackStart";
 			this.lblTrackStart.LabelProp = global::Mono.Unix.Catalog.GetString("Start LBA");
 			this.hbox101.Add(this.lblTrackStart);
-			global::Gtk.Box.BoxChild w259 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblTrackStart]));
-			w259.Position = 0;
-			w259.Expand = false;
-			w259.Fill = false;
+			global::Gtk.Box.BoxChild w247 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblTrackStart]));
+			w247.Position = 0;
+			w247.Expand = false;
+			w247.Fill = false;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.txtTrackStart = new global::Gtk.Entry();
 			this.txtTrackStart.CanFocus = true;
@@ -3075,17 +2938,17 @@ namespace osrepodbmgr
 			this.txtTrackStart.IsEditable = true;
 			this.txtTrackStart.InvisibleChar = '●';
 			this.hbox101.Add(this.txtTrackStart);
-			global::Gtk.Box.BoxChild w260 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtTrackStart]));
-			w260.Position = 1;
+			global::Gtk.Box.BoxChild w248 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtTrackStart]));
+			w248.Position = 1;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.lblTrackEnd = new global::Gtk.Label();
 			this.lblTrackEnd.Name = "lblTrackEnd";
 			this.lblTrackEnd.LabelProp = global::Mono.Unix.Catalog.GetString("End LBA");
 			this.hbox101.Add(this.lblTrackEnd);
-			global::Gtk.Box.BoxChild w261 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblTrackEnd]));
-			w261.Position = 2;
-			w261.Expand = false;
-			w261.Fill = false;
+			global::Gtk.Box.BoxChild w249 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblTrackEnd]));
+			w249.Position = 2;
+			w249.Expand = false;
+			w249.Fill = false;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.txtTrackEnd = new global::Gtk.Entry();
 			this.txtTrackEnd.CanFocus = true;
@@ -3093,17 +2956,17 @@ namespace osrepodbmgr
 			this.txtTrackEnd.IsEditable = true;
 			this.txtTrackEnd.InvisibleChar = '●';
 			this.hbox101.Add(this.txtTrackEnd);
-			global::Gtk.Box.BoxChild w262 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtTrackEnd]));
-			w262.Position = 3;
+			global::Gtk.Box.BoxChild w250 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtTrackEnd]));
+			w250.Position = 3;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.lblMSFStart = new global::Gtk.Label();
 			this.lblMSFStart.Name = "lblMSFStart";
 			this.lblMSFStart.LabelProp = global::Mono.Unix.Catalog.GetString("Start MSF");
 			this.hbox101.Add(this.lblMSFStart);
-			global::Gtk.Box.BoxChild w263 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblMSFStart]));
-			w263.Position = 4;
-			w263.Expand = false;
-			w263.Fill = false;
+			global::Gtk.Box.BoxChild w251 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblMSFStart]));
+			w251.Position = 4;
+			w251.Expand = false;
+			w251.Fill = false;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.txtMSFStart = new global::Gtk.Entry();
 			this.txtMSFStart.CanFocus = true;
@@ -3111,17 +2974,17 @@ namespace osrepodbmgr
 			this.txtMSFStart.IsEditable = true;
 			this.txtMSFStart.InvisibleChar = '●';
 			this.hbox101.Add(this.txtMSFStart);
-			global::Gtk.Box.BoxChild w264 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtMSFStart]));
-			w264.Position = 5;
+			global::Gtk.Box.BoxChild w252 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtMSFStart]));
+			w252.Position = 5;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.lblMSFEnd = new global::Gtk.Label();
 			this.lblMSFEnd.Name = "lblMSFEnd";
 			this.lblMSFEnd.LabelProp = global::Mono.Unix.Catalog.GetString("End MSF");
 			this.hbox101.Add(this.lblMSFEnd);
-			global::Gtk.Box.BoxChild w265 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblMSFEnd]));
-			w265.Position = 6;
-			w265.Expand = false;
-			w265.Fill = false;
+			global::Gtk.Box.BoxChild w253 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.lblMSFEnd]));
+			w253.Position = 6;
+			w253.Expand = false;
+			w253.Fill = false;
 			// Container child hbox101.Gtk.Box+BoxChild
 			this.txtMSFEnd = new global::Gtk.Entry();
 			this.txtMSFEnd.CanFocus = true;
@@ -3129,13 +2992,13 @@ namespace osrepodbmgr
 			this.txtMSFEnd.IsEditable = true;
 			this.txtMSFEnd.InvisibleChar = '●';
 			this.hbox101.Add(this.txtMSFEnd);
-			global::Gtk.Box.BoxChild w266 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtMSFEnd]));
-			w266.Position = 7;
+			global::Gtk.Box.BoxChild w254 = ((global::Gtk.Box.BoxChild)(this.hbox101[this.txtMSFEnd]));
+			w254.Position = 7;
 			this.vbox42.Add(this.hbox101);
-			global::Gtk.Box.BoxChild w267 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox101]));
-			w267.Position = 1;
-			w267.Expand = false;
-			w267.Fill = false;
+			global::Gtk.Box.BoxChild w255 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox101]));
+			w255.Position = 1;
+			w255.Expand = false;
+			w255.Fill = false;
 			// Container child vbox42.Gtk.Box+BoxChild
 			this.hbox103 = new global::Gtk.HBox();
 			this.hbox103.Name = "hbox103";
@@ -3145,10 +3008,10 @@ namespace osrepodbmgr
 			this.lblTrackSequence.Name = "lblTrackSequence";
 			this.lblTrackSequence.LabelProp = global::Mono.Unix.Catalog.GetString("Track");
 			this.hbox103.Add(this.lblTrackSequence);
-			global::Gtk.Box.BoxChild w268 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblTrackSequence]));
-			w268.Position = 0;
-			w268.Expand = false;
-			w268.Fill = false;
+			global::Gtk.Box.BoxChild w256 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblTrackSequence]));
+			w256.Position = 0;
+			w256.Expand = false;
+			w256.Fill = false;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.txtTrackSequence = new global::Gtk.Entry();
 			this.txtTrackSequence.CanFocus = true;
@@ -3156,17 +3019,17 @@ namespace osrepodbmgr
 			this.txtTrackSequence.IsEditable = true;
 			this.txtTrackSequence.InvisibleChar = '●';
 			this.hbox103.Add(this.txtTrackSequence);
-			global::Gtk.Box.BoxChild w269 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.txtTrackSequence]));
-			w269.Position = 1;
+			global::Gtk.Box.BoxChild w257 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.txtTrackSequence]));
+			w257.Position = 1;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.lblSessionSequence = new global::Gtk.Label();
 			this.lblSessionSequence.Name = "lblSessionSequence";
 			this.lblSessionSequence.LabelProp = global::Mono.Unix.Catalog.GetString("Session");
 			this.hbox103.Add(this.lblSessionSequence);
-			global::Gtk.Box.BoxChild w270 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblSessionSequence]));
-			w270.Position = 2;
-			w270.Expand = false;
-			w270.Fill = false;
+			global::Gtk.Box.BoxChild w258 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblSessionSequence]));
+			w258.Position = 2;
+			w258.Expand = false;
+			w258.Fill = false;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.txtSessionSequence = new global::Gtk.Entry();
 			this.txtSessionSequence.CanFocus = true;
@@ -3174,25 +3037,25 @@ namespace osrepodbmgr
 			this.txtSessionSequence.IsEditable = true;
 			this.txtSessionSequence.InvisibleChar = '●';
 			this.hbox103.Add(this.txtSessionSequence);
-			global::Gtk.Box.BoxChild w271 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.txtSessionSequence]));
-			w271.Position = 3;
+			global::Gtk.Box.BoxChild w259 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.txtSessionSequence]));
+			w259.Position = 3;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.lblTrackType = new global::Gtk.Label();
 			this.lblTrackType.Name = "lblTrackType";
 			this.lblTrackType.LabelProp = global::Mono.Unix.Catalog.GetString("Track type");
 			this.hbox103.Add(this.lblTrackType);
-			global::Gtk.Box.BoxChild w272 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblTrackType]));
-			w272.Position = 4;
-			w272.Expand = false;
-			w272.Fill = false;
+			global::Gtk.Box.BoxChild w260 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblTrackType]));
+			w260.Position = 4;
+			w260.Expand = false;
+			w260.Fill = false;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.cmbTrackType = global::Gtk.ComboBox.NewText();
 			this.cmbTrackType.Name = "cmbTrackType";
 			this.hbox103.Add(this.cmbTrackType);
-			global::Gtk.Box.BoxChild w273 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.cmbTrackType]));
-			w273.Position = 5;
-			w273.Expand = false;
-			w273.Fill = false;
+			global::Gtk.Box.BoxChild w261 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.cmbTrackType]));
+			w261.Position = 5;
+			w261.Expand = false;
+			w261.Fill = false;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.txtBytesPerSector = new global::Gtk.Entry();
 			this.txtBytesPerSector.CanFocus = true;
@@ -3200,22 +3063,22 @@ namespace osrepodbmgr
 			this.txtBytesPerSector.IsEditable = true;
 			this.txtBytesPerSector.InvisibleChar = '●';
 			this.hbox103.Add(this.txtBytesPerSector);
-			global::Gtk.Box.BoxChild w274 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.txtBytesPerSector]));
-			w274.Position = 6;
+			global::Gtk.Box.BoxChild w262 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.txtBytesPerSector]));
+			w262.Position = 6;
 			// Container child hbox103.Gtk.Box+BoxChild
 			this.lblBytesPerSector = new global::Gtk.Label();
 			this.lblBytesPerSector.Name = "lblBytesPerSector";
 			this.lblBytesPerSector.LabelProp = global::Mono.Unix.Catalog.GetString("bytes per sector");
 			this.hbox103.Add(this.lblBytesPerSector);
-			global::Gtk.Box.BoxChild w275 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblBytesPerSector]));
-			w275.Position = 7;
-			w275.Expand = false;
-			w275.Fill = false;
+			global::Gtk.Box.BoxChild w263 = ((global::Gtk.Box.BoxChild)(this.hbox103[this.lblBytesPerSector]));
+			w263.Position = 7;
+			w263.Expand = false;
+			w263.Fill = false;
 			this.vbox42.Add(this.hbox103);
-			global::Gtk.Box.BoxChild w276 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox103]));
-			w276.Position = 2;
-			w276.Expand = false;
-			w276.Fill = false;
+			global::Gtk.Box.BoxChild w264 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox103]));
+			w264.Position = 2;
+			w264.Expand = false;
+			w264.Fill = false;
 			// Container child vbox42.Gtk.Box+BoxChild
 			this.hbox102 = new global::Gtk.HBox();
 			this.hbox102.Name = "hbox102";
@@ -3225,10 +3088,10 @@ namespace osrepodbmgr
 			this.lblAcoustID.Name = "lblAcoustID";
 			this.lblAcoustID.LabelProp = global::Mono.Unix.Catalog.GetString("Acoust ID");
 			this.hbox102.Add(this.lblAcoustID);
-			global::Gtk.Box.BoxChild w277 = ((global::Gtk.Box.BoxChild)(this.hbox102[this.lblAcoustID]));
-			w277.Position = 0;
-			w277.Expand = false;
-			w277.Fill = false;
+			global::Gtk.Box.BoxChild w265 = ((global::Gtk.Box.BoxChild)(this.hbox102[this.lblAcoustID]));
+			w265.Position = 0;
+			w265.Expand = false;
+			w265.Fill = false;
 			// Container child hbox102.Gtk.Box+BoxChild
 			this.txtAcoustID = new global::Gtk.Entry();
 			this.txtAcoustID.CanFocus = true;
@@ -3236,13 +3099,13 @@ namespace osrepodbmgr
 			this.txtAcoustID.IsEditable = true;
 			this.txtAcoustID.InvisibleChar = '●';
 			this.hbox102.Add(this.txtAcoustID);
-			global::Gtk.Box.BoxChild w278 = ((global::Gtk.Box.BoxChild)(this.hbox102[this.txtAcoustID]));
-			w278.Position = 1;
+			global::Gtk.Box.BoxChild w266 = ((global::Gtk.Box.BoxChild)(this.hbox102[this.txtAcoustID]));
+			w266.Position = 1;
 			this.vbox42.Add(this.hbox102);
-			global::Gtk.Box.BoxChild w279 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox102]));
-			w279.Position = 3;
-			w279.Expand = false;
-			w279.Fill = false;
+			global::Gtk.Box.BoxChild w267 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox102]));
+			w267.Position = 3;
+			w267.Expand = false;
+			w267.Fill = false;
 			// Container child vbox42.Gtk.Box+BoxChild
 			this.frmPartitions = new global::Gtk.Frame();
 			this.frmPartitions.Name = "frmPartitions";
@@ -3265,8 +3128,8 @@ namespace osrepodbmgr
 			this.treePartitions.Name = "treePartitions";
 			this.GtkScrolledWindow12.Add(this.treePartitions);
 			this.vbox22.Add(this.GtkScrolledWindow12);
-			global::Gtk.Box.BoxChild w281 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.GtkScrolledWindow12]));
-			w281.Position = 0;
+			global::Gtk.Box.BoxChild w269 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.GtkScrolledWindow12]));
+			w269.Position = 0;
 			// Container child vbox22.Gtk.Box+BoxChild
 			this.hbox62 = new global::Gtk.HBox();
 			this.hbox62.Name = "hbox62";
@@ -3279,10 +3142,10 @@ namespace osrepodbmgr
 			this.btnCancelPartition.UseUnderline = true;
 			this.btnCancelPartition.Label = "gtk-cancel";
 			this.hbox62.Add(this.btnCancelPartition);
-			global::Gtk.Box.BoxChild w282 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnCancelPartition]));
-			w282.Position = 0;
-			w282.Expand = false;
-			w282.Fill = false;
+			global::Gtk.Box.BoxChild w270 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnCancelPartition]));
+			w270.Position = 0;
+			w270.Expand = false;
+			w270.Fill = false;
 			// Container child hbox62.Gtk.Box+BoxChild
 			this.btnRemovePartition = new global::Gtk.Button();
 			this.btnRemovePartition.CanFocus = true;
@@ -3291,10 +3154,10 @@ namespace osrepodbmgr
 			this.btnRemovePartition.UseUnderline = true;
 			this.btnRemovePartition.Label = "gtk-remove";
 			this.hbox62.Add(this.btnRemovePartition);
-			global::Gtk.Box.BoxChild w283 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnRemovePartition]));
-			w283.Position = 1;
-			w283.Expand = false;
-			w283.Fill = false;
+			global::Gtk.Box.BoxChild w271 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnRemovePartition]));
+			w271.Position = 1;
+			w271.Expand = false;
+			w271.Fill = false;
 			// Container child hbox62.Gtk.Box+BoxChild
 			this.btnAddPartition = new global::Gtk.Button();
 			this.btnAddPartition.CanFocus = true;
@@ -3303,11 +3166,11 @@ namespace osrepodbmgr
 			this.btnAddPartition.UseUnderline = true;
 			this.btnAddPartition.Label = "gtk-add";
 			this.hbox62.Add(this.btnAddPartition);
-			global::Gtk.Box.BoxChild w284 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnAddPartition]));
-			w284.PackType = ((global::Gtk.PackType)(1));
-			w284.Position = 2;
-			w284.Expand = false;
-			w284.Fill = false;
+			global::Gtk.Box.BoxChild w272 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnAddPartition]));
+			w272.PackType = ((global::Gtk.PackType)(1));
+			w272.Position = 2;
+			w272.Expand = false;
+			w272.Fill = false;
 			// Container child hbox62.Gtk.Box+BoxChild
 			this.btnApplyPartition = new global::Gtk.Button();
 			this.btnApplyPartition.CanFocus = true;
@@ -3316,31 +3179,31 @@ namespace osrepodbmgr
 			this.btnApplyPartition.UseUnderline = true;
 			this.btnApplyPartition.Label = "gtk-apply";
 			this.hbox62.Add(this.btnApplyPartition);
-			global::Gtk.Box.BoxChild w285 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnApplyPartition]));
-			w285.PackType = ((global::Gtk.PackType)(1));
-			w285.Position = 3;
-			w285.Expand = false;
-			w285.Fill = false;
+			global::Gtk.Box.BoxChild w273 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnApplyPartition]));
+			w273.PackType = ((global::Gtk.PackType)(1));
+			w273.Position = 3;
+			w273.Expand = false;
+			w273.Fill = false;
 			// Container child hbox62.Gtk.Box+BoxChild
 			this.btnEditPartition = new global::Gtk.Button();
 			this.btnEditPartition.CanFocus = true;
 			this.btnEditPartition.Name = "btnEditPartition";
 			this.btnEditPartition.UseUnderline = true;
 			this.btnEditPartition.Label = global::Mono.Unix.Catalog.GetString("Edit");
-			global::Gtk.Image w286 = new global::Gtk.Image();
-			w286.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
-			this.btnEditPartition.Image = w286;
+			global::Gtk.Image w274 = new global::Gtk.Image();
+			w274.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
+			this.btnEditPartition.Image = w274;
 			this.hbox62.Add(this.btnEditPartition);
-			global::Gtk.Box.BoxChild w287 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnEditPartition]));
-			w287.PackType = ((global::Gtk.PackType)(1));
-			w287.Position = 4;
-			w287.Expand = false;
-			w287.Fill = false;
+			global::Gtk.Box.BoxChild w275 = ((global::Gtk.Box.BoxChild)(this.hbox62[this.btnEditPartition]));
+			w275.PackType = ((global::Gtk.PackType)(1));
+			w275.Position = 4;
+			w275.Expand = false;
+			w275.Fill = false;
 			this.vbox22.Add(this.hbox62);
-			global::Gtk.Box.BoxChild w288 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.hbox62]));
-			w288.Position = 1;
-			w288.Expand = false;
-			w288.Fill = false;
+			global::Gtk.Box.BoxChild w276 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.hbox62]));
+			w276.Position = 1;
+			w276.Expand = false;
+			w276.Fill = false;
 			// Container child vbox22.Gtk.Box+BoxChild
 			this.hbox63 = new global::Gtk.HBox();
 			this.hbox63.Name = "hbox63";
@@ -3350,10 +3213,10 @@ namespace osrepodbmgr
 			this.lblPartitionSequence.Name = "lblPartitionSequence";
 			this.lblPartitionSequence.LabelProp = global::Mono.Unix.Catalog.GetString("Sequence");
 			this.hbox63.Add(this.lblPartitionSequence);
-			global::Gtk.Box.BoxChild w289 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionSequence]));
-			w289.Position = 0;
-			w289.Expand = false;
-			w289.Fill = false;
+			global::Gtk.Box.BoxChild w277 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionSequence]));
+			w277.Position = 0;
+			w277.Expand = false;
+			w277.Fill = false;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.spPartitionSequence = new global::Gtk.SpinButton(0, 100, 1);
 			this.spPartitionSequence.CanFocus = true;
@@ -3362,19 +3225,19 @@ namespace osrepodbmgr
 			this.spPartitionSequence.ClimbRate = 1;
 			this.spPartitionSequence.Numeric = true;
 			this.hbox63.Add(this.spPartitionSequence);
-			global::Gtk.Box.BoxChild w290 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.spPartitionSequence]));
-			w290.Position = 1;
-			w290.Expand = false;
-			w290.Fill = false;
+			global::Gtk.Box.BoxChild w278 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.spPartitionSequence]));
+			w278.Position = 1;
+			w278.Expand = false;
+			w278.Fill = false;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.lblPartitionStart = new global::Gtk.Label();
 			this.lblPartitionStart.Name = "lblPartitionStart";
 			this.lblPartitionStart.LabelProp = global::Mono.Unix.Catalog.GetString("Start block");
 			this.hbox63.Add(this.lblPartitionStart);
-			global::Gtk.Box.BoxChild w291 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionStart]));
-			w291.Position = 2;
-			w291.Expand = false;
-			w291.Fill = false;
+			global::Gtk.Box.BoxChild w279 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionStart]));
+			w279.Position = 2;
+			w279.Expand = false;
+			w279.Fill = false;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.txtPartitionStart = new global::Gtk.Entry();
 			this.txtPartitionStart.CanFocus = true;
@@ -3382,17 +3245,17 @@ namespace osrepodbmgr
 			this.txtPartitionStart.IsEditable = true;
 			this.txtPartitionStart.InvisibleChar = '●';
 			this.hbox63.Add(this.txtPartitionStart);
-			global::Gtk.Box.BoxChild w292 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.txtPartitionStart]));
-			w292.Position = 3;
+			global::Gtk.Box.BoxChild w280 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.txtPartitionStart]));
+			w280.Position = 3;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.lblPartitionEnd = new global::Gtk.Label();
 			this.lblPartitionEnd.Name = "lblPartitionEnd";
 			this.lblPartitionEnd.LabelProp = global::Mono.Unix.Catalog.GetString("End block");
 			this.hbox63.Add(this.lblPartitionEnd);
-			global::Gtk.Box.BoxChild w293 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionEnd]));
-			w293.Position = 4;
-			w293.Expand = false;
-			w293.Fill = false;
+			global::Gtk.Box.BoxChild w281 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionEnd]));
+			w281.Position = 4;
+			w281.Expand = false;
+			w281.Fill = false;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.txtPartitionEnd = new global::Gtk.Entry();
 			this.txtPartitionEnd.CanFocus = true;
@@ -3400,17 +3263,17 @@ namespace osrepodbmgr
 			this.txtPartitionEnd.IsEditable = true;
 			this.txtPartitionEnd.InvisibleChar = '●';
 			this.hbox63.Add(this.txtPartitionEnd);
-			global::Gtk.Box.BoxChild w294 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.txtPartitionEnd]));
-			w294.Position = 5;
+			global::Gtk.Box.BoxChild w282 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.txtPartitionEnd]));
+			w282.Position = 5;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.lblPartitionType = new global::Gtk.Label();
 			this.lblPartitionType.Name = "lblPartitionType";
 			this.lblPartitionType.LabelProp = global::Mono.Unix.Catalog.GetString("Type");
 			this.hbox63.Add(this.lblPartitionType);
-			global::Gtk.Box.BoxChild w295 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionType]));
-			w295.Position = 6;
-			w295.Expand = false;
-			w295.Fill = false;
+			global::Gtk.Box.BoxChild w283 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.lblPartitionType]));
+			w283.Position = 6;
+			w283.Expand = false;
+			w283.Fill = false;
 			// Container child hbox63.Gtk.Box+BoxChild
 			this.txtPartitionType = new global::Gtk.Entry();
 			this.txtPartitionType.CanFocus = true;
@@ -3418,13 +3281,13 @@ namespace osrepodbmgr
 			this.txtPartitionType.IsEditable = true;
 			this.txtPartitionType.InvisibleChar = '●';
 			this.hbox63.Add(this.txtPartitionType);
-			global::Gtk.Box.BoxChild w296 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.txtPartitionType]));
-			w296.Position = 7;
+			global::Gtk.Box.BoxChild w284 = ((global::Gtk.Box.BoxChild)(this.hbox63[this.txtPartitionType]));
+			w284.Position = 7;
 			this.vbox22.Add(this.hbox63);
-			global::Gtk.Box.BoxChild w297 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.hbox63]));
-			w297.Position = 2;
-			w297.Expand = false;
-			w297.Fill = false;
+			global::Gtk.Box.BoxChild w285 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.hbox63]));
+			w285.Position = 2;
+			w285.Expand = false;
+			w285.Fill = false;
 			// Container child vbox22.Gtk.Box+BoxChild
 			this.hbox64 = new global::Gtk.HBox();
 			this.hbox64.Name = "hbox64";
@@ -3434,10 +3297,10 @@ namespace osrepodbmgr
 			this.lblPartitionName.Name = "lblPartitionName";
 			this.lblPartitionName.LabelProp = global::Mono.Unix.Catalog.GetString("Name");
 			this.hbox64.Add(this.lblPartitionName);
-			global::Gtk.Box.BoxChild w298 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.lblPartitionName]));
-			w298.Position = 0;
-			w298.Expand = false;
-			w298.Fill = false;
+			global::Gtk.Box.BoxChild w286 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.lblPartitionName]));
+			w286.Position = 0;
+			w286.Expand = false;
+			w286.Fill = false;
 			// Container child hbox64.Gtk.Box+BoxChild
 			this.txtPartitionName = new global::Gtk.Entry();
 			this.txtPartitionName.CanFocus = true;
@@ -3445,17 +3308,17 @@ namespace osrepodbmgr
 			this.txtPartitionName.IsEditable = true;
 			this.txtPartitionName.InvisibleChar = '●';
 			this.hbox64.Add(this.txtPartitionName);
-			global::Gtk.Box.BoxChild w299 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.txtPartitionName]));
-			w299.Position = 1;
+			global::Gtk.Box.BoxChild w287 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.txtPartitionName]));
+			w287.Position = 1;
 			// Container child hbox64.Gtk.Box+BoxChild
 			this.lblPartitionDescription = new global::Gtk.Label();
 			this.lblPartitionDescription.Name = "lblPartitionDescription";
 			this.lblPartitionDescription.LabelProp = global::Mono.Unix.Catalog.GetString("Description");
 			this.hbox64.Add(this.lblPartitionDescription);
-			global::Gtk.Box.BoxChild w300 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.lblPartitionDescription]));
-			w300.Position = 2;
-			w300.Expand = false;
-			w300.Fill = false;
+			global::Gtk.Box.BoxChild w288 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.lblPartitionDescription]));
+			w288.Position = 2;
+			w288.Expand = false;
+			w288.Fill = false;
 			// Container child hbox64.Gtk.Box+BoxChild
 			this.txtPartitionDescription = new global::Gtk.Entry();
 			this.txtPartitionDescription.CanFocus = true;
@@ -3463,13 +3326,13 @@ namespace osrepodbmgr
 			this.txtPartitionDescription.IsEditable = true;
 			this.txtPartitionDescription.InvisibleChar = '●';
 			this.hbox64.Add(this.txtPartitionDescription);
-			global::Gtk.Box.BoxChild w301 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.txtPartitionDescription]));
-			w301.Position = 3;
+			global::Gtk.Box.BoxChild w289 = ((global::Gtk.Box.BoxChild)(this.hbox64[this.txtPartitionDescription]));
+			w289.Position = 3;
 			this.vbox22.Add(this.hbox64);
-			global::Gtk.Box.BoxChild w302 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.hbox64]));
-			w302.Position = 3;
-			w302.Expand = false;
-			w302.Fill = false;
+			global::Gtk.Box.BoxChild w290 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.hbox64]));
+			w290.Position = 3;
+			w290.Expand = false;
+			w290.Fill = false;
 			// Container child vbox22.Gtk.Box+BoxChild
 			this.frmFilesystems = new global::Gtk.Frame();
 			this.frmFilesystems.Name = "frmFilesystems";
@@ -3492,8 +3355,8 @@ namespace osrepodbmgr
 			this.treeFilesystems.Name = "treeFilesystems";
 			this.GtkScrolledWindow13.Add(this.treeFilesystems);
 			this.vbox23.Add(this.GtkScrolledWindow13);
-			global::Gtk.Box.BoxChild w304 = ((global::Gtk.Box.BoxChild)(this.vbox23[this.GtkScrolledWindow13]));
-			w304.Position = 0;
+			global::Gtk.Box.BoxChild w292 = ((global::Gtk.Box.BoxChild)(this.vbox23[this.GtkScrolledWindow13]));
+			w292.Position = 0;
 			// Container child vbox23.Gtk.Box+BoxChild
 			this.hbox65 = new global::Gtk.HBox();
 			this.hbox65.Name = "hbox65";
@@ -3506,26 +3369,26 @@ namespace osrepodbmgr
 			this.btnAddFilesystem.UseUnderline = true;
 			this.btnAddFilesystem.Label = "gtk-add";
 			this.hbox65.Add(this.btnAddFilesystem);
-			global::Gtk.Box.BoxChild w305 = ((global::Gtk.Box.BoxChild)(this.hbox65[this.btnAddFilesystem]));
-			w305.PackType = ((global::Gtk.PackType)(1));
-			w305.Position = 0;
-			w305.Expand = false;
-			w305.Fill = false;
+			global::Gtk.Box.BoxChild w293 = ((global::Gtk.Box.BoxChild)(this.hbox65[this.btnAddFilesystem]));
+			w293.PackType = ((global::Gtk.PackType)(1));
+			w293.Position = 0;
+			w293.Expand = false;
+			w293.Fill = false;
 			// Container child hbox65.Gtk.Box+BoxChild
 			this.btnEditFilesystem = new global::Gtk.Button();
 			this.btnEditFilesystem.CanFocus = true;
 			this.btnEditFilesystem.Name = "btnEditFilesystem";
 			this.btnEditFilesystem.UseUnderline = true;
 			this.btnEditFilesystem.Label = global::Mono.Unix.Catalog.GetString("_Edit");
-			global::Gtk.Image w306 = new global::Gtk.Image();
-			w306.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
-			this.btnEditFilesystem.Image = w306;
+			global::Gtk.Image w294 = new global::Gtk.Image();
+			w294.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
+			this.btnEditFilesystem.Image = w294;
 			this.hbox65.Add(this.btnEditFilesystem);
-			global::Gtk.Box.BoxChild w307 = ((global::Gtk.Box.BoxChild)(this.hbox65[this.btnEditFilesystem]));
-			w307.PackType = ((global::Gtk.PackType)(1));
-			w307.Position = 1;
-			w307.Expand = false;
-			w307.Fill = false;
+			global::Gtk.Box.BoxChild w295 = ((global::Gtk.Box.BoxChild)(this.hbox65[this.btnEditFilesystem]));
+			w295.PackType = ((global::Gtk.PackType)(1));
+			w295.Position = 1;
+			w295.Expand = false;
+			w295.Fill = false;
 			// Container child hbox65.Gtk.Box+BoxChild
 			this.btnRemoveFilesystem = new global::Gtk.Button();
 			this.btnRemoveFilesystem.CanFocus = true;
@@ -3534,16 +3397,16 @@ namespace osrepodbmgr
 			this.btnRemoveFilesystem.UseUnderline = true;
 			this.btnRemoveFilesystem.Label = "gtk-remove";
 			this.hbox65.Add(this.btnRemoveFilesystem);
-			global::Gtk.Box.BoxChild w308 = ((global::Gtk.Box.BoxChild)(this.hbox65[this.btnRemoveFilesystem]));
-			w308.PackType = ((global::Gtk.PackType)(1));
-			w308.Position = 2;
-			w308.Expand = false;
-			w308.Fill = false;
+			global::Gtk.Box.BoxChild w296 = ((global::Gtk.Box.BoxChild)(this.hbox65[this.btnRemoveFilesystem]));
+			w296.PackType = ((global::Gtk.PackType)(1));
+			w296.Position = 2;
+			w296.Expand = false;
+			w296.Fill = false;
 			this.vbox23.Add(this.hbox65);
-			global::Gtk.Box.BoxChild w309 = ((global::Gtk.Box.BoxChild)(this.vbox23[this.hbox65]));
-			w309.Position = 1;
-			w309.Expand = false;
-			w309.Fill = false;
+			global::Gtk.Box.BoxChild w297 = ((global::Gtk.Box.BoxChild)(this.vbox23[this.hbox65]));
+			w297.Position = 1;
+			w297.Expand = false;
+			w297.Fill = false;
 			this.GtkAlignment43.Add(this.vbox23);
 			this.frmFilesystems.Add(this.GtkAlignment43);
 			this.GtkLabel52 = new global::Gtk.Label();
@@ -3552,8 +3415,8 @@ namespace osrepodbmgr
 			this.GtkLabel52.UseMarkup = true;
 			this.frmFilesystems.LabelWidget = this.GtkLabel52;
 			this.vbox22.Add(this.frmFilesystems);
-			global::Gtk.Box.BoxChild w312 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.frmFilesystems]));
-			w312.Position = 4;
+			global::Gtk.Box.BoxChild w300 = ((global::Gtk.Box.BoxChild)(this.vbox22[this.frmFilesystems]));
+			w300.Position = 4;
 			this.GtkAlignment17.Add(this.vbox22);
 			this.frmPartitions.Add(this.GtkAlignment17);
 			this.GtkLabel53 = new global::Gtk.Label();
@@ -3562,8 +3425,8 @@ namespace osrepodbmgr
 			this.GtkLabel53.UseMarkup = true;
 			this.frmPartitions.LabelWidget = this.GtkLabel53;
 			this.vbox42.Add(this.frmPartitions);
-			global::Gtk.Box.BoxChild w315 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.frmPartitions]));
-			w315.Position = 4;
+			global::Gtk.Box.BoxChild w303 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.frmPartitions]));
+			w303.Position = 4;
 			// Container child vbox42.Gtk.Box+BoxChild
 			this.hbox104 = new global::Gtk.HBox();
 			this.hbox104.Name = "hbox104";
@@ -3574,15 +3437,15 @@ namespace osrepodbmgr
 			this.btnEditTrack.Name = "btnEditTrack";
 			this.btnEditTrack.UseUnderline = true;
 			this.btnEditTrack.Label = global::Mono.Unix.Catalog.GetString("_Edit");
-			global::Gtk.Image w316 = new global::Gtk.Image();
-			w316.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
-			this.btnEditTrack.Image = w316;
+			global::Gtk.Image w304 = new global::Gtk.Image();
+			w304.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
+			this.btnEditTrack.Image = w304;
 			this.hbox104.Add(this.btnEditTrack);
-			global::Gtk.Box.BoxChild w317 = ((global::Gtk.Box.BoxChild)(this.hbox104[this.btnEditTrack]));
-			w317.PackType = ((global::Gtk.PackType)(1));
-			w317.Position = 0;
-			w317.Expand = false;
-			w317.Fill = false;
+			global::Gtk.Box.BoxChild w305 = ((global::Gtk.Box.BoxChild)(this.hbox104[this.btnEditTrack]));
+			w305.PackType = ((global::Gtk.PackType)(1));
+			w305.Position = 0;
+			w305.Expand = false;
+			w305.Fill = false;
 			// Container child hbox104.Gtk.Box+BoxChild
 			this.btnApplyTrack = new global::Gtk.Button();
 			this.btnApplyTrack.CanFocus = true;
@@ -3591,11 +3454,11 @@ namespace osrepodbmgr
 			this.btnApplyTrack.UseUnderline = true;
 			this.btnApplyTrack.Label = "gtk-apply";
 			this.hbox104.Add(this.btnApplyTrack);
-			global::Gtk.Box.BoxChild w318 = ((global::Gtk.Box.BoxChild)(this.hbox104[this.btnApplyTrack]));
-			w318.PackType = ((global::Gtk.PackType)(1));
-			w318.Position = 1;
-			w318.Expand = false;
-			w318.Fill = false;
+			global::Gtk.Box.BoxChild w306 = ((global::Gtk.Box.BoxChild)(this.hbox104[this.btnApplyTrack]));
+			w306.PackType = ((global::Gtk.PackType)(1));
+			w306.Position = 1;
+			w306.Expand = false;
+			w306.Fill = false;
 			// Container child hbox104.Gtk.Box+BoxChild
 			this.btnCancelTrack = new global::Gtk.Button();
 			this.btnCancelTrack.CanFocus = true;
@@ -3604,19 +3467,19 @@ namespace osrepodbmgr
 			this.btnCancelTrack.UseUnderline = true;
 			this.btnCancelTrack.Label = "gtk-cancel";
 			this.hbox104.Add(this.btnCancelTrack);
-			global::Gtk.Box.BoxChild w319 = ((global::Gtk.Box.BoxChild)(this.hbox104[this.btnCancelTrack]));
-			w319.PackType = ((global::Gtk.PackType)(1));
-			w319.Position = 2;
-			w319.Expand = false;
-			w319.Fill = false;
+			global::Gtk.Box.BoxChild w307 = ((global::Gtk.Box.BoxChild)(this.hbox104[this.btnCancelTrack]));
+			w307.PackType = ((global::Gtk.PackType)(1));
+			w307.Position = 2;
+			w307.Expand = false;
+			w307.Fill = false;
 			this.vbox42.Add(this.hbox104);
-			global::Gtk.Box.BoxChild w320 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox104]));
-			w320.Position = 5;
-			w320.Expand = false;
-			w320.Fill = false;
+			global::Gtk.Box.BoxChild w308 = ((global::Gtk.Box.BoxChild)(this.vbox42[this.hbox104]));
+			w308.Position = 5;
+			w308.Expand = false;
+			w308.Fill = false;
 			this.notebook1.Add(this.vbox42);
-			global::Gtk.Notebook.NotebookChild w321 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox42]));
-			w321.Position = 12;
+			global::Gtk.Notebook.NotebookChild w309 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox42]));
+			w309.Position = 11;
 			// Notebook tab
 			this.label125 = new global::Gtk.Label();
 			this.label125.Name = "label125";
@@ -3635,10 +3498,10 @@ namespace osrepodbmgr
 			this.chkDumpHardware.DrawIndicator = true;
 			this.chkDumpHardware.UseUnderline = true;
 			this.vbox15.Add(this.chkDumpHardware);
-			global::Gtk.Box.BoxChild w322 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.chkDumpHardware]));
-			w322.Position = 0;
-			w322.Expand = false;
-			w322.Fill = false;
+			global::Gtk.Box.BoxChild w310 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.chkDumpHardware]));
+			w310.Position = 0;
+			w310.Expand = false;
+			w310.Fill = false;
 			// Container child vbox15.Gtk.Box+BoxChild
 			this.GtkScrolledWindow8 = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow8.Name = "GtkScrolledWindow8";
@@ -3649,8 +3512,8 @@ namespace osrepodbmgr
 			this.treeDumpHardware.Name = "treeDumpHardware";
 			this.GtkScrolledWindow8.Add(this.treeDumpHardware);
 			this.vbox15.Add(this.GtkScrolledWindow8);
-			global::Gtk.Box.BoxChild w324 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.GtkScrolledWindow8]));
-			w324.Position = 1;
+			global::Gtk.Box.BoxChild w312 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.GtkScrolledWindow8]));
+			w312.Position = 1;
 			// Container child vbox15.Gtk.Box+BoxChild
 			this.hbox39 = new global::Gtk.HBox();
 			this.hbox39.Name = "hbox39";
@@ -3663,10 +3526,10 @@ namespace osrepodbmgr
 			this.btnCancelHardware.UseUnderline = true;
 			this.btnCancelHardware.Label = "gtk-cancel";
 			this.hbox39.Add(this.btnCancelHardware);
-			global::Gtk.Box.BoxChild w325 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnCancelHardware]));
-			w325.Position = 0;
-			w325.Expand = false;
-			w325.Fill = false;
+			global::Gtk.Box.BoxChild w313 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnCancelHardware]));
+			w313.Position = 0;
+			w313.Expand = false;
+			w313.Fill = false;
 			// Container child hbox39.Gtk.Box+BoxChild
 			this.btnRemoveHardware = new global::Gtk.Button();
 			this.btnRemoveHardware.CanFocus = true;
@@ -3675,10 +3538,10 @@ namespace osrepodbmgr
 			this.btnRemoveHardware.UseUnderline = true;
 			this.btnRemoveHardware.Label = "gtk-remove";
 			this.hbox39.Add(this.btnRemoveHardware);
-			global::Gtk.Box.BoxChild w326 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnRemoveHardware]));
-			w326.Position = 1;
-			w326.Expand = false;
-			w326.Fill = false;
+			global::Gtk.Box.BoxChild w314 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnRemoveHardware]));
+			w314.Position = 1;
+			w314.Expand = false;
+			w314.Fill = false;
 			// Container child hbox39.Gtk.Box+BoxChild
 			this.btnAddHardware = new global::Gtk.Button();
 			this.btnAddHardware.CanFocus = true;
@@ -3687,11 +3550,11 @@ namespace osrepodbmgr
 			this.btnAddHardware.UseUnderline = true;
 			this.btnAddHardware.Label = "gtk-add";
 			this.hbox39.Add(this.btnAddHardware);
-			global::Gtk.Box.BoxChild w327 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnAddHardware]));
-			w327.PackType = ((global::Gtk.PackType)(1));
-			w327.Position = 2;
-			w327.Expand = false;
-			w327.Fill = false;
+			global::Gtk.Box.BoxChild w315 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnAddHardware]));
+			w315.PackType = ((global::Gtk.PackType)(1));
+			w315.Position = 2;
+			w315.Expand = false;
+			w315.Fill = false;
 			// Container child hbox39.Gtk.Box+BoxChild
 			this.btnApplyHardware = new global::Gtk.Button();
 			this.btnApplyHardware.CanFocus = true;
@@ -3700,31 +3563,31 @@ namespace osrepodbmgr
 			this.btnApplyHardware.UseUnderline = true;
 			this.btnApplyHardware.Label = "gtk-apply";
 			this.hbox39.Add(this.btnApplyHardware);
-			global::Gtk.Box.BoxChild w328 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnApplyHardware]));
-			w328.PackType = ((global::Gtk.PackType)(1));
-			w328.Position = 3;
-			w328.Expand = false;
-			w328.Fill = false;
+			global::Gtk.Box.BoxChild w316 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnApplyHardware]));
+			w316.PackType = ((global::Gtk.PackType)(1));
+			w316.Position = 3;
+			w316.Expand = false;
+			w316.Fill = false;
 			// Container child hbox39.Gtk.Box+BoxChild
 			this.btnEditHardware = new global::Gtk.Button();
 			this.btnEditHardware.CanFocus = true;
 			this.btnEditHardware.Name = "btnEditHardware";
 			this.btnEditHardware.UseUnderline = true;
 			this.btnEditHardware.Label = global::Mono.Unix.Catalog.GetString("Edit");
-			global::Gtk.Image w329 = new global::Gtk.Image();
-			w329.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
-			this.btnEditHardware.Image = w329;
+			global::Gtk.Image w317 = new global::Gtk.Image();
+			w317.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
+			this.btnEditHardware.Image = w317;
 			this.hbox39.Add(this.btnEditHardware);
-			global::Gtk.Box.BoxChild w330 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnEditHardware]));
-			w330.PackType = ((global::Gtk.PackType)(1));
-			w330.Position = 4;
-			w330.Expand = false;
-			w330.Fill = false;
+			global::Gtk.Box.BoxChild w318 = ((global::Gtk.Box.BoxChild)(this.hbox39[this.btnEditHardware]));
+			w318.PackType = ((global::Gtk.PackType)(1));
+			w318.Position = 4;
+			w318.Expand = false;
+			w318.Fill = false;
 			this.vbox15.Add(this.hbox39);
-			global::Gtk.Box.BoxChild w331 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox39]));
-			w331.Position = 2;
-			w331.Expand = false;
-			w331.Fill = false;
+			global::Gtk.Box.BoxChild w319 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox39]));
+			w319.Position = 2;
+			w319.Expand = false;
+			w319.Fill = false;
 			// Container child vbox15.Gtk.Box+BoxChild
 			this.hbox40 = new global::Gtk.HBox();
 			this.hbox40.Name = "hbox40";
@@ -3734,10 +3597,10 @@ namespace osrepodbmgr
 			this.lblHWManufacturer.Name = "lblHWManufacturer";
 			this.lblHWManufacturer.LabelProp = global::Mono.Unix.Catalog.GetString("Manufacturer");
 			this.hbox40.Add(this.lblHWManufacturer);
-			global::Gtk.Box.BoxChild w332 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.lblHWManufacturer]));
-			w332.Position = 0;
-			w332.Expand = false;
-			w332.Fill = false;
+			global::Gtk.Box.BoxChild w320 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.lblHWManufacturer]));
+			w320.Position = 0;
+			w320.Expand = false;
+			w320.Fill = false;
 			// Container child hbox40.Gtk.Box+BoxChild
 			this.txtHWManufacturer = new global::Gtk.Entry();
 			this.txtHWManufacturer.CanFocus = true;
@@ -3745,17 +3608,17 @@ namespace osrepodbmgr
 			this.txtHWManufacturer.IsEditable = true;
 			this.txtHWManufacturer.InvisibleChar = '●';
 			this.hbox40.Add(this.txtHWManufacturer);
-			global::Gtk.Box.BoxChild w333 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.txtHWManufacturer]));
-			w333.Position = 1;
+			global::Gtk.Box.BoxChild w321 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.txtHWManufacturer]));
+			w321.Position = 1;
 			// Container child hbox40.Gtk.Box+BoxChild
 			this.lblHWModel = new global::Gtk.Label();
 			this.lblHWModel.Name = "lblHWModel";
 			this.lblHWModel.LabelProp = global::Mono.Unix.Catalog.GetString("Model");
 			this.hbox40.Add(this.lblHWModel);
-			global::Gtk.Box.BoxChild w334 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.lblHWModel]));
-			w334.Position = 2;
-			w334.Expand = false;
-			w334.Fill = false;
+			global::Gtk.Box.BoxChild w322 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.lblHWModel]));
+			w322.Position = 2;
+			w322.Expand = false;
+			w322.Fill = false;
 			// Container child hbox40.Gtk.Box+BoxChild
 			this.txtHWModel = new global::Gtk.Entry();
 			this.txtHWModel.CanFocus = true;
@@ -3763,13 +3626,13 @@ namespace osrepodbmgr
 			this.txtHWModel.IsEditable = true;
 			this.txtHWModel.InvisibleChar = '●';
 			this.hbox40.Add(this.txtHWModel);
-			global::Gtk.Box.BoxChild w335 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.txtHWModel]));
-			w335.Position = 3;
+			global::Gtk.Box.BoxChild w323 = ((global::Gtk.Box.BoxChild)(this.hbox40[this.txtHWModel]));
+			w323.Position = 3;
 			this.vbox15.Add(this.hbox40);
-			global::Gtk.Box.BoxChild w336 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox40]));
-			w336.Position = 3;
-			w336.Expand = false;
-			w336.Fill = false;
+			global::Gtk.Box.BoxChild w324 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox40]));
+			w324.Position = 3;
+			w324.Expand = false;
+			w324.Fill = false;
 			// Container child vbox15.Gtk.Box+BoxChild
 			this.hbox41 = new global::Gtk.HBox();
 			this.hbox41.Name = "hbox41";
@@ -3779,10 +3642,10 @@ namespace osrepodbmgr
 			this.lblHWRevision.Name = "lblHWRevision";
 			this.lblHWRevision.LabelProp = global::Mono.Unix.Catalog.GetString("Revision");
 			this.hbox41.Add(this.lblHWRevision);
-			global::Gtk.Box.BoxChild w337 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.lblHWRevision]));
-			w337.Position = 0;
-			w337.Expand = false;
-			w337.Fill = false;
+			global::Gtk.Box.BoxChild w325 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.lblHWRevision]));
+			w325.Position = 0;
+			w325.Expand = false;
+			w325.Fill = false;
 			// Container child hbox41.Gtk.Box+BoxChild
 			this.txtHWRevision = new global::Gtk.Entry();
 			this.txtHWRevision.CanFocus = true;
@@ -3790,17 +3653,17 @@ namespace osrepodbmgr
 			this.txtHWRevision.IsEditable = true;
 			this.txtHWRevision.InvisibleChar = '●';
 			this.hbox41.Add(this.txtHWRevision);
-			global::Gtk.Box.BoxChild w338 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.txtHWRevision]));
-			w338.Position = 1;
+			global::Gtk.Box.BoxChild w326 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.txtHWRevision]));
+			w326.Position = 1;
 			// Container child hbox41.Gtk.Box+BoxChild
 			this.lblHWFirmware = new global::Gtk.Label();
 			this.lblHWFirmware.Name = "lblHWFirmware";
 			this.lblHWFirmware.LabelProp = global::Mono.Unix.Catalog.GetString("Firmware");
 			this.hbox41.Add(this.lblHWFirmware);
-			global::Gtk.Box.BoxChild w339 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.lblHWFirmware]));
-			w339.Position = 2;
-			w339.Expand = false;
-			w339.Fill = false;
+			global::Gtk.Box.BoxChild w327 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.lblHWFirmware]));
+			w327.Position = 2;
+			w327.Expand = false;
+			w327.Fill = false;
 			// Container child hbox41.Gtk.Box+BoxChild
 			this.txtHWFirmware = new global::Gtk.Entry();
 			this.txtHWFirmware.CanFocus = true;
@@ -3808,13 +3671,13 @@ namespace osrepodbmgr
 			this.txtHWFirmware.IsEditable = true;
 			this.txtHWFirmware.InvisibleChar = '●';
 			this.hbox41.Add(this.txtHWFirmware);
-			global::Gtk.Box.BoxChild w340 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.txtHWFirmware]));
-			w340.Position = 3;
+			global::Gtk.Box.BoxChild w328 = ((global::Gtk.Box.BoxChild)(this.hbox41[this.txtHWFirmware]));
+			w328.Position = 3;
 			this.vbox15.Add(this.hbox41);
-			global::Gtk.Box.BoxChild w341 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox41]));
-			w341.Position = 4;
-			w341.Expand = false;
-			w341.Fill = false;
+			global::Gtk.Box.BoxChild w329 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox41]));
+			w329.Position = 4;
+			w329.Expand = false;
+			w329.Fill = false;
 			// Container child vbox15.Gtk.Box+BoxChild
 			this.hbox44 = new global::Gtk.HBox();
 			this.hbox44.Name = "hbox44";
@@ -3824,10 +3687,10 @@ namespace osrepodbmgr
 			this.lblHWSerial.Name = "lblHWSerial";
 			this.lblHWSerial.LabelProp = global::Mono.Unix.Catalog.GetString("Serial number");
 			this.hbox44.Add(this.lblHWSerial);
-			global::Gtk.Box.BoxChild w342 = ((global::Gtk.Box.BoxChild)(this.hbox44[this.lblHWSerial]));
-			w342.Position = 0;
-			w342.Expand = false;
-			w342.Fill = false;
+			global::Gtk.Box.BoxChild w330 = ((global::Gtk.Box.BoxChild)(this.hbox44[this.lblHWSerial]));
+			w330.Position = 0;
+			w330.Expand = false;
+			w330.Fill = false;
 			// Container child hbox44.Gtk.Box+BoxChild
 			this.txtHWSerial = new global::Gtk.Entry();
 			this.txtHWSerial.CanFocus = true;
@@ -3835,13 +3698,13 @@ namespace osrepodbmgr
 			this.txtHWSerial.IsEditable = true;
 			this.txtHWSerial.InvisibleChar = '●';
 			this.hbox44.Add(this.txtHWSerial);
-			global::Gtk.Box.BoxChild w343 = ((global::Gtk.Box.BoxChild)(this.hbox44[this.txtHWSerial]));
-			w343.Position = 1;
+			global::Gtk.Box.BoxChild w331 = ((global::Gtk.Box.BoxChild)(this.hbox44[this.txtHWSerial]));
+			w331.Position = 1;
 			this.vbox15.Add(this.hbox44);
-			global::Gtk.Box.BoxChild w344 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox44]));
-			w344.Position = 5;
-			w344.Expand = false;
-			w344.Fill = false;
+			global::Gtk.Box.BoxChild w332 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hbox44]));
+			w332.Position = 5;
+			w332.Expand = false;
+			w332.Fill = false;
 			// Container child vbox15.Gtk.Box+BoxChild
 			this.hpaned1 = new global::Gtk.HPaned();
 			this.hpaned1.CanFocus = true;
@@ -3869,8 +3732,8 @@ namespace osrepodbmgr
 			this.treeExtents.Name = "treeExtents";
 			this.GtkScrolledWindow9.Add(this.treeExtents);
 			this.vbox21.Add(this.GtkScrolledWindow9);
-			global::Gtk.Box.BoxChild w346 = ((global::Gtk.Box.BoxChild)(this.vbox21[this.GtkScrolledWindow9]));
-			w346.Position = 0;
+			global::Gtk.Box.BoxChild w334 = ((global::Gtk.Box.BoxChild)(this.vbox21[this.GtkScrolledWindow9]));
+			w334.Position = 0;
 			// Container child vbox21.Gtk.Box+BoxChild
 			this.hbox58 = new global::Gtk.HBox();
 			this.hbox58.Name = "hbox58";
@@ -3883,10 +3746,10 @@ namespace osrepodbmgr
 			this.btnRemoveExtent.UseUnderline = true;
 			this.btnRemoveExtent.Label = "gtk-remove";
 			this.hbox58.Add(this.btnRemoveExtent);
-			global::Gtk.Box.BoxChild w347 = ((global::Gtk.Box.BoxChild)(this.hbox58[this.btnRemoveExtent]));
-			w347.Position = 0;
-			w347.Expand = false;
-			w347.Fill = false;
+			global::Gtk.Box.BoxChild w335 = ((global::Gtk.Box.BoxChild)(this.hbox58[this.btnRemoveExtent]));
+			w335.Position = 0;
+			w335.Expand = false;
+			w335.Fill = false;
 			// Container child hbox58.Gtk.Box+BoxChild
 			this.btnAddExtent = new global::Gtk.Button();
 			this.btnAddExtent.CanFocus = true;
@@ -3895,16 +3758,16 @@ namespace osrepodbmgr
 			this.btnAddExtent.UseUnderline = true;
 			this.btnAddExtent.Label = "gtk-add";
 			this.hbox58.Add(this.btnAddExtent);
-			global::Gtk.Box.BoxChild w348 = ((global::Gtk.Box.BoxChild)(this.hbox58[this.btnAddExtent]));
-			w348.PackType = ((global::Gtk.PackType)(1));
-			w348.Position = 1;
-			w348.Expand = false;
-			w348.Fill = false;
+			global::Gtk.Box.BoxChild w336 = ((global::Gtk.Box.BoxChild)(this.hbox58[this.btnAddExtent]));
+			w336.PackType = ((global::Gtk.PackType)(1));
+			w336.Position = 1;
+			w336.Expand = false;
+			w336.Fill = false;
 			this.vbox21.Add(this.hbox58);
-			global::Gtk.Box.BoxChild w349 = ((global::Gtk.Box.BoxChild)(this.vbox21[this.hbox58]));
-			w349.Position = 1;
-			w349.Expand = false;
-			w349.Fill = false;
+			global::Gtk.Box.BoxChild w337 = ((global::Gtk.Box.BoxChild)(this.vbox21[this.hbox58]));
+			w337.Position = 1;
+			w337.Expand = false;
+			w337.Fill = false;
 			// Container child vbox21.Gtk.Box+BoxChild
 			this.hbox59 = new global::Gtk.HBox();
 			this.hbox59.Name = "hbox59";
@@ -3914,10 +3777,10 @@ namespace osrepodbmgr
 			this.lblStartExtent.Name = "lblStartExtent";
 			this.lblStartExtent.LabelProp = global::Mono.Unix.Catalog.GetString("Start");
 			this.hbox59.Add(this.lblStartExtent);
-			global::Gtk.Box.BoxChild w350 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.lblStartExtent]));
-			w350.Position = 0;
-			w350.Expand = false;
-			w350.Fill = false;
+			global::Gtk.Box.BoxChild w338 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.lblStartExtent]));
+			w338.Position = 0;
+			w338.Expand = false;
+			w338.Fill = false;
 			// Container child hbox59.Gtk.Box+BoxChild
 			this.spExtentStart = new global::Gtk.SpinButton(0, 100, 1);
 			this.spExtentStart.CanFocus = true;
@@ -3926,19 +3789,19 @@ namespace osrepodbmgr
 			this.spExtentStart.ClimbRate = 1;
 			this.spExtentStart.Numeric = true;
 			this.hbox59.Add(this.spExtentStart);
-			global::Gtk.Box.BoxChild w351 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.spExtentStart]));
-			w351.Position = 1;
-			w351.Expand = false;
-			w351.Fill = false;
+			global::Gtk.Box.BoxChild w339 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.spExtentStart]));
+			w339.Position = 1;
+			w339.Expand = false;
+			w339.Fill = false;
 			// Container child hbox59.Gtk.Box+BoxChild
 			this.lblEndExtent = new global::Gtk.Label();
 			this.lblEndExtent.Name = "lblEndExtent";
 			this.lblEndExtent.LabelProp = global::Mono.Unix.Catalog.GetString("End");
 			this.hbox59.Add(this.lblEndExtent);
-			global::Gtk.Box.BoxChild w352 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.lblEndExtent]));
-			w352.Position = 2;
-			w352.Expand = false;
-			w352.Fill = false;
+			global::Gtk.Box.BoxChild w340 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.lblEndExtent]));
+			w340.Position = 2;
+			w340.Expand = false;
+			w340.Fill = false;
 			// Container child hbox59.Gtk.Box+BoxChild
 			this.spExtentEnd = new global::Gtk.SpinButton(0, 100, 1);
 			this.spExtentEnd.CanFocus = true;
@@ -3947,15 +3810,15 @@ namespace osrepodbmgr
 			this.spExtentEnd.ClimbRate = 1;
 			this.spExtentEnd.Numeric = true;
 			this.hbox59.Add(this.spExtentEnd);
-			global::Gtk.Box.BoxChild w353 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.spExtentEnd]));
-			w353.Position = 3;
-			w353.Expand = false;
-			w353.Fill = false;
+			global::Gtk.Box.BoxChild w341 = ((global::Gtk.Box.BoxChild)(this.hbox59[this.spExtentEnd]));
+			w341.Position = 3;
+			w341.Expand = false;
+			w341.Fill = false;
 			this.vbox21.Add(this.hbox59);
-			global::Gtk.Box.BoxChild w354 = ((global::Gtk.Box.BoxChild)(this.vbox21[this.hbox59]));
-			w354.Position = 2;
-			w354.Expand = false;
-			w354.Fill = false;
+			global::Gtk.Box.BoxChild w342 = ((global::Gtk.Box.BoxChild)(this.vbox21[this.hbox59]));
+			w342.Position = 2;
+			w342.Expand = false;
+			w342.Fill = false;
 			this.GtkAlignment62.Add(this.vbox21);
 			this.frmExtents.Add(this.GtkAlignment62);
 			this.GtkLabel69 = new global::Gtk.Label();
@@ -3964,8 +3827,8 @@ namespace osrepodbmgr
 			this.GtkLabel69.UseMarkup = true;
 			this.frmExtents.LabelWidget = this.GtkLabel69;
 			this.hpaned1.Add(this.frmExtents);
-			global::Gtk.Paned.PanedChild w357 = ((global::Gtk.Paned.PanedChild)(this.hpaned1[this.frmExtents]));
-			w357.Resize = false;
+			global::Gtk.Paned.PanedChild w345 = ((global::Gtk.Paned.PanedChild)(this.hpaned1[this.frmExtents]));
+			w345.Resize = false;
 			// Container child hpaned1.Gtk.Paned+PanedChild
 			this.frmDumpSoftware = new global::Gtk.Frame();
 			this.frmDumpSoftware.Name = "frmDumpSoftware";
@@ -3987,10 +3850,10 @@ namespace osrepodbmgr
 			this.lblSoftwareName.Name = "lblSoftwareName";
 			this.lblSoftwareName.LabelProp = global::Mono.Unix.Catalog.GetString("Name");
 			this.hbox55.Add(this.lblSoftwareName);
-			global::Gtk.Box.BoxChild w358 = ((global::Gtk.Box.BoxChild)(this.hbox55[this.lblSoftwareName]));
-			w358.Position = 0;
-			w358.Expand = false;
-			w358.Fill = false;
+			global::Gtk.Box.BoxChild w346 = ((global::Gtk.Box.BoxChild)(this.hbox55[this.lblSoftwareName]));
+			w346.Position = 0;
+			w346.Expand = false;
+			w346.Fill = false;
 			// Container child hbox55.Gtk.Box+BoxChild
 			this.txtSoftwareName = new global::Gtk.Entry();
 			this.txtSoftwareName.CanFocus = true;
@@ -3998,13 +3861,13 @@ namespace osrepodbmgr
 			this.txtSoftwareName.IsEditable = true;
 			this.txtSoftwareName.InvisibleChar = '●';
 			this.hbox55.Add(this.txtSoftwareName);
-			global::Gtk.Box.BoxChild w359 = ((global::Gtk.Box.BoxChild)(this.hbox55[this.txtSoftwareName]));
-			w359.Position = 1;
+			global::Gtk.Box.BoxChild w347 = ((global::Gtk.Box.BoxChild)(this.hbox55[this.txtSoftwareName]));
+			w347.Position = 1;
 			this.vbox20.Add(this.hbox55);
-			global::Gtk.Box.BoxChild w360 = ((global::Gtk.Box.BoxChild)(this.vbox20[this.hbox55]));
-			w360.Position = 0;
-			w360.Expand = false;
-			w360.Fill = false;
+			global::Gtk.Box.BoxChild w348 = ((global::Gtk.Box.BoxChild)(this.vbox20[this.hbox55]));
+			w348.Position = 0;
+			w348.Expand = false;
+			w348.Fill = false;
 			// Container child vbox20.Gtk.Box+BoxChild
 			this.hbox56 = new global::Gtk.HBox();
 			this.hbox56.Name = "hbox56";
@@ -4014,10 +3877,10 @@ namespace osrepodbmgr
 			this.lblSoftwareVersion.Name = "lblSoftwareVersion";
 			this.lblSoftwareVersion.LabelProp = global::Mono.Unix.Catalog.GetString("Version");
 			this.hbox56.Add(this.lblSoftwareVersion);
-			global::Gtk.Box.BoxChild w361 = ((global::Gtk.Box.BoxChild)(this.hbox56[this.lblSoftwareVersion]));
-			w361.Position = 0;
-			w361.Expand = false;
-			w361.Fill = false;
+			global::Gtk.Box.BoxChild w349 = ((global::Gtk.Box.BoxChild)(this.hbox56[this.lblSoftwareVersion]));
+			w349.Position = 0;
+			w349.Expand = false;
+			w349.Fill = false;
 			// Container child hbox56.Gtk.Box+BoxChild
 			this.txtSoftwareVersion = new global::Gtk.Entry();
 			this.txtSoftwareVersion.CanFocus = true;
@@ -4025,13 +3888,13 @@ namespace osrepodbmgr
 			this.txtSoftwareVersion.IsEditable = true;
 			this.txtSoftwareVersion.InvisibleChar = '●';
 			this.hbox56.Add(this.txtSoftwareVersion);
-			global::Gtk.Box.BoxChild w362 = ((global::Gtk.Box.BoxChild)(this.hbox56[this.txtSoftwareVersion]));
-			w362.Position = 1;
+			global::Gtk.Box.BoxChild w350 = ((global::Gtk.Box.BoxChild)(this.hbox56[this.txtSoftwareVersion]));
+			w350.Position = 1;
 			this.vbox20.Add(this.hbox56);
-			global::Gtk.Box.BoxChild w363 = ((global::Gtk.Box.BoxChild)(this.vbox20[this.hbox56]));
-			w363.Position = 1;
-			w363.Expand = false;
-			w363.Fill = false;
+			global::Gtk.Box.BoxChild w351 = ((global::Gtk.Box.BoxChild)(this.vbox20[this.hbox56]));
+			w351.Position = 1;
+			w351.Expand = false;
+			w351.Fill = false;
 			// Container child vbox20.Gtk.Box+BoxChild
 			this.hbox57 = new global::Gtk.HBox();
 			this.hbox57.Name = "hbox57";
@@ -4041,10 +3904,10 @@ namespace osrepodbmgr
 			this.lblSoftwareOS.Name = "lblSoftwareOS";
 			this.lblSoftwareOS.LabelProp = global::Mono.Unix.Catalog.GetString("Operating system");
 			this.hbox57.Add(this.lblSoftwareOS);
-			global::Gtk.Box.BoxChild w364 = ((global::Gtk.Box.BoxChild)(this.hbox57[this.lblSoftwareOS]));
-			w364.Position = 0;
-			w364.Expand = false;
-			w364.Fill = false;
+			global::Gtk.Box.BoxChild w352 = ((global::Gtk.Box.BoxChild)(this.hbox57[this.lblSoftwareOS]));
+			w352.Position = 0;
+			w352.Expand = false;
+			w352.Fill = false;
 			// Container child hbox57.Gtk.Box+BoxChild
 			this.txtSoftwareOS = new global::Gtk.Entry();
 			this.txtSoftwareOS.CanFocus = true;
@@ -4052,13 +3915,13 @@ namespace osrepodbmgr
 			this.txtSoftwareOS.IsEditable = true;
 			this.txtSoftwareOS.InvisibleChar = '●';
 			this.hbox57.Add(this.txtSoftwareOS);
-			global::Gtk.Box.BoxChild w365 = ((global::Gtk.Box.BoxChild)(this.hbox57[this.txtSoftwareOS]));
-			w365.Position = 1;
+			global::Gtk.Box.BoxChild w353 = ((global::Gtk.Box.BoxChild)(this.hbox57[this.txtSoftwareOS]));
+			w353.Position = 1;
 			this.vbox20.Add(this.hbox57);
-			global::Gtk.Box.BoxChild w366 = ((global::Gtk.Box.BoxChild)(this.vbox20[this.hbox57]));
-			w366.Position = 2;
-			w366.Expand = false;
-			w366.Fill = false;
+			global::Gtk.Box.BoxChild w354 = ((global::Gtk.Box.BoxChild)(this.vbox20[this.hbox57]));
+			w354.Position = 2;
+			w354.Expand = false;
+			w354.Fill = false;
 			this.GtkAlignment65.Add(this.vbox20);
 			this.frmDumpSoftware.Add(this.GtkAlignment65);
 			this.GtkLabel70 = new global::Gtk.Label();
@@ -4068,11 +3931,11 @@ namespace osrepodbmgr
 			this.frmDumpSoftware.LabelWidget = this.GtkLabel70;
 			this.hpaned1.Add(this.frmDumpSoftware);
 			this.vbox15.Add(this.hpaned1);
-			global::Gtk.Box.BoxChild w370 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hpaned1]));
-			w370.Position = 6;
+			global::Gtk.Box.BoxChild w358 = ((global::Gtk.Box.BoxChild)(this.vbox15[this.hpaned1]));
+			w358.Position = 6;
 			this.notebook1.Add(this.vbox15);
-			global::Gtk.Notebook.NotebookChild w371 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox15]));
-			w371.Position = 13;
+			global::Gtk.Notebook.NotebookChild w359 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.vbox15]));
+			w359.Position = 12;
 			// Notebook tab
 			this.label11 = new global::Gtk.Label();
 			this.label11.Name = "label11";
@@ -4080,8 +3943,8 @@ namespace osrepodbmgr
 			this.notebook1.SetTabLabel(this.vbox15, this.label11);
 			this.label11.ShowAll();
 			w1.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w372 = ((global::Gtk.Box.BoxChild)(w1[this.notebook1]));
-			w372.Position = 0;
+			global::Gtk.Box.BoxChild w360 = ((global::Gtk.Box.BoxChild)(w1[this.notebook1]));
+			w360.Position = 0;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.hbox15 = new global::Gtk.HBox();
 			this.hbox15.Name = "hbox15";
@@ -4094,11 +3957,11 @@ namespace osrepodbmgr
 			this.btnSave.UseUnderline = true;
 			this.btnSave.Label = "gtk-save";
 			this.hbox15.Add(this.btnSave);
-			global::Gtk.Box.BoxChild w373 = ((global::Gtk.Box.BoxChild)(this.hbox15[this.btnSave]));
-			w373.PackType = ((global::Gtk.PackType)(1));
-			w373.Position = 0;
-			w373.Expand = false;
-			w373.Fill = false;
+			global::Gtk.Box.BoxChild w361 = ((global::Gtk.Box.BoxChild)(this.hbox15[this.btnSave]));
+			w361.PackType = ((global::Gtk.PackType)(1));
+			w361.Position = 0;
+			w361.Expand = false;
+			w361.Fill = false;
 			// Container child hbox15.Gtk.Box+BoxChild
 			this.btnCancel = new global::Gtk.Button();
 			this.btnCancel.CanFocus = true;
@@ -4107,23 +3970,23 @@ namespace osrepodbmgr
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = "gtk-cancel";
 			this.hbox15.Add(this.btnCancel);
-			global::Gtk.Box.BoxChild w374 = ((global::Gtk.Box.BoxChild)(this.hbox15[this.btnCancel]));
-			w374.PackType = ((global::Gtk.PackType)(1));
-			w374.Position = 1;
-			w374.Expand = false;
-			w374.Fill = false;
+			global::Gtk.Box.BoxChild w362 = ((global::Gtk.Box.BoxChild)(this.hbox15[this.btnCancel]));
+			w362.PackType = ((global::Gtk.PackType)(1));
+			w362.Position = 1;
+			w362.Expand = false;
+			w362.Fill = false;
 			w1.Add(this.hbox15);
-			global::Gtk.Box.BoxChild w375 = ((global::Gtk.Box.BoxChild)(w1[this.hbox15]));
-			w375.PackType = ((global::Gtk.PackType)(1));
-			w375.Position = 2;
-			w375.Expand = false;
-			w375.Fill = false;
+			global::Gtk.Box.BoxChild w363 = ((global::Gtk.Box.BoxChild)(w1[this.hbox15]));
+			w363.PackType = ((global::Gtk.PackType)(1));
+			w363.Position = 2;
+			w363.Expand = false;
+			w363.Fill = false;
 			// Internal child osrepodbmgr.dlgOpticalDisc.ActionArea
-			global::Gtk.HButtonBox w376 = this.ActionArea;
-			w376.Name = "dialog1_ActionArea";
-			w376.Spacing = 10;
-			w376.BorderWidth = ((uint)(5));
-			w376.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w364 = this.ActionArea;
+			w364.Name = "dialog1_ActionArea";
+			w364.Spacing = 10;
+			w364.BorderWidth = ((uint)(5));
+			w364.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button();
 			this.buttonCancel.CanDefault = true;
@@ -4133,9 +3996,9 @@ namespace osrepodbmgr
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget(this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w377 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w376[this.buttonCancel]));
-			w377.Expand = false;
-			w377.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w365 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w364[this.buttonCancel]));
+			w365.Expand = false;
+			w365.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button();
 			this.buttonOk.CanDefault = true;
@@ -4145,15 +4008,15 @@ namespace osrepodbmgr
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
 			this.AddActionWidget(this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w378 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w376[this.buttonOk]));
-			w378.Position = 1;
-			w378.Expand = false;
-			w378.Fill = false;
-			if ((this.Child != null))
+			global::Gtk.ButtonBox.ButtonBoxChild w366 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w364[this.buttonOk]));
+			w366.Position = 1;
+			w366.Expand = false;
+			w366.Fill = false;
+			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 914;
+			this.DefaultWidth = 939;
 			this.DefaultHeight = 738;
 			this.lblDiscTitle.Hide();
 			this.txtDiscTitle.Hide();
@@ -4231,7 +4094,7 @@ namespace osrepodbmgr
 			this.frmPartitions.Hide();
 			this.btnApplyTrack.Hide();
 			this.btnCancelTrack.Hide();
-			w376.Hide();
+			w364.Hide();
 			this.Show();
 			this.chkSequence.Toggled += new global::System.EventHandler(this.OnChkSequencedToggled);
 			this.chkDimensions.Toggled += new global::System.EventHandler(this.OnChkDimensionsToggled);
@@ -4249,8 +4112,6 @@ namespace osrepodbmgr
 			this.btnRemoveMouldSID.Clicked += new global::System.EventHandler(this.OnBtnRemoveMouldSIDClicked);
 			this.btnAddMouldText.Clicked += new global::System.EventHandler(this.OnBtnAddMouldTextClicked);
 			this.btnRemoveMouldText.Clicked += new global::System.EventHandler(this.OnBtnRemoveMouldTextClicked);
-			this.btnRemoveSS.Clicked += new global::System.EventHandler(this.OnBtnRemoveSSClicked);
-			this.btnAddSS.Clicked += new global::System.EventHandler(this.OnBtnAddSSClicked);
 			this.btnCancelPartition.Clicked += new global::System.EventHandler(this.OnBtnCancelPartitionClicked);
 			this.btnRemovePartition.Clicked += new global::System.EventHandler(this.OnBtnRemovePartitionClicked);
 			this.btnEditPartition.Clicked += new global::System.EventHandler(this.OnBtnEditPartitionClicked);

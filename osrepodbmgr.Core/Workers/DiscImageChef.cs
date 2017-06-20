@@ -389,8 +389,6 @@ namespace osrepodbmgr.Core
                             foreach(Track trk in tracks)
                             {
                                 currentProgress++;
-                                if(UpdateProgress != null)
-                                    UpdateProgress(null, string.Format("Hashing track {0}", trk.TrackSequence), currentProgress, maxProgress);
 
                                 Schemas.TrackType xmlTrk = new Schemas.TrackType();
                                 switch(trk.TrackType)
@@ -469,44 +467,54 @@ namespace osrepodbmgr.Core
                                 xmlTrk.BytesPerSector = trk.TrackBytesPerSector;
 
                                 uint sectorsToRead = 512;
-
-                                Checksum trkChkWorker = new Checksum();
-
                                 ulong sectors = (ulong)(xmlTrk.EndSector - xmlTrk.StartSector + 1);
                                 ulong doneSectors = 0;
 
-#if DEBUG
-                                stopwatch.Restart();
-#endif
-                                while(doneSectors < sectors)
+                                // If there is only one track, and it's the same as the image file (e.g. ".iso" files), don't re-checksum.
+                                if(_imageFormat.PluginUUID == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
                                 {
-                                    byte[] sector;
-
-                                    if((sectors - doneSectors) >= sectorsToRead)
-                                    {
-                                        sector = _imageFormat.ReadSectorsLong(doneSectors, sectorsToRead, (uint)xmlTrk.Sequence.TrackNumber);
-                                        if(UpdateProgress2 != null)
-                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
-                                        doneSectors += sectorsToRead;
-                                    }
-                                    else
-                                    {
-                                        sector = _imageFormat.ReadSectorsLong(doneSectors, (uint)(sectors - doneSectors), (uint)xmlTrk.Sequence.TrackNumber);
-                                        if(UpdateProgress2 != null)
-                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
-                                        doneSectors += (sectors - doneSectors);
-                                    }
-
-                                    trkChkWorker.Update(sector);
+                                    xmlTrk.Checksums = sidecar.OpticalDisc[0].Checksums;
                                 }
+                                else
+                                {
+                                    if(UpdateProgress != null)
+                                        UpdateProgress(null, string.Format("Hashing track {0}", trk.TrackSequence), currentProgress, maxProgress);
 
-                                List<ChecksumType> trkChecksums = trkChkWorker.End();
+                                    Checksum trkChkWorker = new Checksum();
+
 #if DEBUG
-                                stopwatch.Stop();
-                                Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash track {1}", stopwatch.Elapsed.TotalSeconds, trk.TrackSequence);
+                                    stopwatch.Restart();
+#endif
+                                    while(doneSectors < sectors)
+                                    {
+                                        byte[] sector;
+
+                                        if((sectors - doneSectors) >= sectorsToRead)
+                                        {
+                                            sector = _imageFormat.ReadSectorsLong(doneSectors, sectorsToRead, (uint)xmlTrk.Sequence.TrackNumber);
+                                            if(UpdateProgress2 != null)
+                                                UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
+                                            doneSectors += sectorsToRead;
+                                        }
+                                        else
+                                        {
+                                            sector = _imageFormat.ReadSectorsLong(doneSectors, (uint)(sectors - doneSectors), (uint)xmlTrk.Sequence.TrackNumber);
+                                            if(UpdateProgress2 != null)
+                                                UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
+                                            doneSectors += (sectors - doneSectors);
+                                        }
+
+                                        trkChkWorker.Update(sector);
+                                    }
+
+                                    List<ChecksumType> trkChecksums = trkChkWorker.End();
+#if DEBUG
+                                    stopwatch.Stop();
+                                    Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash track {1}", stopwatch.Elapsed.TotalSeconds, trk.TrackSequence);
 #endif
 
-                                xmlTrk.Checksums = trkChecksums.ToArray();
+                                    xmlTrk.Checksums = trkChecksums.ToArray();
+                                }
 
                                 if(UpdateProgress2 != null)
                                     UpdateProgress2(null, null, 0, 0);
@@ -716,7 +724,7 @@ namespace osrepodbmgr.Core
                                 sidecar.OpticalDisc[0].DumpHardwareArray = new DumpHardwareType[1];
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents = new ExtentType[0];
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents[0].Start = 0;
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents[0].End = (int)_imageFormat.ImageInfo.sectors;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents[0].End = _imageFormat.ImageInfo.sectors;
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Manufacturer = _imageFormat.ImageInfo.driveManufacturer;
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Model = _imageFormat.ImageInfo.driveModel;
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Firmware = _imageFormat.ImageInfo.driveFirmwareRevision;
@@ -855,6 +863,58 @@ namespace osrepodbmgr.Core
                             stopwatch.Stop();
                             Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash media tags", stopwatch.Elapsed.TotalSeconds);
 #endif
+
+                            // If there is only one track, and it's the same as the image file (e.g. ".iso" files), don't re-checksum.
+                            if(_imageFormat.PluginUUID == new System.Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                            {
+                                sidecar.BlockMedia[0].ContentChecksums = sidecar.BlockMedia[0].Checksums;
+                            }
+                            else
+                            {
+                                Checksum contentChkWorker = new Checksum();
+
+                                uint sectorsToRead = 512;
+                                ulong sectors = _imageFormat.GetSectors();
+                                ulong doneSectors = 0;
+
+                                if(UpdateProgress != null)
+                                    UpdateProgress(null, "Hashing media contents", currentProgress, maxProgress);
+
+                                Checksum cntChkWorker = new Checksum();
+
+#if DEBUG
+                                stopwatch.Restart();
+#endif
+                                while(doneSectors < sectors)
+                                {
+                                    byte[] sector;
+
+                                    if((sectors - doneSectors) >= sectorsToRead)
+                                    {
+                                        sector = _imageFormat.ReadSectors(doneSectors, sectorsToRead);
+                                        if(UpdateProgress2 != null)
+                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
+                                        doneSectors += sectorsToRead;
+                                    }
+                                    else
+                                    {
+                                        sector = _imageFormat.ReadSectors(doneSectors, (uint)(sectors - doneSectors));
+                                        if(UpdateProgress2 != null)
+                                            UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), (long)doneSectors, (long)sectors);
+                                        doneSectors += (sectors - doneSectors);
+                                    }
+
+                                    cntChkWorker.Update(sector);
+                                }
+
+                                List<ChecksumType> cntChecksums = cntChkWorker.End();
+#if DEBUG
+                                stopwatch.Stop();
+                                Console.WriteLine("Core.AddMedia(): Took {0} seconds to hash media contents", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+                                sidecar.BlockMedia[0].ContentChecksums = cntChecksums.ToArray();
+                            }
 
                             string dskType, dskSubType;
                             DiscImageChef.Metadata.MediaType.MediaTypeToString(_imageFormat.ImageInfo.mediaType, out dskType, out dskSubType);

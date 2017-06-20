@@ -754,7 +754,7 @@ namespace osrepodbmgr
 			w65.Position = 1;
 			w65.Expand = false;
 			w65.Fill = false;
-			if ((this.Child != null))
+			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}

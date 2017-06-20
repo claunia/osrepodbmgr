@@ -1,3 +1,10 @@
+* dlgMetadata.xeto:
+* dlgMetadata.xeto.cs:
+* dlgOpticalDisc.xeto:
+* dlgBlockMedia.xeto.cs:
+* dlgOpticalDisc.xeto.cs:
+  Updated DIC and Metadata code.
+
 2017-05-21  Natalia Portillo  <claunia@claunia.com>
 
 	* dlgAdd.xeto.cs:

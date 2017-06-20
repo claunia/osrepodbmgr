@@ -481,7 +481,7 @@ namespace osrepodbmgr
 			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.notebook1]));
 			w41.Position = 0;
 			this.Add(this.vbox2);
-			if ((this.Child != null))
+			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}

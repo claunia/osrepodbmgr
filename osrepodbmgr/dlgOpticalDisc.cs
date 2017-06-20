@@ -80,6 +80,7 @@ namespace osrepodbmgr
         ChecksumType[] checksums;
         CaseType mediaCase;
         ScansType scans;
+        XboxType xbox;
 
         public dlgOpticalDisc()
         {
@@ -374,17 +375,6 @@ namespace osrepodbmgr
             treeLeadOut.AppendColumn(sessionColumn);
             #endregion Set Lead-Out table
 
-            #region Set Xbox security sectors table
-            CellRendererText ssStartCell = new CellRendererText();
-            CellRendererText ssEndCell = new CellRendererText();
-            TreeViewColumn ssStartColumn = new TreeViewColumn("Start", ssStartCell, "text", 0);
-            TreeViewColumn ssEndColumn = new TreeViewColumn("End", ssEndCell, "text", 1);
-            lstXboxSS = new ListStore(typeof(int), typeof(int));
-            treeXboxSS.Model = lstXboxSS;
-            treeXboxSS.AppendColumn(ssStartColumn);
-            treeXboxSS.AppendColumn(ssEndColumn);
-            #endregion Set Xbox security sectors table
-
             #region Set tracks table
             lstTracks = new ListStore(typeof(int), typeof(int), typeof(string), typeof(long), typeof(string), typeof(long), typeof(string), typeof(string),
                   typeof(long), typeof(long), typeof(string), typeof(int), typeof(string), typeof(ChecksumType[]), typeof(SubChannelType),
@@ -499,6 +489,7 @@ namespace osrepodbmgr
             }
 
             checksums = Metadata.Checksums;
+            xbox = Metadata.Xbox;
 
             if(Metadata.RingCode != null)
             {
@@ -676,12 +667,6 @@ namespace osrepodbmgr
                     lstLeadOuts.AppendValues(leadout.Image, leadout.Size, leadout.session, leadout.Checksums);
             }
 
-            if(Metadata.XboxSecuritySectors != null)
-            {
-                foreach(SecuritySectorsType ss in Metadata.XboxSecuritySectors)
-                    lstXboxSS.AppendValues(ss.Start, ss.End);
-            }
-
             if(Metadata.PS3Encryption != null)
             {
                 txtPS3Key.Text = Metadata.PS3Encryption.Key;
@@ -724,7 +709,7 @@ namespace osrepodbmgr
                 {
                     if(hw.Extents != null)
                     {
-                        ListStore lstExtents = new ListStore(typeof(int), typeof(int));
+                        ListStore lstExtents = new ListStore(typeof(ulong), typeof(ulong));
                         foreach(ExtentType extent in hw.Extents)
                             lstExtents.AppendValues(extent.Start, extent.End);
                         if(hw.Software != null)
@@ -832,45 +817,6 @@ namespace osrepodbmgr
             TreeIter outIter;
             if(treeLayers.Selection.GetSelected(out outIter))
                 lstLayers.Remove(ref outIter);
-        }
-
-        protected void OnBtnRemoveSSClicked(object sender, EventArgs e)
-        {
-            TreeIter outIter;
-            if(treeXboxSS.Selection.GetSelected(out outIter))
-                lstXboxSS.Remove(ref outIter);
-        }
-
-        protected void OnBtnAddSSClicked(object sender, EventArgs e)
-        {
-            MessageDialog dlgMsg;
-            int temp, temp2;
-
-            if(!int.TryParse(txtSSStart.Text, out temp))
-            {
-                dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Xbox Security Sector start must be a number");
-                dlgMsg.Run();
-                dlgMsg.Destroy();
-                return;
-            }
-
-            if(!int.TryParse(txtSSEnd.Text, out temp2))
-            {
-                dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Xbox Security Sector end must be a number");
-                dlgMsg.Run();
-                dlgMsg.Destroy();
-                return;
-            }
-
-            if(temp2 <= temp)
-            {
-                dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Xbox Security Sector must end after start, and be bigger than 1 sector");
-                dlgMsg.Run();
-                dlgMsg.Destroy();
-                return;
-            }
-
-            lstXboxSS.AppendValues(int.Parse(txtSSStart.Text), int.Parse(txtSSEnd.Text));
         }
 
         protected void OnBtnRemovePartitionClicked(object sender, EventArgs e)
@@ -1581,6 +1527,7 @@ namespace osrepodbmgr
             }
 
             Metadata.Checksums = checksums;
+            Metadata.Xbox = xbox;
 
             if(lstRingCodes.GetIterFirst(out outIter))
             {
@@ -1887,20 +1834,6 @@ namespace osrepodbmgr
                 Metadata.LeadOut = leadouts.ToArray();
             }
 
-            if(lstXboxSS.GetIterFirst(out outIter))
-            {
-                List<SecuritySectorsType> xboxss = new List<SecuritySectorsType>();
-                do
-                {
-                    SecuritySectorsType ss = new SecuritySectorsType();
-                    ss.Start = (long)lstXboxSS.GetValue(outIter, 0);
-                    ss.End = (long)lstXboxSS.GetValue(outIter, 1);
-                    xboxss.Add(ss);
-                }
-                while(lstXboxSS.IterNext(ref outIter));
-                Metadata.XboxSecuritySectors = xboxss.ToArray();
-            }
-
             if(!string.IsNullOrWhiteSpace(txtPS3Key.Text) && !string.IsNullOrWhiteSpace(txtPS3Serial.Text))
             {
                 Metadata.PS3Encryption = new PS3EncryptionType();
@@ -2005,8 +1938,8 @@ namespace osrepodbmgr
                         do
                         {
                             ExtentType extent = new ExtentType();
-                            extent.Start = (int)lstExtents.GetValue(extIter, 0);
-                            extent.End = (int)lstExtents.GetValue(extIter, 1);
+                            extent.Start = (ulong)lstExtents.GetValue(extIter, 0);
+                            extent.End = (ulong)lstExtents.GetValue(extIter, 1);
                             extents.Add(extent);
                         }
                         while(lstExtents.IterNext(ref extIter));

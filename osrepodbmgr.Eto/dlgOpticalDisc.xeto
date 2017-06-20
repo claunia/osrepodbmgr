@@ -418,27 +418,6 @@
 						</StackLayoutItem>
 					</StackLayout>
 				</TabPage>
-				<TabPage Text="Xbox">
-					<StackLayout Orientation="Vertical">
-						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<GroupBox Text="Security sectors" ID="frmXboxSS">
-								<StackLayout Orientation="Vertical">
-									<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-										<GridView ID="treeXboxSS" />
-									</StackLayoutItem>
-									<StackLayout Orientation="Horizontal">
-										<Label>Start</Label>
-										<TextBox ID="txtSSStart" />
-										<Label>End</Label>
-										<TextBox ID="txtSSEnd" />
-										<Button ID="btnRemoveSS" Click="OnBtnRemoveSSClicked">Remove</Button>
-										<Button ID="btnAddSS" Click="OnBtnAddSSClicked">Add</Button>
-									</StackLayout>
-								</StackLayout>
-							</GroupBox>
-						</StackLayoutItem>
-					</StackLayout>
-				</TabPage>
 				<TabPage Text="PlayStation">
 					<StackLayout Orientation="Vertical">
 						<StackLayoutItem Expand="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

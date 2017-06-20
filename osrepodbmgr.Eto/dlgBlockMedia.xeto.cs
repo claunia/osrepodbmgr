@@ -210,6 +210,7 @@ namespace osrepodbmgr.Eto
         BlockSizeType[] variableBlockSize;
         TapePartitionType[] tapeInformation;
         ScansType scans;
+        ChecksumType[] contentChks;
 
         public dlgBlockMedia()
         {
@@ -321,12 +322,12 @@ namespace osrepodbmgr.Eto
 
             treeExtents.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, int>(r => r.Start).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, ulong>(r => r.Start).Convert(v => v.ToString()) },
                 HeaderText = "Start"
             });
             treeExtents.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, int>(r => r.End).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, ulong>(r => r.End).Convert(v => v.ToString()) },
                 HeaderText = "End"
             });
             #endregion Set dump hardware table
@@ -644,6 +645,7 @@ namespace osrepodbmgr.Eto
                 txtOffset.Text = Metadata.Image.offset.ToString();
             txtSize.Text = Metadata.Size.ToString();
             checksums = Metadata.Checksums;
+            contentChks = Metadata.ContentChecksums;
             if(Metadata.Sequence != null)
             {
                 lblMediaTitle.Visible = true;
@@ -1196,7 +1198,7 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnAddExtentClicked(object sender, EventArgs e)
         {
-            ((ObservableCollection<ExtentType>)treeExtents.DataStore).Add(new ExtentType { Start = (int)spExtentStart.Value, End = (int)spExtentEnd.Value });
+            ((ObservableCollection<ExtentType>)treeExtents.DataStore).Add(new ExtentType { Start = (ulong)spExtentStart.Value, End = (ulong)spExtentEnd.Value });
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -1477,6 +1479,7 @@ namespace osrepodbmgr.Eto
             }
             Metadata.Size = long.Parse(txtSize.Text);
             Metadata.Checksums = checksums;
+            Metadata.ContentChecksums = contentChks;
 
             if(chkSequence.Checked.Value)
             {

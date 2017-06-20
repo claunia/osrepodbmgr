@@ -1684,7 +1684,7 @@ namespace osrepodbmgr
 			w144.Position = 1;
 			w144.Expand = false;
 			w144.Fill = false;
-			if ((this.Child != null))
+			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}

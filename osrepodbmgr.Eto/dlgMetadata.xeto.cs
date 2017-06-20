@@ -652,6 +652,8 @@ namespace osrepodbmgr.Eto
             tabDisks.Visible = false;
             prgAddDisc1.Visible = true;
             prgAddDisc2.Visible = true;
+            lblAddDisc1.Visible = true;
+            lblAddDisc2.Visible = true;
             btnCancel.Visible = false;
             btnOK.Visible = false;
             btnEditDisc.Visible = false;
@@ -733,6 +735,8 @@ namespace osrepodbmgr.Eto
                 tabDisks.Visible = true;
                 prgAddDisc1.Visible = false;
                 prgAddDisc2.Visible = false;
+                lblAddDisc1.Visible = false;
+                lblAddDisc2.Visible = false;
                 btnCancel.Visible = true;
                 btnOK.Visible = true;
                 btnEditDisc.Visible = true;
@@ -825,6 +829,8 @@ namespace osrepodbmgr.Eto
                 tabDisks.Visible = true;
                 prgAddDisc1.Visible = false;
                 prgAddDisc2.Visible = false;
+                lblAddDisc1.Visible = false;
+                lblAddDisc2.Visible = false;
                 btnCancel.Visible = true;
                 btnOK.Visible = true;
                 btnEditDisc.Visible = true;
@@ -870,6 +876,8 @@ namespace osrepodbmgr.Eto
             tabDiscs.Visible = false;
             prgAddDisk1.Visible = true;
             prgAddDisk2.Visible = true;
+            lblAddDisk1.Visible = true;
+            lblAddDisk2.Visible = true;
             btnCancel.Visible = false;
             btnOK.Visible = false;
             btnEditDisk.Visible = false;
@@ -951,6 +959,8 @@ namespace osrepodbmgr.Eto
                 tabDiscs.Visible = true;
                 prgAddDisk1.Visible = false;
                 prgAddDisk2.Visible = false;
+                lblAddDisk1.Visible = false;
+                lblAddDisk2.Visible = false;
                 btnCancel.Visible = true;
                 btnOK.Visible = true;
                 btnEditDisk.Visible = true;
@@ -1039,6 +1049,8 @@ namespace osrepodbmgr.Eto
                 tabDiscs.Visible = true;
                 prgAddDisk1.Visible = false;
                 prgAddDisk2.Visible = false;
+                lblAddDisk1.Visible = false;
+                lblAddDisk2.Visible = false;
                 btnCancel.Visible = true;
                 btnOK.Visible = true;
                 btnEditDisk.Visible = true;

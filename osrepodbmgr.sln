@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Partitions", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.CommonTypes", "DiscImageChef\DiscImageChef.CommonTypes\DiscImageChef.CommonTypes.csproj", "{F2B84194-26EB-4227-B1C5-6602517E85AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Claunia.RsrcFork", "DiscImageChef\Claunia.RsrcFork\Claunia.RsrcFork\Claunia.RsrcFork.csproj", "{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Decoders", "DiscImageChef\DiscImageChef.Decoders\DiscImageChef.Decoders.csproj", "{0BEB3088-B634-4289-AE17-CDF2D25D00D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscImageChef.Metadata", "DiscImageChef\DiscImageChef.Metadata\DiscImageChef.Metadata.csproj", "{9F213318-5CB8-4066-A757-074489C9F818}"
@@ -75,10 +73,6 @@ Global
 		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Debug|x86.Build.0 = Debug|Any CPU
 		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Release|x86.ActiveCfg = Release|Any CPU
 		{F2B84194-26EB-4227-B1C5-6602517E85AE}.Release|x86.Build.0 = Release|Any CPU
-		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Debug|x86.Build.0 = Debug|Any CPU
-		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Release|x86.ActiveCfg = Release|Any CPU
-		{CA231ED3-0C78-496C-AAFE-D085F6E9BEC6}.Release|x86.Build.0 = Release|Any CPU
 		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Debug|x86.Build.0 = Debug|Any CPU
 		{0BEB3088-B634-4289-AE17-CDF2D25D00D5}.Release|x86.ActiveCfg = Release|Any CPU
@@ -107,34 +101,15 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.TextStylePolicy = $1
-		$1.FileWidth = 120
-		$1.inheritsSet = VisualStudio
-		$1.inheritsScope = text/plain
 		$1.scope = text/x-csharp
+		$1.TabsToSpaces = True
 		$0.CSharpFormattingPolicy = $2
-		$2.IndentSwitchSection = True
-		$2.NewLinesForBracesInProperties = True
-		$2.NewLinesForBracesInAccessors = True
-		$2.NewLinesForBracesInAnonymousMethods = True
-		$2.NewLinesForBracesInControlBlocks = True
-		$2.NewLinesForBracesInAnonymousTypes = True
-		$2.NewLinesForBracesInObjectCollectionArrayInitializers = True
-		$2.NewLinesForBracesInLambdaExpressionBody = True
-		$2.NewLineForElse = True
-		$2.NewLineForCatch = True
-		$2.NewLineForFinally = True
-		$2.inheritsSet = Mono
-		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
-		$2.SpacingAfterMethodDeclarationName = False
-		$2.SpaceAfterMethodCallName = False
-		$2.SpaceAfterControlFlowStatementKeyword = False
-		$2.SpaceBeforeOpenSquareBracket = False
 		$0.ChangeLogPolicy = $3
 		$3.UpdateMode = ProjectRoot
 		$3.MessageStyle = $4
 		$4.LastFilePostfix = "@:\n  "
 		$4.IncludeDirectoryPaths = True
-		$3.inheritsSet = Mono
+		$4.LineAlign = 2
 	EndGlobalSection
 EndGlobal

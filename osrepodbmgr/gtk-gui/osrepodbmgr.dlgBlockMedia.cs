@@ -3154,7 +3154,7 @@ namespace osrepodbmgr
 			w277.Position = 1;
 			w277.Expand = false;
 			w277.Fill = false;
-			if ((this.Child != null))
+			if((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}

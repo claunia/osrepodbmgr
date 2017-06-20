@@ -252,14 +252,18 @@
 							<Button ID="btnClearDiscs" Click="OnBtnClearDiscsClicked">Clear</Button>
 							<Button ID="btnRemoveDisc" Click="OnBtnRemoveDiscClicked">Remove</Button>
 						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<Label ID="lblAddDisc1" Visible="False">Progress 1</Label>
-							<ProgressBar ID="prgAddDisc1" Visible="False" />
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<Label ID="lblAddDisc2" Visible="False">Progress 2</Label>
-							<ProgressBar ID="prgAddDisc2" Visible="False" />
-						</StackLayout>
+                        <StackLayoutItem HorizontalAlignment="Stretch">
+                            <Label ID="lblAddDisc1" Visible="False">Progress 1</Label>
+                        </StackLayoutItem>
+                        <StackLayoutItem HorizontalAlignment="Stretch">
+                            <ProgressBar ID="prgAddDisc1" Visible="False" />
+                        </StackLayoutItem>
+                        <StackLayoutItem HorizontalAlignment="Stretch">
+                            <Label ID="lblAddDisc2" Visible="False">Progress 2</Label>
+                        </StackLayoutItem>
+                        <StackLayoutItem HorizontalAlignment="Stretch">
+                            <ProgressBar ID="prgAddDisc2" Visible="False" />
+                        </StackLayoutItem>
 					</StackLayout>
 				</TabPage>
 				<TabPage Text="Block disks" ID="tabDisks">
@@ -283,14 +287,18 @@
 							<Button ID="btnClearDisks" Click="OnBtnClearDisksClicked">Clear</Button>
 							<Button ID="btnRemoveDisk" Click="OnBtnRemoveDiskClicked">Remove</Button>
 						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<Label ID="lblAddDisk1" Visible="False">Progress 1</Label>
-							<ProgressBar ID="prgAddDisk1" Visible="False" />
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<Label ID="lblAddDisk2" Visible="False">Progress 2</Label>
-							<ProgressBar ID="prgAddDisk2" Visible="False" />
-						</StackLayout>
+				        <StackLayoutItem HorizontalAlignment="Stretch">
+				            <Label ID="lblAddDisk1" Visible="False">Progress 1</Label>
+				        </StackLayoutItem>
+				        <StackLayoutItem HorizontalAlignment="Stretch">
+				            <ProgressBar ID="prgAddDisk1" Visible="False" />
+				        </StackLayoutItem>
+				        <StackLayoutItem HorizontalAlignment="Stretch">
+				            <Label ID="lblAddDisk2" Visible="False">Progress 2</Label>
+				        </StackLayoutItem>
+				        <StackLayoutItem HorizontalAlignment="Stretch">
+				            <ProgressBar ID="prgAddDisk2" Visible="False" />
+				        </StackLayoutItem>
 					</StackLayout>
 				</TabPage>
 			</TabControl>

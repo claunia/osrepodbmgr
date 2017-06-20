@@ -67,6 +67,7 @@ namespace osrepodbmgr
         BlockSizeType[] variableBlockSize;
         TapePartitionType[] tapeInformation;
         ScansType scans;
+        ChecksumType[] contentChks;
 
         public dlgBlockMedia()
         {
@@ -347,6 +348,7 @@ namespace osrepodbmgr
                 txtOffset.Text = Metadata.Image.offset.ToString();
             txtSize.Text = Metadata.Size.ToString();
             checksums = Metadata.Checksums;
+            contentChks = Metadata.ContentChecksums;
             if(Metadata.Sequence != null)
             {
                 lblMediaTitle.Visible = true;
@@ -590,7 +592,7 @@ namespace osrepodbmgr
                 {
                     if(hw.Extents != null)
                     {
-                        ListStore lstExtents = new ListStore(typeof(int), typeof(int));
+                        ListStore lstExtents = new ListStore(typeof(ulong), typeof(ulong));
                         foreach(ExtentType extent in hw.Extents)
                             lstExtents.AppendValues(extent.Start, extent.End);
                         if(hw.Software != null)
@@ -1385,6 +1387,7 @@ namespace osrepodbmgr
             }
             Metadata.Size = long.Parse(txtSize.Text);
             Metadata.Checksums = checksums;
+            Metadata.ContentChecksums = contentChks;
 
             if(chkSequence.Active)
             {
@@ -1705,8 +1708,8 @@ namespace osrepodbmgr
                         do
                         {
                             ExtentType extent = new ExtentType();
-                            extent.Start = (int)lstExtents.GetValue(extIter, 0);
-                            extent.End = (int)lstExtents.GetValue(extIter, 1);
+                            extent.Start = (ulong)lstExtents.GetValue(extIter, 0);
+                            extent.End = (ulong)lstExtents.GetValue(extIter, 1);
                             extents.Add(extent);
                         }
                         while(lstExtents.IterNext(ref extIter));

@@ -133,9 +133,6 @@ namespace osrepodbmgr.Eto
         GridView treeDI;
         GroupBox frmPAC;
         GridView treePAC;
-        GridView treeXboxSS;
-        TextBox txtSSStart;
-        TextBox txtSSEnd;
         TextBox txtPS3Key;
         TextBox txtPS3Serial;
         GridView treeTracks;
@@ -226,7 +223,6 @@ namespace osrepodbmgr.Eto
         ObservableCollection<SectorsType> lstLayers;
         ObservableCollection<Schemas.BorderType> lstLeadIns;
         ObservableCollection<Schemas.BorderType> lstLeadOuts;
-        ObservableCollection<SecuritySectorsType> lstXboxSS;
         ObservableCollection<TrackType> lstTracks;
 
         bool editingPartition;
@@ -236,6 +232,7 @@ namespace osrepodbmgr.Eto
         ChecksumType[] checksums;
         CaseType mediaCase;
         ScansType scans;
+        XboxType xbox;
 
         public dlgOpticalDisc()
         {
@@ -342,12 +339,12 @@ namespace osrepodbmgr.Eto
 
             treeExtents.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, int>(r => r.Start).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, ulong>(r => r.Start).Convert(v => v.ToString()) },
                 HeaderText = "Start"
             });
             treeExtents.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, int>(r => r.End).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, ulong>(r => r.End).Convert(v => v.ToString()) },
                 HeaderText = "End"
             });
             #endregion Set dump hardware table
@@ -762,25 +759,6 @@ namespace osrepodbmgr.Eto
             treeLeadOut.DataStore = lstLeadOuts;
             #endregion Set Lead-Out table
 
-            #region Set Xbox security sectors table
-            lstXboxSS = new ObservableCollection<SecuritySectorsType>();
-
-            treeXboxSS.Columns.Add(new GridColumn
-            {
-                DataCell = new TextBoxCell { Binding = Binding.Property<SecuritySectorsType, long>(r => r.Start).Convert(v => v.ToString()) },
-                HeaderText = "Start"
-            });
-            treeXboxSS.Columns.Add(new GridColumn
-            {
-                DataCell = new TextBoxCell { Binding = Binding.Property<SecuritySectorsType, long>(r => r.End).Convert(v => v.ToString()) },
-                HeaderText = "End"
-            });
-
-            treeXboxSS.DataStore = lstXboxSS;
-
-            treeXboxSS.AllowMultipleSelection = false;
-            #endregion Set Xbox security sectors table
-
             #region Set tracks table
             lstTracks = new ObservableCollection<TrackType>();
 
@@ -902,6 +880,7 @@ namespace osrepodbmgr.Eto
             }
 
             checksums = Metadata.Checksums;
+            xbox = Metadata.Xbox;
 
             if(Metadata.RingCode != null)
             {
@@ -1071,12 +1050,6 @@ namespace osrepodbmgr.Eto
                 treeLeadOut.DataStore = lstLeadOuts;
             }
 
-            if(Metadata.XboxSecuritySectors != null)
-            {
-                lstXboxSS = new ObservableCollection<Schemas.SecuritySectorsType>(Metadata.XboxSecuritySectors);
-                treeXboxSS.DataStore = lstXboxSS;
-            }
-
             if(Metadata.PS3Encryption != null)
             {
                 txtPS3Key.Text = Metadata.PS3Encryption.Key;
@@ -1167,37 +1140,6 @@ namespace osrepodbmgr.Eto
         {
             if(treeLayers.SelectedItem != null)
                 lstLayers.Remove((SectorsType)treeLayers.SelectedItem);
-        }
-
-        protected void OnBtnRemoveSSClicked(object sender, EventArgs e)
-        {
-            if(treeXboxSS.SelectedItem != null)
-                lstXboxSS.Remove((SecuritySectorsType)treeXboxSS.SelectedItem);
-        }
-
-        protected void OnBtnAddSSClicked(object sender, EventArgs e)
-        {
-            int temp, temp2;
-
-            if(!int.TryParse(txtSSStart.Text, out temp))
-            {
-                ErrorMessageBox("Xbox Security Sector start must be a number");
-                return;
-            }
-
-            if(!int.TryParse(txtSSEnd.Text, out temp2))
-            {
-                ErrorMessageBox("Xbox Security Sector end must be a number");
-                return;
-            }
-
-            if(temp2 <= temp)
-            {
-                ErrorMessageBox("Xbox Security Sector must end after start, and be bigger than 1 sector");
-                return;
-            }
-
-            lstXboxSS.Add(new SecuritySectorsType { Start = long.Parse(txtSSStart.Text), End = long.Parse(txtSSEnd.Text) });
         }
 
         protected void OnBtnRemovePartitionClicked(object sender, EventArgs e)
@@ -1533,7 +1475,7 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnAddExtentClicked(object sender, EventArgs e)
         {
-            ((ObservableCollection<ExtentType>)treeExtents.DataStore).Add(new ExtentType { Start = (int)spExtentStart.Value, End = (int)spExtentEnd.Value });
+            ((ObservableCollection<ExtentType>)treeExtents.DataStore).Add(new ExtentType { Start = (ulong)spExtentStart.Value, End = (ulong)spExtentEnd.Value });
         }
 
         protected void OnBtnAddRingCodeClicked(object sender, EventArgs e)
@@ -1733,6 +1675,7 @@ namespace osrepodbmgr.Eto
             }
 
             Metadata.Checksums = checksums;
+            Metadata.Xbox = xbox;
 
             if(lstRingCodes.Count > 0)
                 Metadata.RingCode = lstRingCodes.ToArray();
@@ -1834,9 +1777,6 @@ namespace osrepodbmgr.Eto
                 Metadata.LeadIn = lstLeadIns.ToArray();
             if(lstLeadOuts.Count == 1)
                 Metadata.LeadOut = lstLeadOuts.ToArray();
-
-            if(lstXboxSS.Count == 1)
-                Metadata.XboxSecuritySectors = lstXboxSS.ToArray();
 
             if(!string.IsNullOrWhiteSpace(txtPS3Key.Text) && !string.IsNullOrWhiteSpace(txtPS3Serial.Text))
             {
