@@ -1,3 +1,7 @@
+* packages.config:
+* osrepodbmgr.Gtk.csproj:
+  Updated nuget packages.
+
 * dlgBlockMedia.cs:
 * dlgOpticalDisc.cs:
 * gtk-gui/dlgAdd.cs:

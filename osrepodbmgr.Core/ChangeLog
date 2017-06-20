@@ -1,3 +1,7 @@
+* packages.config:
+* osrepodbmgr.Core.csproj:
+  Updated nuget packages.
+
 * Workers/DiscImageChef.cs:
   Updated DIC and Metadata code.
 

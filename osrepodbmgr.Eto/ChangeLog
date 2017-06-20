@@ -1,3 +1,7 @@
+* packages.config:
+* osrepodbmgr.Eto.csproj:
+  Updated nuget packages.
+
 * dlgAdd.xeto.cs:
 * frmMain.xeto.cs:
 * dlgMetadata.xeto.cs:
