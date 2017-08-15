@@ -100,21 +100,46 @@ namespace osrepodbmgr.Core
 #if DEBUG
                 stopwatch.Restart();
 #endif
+                Dictionary<string, DBOSFile> knownFiles = new Dictionary<string, DBOSFile>();
+
+                bool unknownFile = false;
+
                 foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
                 {
+                    // Empty file with size zero
+                    if(kvp.Value.Sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
+                    {
+                        AddFileForOS(kvp.Key, kvp.Value.Sha256, true, kvp.Value.Crack);
+                        counter++;
+                        continue;
+                    }
+
                     if(UpdateProgress != null)
                         UpdateProgress(null, "Checking files in database", counter, Context.hashes.Count);
 
                     if(AddFileForOS != null)
                         AddFileForOS(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256), kvp.Value.Crack);
 
-                    counter++;
+                    if(dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
+                    {
+                        counter++;
+                        knownFiles.Add(kvp.Key, kvp.Value);
+                    }
+                    else
+                        unknownFile = true;
                 }
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds to checks for file knowledge in the DB", stopwatch.Elapsed.TotalSeconds);
                 stopwatch.Restart();
 #endif
+                if(knownFiles.Count == 0 || unknownFile)
+                {
+                    if(Finished != null)
+                        Finished();
+                    return;
+                }
+
                 if(UpdateProgress != null)
                     UpdateProgress(null, "Retrieving OSes from database", counter, Context.hashes.Count);
                 List<DBEntry> oses;
@@ -133,20 +158,21 @@ namespace osrepodbmgr.Core
 #if DEBUG
                     stopwatch.Restart();
 #endif
+
                     foreach(DBEntry os in osesArray)
                     {
                         if(UpdateProgress != null)
                             UpdateProgress(null, string.Format("Check OS id {0}", os.id), osCounter, osesArray.Length);
 
                         counter = 0;
-                        foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
+                        foreach(KeyValuePair<string, DBOSFile> kvp in knownFiles)
                         {
                             if(UpdateProgress2 != null)
-                                UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, Context.hashes.Count);
+                                UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, knownFiles.Count);
 
                             if(!dbCore.DBOps.ExistsFileInOS(kvp.Value.Sha256, os.id))
                             {
-                                if(oses.Contains(os))
+                                if (oses.Contains(os))
                                     oses.Remove(os);
 
                                 // If one file is missing, the rest don't matter
