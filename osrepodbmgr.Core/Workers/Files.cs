@@ -150,94 +150,104 @@ namespace osrepodbmgr.Core
                     if(Path.GetExtension(file).ToLowerInvariant() == ".xml")
                     {
                         FileStream xrs = new FileStream(file, FileMode.Open, FileAccess.Read);
-                        XmlReader xr = XmlReader.Create(xrs);
-                        XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
-                        if(xs.CanDeserialize(xr))
+                        XmlReaderSettings xrt = new XmlReaderSettings
                         {
-                            CICMMetadataType thisMetadata = (CICMMetadataType)xs.Deserialize(xr);
-                            if(thisMetadata.Architectures != null)
-                                architectures.AddRange(thisMetadata.Architectures);
-                            if(thisMetadata.Barcodes != null)
-                                barcodes.AddRange(thisMetadata.Barcodes);
-                            if(thisMetadata.BlockMedia != null)
-                                disks.AddRange(thisMetadata.BlockMedia);
-                            if(thisMetadata.Categories != null)
-                                categories.AddRange(thisMetadata.Categories);
-                            if(thisMetadata.Keywords != null)
-                                keywords.AddRange(thisMetadata.Keywords);
-                            if(thisMetadata.Languages != null)
-                                languages.AddRange(thisMetadata.Languages);
-                            if(thisMetadata.OpticalDisc != null)
-                                discs.AddRange(thisMetadata.OpticalDisc);
-                            if(thisMetadata.Subcategories != null)
-                                subcategories.AddRange(thisMetadata.Subcategories);
-                            if(thisMetadata.Systems != null)
-                                systems.AddRange(thisMetadata.Systems);
-                            if(thisMetadata.Author != null)
-                                authors.AddRange(thisMetadata.Author);
-                            if(thisMetadata.Developer != null)
-                                developers.AddRange(thisMetadata.Developer);
-                            if(thisMetadata.Performer != null)
-                                performers.AddRange(thisMetadata.Performer);
-                            if(thisMetadata.Publisher != null)
-                                publishers.AddRange(thisMetadata.Publisher);
-                            if(string.IsNullOrWhiteSpace(metadataName) && !string.IsNullOrWhiteSpace(thisMetadata.Name))
-                                metadataName = thisMetadata.Name;
-                            if(string.IsNullOrWhiteSpace(metadataPartNo) && !string.IsNullOrWhiteSpace(thisMetadata.PartNumber))
-                                metadataPartNo = thisMetadata.PartNumber;
-                            if(string.IsNullOrWhiteSpace(metadataSerial) && !string.IsNullOrWhiteSpace(thisMetadata.SerialNumber))
-                                metadataSerial = thisMetadata.SerialNumber;
-                            if(string.IsNullOrWhiteSpace(metadataVersion) && !string.IsNullOrWhiteSpace(thisMetadata.Version))
-                                metadataVersion = thisMetadata.Version;
-                            if(thisMetadata.ReleaseDateSpecified)
+                            DtdProcessing = DtdProcessing.Ignore
+                        };
+
+                        XmlReader xr = XmlReader.Create(xrs, xrt);
+                        XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
+                        try
+                        {
+                            if (xs.CanDeserialize(xr))
                             {
-                                if(thisMetadata.ReleaseDate > releaseDate)
+                                CICMMetadataType thisMetadata = (CICMMetadataType)xs.Deserialize(xr);
+                                if (thisMetadata.Architectures != null)
+                                    architectures.AddRange(thisMetadata.Architectures);
+                                if (thisMetadata.Barcodes != null)
+                                    barcodes.AddRange(thisMetadata.Barcodes);
+                                if (thisMetadata.BlockMedia != null)
+                                    disks.AddRange(thisMetadata.BlockMedia);
+                                if (thisMetadata.Categories != null)
+                                    categories.AddRange(thisMetadata.Categories);
+                                if (thisMetadata.Keywords != null)
+                                    keywords.AddRange(thisMetadata.Keywords);
+                                if (thisMetadata.Languages != null)
+                                    languages.AddRange(thisMetadata.Languages);
+                                if (thisMetadata.OpticalDisc != null)
+                                    discs.AddRange(thisMetadata.OpticalDisc);
+                                if (thisMetadata.Subcategories != null)
+                                    subcategories.AddRange(thisMetadata.Subcategories);
+                                if (thisMetadata.Systems != null)
+                                    systems.AddRange(thisMetadata.Systems);
+                                if (thisMetadata.Author != null)
+                                    authors.AddRange(thisMetadata.Author);
+                                if (thisMetadata.Developer != null)
+                                    developers.AddRange(thisMetadata.Developer);
+                                if (thisMetadata.Performer != null)
+                                    performers.AddRange(thisMetadata.Performer);
+                                if (thisMetadata.Publisher != null)
+                                    publishers.AddRange(thisMetadata.Publisher);
+                                if (string.IsNullOrWhiteSpace(metadataName) && !string.IsNullOrWhiteSpace(thisMetadata.Name))
+                                    metadataName = thisMetadata.Name;
+                                if (string.IsNullOrWhiteSpace(metadataPartNo) && !string.IsNullOrWhiteSpace(thisMetadata.PartNumber))
+                                    metadataPartNo = thisMetadata.PartNumber;
+                                if (string.IsNullOrWhiteSpace(metadataSerial) && !string.IsNullOrWhiteSpace(thisMetadata.SerialNumber))
+                                    metadataSerial = thisMetadata.SerialNumber;
+                                if (string.IsNullOrWhiteSpace(metadataVersion) && !string.IsNullOrWhiteSpace(thisMetadata.Version))
+                                    metadataVersion = thisMetadata.Version;
+                                if (thisMetadata.ReleaseDateSpecified)
                                 {
-                                    releaseDateSpecified = true;
-                                    releaseDate = thisMetadata.ReleaseDate;
+                                    if (thisMetadata.ReleaseDate > releaseDate)
+                                    {
+                                        releaseDateSpecified = true;
+                                        releaseDate = thisMetadata.ReleaseDate;
+                                    }
                                 }
+                                if (thisMetadata.ReleaseTypeSpecified)
+                                {
+                                    releaseTypeSpecified = true;
+                                    releaseType = thisMetadata.ReleaseType;
+                                }
+
+                                foundMetadata = true;
+
+                                string metadataFileWithoutExtension = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file));
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".xml");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".xmL");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".xMl");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".xML");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".Xml");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".XmL");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".XMl");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".XML");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".json");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jsoN");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jsOn");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jsON");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jSon");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jSoN");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jSOn");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".jSON");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".Json");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JsoN");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JsOn");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JsON");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JSon");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JSoN");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JSOn");
+                                alreadyMetadata.Add(metadataFileWithoutExtension + ".JSON");
+
+                                xr.Close();
+                                xrs.Close();
+                                continue;
                             }
-                            if(thisMetadata.ReleaseTypeSpecified)
-                            {
-                                releaseTypeSpecified = true;
-                                releaseType = thisMetadata.ReleaseType;
-                            }
-
-                            foundMetadata = true;
-
-                            string metadataFileWithoutExtension = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file));
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".xml");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".xmL");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".xMl");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".xML");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".Xml");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".XmL");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".XMl");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".XML");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".json");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jsoN");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jsOn");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jsON");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jSon");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jSoN");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jSOn");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".jSON");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".Json");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JsoN");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JsOn");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JsON");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JSon");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JSoN");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JSOn");
-                            alreadyMetadata.Add(metadataFileWithoutExtension + ".JSON");
-
+                        }
+                        catch (XmlException)
+                        {
                             xr.Close();
                             xrs.Close();
-                            continue;
                         }
-
-                        xr.Close();
-                        xrs.Close();
                     }
                     else if(Path.GetExtension(file).ToLowerInvariant() == ".json")
                     {
@@ -328,7 +338,7 @@ namespace osrepodbmgr.Core
                             jrs.Close();
                             continue;
                         }
-                        catch
+                        catch(JsonException)
                         {
                             jr.Close();
                             jrs.Close();
