@@ -256,6 +256,7 @@ namespace osrepodbmgr.Core
 
                         inFs.Close();
                         zStream.Close();
+                        outFs.Dispose();
                     }
 
                     counter++;
