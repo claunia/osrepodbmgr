@@ -40,9 +40,6 @@
     <Reference Include="plist-cil">
       <HintPath>..\packages\plist-cil.1.16.0\lib\net45\plist-cil.dll</HintPath>
     </Reference>
-    <Reference Include="SharpCompress">
-      <HintPath>..\packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -51,6 +48,9 @@
     </Reference>
     <Reference Include="VirusTotal.NET">
       <HintPath>..\packages\VirusTotal.NET.1.5.4\lib\net45\VirusTotal.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
