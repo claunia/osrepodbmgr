@@ -172,7 +172,6 @@ namespace osrepodbmgr.Core
                 else
                     filesPath = Context.path;
 
-                int counter = 0;
                 string extension = null;
 
                 switch(Settings.Current.CompressionAlgorithm)
@@ -191,26 +190,30 @@ namespace osrepodbmgr.Core
                         break;
                 }
 
+                long totalSize = 0, currentSize = 0;
+                foreach (KeyValuePair<string, DBOSFile> file in Context.hashes)
+                    totalSize += file.Value.Length;
+
 #if DEBUG
-                stopwatch.Restart();
+                    stopwatch.Restart();
 #endif
                 foreach(KeyValuePair<string, DBOSFile> file in Context.hashes)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress("Compressing...", file.Value.Path, counter, Context.hashes.Count);
+                        UpdateProgress("Compressing...", file.Value.Path, currentSize, totalSize);
 
                     destinationFolder = Path.Combine(Settings.Current.RepositoryPath, file.Value.Sha256[0].ToString(), file.Value.Sha256[1].ToString(), file.Value.Sha256[2].ToString(), file.Value.Sha256[3].ToString(), file.Value.Sha256[4].ToString());
                     Directory.CreateDirectory(destinationFolder);
 
                     destinationFile = Path.Combine(destinationFolder, file.Value.Sha256 + extension);
 
-                    if(!File.Exists(destinationFile))
+                    if (!File.Exists(destinationFile))
                     {
                         FileStream inFs = new FileStream(Path.Combine(filesPath, file.Value.Path), FileMode.Open, FileAccess.Read);
                         FileStream outFs = new FileStream(destinationFile, FileMode.CreateNew, FileAccess.Write);
                         Stream zStream = null;
 
-                        switch(Settings.Current.CompressionAlgorithm)
+                        switch (Settings.Current.CompressionAlgorithm)
                         {
                             case AlgoEnum.GZip:
                                 zStream = new GZipStream(outFs, SharpCompress.Compressors.CompressionMode.Compress, CompressionLevel.BestCompression);
@@ -230,27 +233,33 @@ namespace osrepodbmgr.Core
 
                         byte[] buffer = new byte[bufferSize];
 
-                        while((inFs.Position + bufferSize) <= inFs.Length)
+                        while ((inFs.Position + bufferSize) <= inFs.Length)
                         {
-                            if(UpdateProgress2 != null)
+                            if (UpdateProgress2 != null)
                                 UpdateProgress2(string.Format("{0:P}", inFs.Position / (double)inFs.Length),
                                                 string.Format("{0} / {1} bytes", inFs.Position, inFs.Length),
                                                 inFs.Position, inFs.Length);
+                            if (UpdateProgress != null)
+                                UpdateProgress("Compressing...", file.Value.Path, currentSize, totalSize);
 
                             inFs.Read(buffer, 0, buffer.Length);
                             zStream.Write(buffer, 0, buffer.Length);
+                            currentSize += buffer.Length;
                         }
 
                         buffer = new byte[inFs.Length - inFs.Position];
-                        if(UpdateProgress2 != null)
+                        if (UpdateProgress2 != null)
                             UpdateProgress2(string.Format("{0:P}", inFs.Position / (double)inFs.Length),
                                             string.Format("{0} / {1} bytes", inFs.Position, inFs.Length),
                                             inFs.Position, inFs.Length);
+                        if (UpdateProgress != null)
+                            UpdateProgress("Compressing...", file.Value.Path, currentSize, totalSize);
 
                         inFs.Read(buffer, 0, buffer.Length);
                         zStream.Write(buffer, 0, buffer.Length);
+                        currentSize += buffer.Length;
 
-                        if(UpdateProgress2 != null)
+                        if (UpdateProgress2 != null)
                             UpdateProgress2(string.Format("{0:P}", inFs.Length / (double)inFs.Length),
                                             "Finishing...", inFs.Length, inFs.Length);
 
@@ -258,8 +267,8 @@ namespace osrepodbmgr.Core
                         zStream.Close();
                         outFs.Dispose();
                     }
-
-                    counter++;
+                    else
+                        currentSize += file.Value.Length;
                 }
 #if DEBUG
                 stopwatch.Stop();
