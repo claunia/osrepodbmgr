@@ -293,6 +293,24 @@ namespace osrepodbmgr.Core
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all folders to the database", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
+                counter = 0;
+                if(Context.symlinks.Count > 0)
+                    dbCore.DBOps.CreateSymlinkTableForOS(Context.dbInfo.id);
+                
+                foreach(KeyValuePair<string, string> kvp in Context.symlinks)
+                {
+                    if(UpdateProgress != null)
+                        UpdateProgress(null, "Adding symbolic links to OS in database", counter, Context.symlinks.Count);
+
+                    dbCore.DBOps.AddSymlinkToOS(kvp.Key, kvp.Value, Context.dbInfo.id);
+
+                    counter++;
+                }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all symbolic links to the database", stopwatch.Elapsed.TotalSeconds);
 #endif
 
                 if(Finished != null)

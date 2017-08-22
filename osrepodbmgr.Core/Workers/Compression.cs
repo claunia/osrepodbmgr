@@ -366,29 +366,11 @@ namespace osrepodbmgr.Core
 #endif
                 long counter = 0;
                 string format = null;
-                bool isLink = false;
                 JsonTextReader jsReader = new JsonTextReader(new StringReader(lsarOutput));
                 while(jsReader.Read())
                 {
                     if(jsReader.TokenType == JsonToken.PropertyName && jsReader.Value != null && jsReader.Value.ToString() == "XADFileName")
                         counter++;
-                    else if(jsReader.TokenType == JsonToken.PropertyName && jsReader.Value != null && jsReader.Value.ToString() == "XADIsLink")
-                    {
-                        jsReader.Read();
-                        if(jsReader.TokenType == JsonToken.Integer)
-                            isLink = int.Parse(jsReader.Value.ToString()) > 0;
-                    }
-                    else if(jsReader.TokenType == JsonToken.PropertyName && jsReader.Value != null && jsReader.Value.ToString() == "XADIsHardLink")
-                    {
-                        jsReader.Read();
-                        // TODO: Support symlinks, devices, hardlinks, whatever?
-                        if(jsReader.TokenType == JsonToken.Integer && isLink && int.Parse(jsReader.Value.ToString()) == 0)
-                        {
-                            if(Failed != null)
-                                Failed("Archive contains unsupported symbolic links, not continuing.");
-                            return;
-                        }
-                    }
                     else if(jsReader.TokenType == JsonToken.PropertyName && jsReader.Value != null && jsReader.Value.ToString() == "lsarFormatName")
                     {
                         jsReader.Read();
@@ -634,6 +616,13 @@ namespace osrepodbmgr.Core
                 {
                     if(Failed != null)
                         Failed("Operating system must be set");
+                    return;
+                }
+
+                if(dbCore.DBOps.HasSymlinks(Context.dbInfo.id))
+                {
+                    if(Failed != null)
+                        Failed("Cannot create symbolic links on ZIP files");
                     return;
                 }
 

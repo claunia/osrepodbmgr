@@ -39,6 +39,7 @@ using Schemas;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
+using DiscImageChef.Interop;
 
 namespace osrepodbmgr.Core
 {
@@ -106,8 +107,14 @@ namespace osrepodbmgr.Core
             {
                 Context.hashes = new Dictionary<string, DBOSFile>();
                 Context.foldersDict = new Dictionary<string, DBFolder>();
+                Context.symlinks = new Dictionary<string, string>();
                 List<string> alreadyMetadata = new List<string>();
                 bool foundMetadata = false;
+                bool symlinksSupported = DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.WinCE &&
+                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32S &&
+                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32NT &&
+                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32Windows &&
+                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.WindowsPhone;
 
                 // For metadata
                 List<ArchitecturesTypeArchitecture> architectures = new List<ArchitecturesTypeArchitecture>();
@@ -159,52 +166,52 @@ namespace osrepodbmgr.Core
                         XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
                         try
                         {
-                            if (xs.CanDeserialize(xr))
+                            if(xs.CanDeserialize(xr))
                             {
                                 CICMMetadataType thisMetadata = (CICMMetadataType)xs.Deserialize(xr);
-                                if (thisMetadata.Architectures != null)
+                                if(thisMetadata.Architectures != null)
                                     architectures.AddRange(thisMetadata.Architectures);
-                                if (thisMetadata.Barcodes != null)
+                                if(thisMetadata.Barcodes != null)
                                     barcodes.AddRange(thisMetadata.Barcodes);
-                                if (thisMetadata.BlockMedia != null)
+                                if(thisMetadata.BlockMedia != null)
                                     disks.AddRange(thisMetadata.BlockMedia);
-                                if (thisMetadata.Categories != null)
+                                if(thisMetadata.Categories != null)
                                     categories.AddRange(thisMetadata.Categories);
-                                if (thisMetadata.Keywords != null)
+                                if(thisMetadata.Keywords != null)
                                     keywords.AddRange(thisMetadata.Keywords);
-                                if (thisMetadata.Languages != null)
+                                if(thisMetadata.Languages != null)
                                     languages.AddRange(thisMetadata.Languages);
-                                if (thisMetadata.OpticalDisc != null)
+                                if(thisMetadata.OpticalDisc != null)
                                     discs.AddRange(thisMetadata.OpticalDisc);
-                                if (thisMetadata.Subcategories != null)
+                                if(thisMetadata.Subcategories != null)
                                     subcategories.AddRange(thisMetadata.Subcategories);
-                                if (thisMetadata.Systems != null)
+                                if(thisMetadata.Systems != null)
                                     systems.AddRange(thisMetadata.Systems);
-                                if (thisMetadata.Author != null)
+                                if(thisMetadata.Author != null)
                                     authors.AddRange(thisMetadata.Author);
-                                if (thisMetadata.Developer != null)
+                                if(thisMetadata.Developer != null)
                                     developers.AddRange(thisMetadata.Developer);
-                                if (thisMetadata.Performer != null)
+                                if(thisMetadata.Performer != null)
                                     performers.AddRange(thisMetadata.Performer);
-                                if (thisMetadata.Publisher != null)
+                                if(thisMetadata.Publisher != null)
                                     publishers.AddRange(thisMetadata.Publisher);
-                                if (string.IsNullOrWhiteSpace(metadataName) && !string.IsNullOrWhiteSpace(thisMetadata.Name))
+                                if(string.IsNullOrWhiteSpace(metadataName) && !string.IsNullOrWhiteSpace(thisMetadata.Name))
                                     metadataName = thisMetadata.Name;
-                                if (string.IsNullOrWhiteSpace(metadataPartNo) && !string.IsNullOrWhiteSpace(thisMetadata.PartNumber))
+                                if(string.IsNullOrWhiteSpace(metadataPartNo) && !string.IsNullOrWhiteSpace(thisMetadata.PartNumber))
                                     metadataPartNo = thisMetadata.PartNumber;
-                                if (string.IsNullOrWhiteSpace(metadataSerial) && !string.IsNullOrWhiteSpace(thisMetadata.SerialNumber))
+                                if(string.IsNullOrWhiteSpace(metadataSerial) && !string.IsNullOrWhiteSpace(thisMetadata.SerialNumber))
                                     metadataSerial = thisMetadata.SerialNumber;
-                                if (string.IsNullOrWhiteSpace(metadataVersion) && !string.IsNullOrWhiteSpace(thisMetadata.Version))
+                                if(string.IsNullOrWhiteSpace(metadataVersion) && !string.IsNullOrWhiteSpace(thisMetadata.Version))
                                     metadataVersion = thisMetadata.Version;
-                                if (thisMetadata.ReleaseDateSpecified)
+                                if(thisMetadata.ReleaseDateSpecified)
                                 {
-                                    if (thisMetadata.ReleaseDate > releaseDate)
+                                    if(thisMetadata.ReleaseDate > releaseDate)
                                     {
                                         releaseDateSpecified = true;
                                         releaseDate = thisMetadata.ReleaseDate;
                                     }
                                 }
-                                if (thisMetadata.ReleaseTypeSpecified)
+                                if(thisMetadata.ReleaseTypeSpecified)
                                 {
                                     releaseTypeSpecified = true;
                                     releaseType = thisMetadata.ReleaseType;
@@ -243,7 +250,7 @@ namespace osrepodbmgr.Core
                                 continue;
                             }
                         }
-                        catch (XmlException)
+                        catch(XmlException)
                         {
                             xr.Close();
                             xrs.Close();
@@ -355,12 +362,30 @@ namespace osrepodbmgr.Core
 
                     string relpath = file.Substring(filesPath.Length + 1);
 
-                    // TODO: Support symlinks, devices, hardlinks, whatever?
                     if(fi.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     {
-                        if(Failed != null)
-                            Failed(string.Format("{0} is an unsupported symbolic link, not continuing.", relpath));
-                        return;
+                        // TODO: Symlinks not supported on any Windows platform
+                        if(!symlinksSupported)
+                        {
+                            if(Failed != null)
+                                Failed(string.Format("{0} is an unsupported symbolic link, not continuing.", relpath));
+                            return;
+                        }
+
+                        if(UpdateProgress != null)
+                            UpdateProgress(string.Format("Resolving symlink on file {0} of {1}", counter, Context.files.Count), null, counter, Context.files.Count);
+
+                        string target = Symlinks.ReadLink(file);
+                        if(target == null)
+                        {
+                            if(Failed != null)
+                                Failed(string.Format("Could not resolve symbolic link at {0}, not continuing.", relpath));
+                            return;
+                        }
+
+                        Context.symlinks.Add(relpath, target);
+                        counter++;
+                        continue;
                     }
 
                     if(UpdateProgress != null)
@@ -650,8 +675,15 @@ namespace osrepodbmgr.Core
                     return;
                 }
 
+                bool symlinksSupported = DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.WinCE &&
+                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32S &&
+                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32NT &&
+                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32Windows &&
+                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.WindowsPhone;
+
                 List<DBOSFile> files;
                 List<DBFolder> folders;
+                Dictionary<string, string> symlinks = new Dictionary<string, string>();
                 long counter;
 
                 if(UpdateProgress != null)
@@ -665,7 +697,22 @@ namespace osrepodbmgr.Core
                 dbCore.DBOps.GetAllFolders(out folders, Context.dbInfo.id);
 
                 if(UpdateProgress != null)
-                    UpdateProgress("", "Creating folders...", 3, 100);
+                    UpdateProgress("", "Asking DB for symbolic links...", 3, 100);
+
+                if(dbCore.DBOps.HasSymlinks(Context.dbInfo.id))
+                {
+                    if(!symlinksSupported)
+                    {
+                        if(Failed != null)
+                            Failed("Symbolic links cannot be created on this platform.");
+                        return;
+                    }
+
+                    dbCore.DBOps.GetAllSymlinks(out symlinks, Context.dbInfo.id);
+                }
+
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Creating folders...", 4, 100);
 
 #if DEBUG
                 stopwatch.Restart();
@@ -689,14 +736,35 @@ namespace osrepodbmgr.Core
                 Console.WriteLine("Core.SaveAs(): Took {0} seconds to create all folders", stopwatch.Elapsed.TotalSeconds);
 #endif
 
+                if(UpdateProgress != null)
+                    UpdateProgress("", "Creating symbolic links...", 4, 100);
+
 #if DEBUG
                 stopwatch.Restart();
 #endif
-                counter = 3;
+                counter = 0;
+                foreach(KeyValuePair<string, string> kvp in symlinks)
+                {
+                    if(UpdateProgress2 != null)
+                        UpdateProgress2("", kvp.Key, counter, folders.Count);
+
+                    Symlinks.Symlink(kvp.Value, kvp.Key);
+                    counter++;
+                }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.SaveAs(): Took {0} seconds to create all symbolic links", stopwatch.Elapsed.TotalSeconds);
+#endif
+
+#if DEBUG
+                stopwatch.Restart();
+#endif
+
+                counter = 4;
                 foreach(DBOSFile file in files)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress("", string.Format("Creating {0}...", file.Path), counter, 3 + files.Count);
+                        UpdateProgress("", string.Format("Creating {0}...", file.Path), counter, 4 + files.Count);
 
                     Stream zStream = null;
                     string repoPath;

@@ -76,6 +76,7 @@
     <Compile Include="Workers\DiscImageChef.cs" />
     <Compile Include="Workers\Clamd.cs" />
     <Compile Include="Workers\VirusTotal.cs" />
+    <Compile Include="Symlinks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -125,10 +126,7 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild">
-            <inheritsSet />
-            <inheritsScope />
-          </DotNetNamingPolicy>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
         </Policies>
       </Properties>
     </MonoDevelop>

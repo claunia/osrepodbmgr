@@ -659,6 +659,18 @@ namespace osrepodbmgr.Core
             trans = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
+            sql = string.Format("DROP TABLE IF EXISTS `os_{0}_symlinks`;", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            dbcmd = dbCon.CreateCommand();
+            trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
             sql = string.Format("DELETE FROM oses WHERE id = '{0}';", id);
 
             dbcmd.CommandText = sql;
@@ -863,6 +875,95 @@ namespace osrepodbmgr.Core
             dbcmd.Parameters.Add(param1);
             dbcmd.CommandText = "DELETE FROM `files` WHERE sha256 = @sha256";
             dbcmd.ExecuteNonQuery();
+
+            return true;
+        }
+
+        public bool HasSymlinks(long osId)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            dbcmd.CommandText = string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'os_{0}_symlinks'", osId);
+            object count = dbcmd.ExecuteScalar();
+            dbcmd.Dispose();
+
+            return Convert.ToUInt64(count) > 0;
+        }
+
+        public bool CreateSymlinkTableForOS(long id)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            string sql = string.Format("DROP TABLE IF EXISTS `os_{0}_symlinks`;\n\n" +
+                                         "CREATE TABLE IF NOT EXISTS `os_{0}_symlinks` (\n" +
+                                         "  `path` VARCHAR(8192) PRIMARY KEY,\n" +
+                                         "  `target` VARCHAR(8192) NOT NULL);\n\n" +
+                                         "CREATE UNIQUE INDEX `os_{0}_symlinks_path_UNIQUE` ON `os_{0}_symlinks` (`path` ASC);\n\n" +
+                                         "CREATE INDEX `os_{0}_symlinks_target_idx` ON `os_{0}_symlinks` (`target` ASC);", id);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
+
+        public bool AddSymlinkToOS(string path, string target, long os)
+        {
+            IDbCommand dbcmd = dbCon.CreateCommand();
+
+            IDbDataParameter param1 = dbcmd.CreateParameter();
+            IDbDataParameter param2 = dbcmd.CreateParameter();
+
+            param1.ParameterName = "@path";
+            param2.ParameterName = "@target";
+
+            param1.DbType = DbType.String;
+            param2.DbType = DbType.String;
+
+            param1.Value = path;
+            param2.Value = target;
+
+            dbcmd.Parameters.Add(param1);
+            dbcmd.Parameters.Add(param2);
+
+            IDbTransaction trans = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            string sql = string.Format("INSERT INTO `os_{0}_symlinks` (`path`, `target`)" +
+                                       " VALUES (@path, @target)", os);
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            return true;
+        }
+
+        public bool GetAllSymlinks(out Dictionary<string, string> entries, long id)
+        {
+            entries = new Dictionary<string, string>();
+
+            string sql = string.Format("SELECT * from os_{0}_symlinks", id);
+
+            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
+            dbcmd.CommandText = sql;
+            DataSet dataSet = new DataSet();
+            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.Fill(dataSet);
+            DataTable dataTable = dataSet.Tables[0];
+
+            foreach(DataRow dRow in dataTable.Rows)
+            {
+                if(!entries.ContainsKey(dRow["path"].ToString()))
+                    entries.Add(dRow["path"].ToString(), dRow["target"].ToString());
+            }
 
             return true;
         }

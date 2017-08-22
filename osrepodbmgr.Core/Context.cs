@@ -54,6 +54,7 @@ namespace osrepodbmgr.Core
         public static bool usableDotNetZip;
         public static string clamdVersion;
         public static bool virusTotalEnabled;
+        public static Dictionary<string, string> symlinks;
 
         public delegate void UnarChangeStatusDelegate();
         public static event UnarChangeStatusDelegate UnarChangeStatus;
