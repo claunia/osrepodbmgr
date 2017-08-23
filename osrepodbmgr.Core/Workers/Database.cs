@@ -296,13 +296,13 @@ namespace osrepodbmgr.Core
                 stopwatch.Restart();
 #endif
                 counter = 0;
-                if(Context.symlinks.Count > 0)
+                if(Context.symlinksDict.Count > 0)
                     dbCore.DBOps.CreateSymlinkTableForOS(Context.dbInfo.id);
                 
-                foreach(KeyValuePair<string, string> kvp in Context.symlinks)
+                foreach(KeyValuePair<string, string> kvp in Context.symlinksDict)
                 {
                     if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding symbolic links to OS in database", counter, Context.symlinks.Count);
+                        UpdateProgress(null, "Adding symbolic links to OS in database", counter, Context.symlinksDict.Count);
 
                     dbCore.DBOps.AddSymlinkToOS(kvp.Key, kvp.Value, Context.dbInfo.id);
 

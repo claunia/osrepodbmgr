@@ -36,8 +36,10 @@ namespace osrepodbmgr.Core
     {
         public static List<string> files;
         public static List<string> folders;
+        public static List<string> symlinks;
         public static Dictionary<string, DBOSFile> hashes;
         public static Dictionary<string, DBFolder> foldersDict;
+        public static Dictionary<string, string> symlinksDict;
         public static string path;
         public static DBEntry dbInfo;
         public static bool unarUsable;
@@ -54,7 +56,6 @@ namespace osrepodbmgr.Core
         public static bool usableDotNetZip;
         public static string clamdVersion;
         public static bool virusTotalEnabled;
-        public static Dictionary<string, string> symlinks;
 
         public delegate void UnarChangeStatusDelegate();
         public static event UnarChangeStatusDelegate UnarChangeStatus;

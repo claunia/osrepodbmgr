@@ -71,18 +71,25 @@ namespace osrepodbmgr.Core
 #if DEBUG
                 stopwatch.Restart();
 #endif
-                Context.files = new List<string>(Directory.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories));
+                Context.files = IO.EnumerateFiles(filesPath, "*", SearchOption.AllDirectories, false, false);
                 Context.files.Sort();
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine("Core.FindFiles(): Took {0} seconds to find all files", stopwatch.Elapsed.TotalSeconds);
                 stopwatch.Restart();
 #endif
-                Context.folders = new List<string>(Directory.EnumerateDirectories(filesPath, "*", SearchOption.AllDirectories));
+                Context.folders = IO.EnumerateDirectories(filesPath, "*", SearchOption.AllDirectories, false, false);
                 Context.folders.Sort();
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine("Core.FindFiles(): Took {0} seconds to find all folders", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
+                Context.symlinks = IO.EnumerateSymlinks(filesPath, "*", SearchOption.AllDirectories);
+                Context.symlinks.Sort();
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.FindFiles(): Took {0} seconds to find all symbolic links", stopwatch.Elapsed.TotalSeconds);
 #endif
                 if(Finished != null)
                     Finished();
@@ -107,14 +114,9 @@ namespace osrepodbmgr.Core
             {
                 Context.hashes = new Dictionary<string, DBOSFile>();
                 Context.foldersDict = new Dictionary<string, DBFolder>();
-                Context.symlinks = new Dictionary<string, string>();
+                Context.symlinksDict = new Dictionary<string, string>();
                 List<string> alreadyMetadata = new List<string>();
                 bool foundMetadata = false;
-                bool symlinksSupported = DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.WinCE &&
-                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32S &&
-                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32NT &&
-                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.Win32Windows &&
-                                         DetectOS.GetRealPlatformID() != DiscImageChef.Interop.PlatformID.WindowsPhone;
 
                 // For metadata
                 List<ArchitecturesTypeArchitecture> architectures = new List<ArchitecturesTypeArchitecture>();
@@ -140,6 +142,18 @@ namespace osrepodbmgr.Core
                 string metadataVersion = null;
 
                 // End for metadata
+
+                if ((DetectOS.GetRealPlatformID() == DiscImageChef.Interop.PlatformID.WinCE ||
+                    DetectOS.GetRealPlatformID() == DiscImageChef.Interop.PlatformID.Win32S ||
+                    DetectOS.GetRealPlatformID() == DiscImageChef.Interop.PlatformID.Win32NT ||
+                    DetectOS.GetRealPlatformID() == DiscImageChef.Interop.PlatformID.Win32Windows ||
+                    DetectOS.GetRealPlatformID() == DiscImageChef.Interop.PlatformID.WindowsPhone) &&
+                    Context.symlinks.Count > 0)
+                {
+                    if (Failed != null)
+                        Failed("Source contain unsupported symbolic links, not continuing.");
+                    return;
+                }
 
 #if DEBUG
                 stopwatch.Restart();
@@ -362,32 +376,6 @@ namespace osrepodbmgr.Core
 
                     string relpath = file.Substring(filesPath.Length + 1);
 
-                    if(fi.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                    {
-                        // TODO: Symlinks not supported on any Windows platform
-                        if(!symlinksSupported)
-                        {
-                            if(Failed != null)
-                                Failed(string.Format("{0} is an unsupported symbolic link, not continuing.", relpath));
-                            return;
-                        }
-
-                        if(UpdateProgress != null)
-                            UpdateProgress(string.Format("Resolving symlink on file {0} of {1}", counter, Context.files.Count), null, counter, Context.files.Count);
-
-                        string target = Symlinks.ReadLink(file);
-                        if(target == null)
-                        {
-                            if(Failed != null)
-                                Failed(string.Format("Could not resolve symbolic link at {0}, not continuing.", relpath));
-                            return;
-                        }
-
-                        Context.symlinks.Add(relpath, target);
-                        counter++;
-                        continue;
-                    }
-
                     if(UpdateProgress != null)
                         UpdateProgress(string.Format("Hashing file {0} of {1}", counter, Context.files.Count), null, counter, Context.files.Count);
                     FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
@@ -451,7 +439,6 @@ namespace osrepodbmgr.Core
                 counter = 1;
                 foreach(string folder in Context.folders)
                 {
-
                     string filesPath;
                     DirectoryInfo di = new DirectoryInfo(folder);
 
@@ -477,6 +464,38 @@ namespace osrepodbmgr.Core
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine("Core.HashFiles(): Took {0} seconds to iterate all folders", stopwatch.Elapsed.TotalSeconds);
+                stopwatch.Restart();
+#endif
+                counter = 2;
+                foreach (string symlink in Context.symlinks)
+                {
+                    string filesPath;
+
+                    if (!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
+                        filesPath = Context.tmpFolder;
+                    else
+                        filesPath = Context.path;
+
+                    string relpath = symlink.Substring(filesPath.Length + 1);
+
+                    if (UpdateProgress != null)
+                        UpdateProgress(string.Format("Resolving symlink {0} of {1}", counter, Context.symlinks.Count), null, counter, Context.symlinks.Count);
+
+                    string target = Symlinks.ReadLink(symlink);
+                    if (target == null)
+                    {
+                        if (Failed != null)
+                            Failed(string.Format("Could not resolve symbolic link at {0}, not continuing.", relpath));
+                        return;
+                    }
+
+                    Context.symlinksDict.Add(relpath, target);
+                    counter++;
+                    continue;
+                }
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine("Core.HashFiles(): Took {0} seconds to resolve all symbolic links", stopwatch.Elapsed.TotalSeconds);
 #endif
 
                 if(foundMetadata)
