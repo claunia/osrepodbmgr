@@ -140,6 +140,14 @@ namespace osrepodbmgr.Core
                 string metadataPartNo = null;
                 string metadataSerial = null;
                 string metadataVersion = null;
+                List<MagazineType> magazines = new List<MagazineType>();
+                List<BookType> books = new List<BookType>();
+                List<RequiredOperatingSystemType> requiredOses = new List<RequiredOperatingSystemType>();
+                List<UserManualType> usermanuals = new List<UserManualType>();
+                List<AdvertisementType> adverts = new List<AdvertisementType>();
+                List<LinearMediaType> linearmedias = new List<LinearMediaType>();
+                List<PCIType> pcis = new List<PCIType>();
+                List<AudioMediaType> audiomedias = new List<AudioMediaType>();
 
                 // End for metadata
 
@@ -230,6 +238,22 @@ namespace osrepodbmgr.Core
                                     releaseTypeSpecified = true;
                                     releaseType = thisMetadata.ReleaseType;
                                 }
+                                if(thisMetadata.Magazine != null)
+                                    magazines.AddRange(thisMetadata.Magazine);
+                                if(thisMetadata.Book != null)
+                                    books.AddRange(thisMetadata.Book);
+                                if(thisMetadata.RequiredOperatingSystems != null)
+                                    requiredOses.AddRange(thisMetadata.RequiredOperatingSystems);
+                                if(thisMetadata.UserManual != null)
+                                    usermanuals.AddRange(thisMetadata.UserManual);
+                                if(thisMetadata.Advertisement != null)
+                                    adverts.AddRange(thisMetadata.Advertisement);
+                                if(thisMetadata.LinearMedia != null)
+                                    linearmedias.AddRange(thisMetadata.LinearMedia);
+                                if(thisMetadata.PCICard != null)
+                                    pcis.AddRange(thisMetadata.PCICard);
+                                if(thisMetadata.AudioMedia != null)
+                                    audiomedias.AddRange(thisMetadata.AudioMedia);
 
                                 foundMetadata = true;
 
@@ -326,6 +350,22 @@ namespace osrepodbmgr.Core
                                 releaseTypeSpecified = true;
                                 releaseType = thisMetadata.ReleaseType;
                             }
+                            if(thisMetadata.Magazine != null)
+                                magazines.AddRange(thisMetadata.Magazine);
+                            if(thisMetadata.Book != null)
+                                books.AddRange(thisMetadata.Book);
+                            if(thisMetadata.RequiredOperatingSystems != null)
+                                requiredOses.AddRange(thisMetadata.RequiredOperatingSystems);
+                            if(thisMetadata.UserManual != null)
+                                usermanuals.AddRange(thisMetadata.UserManual);
+                            if(thisMetadata.Advertisement != null)
+                                adverts.AddRange(thisMetadata.Advertisement);
+                            if(thisMetadata.LinearMedia != null)
+                                linearmedias.AddRange(thisMetadata.LinearMedia);
+                            if(thisMetadata.PCICard != null)
+                                pcis.AddRange(thisMetadata.PCICard);
+                            if(thisMetadata.AudioMedia != null)
+                                audiomedias.AddRange(thisMetadata.AudioMedia);
 
                             foundMetadata = true;
 
@@ -542,6 +582,14 @@ namespace osrepodbmgr.Core
                     if(systems.Count > 0)
                         Context.metadata.Systems = systems.Distinct().ToArray();
                     Context.metadata.Version = metadataVersion;
+                    Context.metadata.Magazine = magazines.ToArray();
+                    Context.metadata.Book = books.ToArray();
+                    Context.metadata.RequiredOperatingSystems = requiredOses.ToArray();
+                    Context.metadata.UserManual = usermanuals.ToArray();
+                    Context.metadata.Advertisement = adverts.ToArray();
+                    Context.metadata.LinearMedia = linearmedias.ToArray();
+                    Context.metadata.PCICard = pcis.ToArray();
+                    Context.metadata.AudioMedia = audiomedias.ToArray();
 
                     foreach(string metadataFile in alreadyMetadata)
                         Context.files.Remove(metadataFile);

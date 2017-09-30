@@ -59,6 +59,16 @@ namespace osrepodbmgr.Eto
         Thread thdDisk;
         bool stopped;
 
+        // TODO: Add the options to edit these fields
+        MagazineType[] magazines;
+        BookType[] books;
+        RequiredOperatingSystemType[] requiredOses;
+        UserManualType[] usermanuals;
+        AdvertisementType[] adverts;
+        LinearMediaType[] linearmedias;
+        PCIType[] pcis;
+        AudioMediaType[] audiomedias;
+
         #region XAML UI elements
 #pragma warning disable 0649
         TabPage tabGeneral;
@@ -491,6 +501,15 @@ namespace osrepodbmgr.Eto
                     }
                 }
             }
+
+            magazines = Metadata.Magazine;
+            books = Metadata.Book;
+            requiredOses = Metadata.RequiredOperatingSystems;
+            usermanuals = Metadata.UserManual;
+            adverts = Metadata.Advertisement;
+            linearmedias = Metadata.LinearMedia;
+            pcis = Metadata.PCICard;
+            audiomedias = Metadata.AudioMedia;
         }
 
         protected void OnChkKnownReleaseTypeToggled(object sender, EventArgs e)
@@ -1207,6 +1226,15 @@ namespace osrepodbmgr.Eto
                 Metadata.Subcategories = subcategories.ToArray();
             if(systems.Count > 0)
                 Metadata.Systems = systems.ToArray();
+
+            Metadata.Magazine = magazines;
+            Metadata.Book = books;
+            Metadata.RequiredOperatingSystems = requiredOses;
+            Metadata.UserManual = usermanuals;
+            Metadata.Advertisement = adverts;
+            Metadata.LinearMedia = linearmedias;
+            Metadata.PCICard = pcis;
+            Metadata.AudioMedia = audiomedias;
 
             Modified = true;
             Close();

@@ -59,6 +59,16 @@ namespace osrepodbmgr
         Thread thdDisk;
         bool stopped;
 
+        // TODO: Add the options to edit these fields
+        MagazineType[] magazines;
+        BookType[] books;
+        RequiredOperatingSystemType[] requiredOses;
+        UserManualType[] usermanuals;
+        AdvertisementType[] adverts;
+        LinearMediaType[] linearmedias;
+        PCIType[] pcis;
+        AudioMediaType[] audiomedias;
+
         public dlgMetadata()
         {
             Build();
@@ -543,6 +553,15 @@ namespace osrepodbmgr
                     }
                 }
             }
+
+            magazines = Metadata.Magazine;
+            books = Metadata.Book;
+            requiredOses = Metadata.RequiredOperatingSystems;
+            usermanuals = Metadata.UserManual;
+            adverts = Metadata.Advertisement;
+            linearmedias = Metadata.LinearMedia;
+            pcis = Metadata.PCICard;
+            audiomedias = Metadata.AudioMedia;
         }
 
         protected void OnChkBoxUnknownReleaseTypeToggled(object sender, EventArgs e)
@@ -1307,6 +1326,15 @@ namespace osrepodbmgr
                 Metadata.Subcategories = subcategories.ToArray();
             if(systems.Count > 0)
                 Metadata.Systems = systems.ToArray();
+
+            Metadata.Magazine = magazines;
+            Metadata.Book = books;
+            Metadata.RequiredOperatingSystems = requiredOses;
+            Metadata.UserManual = usermanuals;
+            Metadata.Advertisement = adverts;
+            Metadata.LinearMedia = linearmedias;
+            Metadata.PCICard = pcis;
+            Metadata.AudioMedia = audiomedias;
         }
 
         protected void OnBtnEditDiscClicked(object sender, EventArgs e)
