@@ -53,7 +53,7 @@ namespace osrepodbmgr.Core
                 Task.Run(async () =>
                 {
                     vt = new VirusTotal(key);
-                    report = await vt.GetFileReport("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
+                    report = await vt.GetFileReportAsync("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
                 }).Wait();
             }
             catch(Exception ex)
@@ -76,7 +76,7 @@ namespace osrepodbmgr.Core
                 Task.Run(async () =>
                 {
                     vt = new VirusTotal(key);
-                    report = await vt.GetFileReport("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
+                    report = await vt.GetFileReportAsync("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
                 }).Wait();
             }
             catch(Exception ex)
@@ -122,23 +122,23 @@ namespace osrepodbmgr.Core
 #endif
                 Task.Run(async () =>
                 {
-                    fResult = await vTotal.GetFileReport(file.Sha256);
+                    fResult = await vTotal.GetFileReportAsync(file.Sha256);
                 }).Wait();
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine("Core.VirusTotalFileFromRepo({0}): VirusTotal took {1} seconds to answer for SHA256 request", file, stopwatch.Elapsed.TotalSeconds);
 #endif
 
-                if(fResult.ResponseCode == VirusTotalNET.ResponseCodes.ReportResponseCode.Error)
+                if(fResult.ResponseCode == VirusTotalNET.ResponseCodes.FileReportResponseCode.NotPresent)
                 {
                     if(Failed != null)
                         Failed(fResult.VerboseMsg);
                     return;
                 }
 
-                if(fResult.ResponseCode != VirusTotalNET.ResponseCodes.ReportResponseCode.StillQueued)
+                if(fResult.ResponseCode != VirusTotalNET.ResponseCodes.FileReportResponseCode.Queued)
                 {
-                    if(fResult.ResponseCode == VirusTotalNET.ResponseCodes.ReportResponseCode.Present)
+                    if(fResult.ResponseCode == VirusTotalNET.ResponseCodes.FileReportResponseCode.Present)
                     {
                         if(fResult.Positives > 0)
                         {
@@ -281,7 +281,7 @@ namespace osrepodbmgr.Core
 #endif
                     Task.Run(async () =>
                     {
-                        sResult = await vTotal.ScanFile(outFs, file.Sha256); // Keep filename private, sorry!
+                        sResult = await vTotal.ScanFileAsync(outFs, file.Sha256); // Keep filename private, sorry!
                     }).Wait();
 #if DEBUG
                     stopwatch.Stop();
@@ -291,7 +291,7 @@ namespace osrepodbmgr.Core
 
                     File.Delete(tmpFile);
 
-                    if(sResult == null || sResult.ResponseCode == VirusTotalNET.ResponseCodes.ScanResponseCode.Error)
+                    if(sResult == null || sResult.ResponseCode == VirusTotalNET.ResponseCodes.ScanFileResponseCode.Error)
                     {
                         if(sResult == null)
                         {
@@ -309,7 +309,7 @@ namespace osrepodbmgr.Core
 
                     Task.Run(async () =>
                     {
-                        fResult = await vTotal.GetFileReport(file.Sha256);
+                        fResult = await vTotal.GetFileReportAsync(file.Sha256);
                     }).Wait();
                 }
 
@@ -320,7 +320,7 @@ namespace osrepodbmgr.Core
                 stopwatch.Restart();
 #endif
                 int counter = 0;
-                while(fResult.ResponseCode == VirusTotalNET.ResponseCodes.ReportResponseCode.StillQueued)
+                while(fResult.ResponseCode == VirusTotalNET.ResponseCodes.FileReportResponseCode.Queued)
                 {
                     // Timeout...
                     if(counter == 10)
@@ -331,7 +331,7 @@ namespace osrepodbmgr.Core
 
                     Task.Run(async () =>
                     {
-                        fResult = await vTotal.GetFileReport(file.Sha256);
+                        fResult = await vTotal.GetFileReportAsync(file.Sha256);
                     }).Wait();
 
                     counter++;
@@ -341,7 +341,7 @@ namespace osrepodbmgr.Core
                 Console.WriteLine("Core.VirusTotalFileFromRepo({0}): VirusTotal took {1} seconds to do the analysis", file, stopwatch.Elapsed.TotalSeconds);
 #endif
 
-                if(fResult.ResponseCode != VirusTotalNET.ResponseCodes.ReportResponseCode.Present)
+                if(fResult.ResponseCode != VirusTotalNET.ResponseCodes.FileReportResponseCode.Present)
                 {
                     if(Failed != null)
                         Failed(fResult.VerboseMsg);

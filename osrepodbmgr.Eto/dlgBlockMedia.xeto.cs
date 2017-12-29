@@ -765,11 +765,11 @@ namespace osrepodbmgr.Eto
                     lstCSD.Add(Metadata.SecureDigital.CSD);
                 }
 
-                if(Metadata.SecureDigital.ExtendedCSD != null)
+                if(Metadata.MultiMediaCard.ExtendedCSD != null)
                 {
                     chkECSD.Checked = true;
                     treeECSD.Visible = true;
-                    lstECSD.Add(Metadata.SecureDigital.ExtendedCSD);
+                    lstECSD.Add(Metadata.MultiMediaCard.ExtendedCSD);
                 }
             }
             if(Metadata.SCSI != null && Metadata.SCSI.Inquiry != null)
@@ -1578,7 +1578,7 @@ namespace osrepodbmgr.Eto
                 if(lstCSD.Count == 1)
                     Metadata.SecureDigital.CSD = lstCSD[0];
                 if(lstECSD.Count == 1)
-                    Metadata.SecureDigital.ExtendedCSD = lstECSD[0];
+                    Metadata.MultiMediaCard.ExtendedCSD = lstECSD[0];
             }
 
             if(chkSCSI.Checked.Value)

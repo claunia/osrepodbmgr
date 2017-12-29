@@ -32,8 +32,8 @@ using DiscImageChef.CommonTypes;
 using DiscImageChef.Decoders.PCMCIA;
 using DiscImageChef.Filesystems;
 using DiscImageChef.Filters;
-using DiscImageChef.ImagePlugins;
-using DiscImageChef.PartPlugins;
+using DiscImageChef.DiscImages;
+using DiscImageChef.Partitions;
 using Schemas;
 
 namespace osrepodbmgr.Core
@@ -67,8 +67,7 @@ namespace osrepodbmgr.Core
 
             CICMMetadataType sidecar = new CICMMetadataType();
             PluginBase plugins = new PluginBase();
-            plugins.RegisterAllPlugins();
-            ImagePlugin _imageFormat;
+            IMediaImage _imageFormat;
 
             long maxProgress = 4;
             long currentProgress = 0;
@@ -78,7 +77,7 @@ namespace osrepodbmgr.Core
             if(UpdateProgress != null)
                 UpdateProgress(null, "Detecting image filter", 1, maxProgress);
 
-            Filter inputFilter = filtersList.GetFilter(selectedFile);
+            IFilter inputFilter = filtersList.GetFilter(selectedFile);
 
 
             if(inputFilter == null)
@@ -110,7 +109,7 @@ namespace osrepodbmgr.Core
 
                 try
                 {
-                    if(!_imageFormat.OpenImage(inputFilter))
+                    if(!_imageFormat.Open(inputFilter))
                     {
                         if(Failed != null)
                             Failed("Unable to open image format\n" +
@@ -174,11 +173,11 @@ namespace osrepodbmgr.Core
                 if(UpdateProgress2 != null)
                     UpdateProgress2(null, null, 0, 0);
 
-                switch(_imageFormat.ImageInfo.xmlMediaType)
+                switch(_imageFormat.Info.XmlMediaType)
                 {
                     case XmlMediaType.OpticalDisc:
                         {
-                            maxProgress = 4 + _imageFormat.ImageInfo.readableMediaTags.Count + _imageFormat.GetTracks().Count;
+                            maxProgress = 4 + _imageFormat.Info.ReadableMediaTags.Count + _imageFormat.Tracks.Count;
 
                             if(UpdateProgress != null)
                                 UpdateProgress(null, "Hashing image file", 3, maxProgress);
@@ -187,32 +186,32 @@ namespace osrepodbmgr.Core
                             sidecar.OpticalDisc[0] = new OpticalDiscType();
                             sidecar.OpticalDisc[0].Checksums = imgChecksums.ToArray();
                             sidecar.OpticalDisc[0].Image = new ImageType();
-                            sidecar.OpticalDisc[0].Image.format = _imageFormat.GetImageFormat();
+                            sidecar.OpticalDisc[0].Image.format = _imageFormat.Format;
                             sidecar.OpticalDisc[0].Image.offset = 0;
                             sidecar.OpticalDisc[0].Image.offsetSpecified = true;
                             sidecar.OpticalDisc[0].Image.Value = Path.GetFileName(selectedFile);
                             sidecar.OpticalDisc[0].Size = fi.Length;
                             sidecar.OpticalDisc[0].Sequence = new SequenceType();
-                            if(_imageFormat.GetMediaSequence() != 0 && _imageFormat.GetLastDiskSequence() != 0)
+                            if(_imageFormat.Info.MediaSequence != 0 && _imageFormat.Info.LastMediaSequence != 0)
                             {
-                                sidecar.OpticalDisc[0].Sequence.MediaSequence = _imageFormat.GetMediaSequence();
-                                sidecar.OpticalDisc[0].Sequence.TotalMedia = _imageFormat.GetMediaSequence();
+                                sidecar.OpticalDisc[0].Sequence.MediaSequence = _imageFormat.Info.MediaSequence;
+                                sidecar.OpticalDisc[0].Sequence.TotalMedia = _imageFormat.Info.LastMediaSequence;
                             }
                             else
                             {
                                 sidecar.OpticalDisc[0].Sequence.MediaSequence = 1;
                                 sidecar.OpticalDisc[0].Sequence.TotalMedia = 1;
                             }
-                            sidecar.OpticalDisc[0].Sequence.MediaTitle = _imageFormat.GetImageName();
+                            sidecar.OpticalDisc[0].Sequence.MediaTitle = _imageFormat.Info.MediaTitle;
 
-                            MediaType dskType = _imageFormat.ImageInfo.mediaType;
+                            MediaType dskType = _imageFormat.Info.MediaType;
 
                             currentProgress = 3;
 
 #if DEBUG
                             stopwatch.Restart();
 #endif
-                            foreach(MediaTagType tagType in _imageFormat.ImageInfo.readableMediaTags)
+                            foreach(MediaTagType tagType in _imageFormat.Info.ReadableMediaTags)
                             {
                                 currentProgress++;
                                 if(UpdateProgress != null)
@@ -369,7 +368,7 @@ namespace osrepodbmgr.Core
 
                             try
                             {
-                                List<Session> sessions = _imageFormat.GetSessions();
+                                List<Session> sessions = _imageFormat.Sessions;
                                 sidecar.OpticalDisc[0].Sessions = sessions != null ? sessions.Count : 1;
                             }
                             catch
@@ -377,7 +376,7 @@ namespace osrepodbmgr.Core
                                 sidecar.OpticalDisc[0].Sessions = 1;
                             }
 
-                            List<Track> tracks = _imageFormat.GetTracks();
+                            List<Track> tracks = _imageFormat.Tracks;
                             List<Schemas.TrackType> trksLst = null;
                             if(tracks != null)
                             {
@@ -393,22 +392,22 @@ namespace osrepodbmgr.Core
                                 Schemas.TrackType xmlTrk = new Schemas.TrackType();
                                 switch(trk.TrackType)
                                 {
-                                    case DiscImageChef.ImagePlugins.TrackType.Audio:
+                                    case DiscImageChef.DiscImages.TrackType.Audio:
                                         xmlTrk.TrackType1 = TrackTypeTrackType.audio;
                                         break;
-                                    case DiscImageChef.ImagePlugins.TrackType.CDMode2Form2:
+                                    case DiscImageChef.DiscImages.TrackType.CdMode2Form2:
                                         xmlTrk.TrackType1 = TrackTypeTrackType.m2f2;
                                         break;
-                                    case DiscImageChef.ImagePlugins.TrackType.CDMode2Formless:
+                                    case DiscImageChef.DiscImages.TrackType.CdMode2Formless:
                                         xmlTrk.TrackType1 = TrackTypeTrackType.mode2;
                                         break;
-                                    case DiscImageChef.ImagePlugins.TrackType.CDMode2Form1:
+                                    case DiscImageChef.DiscImages.TrackType.CdMode2Form1:
                                         xmlTrk.TrackType1 = TrackTypeTrackType.m2f1;
                                         break;
-                                    case DiscImageChef.ImagePlugins.TrackType.CDMode1:
+                                    case DiscImageChef.DiscImages.TrackType.CdMode1:
                                         xmlTrk.TrackType1 = TrackTypeTrackType.mode1;
                                         break;
-                                    case DiscImageChef.ImagePlugins.TrackType.Data:
+                                    case DiscImageChef.DiscImages.TrackType.Data:
                                         switch(sidecar.OpticalDisc[0].DiscType)
                                         {
                                             case "BD":
@@ -471,7 +470,7 @@ namespace osrepodbmgr.Core
                                 ulong doneSectors = 0;
 
                                 // If there is only one track, and it's the same as the image file (e.g. ".iso" files), don't re-checksum.
-                                if(_imageFormat.PluginUUID == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                                if(_imageFormat.Id == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
                                 {
                                     xmlTrk.Checksums = sidecar.OpticalDisc[0].Checksums;
                                 }
@@ -566,14 +565,14 @@ namespace osrepodbmgr.Core
 
                                         if((sectors - doneSectors) >= sectorsToRead)
                                         {
-                                            sector = _imageFormat.ReadSectorsTag(doneSectors, sectorsToRead, (uint)xmlTrk.Sequence.TrackNumber, SectorTagType.CDSectorSubchannel);
+                                            sector = _imageFormat.ReadSectorsTag(doneSectors, sectorsToRead, (uint)xmlTrk.Sequence.TrackNumber, SectorTagType.CdSectorSubchannel);
                                             if(UpdateProgress2 != null)
                                                 UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), position, fi.Length);
                                             doneSectors += sectorsToRead;
                                         }
                                         else
                                         {
-                                            sector = _imageFormat.ReadSectorsTag(doneSectors, (uint)(sectors - doneSectors), (uint)xmlTrk.Sequence.TrackNumber, SectorTagType.CDSectorSubchannel);
+                                            sector = _imageFormat.ReadSectorsTag(doneSectors, (uint)(sectors - doneSectors), (uint)xmlTrk.Sequence.TrackNumber, SectorTagType.CdSectorSubchannel);
                                             if(UpdateProgress2 != null)
                                                 UpdateProgress2(null, string.Format("Sector {0} of {1}", doneSectors, sectors), position, fi.Length);
                                             doneSectors += (sectors - doneSectors);
@@ -602,11 +601,11 @@ namespace osrepodbmgr.Core
 #endif
                                 List<Partition> partitions = new List<Partition>();
 
-                                foreach(PartPlugin _partplugin in plugins.PartPluginsList.Values)
+                                foreach(IPartition _partplugin in plugins.PartPluginsList.Values)
                                 {
                                     List<Partition> _partitions;
 
-                                    if(_partplugin.GetInformation(_imageFormat, out _partitions))
+                                    if(_partplugin.GetInformation(_imageFormat, out _partitions, 0)) // TODO: Subpartitions
                                         partitions.AddRange(_partitions);
                                 }
 
@@ -617,32 +616,32 @@ namespace osrepodbmgr.Core
                                     for(int i = 0; i < partitions.Count; i++)
                                     {
                                         xmlTrk.FileSystemInformation[i] = new PartitionType();
-                                        xmlTrk.FileSystemInformation[i].Description = partitions[i].PartitionDescription;
-                                        xmlTrk.FileSystemInformation[i].EndSector = (int)(partitions[i].PartitionStartSector + partitions[i].PartitionSectors - 1);
-                                        xmlTrk.FileSystemInformation[i].Name = partitions[i].PartitionName;
-                                        xmlTrk.FileSystemInformation[i].Sequence = (int)partitions[i].PartitionSequence;
-                                        xmlTrk.FileSystemInformation[i].StartSector = (int)partitions[i].PartitionStartSector;
-                                        xmlTrk.FileSystemInformation[i].Type = partitions[i].PartitionType;
+                                        xmlTrk.FileSystemInformation[i].Description = partitions[i].Description;
+                                        xmlTrk.FileSystemInformation[i].EndSector = (int)(partitions[i].End);
+                                        xmlTrk.FileSystemInformation[i].Name = partitions[i].Name;
+                                        xmlTrk.FileSystemInformation[i].Sequence = (int)partitions[i].Sequence;
+                                        xmlTrk.FileSystemInformation[i].StartSector = (int)partitions[i].Start;
+                                        xmlTrk.FileSystemInformation[i].Type = partitions[i].Type;
 
                                         List<FileSystemType> lstFs = new List<FileSystemType>();
 
-                                        foreach(Filesystem _plugin in plugins.PluginsList.Values)
+                                        foreach(IFilesystem _plugin in plugins.PluginsList.Values)
                                         {
                                             try
                                             {
-                                                if(_plugin.Identify(_imageFormat, partitions[i].PartitionStartSector, partitions[i].PartitionStartSector + partitions[i].PartitionSectors - 1))
+                                                if(_plugin.Identify(_imageFormat, partitions[i]))
                                                 {
                                                     string foo;
-                                                    _plugin.GetInformation(_imageFormat, partitions[i].PartitionStartSector, partitions[i].PartitionStartSector + partitions[i].PartitionSectors - 1, out foo);
-                                                    lstFs.Add(_plugin.XmlFSType);
+                                                    _plugin.GetInformation(_imageFormat, partitions[i], out foo, null);
+                                                    lstFs.Add(_plugin.XmlFsType);
 
-                                                    if(_plugin.XmlFSType.Type == "Opera")
+                                                    if(_plugin.XmlFsType.Type == "Opera")
                                                         dskType = MediaType.ThreeDO;
-                                                    if(_plugin.XmlFSType.Type == "PC Engine filesystem")
+                                                    if(_plugin.XmlFsType.Type == "PC Engine filesystem")
                                                         dskType = MediaType.SuperCDROM2;
-                                                    if(_plugin.XmlFSType.Type == "Nintendo Wii filesystem")
+                                                    if(_plugin.XmlFsType.Type == "Nintendo Wii filesystem")
                                                         dskType = MediaType.WOD;
-                                                    if(_plugin.XmlFSType.Type == "Nintendo Gamecube filesystem")
+                                                    if(_plugin.XmlFsType.Type == "Nintendo Gamecube filesystem")
                                                         dskType = MediaType.GOD;
                                                 }
                                             }
@@ -664,25 +663,31 @@ namespace osrepodbmgr.Core
                                     xmlTrk.FileSystemInformation[0].EndSector = (int)xmlTrk.EndSector;
                                     xmlTrk.FileSystemInformation[0].StartSector = (int)xmlTrk.StartSector;
 
+                                    Partition xmlPart = new Partition
+                                    {
+                                        Start  = (ulong)xmlTrk.StartSector,
+                                        Length = (ulong)((xmlTrk.EndSector - xmlTrk.StartSector) + 1)
+                                    };
+
                                     List<FileSystemType> lstFs = new List<FileSystemType>();
 
-                                    foreach(Filesystem _plugin in plugins.PluginsList.Values)
+                                    foreach(IFilesystem _plugin in plugins.PluginsList.Values)
                                     {
                                         try
                                         {
-                                            if(_plugin.Identify(_imageFormat, (ulong)xmlTrk.StartSector, (ulong)xmlTrk.EndSector))
+                                            if(_plugin.Identify(_imageFormat, xmlPart))
                                             {
                                                 string foo;
-                                                _plugin.GetInformation(_imageFormat, (ulong)xmlTrk.StartSector, (ulong)xmlTrk.EndSector, out foo);
-                                                lstFs.Add(_plugin.XmlFSType);
+                                                _plugin.GetInformation(_imageFormat, xmlPart, out foo, null);
+                                                lstFs.Add(_plugin.XmlFsType);
 
-                                                if(_plugin.XmlFSType.Type == "Opera")
+                                                if(_plugin.XmlFsType.Type == "Opera")
                                                     dskType = MediaType.ThreeDO;
-                                                if(_plugin.XmlFSType.Type == "PC Engine filesystem")
+                                                if(_plugin.XmlFsType.Type == "PC Engine filesystem")
                                                     dskType = MediaType.SuperCDROM2;
-                                                if(_plugin.XmlFSType.Type == "Nintendo Wii filesystem")
+                                                if(_plugin.XmlFsType.Type == "Nintendo Wii filesystem")
                                                     dskType = MediaType.WOD;
-                                                if(_plugin.XmlFSType.Type == "Nintendo Gamecube filesystem")
+                                                if(_plugin.XmlFsType.Type == "Nintendo Gamecube filesystem")
                                                     dskType = MediaType.GOD;
                                             }
                                         }
@@ -716,22 +721,22 @@ namespace osrepodbmgr.Core
                             sidecar.OpticalDisc[0].DiscType = dscType;
                             sidecar.OpticalDisc[0].DiscSubType = dscSubType;
 
-                            if(!string.IsNullOrEmpty(_imageFormat.ImageInfo.driveManufacturer) ||
-                               !string.IsNullOrEmpty(_imageFormat.ImageInfo.driveModel) ||
-                               !string.IsNullOrEmpty(_imageFormat.ImageInfo.driveFirmwareRevision) ||
-                               !string.IsNullOrEmpty(_imageFormat.ImageInfo.driveSerialNumber))
+                            if(!string.IsNullOrEmpty(_imageFormat.Info.DriveManufacturer) ||
+                               !string.IsNullOrEmpty(_imageFormat.Info.DriveModel) ||
+                               !string.IsNullOrEmpty(_imageFormat.Info.DriveFirmwareRevision) ||
+                               !string.IsNullOrEmpty(_imageFormat.Info.DriveSerialNumber))
                             {
                                 sidecar.OpticalDisc[0].DumpHardwareArray = new DumpHardwareType[1];
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents = new ExtentType[0];
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents[0].Start = 0;
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents[0].End = _imageFormat.ImageInfo.sectors;
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Manufacturer = _imageFormat.ImageInfo.driveManufacturer;
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Model = _imageFormat.ImageInfo.driveModel;
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Firmware = _imageFormat.ImageInfo.driveFirmwareRevision;
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Serial = _imageFormat.ImageInfo.driveSerialNumber;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Extents[0].End = _imageFormat.Info.Sectors;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Manufacturer = _imageFormat.Info.DriveManufacturer;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Model = _imageFormat.Info.DriveModel;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Firmware = _imageFormat.Info.DriveFirmwareRevision;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Serial = _imageFormat.Info.DriveSerialNumber;
                                 sidecar.OpticalDisc[0].DumpHardwareArray[0].Software = new SoftwareType();
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Software.Name = _imageFormat.GetImageApplication();
-                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Software.Version = _imageFormat.GetImageApplicationVersion();
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Software.Name = _imageFormat.Info.Application;
+                                sidecar.OpticalDisc[0].DumpHardwareArray[0].Software.Version = _imageFormat.Info.ApplicationVersion;
                             }
 
                             Context.workingDisc = sidecar.OpticalDisc[0];
@@ -741,7 +746,7 @@ namespace osrepodbmgr.Core
                         }
                     case XmlMediaType.BlockMedia:
                         {
-                            maxProgress = 3 + _imageFormat.ImageInfo.readableMediaTags.Count;
+                            maxProgress = 3 + _imageFormat.Info.ReadableMediaTags.Count;
                             if(UpdateProgress != null)
                                 UpdateProgress(null, "Hashing image file", 3, maxProgress);
 
@@ -749,30 +754,30 @@ namespace osrepodbmgr.Core
                             sidecar.BlockMedia[0] = new BlockMediaType();
                             sidecar.BlockMedia[0].Checksums = imgChecksums.ToArray();
                             sidecar.BlockMedia[0].Image = new ImageType();
-                            sidecar.BlockMedia[0].Image.format = _imageFormat.GetImageFormat();
+                            sidecar.BlockMedia[0].Image.format = _imageFormat.Format;
                             sidecar.BlockMedia[0].Image.offset = 0;
                             sidecar.BlockMedia[0].Image.offsetSpecified = true;
                             sidecar.BlockMedia[0].Image.Value = Path.GetFileName(selectedFile);
                             sidecar.BlockMedia[0].Size = fi.Length;
                             sidecar.BlockMedia[0].Sequence = new SequenceType();
-                            if(_imageFormat.GetMediaSequence() != 0 && _imageFormat.GetLastDiskSequence() != 0)
+                            if(_imageFormat.Info.MediaSequence != 0 && _imageFormat.Info.LastMediaSequence != 0)
                             {
-                                sidecar.BlockMedia[0].Sequence.MediaSequence = _imageFormat.GetMediaSequence();
-                                sidecar.BlockMedia[0].Sequence.TotalMedia = _imageFormat.GetMediaSequence();
+                                sidecar.BlockMedia[0].Sequence.MediaSequence = _imageFormat.Info.MediaSequence;
+                                sidecar.BlockMedia[0].Sequence.TotalMedia = _imageFormat.Info.LastMediaSequence;
                             }
                             else
                             {
                                 sidecar.BlockMedia[0].Sequence.MediaSequence = 1;
                                 sidecar.BlockMedia[0].Sequence.TotalMedia = 1;
                             }
-                            sidecar.BlockMedia[0].Sequence.MediaTitle = _imageFormat.GetImageName();
+                            sidecar.BlockMedia[0].Sequence.MediaTitle = _imageFormat.Info.MediaTitle;
 
                             currentProgress = 3;
 
 #if DEBUG
                             stopwatch.Restart();
 #endif
-                            foreach(MediaTagType tagType in _imageFormat.ImageInfo.readableMediaTags)
+                            foreach(MediaTagType tagType in _imageFormat.Info.ReadableMediaTags)
                             {
                                 currentProgress++;
                                 if(UpdateProgress != null)
@@ -850,12 +855,12 @@ namespace osrepodbmgr.Core
                                         sidecar.BlockMedia[0].SecureDigital.CSD.Checksums = Checksum.GetChecksums(_imageFormat.ReadDiskTag(MediaTagType.SD_CSD)).ToArray();
                                         sidecar.BlockMedia[0].SecureDigital.CSD.Size = _imageFormat.ReadDiskTag(MediaTagType.SD_CSD).Length;
                                         break;
-                                    case MediaTagType.SD_ExtendedCSD:
+                                    case MediaTagType.MMC_ExtendedCSD:
                                         if(sidecar.BlockMedia[0].SecureDigital == null)
                                             sidecar.BlockMedia[0].SecureDigital = new SecureDigitalType();
-                                        sidecar.BlockMedia[0].SecureDigital.ExtendedCSD = new DumpType();
-                                        sidecar.BlockMedia[0].SecureDigital.ExtendedCSD.Checksums = Checksum.GetChecksums(_imageFormat.ReadDiskTag(MediaTagType.SD_ExtendedCSD)).ToArray();
-                                        sidecar.BlockMedia[0].SecureDigital.ExtendedCSD.Size = _imageFormat.ReadDiskTag(MediaTagType.SD_ExtendedCSD).Length;
+                                        sidecar.BlockMedia[0].MultiMediaCard.ExtendedCSD = new DumpType();
+                                        sidecar.BlockMedia[0].MultiMediaCard.ExtendedCSD.Checksums = Checksum.GetChecksums(_imageFormat.ReadDiskTag(MediaTagType.MMC_ExtendedCSD)).ToArray();
+                                        sidecar.BlockMedia[0].MultiMediaCard.ExtendedCSD.Size = _imageFormat.ReadDiskTag(MediaTagType.MMC_ExtendedCSD).Length;
                                         break;
                                 }
                             }
@@ -865,7 +870,7 @@ namespace osrepodbmgr.Core
 #endif
 
                             // If there is only one track, and it's the same as the image file (e.g. ".iso" files), don't re-checksum.
-                            if(_imageFormat.PluginUUID == new System.Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                            if(_imageFormat.Id == new System.Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
                             {
                                 sidecar.BlockMedia[0].ContentChecksums = sidecar.BlockMedia[0].Checksums;
                             }
@@ -874,7 +879,7 @@ namespace osrepodbmgr.Core
                                 Checksum contentChkWorker = new Checksum();
 
                                 uint sectorsToRead = 512;
-                                ulong sectors = _imageFormat.GetSectors();
+                                ulong sectors = _imageFormat.Info.Sectors;
                                 ulong doneSectors = 0;
 
                                 if(UpdateProgress != null)
@@ -917,16 +922,16 @@ namespace osrepodbmgr.Core
                             }
 
                             string dskType, dskSubType;
-                            DiscImageChef.Metadata.MediaType.MediaTypeToString(_imageFormat.ImageInfo.mediaType, out dskType, out dskSubType);
+                            DiscImageChef.Metadata.MediaType.MediaTypeToString(_imageFormat.Info.MediaType, out dskType, out dskSubType);
                             sidecar.BlockMedia[0].DiskType = dskType;
                             sidecar.BlockMedia[0].DiskSubType = dskSubType;
 
-                            sidecar.BlockMedia[0].Dimensions = DiscImageChef.Metadata.Dimensions.DimensionsFromMediaType(_imageFormat.ImageInfo.mediaType);
+                            sidecar.BlockMedia[0].Dimensions = DiscImageChef.Metadata.Dimensions.DimensionsFromMediaType(_imageFormat.Info.MediaType);
 
-                            sidecar.BlockMedia[0].LogicalBlocks = (long)_imageFormat.GetSectors();
-                            sidecar.BlockMedia[0].LogicalBlockSize = (int)_imageFormat.GetSectorSize();
+                            sidecar.BlockMedia[0].LogicalBlocks = (long)_imageFormat.Info.Sectors;
+                            sidecar.BlockMedia[0].LogicalBlockSize = (int)_imageFormat.Info.SectorSize;
                             // TODO: Detect it
-                            sidecar.BlockMedia[0].PhysicalBlockSize = (int)_imageFormat.GetSectorSize();
+                            sidecar.BlockMedia[0].PhysicalBlockSize = (int)_imageFormat.Info.SectorSize;
 
                             if(UpdateProgress != null)
                                 UpdateProgress(null, "Checking filesystems", maxProgress - 1, maxProgress);
@@ -936,11 +941,11 @@ namespace osrepodbmgr.Core
 #endif
                             List<Partition> partitions = new List<Partition>();
 
-                            foreach(PartPlugin _partplugin in plugins.PartPluginsList.Values)
+                            foreach(IPartition _partplugin in plugins.PartPluginsList.Values)
                             {
                                 List<Partition> _partitions;
 
-                                if(_partplugin.GetInformation(_imageFormat, out _partitions))
+                                if(_partplugin.GetInformation(_imageFormat, out _partitions, 0))
                                 {
                                     partitions = _partitions;
                                     break;
@@ -954,24 +959,24 @@ namespace osrepodbmgr.Core
                                 for(int i = 0; i < partitions.Count; i++)
                                 {
                                     sidecar.BlockMedia[0].FileSystemInformation[i] = new PartitionType();
-                                    sidecar.BlockMedia[0].FileSystemInformation[i].Description = partitions[i].PartitionDescription;
-                                    sidecar.BlockMedia[0].FileSystemInformation[i].EndSector = (int)(partitions[i].PartitionStartSector + partitions[i].PartitionSectors - 1);
-                                    sidecar.BlockMedia[0].FileSystemInformation[i].Name = partitions[i].PartitionName;
-                                    sidecar.BlockMedia[0].FileSystemInformation[i].Sequence = (int)partitions[i].PartitionSequence;
-                                    sidecar.BlockMedia[0].FileSystemInformation[i].StartSector = (int)partitions[i].PartitionStartSector;
-                                    sidecar.BlockMedia[0].FileSystemInformation[i].Type = partitions[i].PartitionType;
+                                    sidecar.BlockMedia[0].FileSystemInformation[i].Description = partitions[i].Description;
+                                    sidecar.BlockMedia[0].FileSystemInformation[i].EndSector = (int)(partitions[i].End);
+                                    sidecar.BlockMedia[0].FileSystemInformation[i].Name = partitions[i].Name;
+                                    sidecar.BlockMedia[0].FileSystemInformation[i].Sequence = (int)partitions[i].Sequence;
+                                    sidecar.BlockMedia[0].FileSystemInformation[i].StartSector = (int)partitions[i].Start;
+                                    sidecar.BlockMedia[0].FileSystemInformation[i].Type = partitions[i].Type;
 
                                     List<FileSystemType> lstFs = new List<FileSystemType>();
 
-                                    foreach(Filesystem _plugin in plugins.PluginsList.Values)
+                                    foreach(IFilesystem _plugin in plugins.PluginsList.Values)
                                     {
                                         try
                                         {
-                                            if(_plugin.Identify(_imageFormat, partitions[i].PartitionStartSector, partitions[i].PartitionStartSector + partitions[i].PartitionSectors - 1))
+                                            if(_plugin.Identify(_imageFormat, partitions[i]))
                                             {
                                                 string foo;
-                                                _plugin.GetInformation(_imageFormat, partitions[i].PartitionStartSector, partitions[i].PartitionStartSector + partitions[i].PartitionSectors - 1, out foo);
-                                                lstFs.Add(_plugin.XmlFSType);
+                                                _plugin.GetInformation(_imageFormat, partitions[i], out foo, null);
+                                                lstFs.Add(_plugin.XmlFsType);
                                             }
                                         }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
@@ -990,19 +995,25 @@ namespace osrepodbmgr.Core
                             {
                                 sidecar.BlockMedia[0].FileSystemInformation[0] = new PartitionType();
                                 sidecar.BlockMedia[0].FileSystemInformation[0].StartSector = 0;
-                                sidecar.BlockMedia[0].FileSystemInformation[0].EndSector = (int)(_imageFormat.GetSectors() - 1);
+                                sidecar.BlockMedia[0].FileSystemInformation[0].EndSector = (int)(_imageFormat.Info.Sectors - 1);
+
+                                Partition wholePart = new Partition
+                                {
+                                    Start  = 0,
+                                    Length = _imageFormat.Info.Sectors
+                                };
 
                                 List<FileSystemType> lstFs = new List<FileSystemType>();
 
-                                foreach(Filesystem _plugin in plugins.PluginsList.Values)
+                                foreach(IFilesystem _plugin in plugins.PluginsList.Values)
                                 {
                                     try
                                     {
-                                        if(_plugin.Identify(_imageFormat, 0, _imageFormat.GetSectors() - 1))
+                                        if(_plugin.Identify(_imageFormat, wholePart))
                                         {
                                             string foo;
-                                            _plugin.GetInformation(_imageFormat, 0, _imageFormat.GetSectors() - 1, out foo);
-                                            lstFs.Add(_plugin.XmlFSType);
+                                            _plugin.GetInformation(_imageFormat, wholePart, out foo, null);
+                                            lstFs.Add(_plugin.XmlFsType);
                                         }
                                     }
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body

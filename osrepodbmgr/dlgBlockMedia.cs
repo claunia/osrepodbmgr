@@ -468,11 +468,11 @@ namespace osrepodbmgr
                     lstCSD.AppendValues(Metadata.SecureDigital.CSD.Image, Metadata.SecureDigital.CSD.Size, Metadata.SecureDigital.CSD.Checksums);
                 }
 
-                if(Metadata.SecureDigital.ExtendedCSD != null)
+                if(Metadata.MultiMediaCard.ExtendedCSD != null)
                 {
                     chkECSD.Active = true;
                     treeECSD.Visible = true;
-                    lstECSD.AppendValues(Metadata.SecureDigital.ExtendedCSD.Image, Metadata.SecureDigital.ExtendedCSD.Size, Metadata.SecureDigital.ExtendedCSD.Checksums);
+                    lstECSD.AppendValues(Metadata.MultiMediaCard.ExtendedCSD.Image, Metadata.MultiMediaCard.ExtendedCSD.Size, Metadata.MultiMediaCard.ExtendedCSD.Checksums);
                 }
             }
             if(Metadata.SCSI != null && Metadata.SCSI.Inquiry != null)
@@ -1511,10 +1511,10 @@ namespace osrepodbmgr
                 }
                 if(lstECSD.GetIterFirst(out outIter))
                 {
-                    Metadata.SecureDigital.ExtendedCSD = new DumpType();
-                    Metadata.SecureDigital.ExtendedCSD.Image = (string)lstECSD.GetValue(outIter, 0);
-                    Metadata.SecureDigital.ExtendedCSD.Size = (int)lstECSD.GetValue(outIter, 1);
-                    Metadata.SecureDigital.ExtendedCSD.Checksums = (ChecksumType[])lstECSD.GetValue(outIter, 2);
+                    Metadata.MultiMediaCard.ExtendedCSD = new DumpType();
+                    Metadata.MultiMediaCard.ExtendedCSD.Image = (string)lstECSD.GetValue(outIter, 0);
+                    Metadata.MultiMediaCard.ExtendedCSD.Size = (int)lstECSD.GetValue(outIter, 1);
+                    Metadata.MultiMediaCard.ExtendedCSD.Checksums = (ChecksumType[])lstECSD.GetValue(outIter, 2);
                 }
             }
 

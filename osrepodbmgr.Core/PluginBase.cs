@@ -2,14 +2,14 @@
 // The Disc Image Chef
 // ----------------------------------------------------------------------------
 //
-// Filename       : Plugins.cs
+// Filename       : PluginBase.cs
 // Author(s)      : Natalia Portillo <claunia@claunia.com>
 //
-// Component      : Plugins
+// Component      : Core algorithms.
 //
 // --[ Description ] ----------------------------------------------------------
 //
-//     Base methods for plugins.
+//     Class to hold all installed plugins.
 //
 // --[ License ] --------------------------------------------------------------
 //
@@ -27,111 +27,140 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // ----------------------------------------------------------------------------
-// Copyright © 2011-2016 Natalia Portillo
+// Copyright © 2011-2018 Natalia Portillo
 // ****************************************************************************/
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using DiscImageChef.DiscImages;
 using DiscImageChef.Filesystems;
-using DiscImageChef.ImagePlugins;
-using DiscImageChef.PartPlugins;
+using DiscImageChef.Partitions;
 
 namespace osrepodbmgr.Core
 {
+    /// <summary>
+    ///     Contain all plugins (filesystem, partition and image)
+    /// </summary>
     public class PluginBase
     {
-        public SortedDictionary<string, Filesystem> PluginsList;
-        public SortedDictionary<string, PartPlugin> PartPluginsList;
-        public SortedDictionary<string, ImagePlugin> ImagePluginsList;
+        /// <summary>
+        ///     List of all media image plugins
+        /// </summary>
+        public readonly SortedDictionary<string, IMediaImage> ImagePluginsList;
+        /// <summary>
+        ///     List of all partition plugins
+        /// </summary>
+        public readonly SortedDictionary<string, IPartition> PartPluginsList;
+        /// <summary>
+        ///     List of all filesystem plugins
+        /// </summary>
+        public readonly SortedDictionary<string, IFilesystem> PluginsList;
+        /// <summary>
+        ///     List of read-only filesystem plugins
+        /// </summary>
+        public readonly SortedDictionary<string, IReadOnlyFilesystem> ReadOnlyFilesystems;
+        /// <summary>
+        ///     List of writable media image plugins
+        /// </summary>
+        public readonly SortedDictionary<string, IWritableImage> WritableImages;
 
+        /// <summary>
+        ///     Initializes the plugins lists
+        /// </summary>
         public PluginBase()
         {
-            PluginsList = new SortedDictionary<string, Filesystem>();
-            PartPluginsList = new SortedDictionary<string, PartPlugin>();
-            ImagePluginsList = new SortedDictionary<string, ImagePlugin>();
+            PluginsList         = new SortedDictionary<string, IFilesystem>();
+            ReadOnlyFilesystems = new SortedDictionary<string, IReadOnlyFilesystem>();
+            PartPluginsList     = new SortedDictionary<string, IPartition>();
+            ImagePluginsList    = new SortedDictionary<string, IMediaImage>();
+            WritableImages      = new SortedDictionary<string, IWritableImage>();
+
+            Assembly assembly = Assembly.GetAssembly(typeof(IMediaImage));
+
+            foreach(Type type in assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IMediaImage)))
+                                         .Where(t => t.IsClass))
+                try
+                {
+                    IMediaImage plugin = (IMediaImage)type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                    RegisterImagePlugin(plugin);
+                }
+                catch(Exception exception) { Console.WriteLine("Exception {0}", exception); }
+
+            assembly = Assembly.GetAssembly(typeof(IPartition));
+
+            foreach(Type type in assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IPartition)))
+                                         .Where(t => t.IsClass))
+                try
+                {
+                    IPartition plugin = (IPartition)type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                    RegisterPartPlugin(plugin);
+                }
+                catch(Exception exception) { Console.WriteLine("Exception {0}", exception); }
+
+            assembly = Assembly.GetAssembly(typeof(IFilesystem));
+
+            foreach(Type type in assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IFilesystem)))
+                                         .Where(t => t.IsClass))
+                try
+                {
+                    IFilesystem plugin = (IFilesystem)type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                    RegisterPlugin(plugin);
+                }
+                catch(Exception exception) { Console.WriteLine("Exception {0}", exception); }
+
+            assembly = Assembly.GetAssembly(typeof(IReadOnlyFilesystem));
+
+            foreach(Type type in assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IReadOnlyFilesystem)))
+                                         .Where(t => t.IsClass))
+                try
+                {
+                    IReadOnlyFilesystem plugin =
+                        (IReadOnlyFilesystem)type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                    RegisterReadOnlyFilesystem(plugin);
+                }
+                catch(Exception exception) { Console.WriteLine("Exception {0}", exception); }
+
+            assembly = Assembly.GetAssembly(typeof(IWritableImage));
+
+            foreach(Type type in assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IWritableImage)))
+                                         .Where(t => t.IsClass))
+                try
+                {
+                    IWritableImage plugin =
+                        (IWritableImage)type.GetConstructor(Type.EmptyTypes)?.Invoke(new object[] { });
+                    RegisterWritableMedia(plugin);
+                }
+                catch(Exception exception) { Console.WriteLine("Exception {0}", exception); }
         }
 
-        public void RegisterAllPlugins()
-        {
-            Assembly assembly;
-
-            assembly = Assembly.GetAssembly(typeof(ImagePlugin));
-
-            foreach(Type type in assembly.GetTypes())
-            {
-                try
-                {
-                    if(type.IsSubclassOf(typeof(ImagePlugin)))
-                    {
-                        ImagePlugin plugin = (ImagePlugin)type.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
-                        RegisterImagePlugin(plugin);
-                    }
-                }
-                catch(Exception exception)
-                {
-                    Console.WriteLine("Exception {0}", exception);
-                }
-            }
-
-            assembly = Assembly.GetAssembly(typeof(PartPlugin));
-
-            foreach(Type type in assembly.GetTypes())
-            {
-                try
-                {
-                    if(type.IsSubclassOf(typeof(PartPlugin)))
-                    {
-                        PartPlugin plugin = (PartPlugin)type.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
-                        RegisterPartPlugin(plugin);
-                    }
-                }
-                catch(Exception exception)
-                {
-                    Console.WriteLine("Exception {0}", exception);
-                }
-            }
-
-            assembly = Assembly.GetAssembly(typeof(Filesystem));
-
-            foreach(Type type in assembly.GetTypes())
-            {
-                try
-                {
-                    if(type.IsSubclassOf(typeof(Filesystem)))
-                    {
-                        Filesystem plugin = (Filesystem)type.GetConstructor(Type.EmptyTypes).Invoke(new object[] { });
-                        RegisterPlugin(plugin);
-                    }
-                }
-                catch(Exception exception)
-                {
-                    Console.WriteLine("Exception {0}", exception);
-                }
-            }
-        }
-
-        void RegisterImagePlugin(ImagePlugin plugin)
+        void RegisterImagePlugin(IMediaImage plugin)
         {
             if(!ImagePluginsList.ContainsKey(plugin.Name.ToLower()))
-            {
                 ImagePluginsList.Add(plugin.Name.ToLower(), plugin);
-            }
         }
 
-        void RegisterPlugin(Filesystem plugin)
+        void RegisterPlugin(IFilesystem plugin)
         {
-            if(!PluginsList.ContainsKey(plugin.Name.ToLower()))
-            {
-                PluginsList.Add(plugin.Name.ToLower(), plugin);
-            }
+            if(!PluginsList.ContainsKey(plugin.Name.ToLower())) PluginsList.Add(plugin.Name.ToLower(), plugin);
         }
 
-        void RegisterPartPlugin(PartPlugin partplugin)
+        void RegisterReadOnlyFilesystem(IReadOnlyFilesystem plugin)
+        {
+            if(!ReadOnlyFilesystems.ContainsKey(plugin.Name.ToLower()))
+                ReadOnlyFilesystems.Add(plugin.Name.ToLower(), plugin);
+        }
+
+        void RegisterWritableMedia(IWritableImage plugin)
+        {
+            if(!WritableImages.ContainsKey(plugin.Name.ToLower())) WritableImages.Add(plugin.Name.ToLower(), plugin);
+        }
+
+        void RegisterPartPlugin(IPartition partplugin)
         {
             if(!PartPluginsList.ContainsKey(partplugin.Name.ToLower()))
-            {
                 PartPluginsList.Add(partplugin.Name.ToLower(), partplugin);
-            }
         }
     }
 }

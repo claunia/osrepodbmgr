@@ -421,7 +421,7 @@ namespace osrepodbmgr.Core
                     FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
 
                     byte[] dataBuffer = new byte[bufferSize];
-                    SHA256Context sha256Context = new SHA256Context();
+                    Sha256Context sha256Context = new Sha256Context();
                     sha256Context.Init();
 
                     if(fileStream.Length > bufferSize)

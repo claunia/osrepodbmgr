@@ -136,7 +136,7 @@ namespace osrepodbmgr.Core
 
                 string destination = Path.Combine(destinationFolder, destinationFile) + ".zip";
 
-                MD5Context md5 = new MD5Context();
+                Md5Context md5 = new Md5Context();
                 md5.Init();
                 byte[] tmp;
                 string mdid = md5.Data(Encoding.UTF8.GetBytes(destination), out tmp);

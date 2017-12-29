@@ -39,15 +39,15 @@ namespace osrepodbmgr.Core
     class Checksum
     {
         Adler32Context adler32ctx;
-        CRC16Context crc16ctx;
-        CRC32Context crc32ctx;
-        CRC64Context crc64ctx;
-        MD5Context md5ctx;
-        RIPEMD160Context ripemd160ctx;
-        SHA1Context sha1ctx;
-        SHA256Context sha256ctx;
-        SHA384Context sha384ctx;
-        SHA512Context sha512ctx;
+        Crc16Context crc16ctx;
+        Crc32Context crc32ctx;
+        Crc64Context crc64ctx;
+        Md5Context md5ctx;
+        Ripemd160Context ripemd160ctx;
+        Sha1Context sha1ctx;
+        Sha256Context sha256ctx;
+        Sha384Context sha384ctx;
+        Sha512Context sha512ctx;
         SpamSumContext ssctx;
 
         Thread adlerThread;
@@ -77,15 +77,15 @@ namespace osrepodbmgr.Core
         internal Checksum()
         {
             adler32ctx = new Adler32Context();
-            crc16ctx = new CRC16Context();
-            crc32ctx = new CRC32Context();
-            crc64ctx = new CRC64Context();
-            md5ctx = new MD5Context();
-            ripemd160ctx = new RIPEMD160Context();
-            sha1ctx = new SHA1Context();
-            sha256ctx = new SHA256Context();
-            sha384ctx = new SHA384Context();
-            sha512ctx = new SHA512Context();
+            crc16ctx = new Crc16Context();
+            crc32ctx = new Crc32Context();
+            crc64ctx = new Crc64Context();
+            md5ctx = new Md5Context();
+            ripemd160ctx = new Ripemd160Context();
+            sha1ctx = new Sha1Context();
+            sha256ctx = new Sha256Context();
+            sha384ctx = new Sha384Context();
+            sha512ctx = new Sha512Context();
             ssctx = new SpamSumContext();
 
             adlerThread = new Thread(updateAdler);
@@ -248,15 +248,15 @@ namespace osrepodbmgr.Core
         internal static List<ChecksumType> GetChecksums(byte[] data)
         {
             Adler32Context adler32ctxData = new Adler32Context();
-            CRC16Context crc16ctxData = new CRC16Context();
-            CRC32Context crc32ctxData = new CRC32Context();
-            CRC64Context crc64ctxData = new CRC64Context();
-            MD5Context md5ctxData = new MD5Context();
-            RIPEMD160Context ripemd160ctxData = new RIPEMD160Context();
-            SHA1Context sha1ctxData = new SHA1Context();
-            SHA256Context sha256ctxData = new SHA256Context();
-            SHA384Context sha384ctxData = new SHA384Context();
-            SHA512Context sha512ctxData = new SHA512Context();
+            Crc16Context crc16ctxData = new Crc16Context();
+            Crc32Context crc32ctxData = new Crc32Context();
+            Crc64Context crc64ctxData = new Crc64Context();
+            Md5Context md5ctxData = new Md5Context();
+            Ripemd160Context ripemd160ctxData = new Ripemd160Context();
+            Sha1Context sha1ctxData = new Sha1Context();
+            Sha256Context sha256ctxData = new Sha256Context();
+            Sha384Context sha384ctxData = new Sha384Context();
+            Sha512Context sha512ctxData = new Sha512Context();
             SpamSumContext ssctxData = new SpamSumContext();
 
             Thread adlerThreadData = new Thread(updateAdler);
@@ -409,55 +409,55 @@ namespace osrepodbmgr.Core
 
         struct crc16Packet
         {
-            public CRC16Context context;
+            public Crc16Context context;
             public byte[] data;
         }
 
         struct crc32Packet
         {
-            public CRC32Context context;
+            public Crc32Context context;
             public byte[] data;
         }
 
         struct crc64Packet
         {
-            public CRC64Context context;
+            public Crc64Context context;
             public byte[] data;
         }
 
         struct md5Packet
         {
-            public MD5Context context;
+            public Md5Context context;
             public byte[] data;
         }
 
         struct ripemd160Packet
         {
-            public RIPEMD160Context context;
+            public Ripemd160Context context;
             public byte[] data;
         }
 
         struct sha1Packet
         {
-            public SHA1Context context;
+            public Sha1Context context;
             public byte[] data;
         }
 
         struct sha256Packet
         {
-            public SHA256Context context;
+            public Sha256Context context;
             public byte[] data;
         }
 
         struct sha384Packet
         {
-            public SHA384Context context;
+            public Sha384Context context;
             public byte[] data;
         }
 
         struct sha512Packet
         {
-            public SHA512Context context;
+            public Sha512Context context;
             public byte[] data;
         }
 

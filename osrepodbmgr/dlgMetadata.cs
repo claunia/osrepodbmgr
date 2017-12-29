@@ -508,8 +508,8 @@ namespace osrepodbmgr
                             files.Add(disk.SecureDigital.CID.Image);
                         if(disk.SecureDigital.CSD != null)
                             files.Add(disk.SecureDigital.CSD.Image);
-                        if(disk.SecureDigital.ExtendedCSD != null)
-                            files.Add(disk.SecureDigital.ExtendedCSD.Image);
+                        if(disk.MultiMediaCard.ExtendedCSD != null)
+                            files.Add(disk.MultiMediaCard.ExtendedCSD.Image);
                     }
                     if(disk.TapeInformation != null)
                     {
@@ -1094,8 +1094,8 @@ namespace osrepodbmgr
                         files.Add(disk.SecureDigital.CID.Image);
                     if(disk.SecureDigital.CSD != null)
                         files.Add(disk.SecureDigital.CSD.Image);
-                    if(disk.SecureDigital.ExtendedCSD != null)
-                        files.Add(disk.SecureDigital.ExtendedCSD.Image);
+                    if(disk.MultiMediaCard.ExtendedCSD != null)
+                        files.Add(disk.MultiMediaCard.ExtendedCSD.Image);
                 }
                 if(disk.TapeInformation != null)
                 {

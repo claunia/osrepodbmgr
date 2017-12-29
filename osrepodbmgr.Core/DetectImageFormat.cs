@@ -30,31 +30,30 @@
 // Copyright © 2011-2016 Natalia Portillo
 // ****************************************************************************/
 using System;
+using DiscImageChef.DiscImages;
 using DiscImageChef.Filters;
-using DiscImageChef.ImagePlugins;
 
 namespace osrepodbmgr.Core
 {
     public static class ImageFormat
     {
-        public static ImagePlugin Detect(Filter imageFilter)
+        public static IMediaImage Detect(IFilter imageFilter)
         {
             try
             {
-                ImagePlugin _imageFormat;
+                IMediaImage _imageFormat;
                 PluginBase plugins = new PluginBase();
-                plugins.RegisterAllPlugins();
 
                 _imageFormat = null;
 
                 // Check all but RAW plugin
-                foreach(ImagePlugin _imageplugin in plugins.ImagePluginsList.Values)
+                foreach(IMediaImage _imageplugin in plugins.ImagePluginsList.Values)
                 {
-                    if(_imageplugin.PluginUUID != new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                    if(_imageplugin.Id != new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
                     {
                         try
                         {
-                            if(_imageplugin.IdentifyImage(imageFilter))
+                            if(_imageplugin.Identify(imageFilter))
                             {
                                 _imageFormat = _imageplugin;
                                 break;
@@ -71,13 +70,13 @@ namespace osrepodbmgr.Core
                 // Check only RAW plugin
                 if(_imageFormat == null)
                 {
-                    foreach(ImagePlugin _imageplugin in plugins.ImagePluginsList.Values)
+                    foreach(IMediaImage _imageplugin in plugins.ImagePluginsList.Values)
                     {
-                        if(_imageplugin.PluginUUID == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                        if(_imageplugin.Id == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
                         {
                             try
                             {
-                                if(_imageplugin.IdentifyImage(imageFilter))
+                                if(_imageplugin.Identify(imageFilter))
                                 {
                                     _imageFormat = _imageplugin;
                                     break;
