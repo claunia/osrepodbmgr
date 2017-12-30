@@ -25,11 +25,12 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 namespace osrepodbmgr.Core
 {
     public static partial class Workers
     {
         // Sets a 128Kbyte buffer
-        const long bufferSize = 131072;
+        const long BUFFER_SIZE = 131072;
     }
 }

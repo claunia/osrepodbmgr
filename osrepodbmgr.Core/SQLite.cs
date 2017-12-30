@@ -25,39 +25,36 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Data;
 using System.Data.SQLite;
 
 namespace osrepodbmgr.Core
 {
-    public class SQLite : DBCore
+    public class SQLite : DbCore
     {
         SQLiteConnection dbCon;
 
         #region implemented abstract members of DBCore
-
-        public override bool OpenDB(string database, string server, string user, string password)
+        public override bool OpenDb(string database, string server, string user, string password)
         {
             try
             {
-                string dataSrc = string.Format("URI=file:{0}", database);
-                dbCon = new SQLiteConnection(dataSrc);
+                string dataSrc = $"URI=file:{database}";
+                dbCon          = new SQLiteConnection(dataSrc);
                 dbCon.Open();
-                string sql;
 
-                sql = "SELECT * FROM osrepodbmgr";
+                const string SQL = "SELECT * FROM osrepodbmgr";
 
-                SQLiteCommand dbcmd = dbCon.CreateCommand();
-                dbcmd.CommandText = sql;
-                SQLiteDataAdapter dAdapter = new SQLiteDataAdapter();
-                dAdapter.SelectCommand = dbcmd;
-                DataSet dSet = new DataSet();
+                SQLiteCommand dbcmd        = dbCon.CreateCommand();
+                dbcmd.CommandText          = SQL;
+                SQLiteDataAdapter dAdapter = new SQLiteDataAdapter {SelectCommand = dbcmd};
+                DataSet           dSet     = new DataSet();
                 dAdapter.Fill(dSet);
                 DataTable dTable = dSet.Tables[0];
 
-                if(dTable.Rows.Count != 1)
-                    return false;
+                if(dTable.Rows.Count != 1) return false;
 
                 if((long)dTable.Rows[0]["version"] != 1)
                 {
@@ -65,7 +62,7 @@ namespace osrepodbmgr.Core
                     return false;
                 }
 
-                DBOps = new DBOps(dbCon, this);
+                DbOps = new DbOps(dbCon, this);
 
                 return true;
             }
@@ -78,45 +75,44 @@ namespace osrepodbmgr.Core
             }
         }
 
-        public override void CloseDB()
+        public override void CloseDb()
         {
-            if(dbCon != null)
-                dbCon.Close();
+            dbCon?.Close();
 
-            DBOps = null;
+            DbOps = null;
         }
 
-        public override bool CreateDB(string database, string server, string user, string password)
+        public override bool CreateDb(string database, string server, string user, string password)
         {
             try
             {
-                string dataSrc = string.Format("URI=file:{0}", database);
-                dbCon = new SQLiteConnection(dataSrc);
+                string dataSrc = $"URI=file:{database}";
+                dbCon          = new SQLiteConnection(dataSrc);
                 dbCon.Open();
                 SQLiteCommand dbCmd = dbCon.CreateCommand();
-                string sql;
 
-#if DEBUG
+                #if DEBUG
                 Console.WriteLine("Creating osrepodbmgr table");
-#endif
+                #endif
 
-                sql = "CREATE TABLE osrepodbmgr ( version INTEGER, name TEXT )";
+                string sql        = "CREATE TABLE osrepodbmgr ( version INTEGER, name TEXT )";
                 dbCmd.CommandText = sql;
                 dbCmd.ExecuteNonQuery();
 
-                sql = "INSERT INTO osrepodbmgr ( version, name ) VALUES ( '1', 'Canary Islands Computer Museum' )";
+                sql =
+                    "INSERT INTO osrepodbmgr ( version, name ) VALUES ( '1', 'Canary Islands Computer Museum' )";
                 dbCmd.CommandText = sql;
                 dbCmd.ExecuteNonQuery();
 
-#if DEBUG
+                #if DEBUG
                 Console.WriteLine("Creating oses table");
-#endif
+                #endif
                 dbCmd.CommandText = Schema.OSesTableSql;
                 dbCmd.ExecuteNonQuery();
 
-#if DEBUG
+                #if DEBUG
                 Console.WriteLine("Creating files table");
-#endif
+                #endif
                 dbCmd.CommandText = Schema.FilesTableSql;
                 dbCmd.ExecuteNonQuery();
 
@@ -138,12 +134,7 @@ namespace osrepodbmgr.Core
             return new SQLiteDataAdapter();
         }
 
-        public override long LastInsertRowId
-        {
-            get { return dbCon.LastInsertRowId; }
-        }
-
+        public override long LastInsertRowId => dbCon.LastInsertRowId;
         #endregion
     }
 }
-

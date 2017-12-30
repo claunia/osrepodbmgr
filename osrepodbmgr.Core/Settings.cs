@@ -25,28 +25,32 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 using Claunia.PropertyList;
+using DiscImageChef.Interop;
 using Microsoft.Win32;
+using PlatformID = DiscImageChef.Interop.PlatformID;
 
 namespace osrepodbmgr.Core
 {
     public class SetSettings
     {
-        public string TemporaryFolder;
-        public string DatabasePath;
-        public string RepositoryPath;
-        public string UnArchiverPath;
+        public string   ClamdHost;
+        public bool     ClamdIsLocal;
+        public ushort   ClamdPort;
         public AlgoEnum CompressionAlgorithm;
-        public bool UseAntivirus;
-        public bool UseClamd;
-        public string ClamdHost;
-        public ushort ClamdPort;
-        public bool ClamdIsLocal;
-        public bool UseVirusTotal;
-        public string VirusTotalKey;
+        public string   DatabasePath;
+        public string   RepositoryPath;
+        public string   TemporaryFolder;
+        public string   UnArchiverPath;
+        public bool     UseAntivirus;
+        public bool     UseClamd;
+        public bool     UseVirusTotal;
+        public string   VirusTotalKey;
     }
 
     public static class Settings
@@ -55,192 +59,163 @@ namespace osrepodbmgr.Core
 
         public static void LoadSettings()
         {
-            Current = new SetSettings();
-            DiscImageChef.Interop.PlatformID ptID = DiscImageChef.Interop.DetectOS.GetRealPlatformID();
+            Current         = new SetSettings();
+            PlatformID ptId = DetectOS.GetRealPlatformID();
 
-            FileStream prefsFs = null;
+            FileStream   prefsFs = null;
             StreamReader prefsSr = null;
 
             try
             {
-                switch(ptID)
+                switch(ptId)
                 {
-                    case DiscImageChef.Interop.PlatformID.MacOSX:
-                    case DiscImageChef.Interop.PlatformID.iOS:
+                    case PlatformID.MacOSX:
+                    case PlatformID.iOS:
+                    {
+                        string preferencesPath =
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library",
+                                         "Preferences");
+                        string preferencesFilePath =
+                            Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
+
+                        if(!File.Exists(preferencesFilePath))
                         {
-                            string preferencesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Preferences");
-                            string preferencesFilePath = Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
+                            SetDefaultSettings();
+                            SaveSettings();
+                        }
 
-                            if(!File.Exists(preferencesFilePath))
+                        prefsFs                        = new FileStream(preferencesFilePath, FileMode.Open);
+                        NSDictionary parsedPreferences = (NSDictionary)BinaryPropertyListParser.Parse(prefsFs);
+                        if(parsedPreferences != null)
+                        {
+                            Current.TemporaryFolder = parsedPreferences.TryGetValue("TemporaryFolder", out NSObject obj)
+                                                          ? ((NSString)obj).ToString()
+                                                          : Path.GetTempPath();
+
+                            Current.DatabasePath = parsedPreferences.TryGetValue("DatabasePath", out obj)
+                                                       ? ((NSString)obj).ToString()
+                                                       : Path
+                                                          .Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                                                   "osrepodbmgr.db");
+
+                            Current.RepositoryPath = parsedPreferences.TryGetValue("RepositoryPath", out obj)
+                                                         ? ((NSString)obj).ToString()
+                                                         : Path
+                                                            .Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                                                     "osrepo");
+
+                            Current.UnArchiverPath = parsedPreferences.TryGetValue("UnArchiverPath", out obj)
+                                                         ? ((NSString)obj).ToString()
+                                                         : null;
+
+                            if(parsedPreferences.TryGetValue("CompressionAlgorithm", out obj))
                             {
-                                SetDefaultSettings();
-                                SaveSettings();
-                            }
-
-                            prefsFs = new FileStream(preferencesFilePath, FileMode.Open);
-                            NSDictionary parsedPreferences = (NSDictionary)BinaryPropertyListParser.Parse(prefsFs);
-                            if(parsedPreferences != null)
-                            {
-                                NSObject obj;
-
-                                if(parsedPreferences.TryGetValue("TemporaryFolder", out obj))
-                                {
-                                    Current.TemporaryFolder = ((NSString)obj).ToString();
-                                }
-                                else
-                                    Current.TemporaryFolder = Path.GetTempPath();
-
-                                if(parsedPreferences.TryGetValue("DatabasePath", out obj))
-                                {
-                                    Current.DatabasePath = ((NSString)obj).ToString();
-                                }
-                                else
-                                    Current.DatabasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepodbmgr.db");
-
-                                if(parsedPreferences.TryGetValue("RepositoryPath", out obj))
-                                {
-                                    Current.RepositoryPath = ((NSString)obj).ToString();
-                                }
-                                else
-                                    Current.RepositoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepo");
-
-                                if(parsedPreferences.TryGetValue("UnArchiverPath", out obj))
-                                {
-                                    Current.UnArchiverPath = ((NSString)obj).ToString();
-                                }
-                                else
-                                    Current.UnArchiverPath = null;
-
-                                if(parsedPreferences.TryGetValue("CompressionAlgorithm", out obj))
-                                {
-                                    if(!Enum.TryParse(((NSString)obj).ToString(), true, out Current.CompressionAlgorithm))
-                                        Current.CompressionAlgorithm = AlgoEnum.GZip;
-                                }
-                                else
+                                if(!Enum.TryParse(((NSString)obj).ToString(), true, out Current.CompressionAlgorithm))
                                     Current.CompressionAlgorithm = AlgoEnum.GZip;
-
-                                if(parsedPreferences.TryGetValue("UseAntivirus", out obj))
-                                {
-                                    Current.UseAntivirus = ((NSNumber)obj).ToBool();
-                                }
-                                else
-                                    Current.UseAntivirus = false;
-
-                                if(parsedPreferences.TryGetValue("UseClamd", out obj))
-                                {
-                                    Current.UseClamd = ((NSNumber)obj).ToBool();
-                                }
-                                else
-                                    Current.UseClamd = false;
-
-                                if(parsedPreferences.TryGetValue("ClamdHost", out obj))
-                                {
-                                    Current.ClamdHost = ((NSString)obj).ToString();
-                                }
-                                else
-                                    Current.ClamdHost = null;
-
-                                if(parsedPreferences.TryGetValue("ClamdPort", out obj))
-                                {
-                                    Current.ClamdPort = (ushort)((NSNumber)obj).ToLong();
-                                }
-                                else
-                                    Current.ClamdPort = 3310;
-
-                                if(parsedPreferences.TryGetValue("ClamdIsLocal", out obj))
-                                {
-                                    Current.ClamdIsLocal = ((NSNumber)obj).ToBool();
-                                }
-                                else
-                                    Current.ClamdIsLocal = false;
-
-                                if(parsedPreferences.TryGetValue("UseVirusTotal", out obj))
-                                {
-                                    Current.ClamdIsLocal = ((NSNumber)obj).ToBool();
-                                }
-                                else
-                                    Current.ClamdIsLocal = false;
-
-                                if(parsedPreferences.TryGetValue("VirusTotalKey", out obj))
-                                {
-                                    Current.ClamdHost = ((NSString)obj).ToString();
-                                }
-                                else
-                                    Current.ClamdHost = null;
-
-                                prefsFs.Close();
                             }
-                            else {
-                                prefsFs.Close();
+                            else Current.CompressionAlgorithm = AlgoEnum.GZip;
 
-                                SetDefaultSettings();
-                                SaveSettings();
-                            }
+                            Current.UseAntivirus = parsedPreferences.TryGetValue("UseAntivirus", out obj) &&
+                                                   ((NSNumber)obj).ToBool();
+
+                            Current.UseClamd = parsedPreferences.TryGetValue("UseClamd", out obj) &&
+                                               ((NSNumber)obj).ToBool();
+
+                            Current.ClamdHost = parsedPreferences.TryGetValue("ClamdHost", out obj)
+                                                    ? ((NSString)obj).ToString()
+                                                    : null;
+
+                            if(parsedPreferences.TryGetValue("ClamdPort", out obj))
+                                Current.ClamdPort  = (ushort)((NSNumber)obj).ToLong();
+                            else Current.ClamdPort = 3310;
+
+                            Current.ClamdIsLocal = parsedPreferences.TryGetValue("ClamdIsLocal", out obj) &&
+                                                   ((NSNumber)obj).ToBool();
+
+                            Current.ClamdIsLocal = parsedPreferences.TryGetValue("UseVirusTotal", out obj) &&
+                                                   ((NSNumber)obj).ToBool();
+
+                            Current.ClamdHost = parsedPreferences.TryGetValue("VirusTotalKey", out obj)
+                                                    ? ((NSString)obj).ToString()
+                                                    : null;
+
+                            prefsFs.Close();
                         }
-                        break;
-                    case DiscImageChef.Interop.PlatformID.Win32NT:
-                    case DiscImageChef.Interop.PlatformID.Win32S:
-                    case DiscImageChef.Interop.PlatformID.Win32Windows:
-                    case DiscImageChef.Interop.PlatformID.WinCE:
-                    case DiscImageChef.Interop.PlatformID.WindowsPhone:
+                        else
                         {
-                            RegistryKey parentKey = Registry.CurrentUser.OpenSubKey("SOFTWARE").OpenSubKey("Canary Islands Computer Museum");
-                            if(parentKey == null)
-                            {
-                                SetDefaultSettings();
-                                SaveSettings();
-                                return;
-                            }
+                            prefsFs.Close();
 
-                            RegistryKey key = parentKey.OpenSubKey("OSRepoDBMgr");
-                            if(key == null)
-                            {
-                                SetDefaultSettings();
-                                SaveSettings();
-                                return;
-                            }
-
-                            Current.TemporaryFolder = (string)key.GetValue("TemporaryFolder");
-                            Current.DatabasePath = (string)key.GetValue("DatabasePath");
-                            Current.RepositoryPath = (string)key.GetValue("RepositoryPath");
-                            Current.UnArchiverPath = (string)key.GetValue("UnArchiverPath");
-                            if(!Enum.TryParse((string)key.GetValue("CompressionAlgorithm"), true, out Current.CompressionAlgorithm))
-                                Current.CompressionAlgorithm = AlgoEnum.GZip;
-                            Current.UseAntivirus = (bool)key.GetValue("UseAntivirus");
-                            Current.UseClamd = (bool)key.GetValue("UseClamd");
-                            Current.ClamdHost = (string)key.GetValue("ClamdHost");
-                            Current.ClamdPort = (ushort)key.GetValue("ClamdPort");
-                            Current.ClamdIsLocal = (bool)key.GetValue("ClamdIsLocal");
-                            Current.UseVirusTotal = (bool)key.GetValue("UseVirusTotal");
-                            Current.VirusTotalKey = (string)key.GetValue("VirusTotalKey");
+                            SetDefaultSettings();
+                            SaveSettings();
                         }
+                    }
+                        break;
+                    case PlatformID.Win32NT:
+                    case PlatformID.Win32S:
+                    case PlatformID.Win32Windows:
+                    case PlatformID.WinCE:
+                    case PlatformID.WindowsPhone:
+                    {
+                        RegistryKey parentKey = Registry
+                                               .CurrentUser.OpenSubKey("SOFTWARE")
+                                              ?.OpenSubKey("Canary Islands Computer Museum");
+                        if(parentKey == null)
+                        {
+                            SetDefaultSettings();
+                            SaveSettings();
+                            return;
+                        }
+
+                        RegistryKey key = parentKey.OpenSubKey("OSRepoDBMgr");
+                        if(key == null)
+                        {
+                            SetDefaultSettings();
+                            SaveSettings();
+                            return;
+                        }
+
+                        Current.TemporaryFolder = (string)key.GetValue("TemporaryFolder");
+                        Current.DatabasePath    = (string)key.GetValue("DatabasePath");
+                        Current.RepositoryPath  = (string)key.GetValue("RepositoryPath");
+                        Current.UnArchiverPath  = (string)key.GetValue("UnArchiverPath");
+                        if(!Enum.TryParse((string)key.GetValue("CompressionAlgorithm"), true,
+                                          out Current.CompressionAlgorithm))
+                            Current.CompressionAlgorithm = AlgoEnum.GZip;
+                        Current.UseAntivirus             = (bool)key.GetValue("UseAntivirus");
+                        Current.UseClamd                 = (bool)key.GetValue("UseClamd");
+                        Current.ClamdHost                = (string)key.GetValue("ClamdHost");
+                        Current.ClamdPort                = (ushort)key.GetValue("ClamdPort");
+                        Current.ClamdIsLocal             = (bool)key.GetValue("ClamdIsLocal");
+                        Current.UseVirusTotal            = (bool)key.GetValue("UseVirusTotal");
+                        Current.VirusTotalKey            = (string)key.GetValue("VirusTotalKey");
+                    }
                         break;
                     default:
+                    {
+                        string configPath =
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
+                        string settingsPath =
+                            Path.Combine(configPath, "OSRepoDBMgr.xml");
+
+                        if(!Directory.Exists(configPath))
                         {
-                            string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
-                            string settingsPath = Path.Combine(configPath, "OSRepoDBMgr.xml");
-
-                            if(!Directory.Exists(configPath))
-                            {
-                                SetDefaultSettings();
-                                SaveSettings();
-                                return;
-                            }
-
-                            XmlSerializer xs = new XmlSerializer(Current.GetType());
-                            prefsSr = new StreamReader(settingsPath);
-                            Current = (SetSettings)xs.Deserialize(prefsSr);
-                            prefsSr.Close();
+                            SetDefaultSettings();
+                            SaveSettings();
+                            return;
                         }
+
+                        XmlSerializer xs = new XmlSerializer(Current.GetType());
+                        prefsSr          = new StreamReader(settingsPath);
+                        Current          = (SetSettings)xs.Deserialize(prefsSr);
+                        prefsSr.Close();
+                    }
                         break;
                 }
             }
             catch
             {
-                if(prefsFs != null)
-                    prefsFs.Close();
-                if(prefsSr != null)
-                    prefsSr.Close();
+                prefsFs?.Close();
+                prefsSr?.Close();
 
                 SetDefaultSettings();
                 SaveSettings();
@@ -251,100 +226,113 @@ namespace osrepodbmgr.Core
         {
             try
             {
-                DiscImageChef.Interop.PlatformID ptID = DiscImageChef.Interop.DetectOS.GetRealPlatformID();
+                PlatformID ptId = DetectOS.GetRealPlatformID();
 
-                switch(ptID)
+                switch(ptId)
                 {
-                    case DiscImageChef.Interop.PlatformID.MacOSX:
-                    case DiscImageChef.Interop.PlatformID.iOS:
+                    case PlatformID.MacOSX:
+                    case PlatformID.iOS:
+                    {
+                        NSDictionary root = new NSDictionary
                         {
-                            NSDictionary root = new NSDictionary();
-                            root.Add("TemporaryFolder", Current.TemporaryFolder);
-                            root.Add("DatabasePath", Current.DatabasePath);
-                            root.Add("RepositoryPath", Current.RepositoryPath);
-                            root.Add("UnArchiverPath", Current.UnArchiverPath);
-                            root.Add("CompressionAlgorithm", Current.CompressionAlgorithm.ToString());
-                            root.Add("UseAntivirus", Current.UseAntivirus);
-                            root.Add("UseClamd", Current.UseClamd);
-                            root.Add("ClamdHost", Current.ClamdHost);
-                            root.Add("ClamdPort", Current.ClamdPort);
-                            root.Add("ClamdIsLocal", Current.ClamdIsLocal);
-                            root.Add("UseVirusTotal", Current.UseVirusTotal);
-                            root.Add("VirusTotalKey", Current.VirusTotalKey);
+                            {"TemporaryFolder", Current.TemporaryFolder},
+                            {"DatabasePath", Current.DatabasePath},
+                            {"RepositoryPath", Current.RepositoryPath},
+                            {"UnArchiverPath", Current.UnArchiverPath},
+                            {"CompressionAlgorithm", Current.CompressionAlgorithm.ToString()},
+                            {"UseAntivirus", Current.UseAntivirus},
+                            {"UseClamd", Current.UseClamd},
+                            {"ClamdHost", Current.ClamdHost},
+                            {"ClamdPort", Current.ClamdPort},
+                            {"ClamdIsLocal", Current.ClamdIsLocal},
+                            {"UseVirusTotal", Current.UseVirusTotal},
+                            {"VirusTotalKey", Current.VirusTotalKey}
+                        };
 
-                            string preferencesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Preferences");
-                            string preferencesFilePath = Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
+                        string preferencesPath =
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library",
+                                         "Preferences");
+                        string preferencesFilePath =
+                            Path.Combine(preferencesPath, "com.claunia.museum.osrepodbmgr.plist");
 
-                            FileStream fs = new FileStream(preferencesFilePath, FileMode.Create);
-                            BinaryPropertyListWriter.Write(fs, root);
-                            fs.Close();
-                        }
+                        FileStream fs = new FileStream(preferencesFilePath, FileMode.Create);
+                        BinaryPropertyListWriter.Write(fs, root);
+                        fs.Close();
+                    }
                         break;
-                    case DiscImageChef.Interop.PlatformID.Win32NT:
-                    case DiscImageChef.Interop.PlatformID.Win32S:
-                    case DiscImageChef.Interop.PlatformID.Win32Windows:
-                    case DiscImageChef.Interop.PlatformID.WinCE:
-                    case DiscImageChef.Interop.PlatformID.WindowsPhone:
-                        {
-                            RegistryKey parentKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true).CreateSubKey("Canary Islands Computer Museum");
-                            RegistryKey key = parentKey.CreateSubKey("OSRepoDBMgr");
+                    case PlatformID.Win32NT:
+                    case PlatformID.Win32S:
+                    case PlatformID.Win32Windows:
+                    case PlatformID.WinCE:
+                    case PlatformID.WindowsPhone:
+                    {
+                        RegistryKey parentKey = Registry
+                                               .CurrentUser.OpenSubKey("SOFTWARE", true)
+                                              ?.CreateSubKey("Canary Islands Computer Museum");
+                        RegistryKey key = parentKey?.CreateSubKey("OSRepoDBMgr");
 
-                            key.SetValue("TemporaryFolder", Current.TemporaryFolder);
-                            key.SetValue("DatabasePath", Current.DatabasePath);
-                            key.SetValue("RepositoryPath", Current.RepositoryPath);
-                            if(Current.UnArchiverPath != null)
-                                key.SetValue("UnArchiverPath", Current.UnArchiverPath);
-                            key.SetValue("CompressionAlgorithm", Current.CompressionAlgorithm);
-                            key.SetValue("UseAntivirus", Current.UseAntivirus);
-                            key.SetValue("UseClamd", Current.UseClamd);
-                            key.SetValue("ClamdHost", Current.ClamdHost);
-                            key.SetValue("ClamdPort", Current.ClamdPort);
-                            key.SetValue("ClamdIsLocal", Current.ClamdIsLocal);
+                        if(key != null)
+                        {
+                            key.SetValue("TemporaryFolder",                                   Current.TemporaryFolder);
+                            key.SetValue("DatabasePath",                                      Current.DatabasePath);
+                            key.SetValue("RepositoryPath",                                    Current.RepositoryPath);
+                            if(Current.UnArchiverPath != null) key.SetValue("UnArchiverPath", Current.UnArchiverPath);
+                            key.SetValue("CompressionAlgorithm",
+                                         Current.CompressionAlgorithm);
+                            key.SetValue("UseAntivirus",  Current.UseAntivirus);
+                            key.SetValue("UseClamd",      Current.UseClamd);
+                            key.SetValue("ClamdHost",     Current.ClamdHost);
+                            key.SetValue("ClamdPort",     Current.ClamdPort);
+                            key.SetValue("ClamdIsLocal",  Current.ClamdIsLocal);
                             key.SetValue("UseVirusTotal", Current.UseVirusTotal);
                             key.SetValue("VirusTotalKey", Current.VirusTotalKey);
                         }
+                    }
                         break;
                     default:
-                        {
-                            string configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
-                            string settingsPath = Path.Combine(configPath, "OSRepoDBMgr.xml");
+                    {
+                        string configPath =
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config");
+                        string settingsPath =
+                            Path.Combine(configPath, "OSRepoDBMgr.xml");
 
-                            if(!Directory.Exists(configPath))
-                                Directory.CreateDirectory(configPath);
+                        if(!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
-                            FileStream fs = new FileStream(settingsPath, FileMode.Create);
-                            XmlSerializer xs = new XmlSerializer(Current.GetType());
-                            xs.Serialize(fs, Current);
-                            fs.Close();
-                        }
+                        FileStream    fs = new FileStream(settingsPath, FileMode.Create);
+                        XmlSerializer xs = new XmlSerializer(Current.GetType());
+                        xs.Serialize(fs, Current);
+                        fs.Close();
+                    }
                         break;
                 }
             }
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+                #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
             {
-                if(System.Diagnostics.Debugger.IsAttached)
-                    throw;
+                if(Debugger.IsAttached) throw;
             }
         }
 
-        public static void SetDefaultSettings()
+        static void SetDefaultSettings()
         {
-            Current = new SetSettings();
-            Current.TemporaryFolder = Path.GetTempPath();
-            Current.DatabasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepodbmgr.db");
-            Current.RepositoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepo");
-            Current.UnArchiverPath = null;
-            Current.CompressionAlgorithm = AlgoEnum.GZip;
-            Current.UseAntivirus = false;
-            Current.UseClamd = false;
-            Current.ClamdHost = null;
-            Current.ClamdPort = 3310;
-            Current.ClamdIsLocal = false;
-            Current.UseVirusTotal = false;
-            Current.VirusTotalKey = null;
+            Current = new SetSettings
+            {
+                TemporaryFolder = Path.GetTempPath(),
+                DatabasePath    =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepodbmgr.db"),
+                RepositoryPath =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "osrepo"),
+                UnArchiverPath       = null,
+                CompressionAlgorithm = AlgoEnum.GZip,
+                UseAntivirus         = false,
+                UseClamd             = false,
+                ClamdHost            = null,
+                ClamdPort            = 3310,
+                ClamdIsLocal         = false,
+                UseVirusTotal        = false,
+                VirusTotalKey        = null
+            };
         }
     }
 }
-

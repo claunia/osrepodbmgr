@@ -29,7 +29,9 @@
 // ----------------------------------------------------------------------------
 // Copyright © 2011-2016 Natalia Portillo
 // ****************************************************************************/
+
 using System;
+using System.Linq;
 using DiscImageChef.DiscImages;
 using DiscImageChef.Filters;
 
@@ -41,68 +43,47 @@ namespace osrepodbmgr.Core
         {
             try
             {
-                IMediaImage _imageFormat;
                 PluginBase plugins = new PluginBase();
 
-                _imageFormat = null;
+                IMediaImage imageFormat = null;
 
                 // Check all but RAW plugin
-                foreach(IMediaImage _imageplugin in plugins.ImagePluginsList.Values)
-                {
-                    if(_imageplugin.Id != new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                foreach(IMediaImage imageplugin in
+                    plugins.ImagePluginsList.Values.Where(p => p.Id != new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                )
+                    try
                     {
-                        try
-                        {
-                            if(_imageplugin.Identify(imageFilter))
-                            {
-                                _imageFormat = _imageplugin;
-                                break;
-                            }
-                        }
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-                        catch
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-                        {
-                        }
+                        if(!imageplugin.Identify(imageFilter)) continue;
+
+                        imageFormat = imageplugin;
+                        break;
                     }
-                }
+                    #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                    catch { }
+                    #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 
                 // Check only RAW plugin
-                if(_imageFormat == null)
-                {
-                    foreach(IMediaImage _imageplugin in plugins.ImagePluginsList.Values)
+                if(imageFormat != null) return imageFormat;
+
+                foreach(IMediaImage imageplugin in
+                    plugins.ImagePluginsList.Values.Where(p => p.Id == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
+                )
+                    try
                     {
-                        if(_imageplugin.Id == new Guid("12345678-AAAA-BBBB-CCCC-123456789000"))
-                        {
-                            try
-                            {
-                                if(_imageplugin.Identify(imageFilter))
-                                {
-                                    _imageFormat = _imageplugin;
-                                    break;
-                                }
-                            }
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-                            catch
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-                            {
-                            }
-                        }
+                        if(!imageplugin.Identify(imageFilter)) continue;
+
+                        imageFormat = imageplugin;
+                        break;
                     }
-                }
+                    #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                    catch { }
+                    #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 
                 // Still not recognized
-                if(_imageFormat == null)
-                {
-                    return null;
-                }
 
-                return _imageFormat;
+                return imageFormat;
             }
-            catch
-            {
-                return null;
-            }
+            catch { return null; }
         }
     }
 }

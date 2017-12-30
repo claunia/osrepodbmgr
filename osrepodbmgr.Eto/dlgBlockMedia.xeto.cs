@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,180 +38,40 @@ namespace osrepodbmgr.Eto
 {
     public class dlgBlockMedia : Dialog
     {
-        public BlockMediaType Metadata;
-        public bool Modified;
-
-        #region XAML UI elements
-#pragma warning disable 0649
-        TextBox txtImage;
-        TextBox txtFormat;
-        TextBox txtOffset;
-        TextBox txtSize;
-        TextBox txtManufacturer;
-        TextBox txtModel;
-        TextBox txtSerial;
-        TextBox txtFirmware;
-        TextBox txtInterface;
-        TextBox txtCopyProtection;
-        TextBox txtMediaType;
-        TextBox txtMediaSubtype;
-        CheckBox chkSequence;
-        Label lblMediaTitle;
-        TextBox txtMediaTitle;
-        Label lblSequence;
-        NumericUpDown spSequence;
-        Label lblTotalMedia;
-        NumericUpDown spTotalMedia;
-        Label lblSide;
-        NumericUpDown spSide;
-        Label lblLayer;
-        NumericUpDown spLayer;
-        TextBox txtBlocks;
-        NumericUpDown spPhysicalBlockSize;
-        NumericUpDown spLogicalBlockSize;
-        NumericUpDown spCylinders;
-        NumericUpDown spHeads;
-        NumericUpDown spSectors;
-        CheckBox chkDimensions;
-        CheckBox chkRound;
-        StackLayout stkDiameter;
-        NumericUpDown spDiameter;
-        StackLayout stkHeight;
-        NumericUpDown spHeight;
-        StackLayout stkWidth;
-        NumericUpDown spWidth;
-        StackLayout stkThickness;
-        NumericUpDown spThickness;
-        CheckBox chkATA;
-        GridView treeATA;
-        CheckBox chkPCI;
-        Label lblPCIVendor;
-        TextBox txtPCIVendor;
-        Label lblPCIProduct;
-        TextBox txtPCIProduct;
-        GroupBox frmPCIConfiguration;
-        GridView treeConfiguration;
-        GroupBox frmOptionROM;
-        GridView treeOptionROM;
-        CheckBox chkPCMCIA;
-        CheckBox chkCIS;
-        GridView treeCIS;
-        Label lblPCMCIAManufacturer;
-        Label lblMfgCode;
-        Label lblPCMCIAProductName;
-        Label lblCardCode;
-        Label lblCompliance;
-        TextBox txtPCMCIAManufacturer;
-        TextBox txtMfgCode;
-        TextBox txtPCMCIAProductName;
-        TextBox txtCardCode;
-        TextBox txtCompliance;
-        GroupBox lblAdditionalInformation;
-        GridView treeAdditionalInformation;
-        CheckBox chkSecureDigital;
-        GridView treeCID;
-        CheckBox chkCSD;
-        GridView treeCSD;
-        CheckBox chkECSD;
-        GridView treeECSD;
-        CheckBox chkSCSI;
-        GroupBox frmInquiry;
-        GridView treeInquiry;
-        GroupBox frmModeSense;
-        GridView treeModeSense;
-        GroupBox frmModeSense10;
-        GridView treeModeSense10;
-        GroupBox frmLogSense;
-        GridView treeLogSense;
-        GroupBox frmEVPDs;
-        GridView treeEVPDs;
-        CheckBox chkUSB;
-        TextBox txtUSBVendor;
-        TextBox txtUSBProduct;
-        GridView treeDescriptors;
-        CheckBox chkMAM;
-        GridView treeMAM;
-        CheckBox chkTracks;
-        GridView treeTracks;
-        GridView treePartitions;
-        Button btnCancelPartition;
-        Button btnRemovePartition;
-        Button btnEditPartition;
-        Button btnApplyPartition;
-        Button btnAddPartition;
-        NumericUpDown spPartitionSequence;
-        TextBox txtPartitionStart;
-        TextBox txtPartitionEnd;
-        TextBox txtPartitionType;
-        TextBox txtPartitionName;
-        TextBox txtPartitionDescription;
-        GroupBox frmFilesystems;
-        GridView treeFilesystems;
-        CheckBox chkDumpHardware;
-        GridView treeDumpHardware;
-        Button btnCancelHardware;
-        Button btnRemoveHardware;
-        Button btnEditHardware;
-        Button btnApplyHardware;
-        Button btnAddHardware;
-        GroupBox frmHardware;
-        TextBox txtHWManufacturer;
-        TextBox txtHWModel;
-        TextBox txtHWRevision;
-        TextBox txtHWFirmware;
-        TextBox txtHWSerial;
-        GridView treeExtents;
-        NumericUpDown spExtentStart;
-        NumericUpDown spExtentEnd;
-        TextBox txtDumpName;
-        TextBox txtDumpVersion;
-        TextBox txtDumpOS;
-        Label lblCID;
-        Label lblUSBVendor;
-        Label lblUSBProduct;
-        GroupBox frmDescriptors;
-        StackLayout stkPartitionFields1;
-        StackLayout stkPartitionFields2;
-#pragma warning restore 0649
-        #endregion XAML UI elements
-
-        PartitionType partitionIter;
-        FileSystemType filesystemIter;
+        // Non-editable fields
+        ChecksumType[]   checksums;
+        ChecksumType[]   contentChks;
         DumpHardwareType dumpHwIter;
+        bool             editingDumpHw;
 
-        ObservableCollection<DumpType> lstAta;
-        ObservableCollection<DumpType> lstPCIConfiguration;
-        ObservableCollection<LinearMediaType> lstPCIOptionROM;
-        ObservableCollection<DumpType> lstPCMCIACIS;
-        ObservableCollection<DumpType> lstCID;
-        ObservableCollection<DumpType> lstCSD;
-        ObservableCollection<DumpType> lstECSD;
-        ObservableCollection<DumpType> lstInquiry;
-        ObservableCollection<DumpType> lstModeSense;
-        ObservableCollection<DumpType> lstModeSense10;
-        ObservableCollection<DumpType> lstLogSense;
-        ObservableCollection<EVPDType> lstEVPDs;
-        ObservableCollection<DumpType> lstUSBDescriptors;
-        ObservableCollection<DumpType> lstMAM;
-        ObservableCollection<BlockTrackType> lstTracks;
-        ObservableCollection<PartitionType> lstPartitions;
-        ObservableCollection<DumpHardwareType> lstDumpHw;
+        bool                              editingPartition;
+        FileSystemType                    filesystemIter;
         ObservableCollection<StringEntry> lstAdditionalInformation;
 
-        class StringEntry
-        {
-            public string str;
-        }
+        ObservableCollection<DumpType>         lstAta;
+        ObservableCollection<DumpType>         lstCID;
+        ObservableCollection<DumpType>         lstCSD;
+        ObservableCollection<DumpHardwareType> lstDumpHw;
+        ObservableCollection<DumpType>         lstECSD;
+        ObservableCollection<EVPDType>         lstEVPDs;
+        ObservableCollection<DumpType>         lstInquiry;
+        ObservableCollection<DumpType>         lstLogSense;
+        ObservableCollection<DumpType>         lstMAM;
+        ObservableCollection<DumpType>         lstModeSense;
+        ObservableCollection<DumpType>         lstModeSense10;
+        ObservableCollection<PartitionType>    lstPartitions;
+        ObservableCollection<DumpType>         lstPCIConfiguration;
+        ObservableCollection<LinearMediaType>  lstPCIOptionROM;
+        ObservableCollection<DumpType>         lstPCMCIACIS;
+        ObservableCollection<BlockTrackType>   lstTracks;
+        ObservableCollection<DumpType>         lstUSBDescriptors;
+        public BlockMediaType                  Metadata;
+        public bool                            Modified;
 
-        bool editingPartition;
-        bool editingDumpHw;
-
-        // Non-editable fields
-        ChecksumType[] checksums;
-        BlockSizeType[] variableBlockSize;
+        PartitionType       partitionIter;
+        ScansType           scans;
         TapePartitionType[] tapeInformation;
-        ScansType scans;
-        ChecksumType[] contentChks;
+        BlockSizeType[]     variableBlockSize;
 
         public dlgBlockMedia()
         {
@@ -223,32 +84,41 @@ namespace osrepodbmgr.Eto
 
             treePartitions.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<PartitionType, int>(r => r.Sequence).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<PartitionType, int>(r => r.Sequence).Convert(v => v.ToString())
+                },
                 HeaderText = "Sequence"
             });
             treePartitions.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<PartitionType, int>(r => r.StartSector).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<PartitionType, int>(r => r.StartSector).Convert(v => v.ToString())
+                },
                 HeaderText = "Start"
             });
             treePartitions.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<PartitionType, int>(r => r.EndSector).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<PartitionType, int>(r => r.EndSector).Convert(v => v.ToString())
+                },
                 HeaderText = "End"
             });
             treePartitions.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<PartitionType, string>(r => r.Type) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<PartitionType, string>(r => r.Type)},
                 HeaderText = "Type"
             });
             treePartitions.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<PartitionType, string>(r => r.Name) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<PartitionType, string>(r => r.Name)},
                 HeaderText = "Name"
             });
             treePartitions.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<PartitionType, string>(r => r.Description) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<PartitionType, string>(r => r.Description)},
                 HeaderText = "Description"
             });
 
@@ -260,12 +130,12 @@ namespace osrepodbmgr.Eto
             #region Set filesystems table
             treeFilesystems.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<FileSystemType, string>(r => r.Type) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<FileSystemType, string>(r => r.Type)},
                 HeaderText = "Type"
             });
             treeFilesystems.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<FileSystemType, string>(r => r.VolumeName) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<FileSystemType, string>(r => r.VolumeName)},
                 HeaderText = "Name"
             });
 
@@ -277,42 +147,53 @@ namespace osrepodbmgr.Eto
 
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, string>(r => r.Manufacturer) },
-                HeaderText = "Manufacturer"
+                DataCell                     =
+                    new TextBoxCell {Binding = Binding.Property<DumpHardwareType, string>(r => r.Manufacturer)},
+                HeaderText                   = "Manufacturer"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, string>(r => r.Model) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpHardwareType, string>(r => r.Model)},
                 HeaderText = "Model"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, string>(r => r.Revision) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpHardwareType, string>(r => r.Revision)},
                 HeaderText = "Revision"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, string>(r => r.Firmware) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpHardwareType, string>(r => r.Firmware)},
                 HeaderText = "Firmware"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, string>(r => r.Serial) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpHardwareType, string>(r => r.Serial)},
                 HeaderText = "Serial"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, SoftwareType>(r => r.Software).Convert(v => v == null ? null : v.Name) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpHardwareType, SoftwareType>(r => r.Software).Convert(v => v?.Name)
+                },
                 HeaderText = "Software"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, SoftwareType>(r => r.Software).Convert(v => v == null ? null : v.Version) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpHardwareType, SoftwareType>(r => r.Software).Convert(v => v?.Version)
+                },
                 HeaderText = "Version"
             });
             treeDumpHardware.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpHardwareType, SoftwareType>(r => r.Software).Convert(v => v == null ? null : v.OperatingSystem) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpHardwareType, SoftwareType>(r => r.Software)
+                                     .Convert(v => v?.OperatingSystem)
+                },
                 HeaderText = "Operating system"
             });
 
@@ -322,12 +203,18 @@ namespace osrepodbmgr.Eto
 
             treeExtents.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, ulong>(r => r.Start).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<ExtentType, ulong>(r => r.Start).Convert(v => v.ToString())
+                },
                 HeaderText = "Start"
             });
             treeExtents.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<ExtentType, ulong>(r => r.End).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<ExtentType, ulong>(r => r.End).Convert(v => v.ToString())
+                },
                 HeaderText = "End"
             });
             #endregion Set dump hardware table
@@ -336,12 +223,15 @@ namespace osrepodbmgr.Eto
             lstAta = new ObservableCollection<DumpType>();
             treeATA.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeATA.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeATA.DataStore = lstAta;
@@ -351,12 +241,15 @@ namespace osrepodbmgr.Eto
             lstPCIConfiguration = new ObservableCollection<DumpType>();
             treeConfiguration.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeConfiguration.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeConfiguration.DataStore = lstPCIConfiguration;
@@ -366,12 +259,15 @@ namespace osrepodbmgr.Eto
             lstPCMCIACIS = new ObservableCollection<DumpType>();
             treeCIS.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeCIS.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeCIS.DataStore = lstPCMCIACIS;
@@ -381,12 +277,15 @@ namespace osrepodbmgr.Eto
             lstCID = new ObservableCollection<DumpType>();
             treeCID.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeCID.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeCID.DataStore = lstCID;
@@ -396,12 +295,15 @@ namespace osrepodbmgr.Eto
             lstCSD = new ObservableCollection<DumpType>();
             treeCSD.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeCSD.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeCSD.DataStore = lstCSD;
@@ -411,12 +313,15 @@ namespace osrepodbmgr.Eto
             lstECSD = new ObservableCollection<DumpType>();
             treeECSD.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeECSD.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeECSD.DataStore = lstECSD;
@@ -426,12 +331,15 @@ namespace osrepodbmgr.Eto
             lstInquiry = new ObservableCollection<DumpType>();
             treeInquiry.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeInquiry.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeInquiry.DataStore = lstInquiry;
@@ -441,12 +349,15 @@ namespace osrepodbmgr.Eto
             lstModeSense = new ObservableCollection<DumpType>();
             treeModeSense.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeModeSense.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeModeSense.DataStore = lstModeSense;
@@ -456,12 +367,15 @@ namespace osrepodbmgr.Eto
             lstModeSense10 = new ObservableCollection<DumpType>();
             treeModeSense10.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeModeSense10.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeModeSense10.DataStore = lstModeSense10;
@@ -471,12 +385,15 @@ namespace osrepodbmgr.Eto
             lstLogSense = new ObservableCollection<DumpType>();
             treeLogSense.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeLogSense.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeLogSense.DataStore = lstLogSense;
@@ -487,17 +404,23 @@ namespace osrepodbmgr.Eto
 
             treeEVPDs.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<EVPDType, int>(r => r.page).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<EVPDType, int>(r => r.page).Convert(v => v.ToString())
+                },
                 HeaderText = "Page"
             });
             treeEVPDs.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<EVPDType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<EVPDType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeEVPDs.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<EVPDType, long>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<EVPDType, long>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
 
@@ -510,12 +433,15 @@ namespace osrepodbmgr.Eto
             lstUSBDescriptors = new ObservableCollection<DumpType>();
             treeDescriptors.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeDescriptors.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeDescriptors.DataStore = lstUSBDescriptors;
@@ -525,12 +451,15 @@ namespace osrepodbmgr.Eto
             lstMAM = new ObservableCollection<DumpType>();
             treeMAM.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, string>(r => r.Image) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<DumpType, string>(r => r.Image)},
                 HeaderText = "File"
             });
             treeMAM.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<DumpType, int>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeMAM.DataStore = lstMAM;
@@ -541,17 +470,23 @@ namespace osrepodbmgr.Eto
 
             treeOptionROM.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<LinearMediaType, string>(r => r.Image.Value) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<LinearMediaType, string>(r => r.Image.Value)},
                 HeaderText = "File"
             });
             treeOptionROM.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<LinearMediaType, long>(r => r.Image.offset).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<LinearMediaType, long>(r => r.Image.offset).Convert(v => v.ToString())
+                },
                 HeaderText = "Offset"
             });
             treeOptionROM.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<LinearMediaType, long>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<LinearMediaType, long>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
 
@@ -565,57 +500,81 @@ namespace osrepodbmgr.Eto
 
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, string>(r => r.Image.Value) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<BlockTrackType, string>(r => r.Image.Value)},
                 HeaderText = "File"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.Image.offset).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.Image.offset).Convert(v => v.ToString())
+                },
                 HeaderText = "Offset"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.Size).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.Size).Convert(v => v.ToString())
+                },
                 HeaderText = "Size"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, string>(r => r.Image.format) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<BlockTrackType, string>(r => r.Image.format)},
                 HeaderText = "Image format"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.Head).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.Head).Convert(v => v.ToString())
+                },
                 HeaderText = "Head"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.Cylinder).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.Cylinder).Convert(v => v.ToString())
+                },
                 HeaderText = "Cylinder"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.StartSector).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.StartSector).Convert(v => v.ToString())
+                },
                 HeaderText = "Start"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.EndSector).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.EndSector).Convert(v => v.ToString())
+                },
                 HeaderText = "End"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, long>(r => r.Sectors).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, long>(r => r.Sectors).Convert(v => v.ToString())
+                },
                 HeaderText = "Sectors"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, int>(r => r.BytesPerSector).Convert(v => v.ToString()) },
+                DataCell = new TextBoxCell
+                {
+                    Binding = Binding.Property<BlockTrackType, int>(r => r.BytesPerSector).Convert(v => v.ToString())
+                },
                 HeaderText = "Bytes per sector"
             });
             treeTracks.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<BlockTrackType, string>(r => r.Format) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<BlockTrackType, string>(r => r.Format)},
                 HeaderText = "Track format"
             });
 
@@ -627,102 +586,97 @@ namespace osrepodbmgr.Eto
             lstAdditionalInformation = new ObservableCollection<StringEntry>();
             treeAdditionalInformation.Columns.Add(new GridColumn
             {
-                DataCell = new TextBoxCell { Binding = Binding.Property<StringEntry, string>(r => r.str) },
+                DataCell   = new TextBoxCell {Binding = Binding.Property<StringEntry, string>(r => r.str)},
                 HeaderText = "Information"
             });
-            treeAdditionalInformation.DataStore = lstAdditionalInformation;
+            treeAdditionalInformation.DataStore              = lstAdditionalInformation;
             treeAdditionalInformation.AllowMultipleSelection = false;
         }
 
         public void FillFields()
         {
-            if(Metadata == null)
-                return;
+            if(Metadata == null) return;
 
-            txtImage.Text = Metadata.Image.Value;
-            txtFormat.Text = Metadata.Image.format;
-            if(Metadata.Image.offsetSpecified)
-                txtOffset.Text = Metadata.Image.offset.ToString();
-            txtSize.Text = Metadata.Size.ToString();
-            checksums = Metadata.Checksums;
-            contentChks = Metadata.ContentChecksums;
+            txtImage.Text                                     = Metadata.Image.Value;
+            txtFormat.Text                                    = Metadata.Image.format;
+            if(Metadata.Image.offsetSpecified) txtOffset.Text = Metadata.Image.offset.ToString();
+            txtSize.Text                                      = Metadata.Size.ToString();
+            checksums                                         = Metadata.Checksums;
+            contentChks                                       = Metadata.ContentChecksums;
             if(Metadata.Sequence != null)
             {
-                lblMediaTitle.Visible = true;
-                txtMediaTitle.Visible = true;
-                lblSequence.Visible = true;
-                spSequence.Visible = true;
-                lblTotalMedia.Visible = true;
-                spTotalMedia.Visible = true;
-                lblSide.Visible = true;
-                spSide.Visible = true;
-                lblLayer.Visible = true;
-                spLayer.Visible = true;
-                chkSequence.Checked = true;
-                txtMediaTitle.Text = Metadata.Sequence.MediaTitle;
-                spSequence.Value = Metadata.Sequence.MediaSequence;
-                spTotalMedia.Value = Metadata.Sequence.TotalMedia;
-                if(Metadata.Sequence.SideSpecified)
-                    spSide.Value = Metadata.Sequence.Side;
-                if(Metadata.Sequence.LayerSpecified)
-                    spLayer.Value = Metadata.Sequence.Layer;
+                lblMediaTitle.Visible                              = true;
+                txtMediaTitle.Visible                              = true;
+                lblSequence.Visible                                = true;
+                spSequence.Visible                                 = true;
+                lblTotalMedia.Visible                              = true;
+                spTotalMedia.Visible                               = true;
+                lblSide.Visible                                    = true;
+                spSide.Visible                                     = true;
+                lblLayer.Visible                                   = true;
+                spLayer.Visible                                    = true;
+                chkSequence.Checked                                = true;
+                txtMediaTitle.Text                                 = Metadata.Sequence.MediaTitle;
+                spSequence.Value                                   = Metadata.Sequence.MediaSequence;
+                spTotalMedia.Value                                 = Metadata.Sequence.TotalMedia;
+                if(Metadata.Sequence.SideSpecified) spSide.Value   = Metadata.Sequence.Side;
+                if(Metadata.Sequence.LayerSpecified) spLayer.Value = Metadata.Sequence.Layer;
             }
-            if(Metadata.Manufacturer != null)
-                txtManufacturer.Text = Metadata.Manufacturer;
-            if(Metadata.Model != null)
-                txtModel.Text = Metadata.Model;
-            if(Metadata.Serial != null)
-                txtSerial.Text = Metadata.Serial;
-            if(Metadata.Firmware != null)
-                txtFirmware.Text = Metadata.Firmware;
-            if(Metadata.Interface != null)
-                txtInterface.Text = Metadata.Interface;
-            spPhysicalBlockSize.Value = Metadata.PhysicalBlockSize;
-            spLogicalBlockSize.Value = Metadata.LogicalBlockSize;
-            txtBlocks.Text = Metadata.LogicalBlocks.ToString();
-            variableBlockSize = Metadata.VariableBlockSize;
-            tapeInformation = Metadata.TapeInformation;
-            scans = Metadata.Scans;
-            if(Metadata.ATA != null && Metadata.ATA.Identify != null)
+
+            if(Metadata.Manufacturer != null) txtManufacturer.Text = Metadata.Manufacturer;
+            if(Metadata.Model        != null) txtModel.Text        = Metadata.Model;
+            if(Metadata.Serial       != null) txtSerial.Text       = Metadata.Serial;
+            if(Metadata.Firmware     != null) txtFirmware.Text     = Metadata.Firmware;
+            if(Metadata.Interface    != null) txtInterface.Text    = Metadata.Interface;
+            spPhysicalBlockSize.Value                              = Metadata.PhysicalBlockSize;
+            spLogicalBlockSize.Value                               = Metadata.LogicalBlockSize;
+            txtBlocks.Text                                         = Metadata.LogicalBlocks.ToString();
+            variableBlockSize                                      = Metadata.VariableBlockSize;
+            tapeInformation                                        = Metadata.TapeInformation;
+            scans                                                  = Metadata.Scans;
+            if(Metadata.ATA?.Identify != null)
             {
-                chkATA.Checked = true;
+                chkATA.Checked  = true;
                 treeATA.Visible = true;
                 lstAta.Add(Metadata.ATA.Identify);
             }
+
             if(Metadata.PCI != null)
             {
-                chkPCI.Checked = true;
-                lblPCIVendor.Visible = true;
-                txtPCIVendor.Visible = true;
+                chkPCI.Checked        = true;
+                lblPCIVendor.Visible  = true;
+                txtPCIVendor.Visible  = true;
                 lblPCIProduct.Visible = true;
                 txtPCIProduct.Visible = true;
-                txtPCIVendor.Text = string.Format("0x{0:X4}", Metadata.PCI.VendorID);
-                txtPCIProduct.Text = string.Format("0x{0:X4}", Metadata.PCI.DeviceID);
+                txtPCIVendor.Text     = $"0x{Metadata.PCI.VendorID:X4}";
+                txtPCIProduct.Text    = $"0x{Metadata.PCI.DeviceID:X4}";
                 if(Metadata.PCI.Configuration != null)
                 {
                     frmPCIConfiguration.Visible = true;
                     lstPCIConfiguration.Add(Metadata.PCI.Configuration);
                 }
+
                 if(Metadata.PCI.ExpansionROM != null)
                 {
                     frmOptionROM.Visible = true;
                     lstPCIOptionROM.Add(Metadata.PCI.ExpansionROM);
                 }
             }
+
             if(Metadata.PCMCIA != null)
             {
-                chkPCMCIA.Checked = true;
-                chkCIS.Visible = true;
+                chkPCMCIA.Checked             = true;
+                chkCIS.Visible                = true;
                 lblPCMCIAManufacturer.Visible = true;
                 txtPCMCIAManufacturer.Visible = true;
-                lblMfgCode.Visible = true;
-                txtMfgCode.Visible = true;
-                lblPCMCIAProductName.Visible = true;
-                txtPCMCIAProductName.Visible = true;
-                lblCardCode.Visible = true;
-                txtCardCode.Visible = true;
-                lblCompliance.Visible = true;
-                txtCompliance.Visible = true;
+                lblMfgCode.Visible            = true;
+                txtMfgCode.Visible            = true;
+                lblPCMCIAProductName.Visible  = true;
+                txtPCMCIAProductName.Visible  = true;
+                lblCardCode.Visible           = true;
+                txtCardCode.Visible           = true;
+                lblCompliance.Visible         = true;
+                txtCompliance.Visible         = true;
 
                 if(Metadata.PCMCIA.CIS != null)
                 {
@@ -730,51 +684,53 @@ namespace osrepodbmgr.Eto
                     lstPCMCIACIS.Add(Metadata.PCMCIA.CIS);
                 }
 
-                if(Metadata.PCMCIA.Compliance != null)
-                    txtCompliance.Text = Metadata.PCMCIA.Compliance;
+                if(Metadata.PCMCIA.Compliance != null) txtCompliance.Text = Metadata.PCMCIA.Compliance;
                 if(Metadata.PCMCIA.ManufacturerCodeSpecified)
-                    txtMfgCode.Text = string.Format("0x{0:X4}", Metadata.PCMCIA.ManufacturerCode);
+                    txtMfgCode.Text =
+                        $"0x{Metadata.PCMCIA.ManufacturerCode:X4}";
                 if(Metadata.PCMCIA.CardCodeSpecified)
-                    txtCardCode.Text = string.Format("0x{0:X4}", Metadata.PCMCIA.CardCode);
+                    txtCardCode.Text = $"0x{Metadata.PCMCIA.CardCode:X4}";
                 if(Metadata.PCMCIA.Manufacturer != null)
                     txtPCMCIAManufacturer.Text = Metadata.PCMCIA.Manufacturer;
                 if(Metadata.PCMCIA.ProductName != null)
                     txtPCMCIAProductName.Text = Metadata.PCMCIA.ProductName;
                 if(Metadata.PCMCIA.AdditionalInformation != null)
                 {
-                    lblAdditionalInformation.Visible = true;
+                    lblAdditionalInformation.Visible  = true;
                     treeAdditionalInformation.Visible = true;
 
                     foreach(string addinfo in Metadata.PCMCIA.AdditionalInformation)
-                        lstAdditionalInformation.Add(new StringEntry { str = addinfo });
+                        lstAdditionalInformation.Add(new StringEntry {str = addinfo});
                 }
             }
-            if(Metadata.SecureDigital != null && Metadata.SecureDigital.CID != null)
+
+            if(Metadata.SecureDigital?.CID != null)
             {
                 chkSecureDigital.Checked = true;
-                chkCSD.Visible = true;
-                chkECSD.Visible = true;
-                lblCID.Visible = true;
-                treeCID.Visible = true;
+                chkCSD.Visible           = true;
+                chkECSD.Visible          = true;
+                lblCID.Visible           = true;
+                treeCID.Visible          = true;
                 lstCID.Add(Metadata.SecureDigital.CID);
 
                 if(Metadata.SecureDigital.CSD != null)
                 {
-                    chkCSD.Checked = true;
+                    chkCSD.Checked  = true;
                     treeCSD.Visible = true;
                     lstCSD.Add(Metadata.SecureDigital.CSD);
                 }
 
                 if(Metadata.MultiMediaCard.ExtendedCSD != null)
                 {
-                    chkECSD.Checked = true;
+                    chkECSD.Checked  = true;
                     treeECSD.Visible = true;
                     lstECSD.Add(Metadata.MultiMediaCard.ExtendedCSD);
                 }
             }
-            if(Metadata.SCSI != null && Metadata.SCSI.Inquiry != null)
+
+            if(Metadata.SCSI?.Inquiry != null)
             {
-                chkSCSI.Checked = true;
+                chkSCSI.Checked    = true;
                 frmInquiry.Visible = true;
                 lstInquiry.Add(Metadata.SCSI.Inquiry);
 
@@ -783,212 +739,212 @@ namespace osrepodbmgr.Eto
                     frmModeSense.Visible = true;
                     lstModeSense.Add(Metadata.SCSI.ModeSense);
                 }
+
                 if(Metadata.SCSI.ModeSense10 != null)
                 {
                     frmModeSense10.Visible = true;
                     lstModeSense10.Add(Metadata.SCSI.ModeSense10);
                 }
+
                 if(Metadata.SCSI.LogSense != null)
                 {
                     frmLogSense.Visible = true;
                     lstLogSense.Add(Metadata.SCSI.LogSense);
                 }
+
                 if(Metadata.SCSI.EVPD != null)
                 {
-                    frmEVPDs.Visible = true;
-                    lstEVPDs = new ObservableCollection<EVPDType>(Metadata.SCSI.EVPD);
+                    frmEVPDs.Visible    = true;
+                    lstEVPDs            = new ObservableCollection<EVPDType>(Metadata.SCSI.EVPD);
                     treeEVPDs.DataStore = lstEVPDs; // TODO: Really needed?
                 }
             }
+
             if(Metadata.USB != null)
             {
-                chkUSB.Checked = true;
-                lblUSBVendor.Visible = true;
-                txtUSBVendor.Visible = true;
+                chkUSB.Checked        = true;
+                lblUSBVendor.Visible  = true;
+                txtUSBVendor.Visible  = true;
                 lblUSBProduct.Visible = true;
                 txtUSBProduct.Visible = true;
-                txtUSBVendor.Text = string.Format("0x{0:X4}", Metadata.USB.VendorID);
-                txtUSBProduct.Text = string.Format("0x{0:X4}", Metadata.USB.ProductID);
+                txtUSBVendor.Text     = $"0x{Metadata.USB.VendorID:X4}";
+                txtUSBProduct.Text    = $"0x{Metadata.USB.ProductID:X4}";
                 if(Metadata.USB.Descriptors != null)
                 {
                     frmDescriptors.Visible = true;
                     lstUSBDescriptors.Add(Metadata.USB.Descriptors);
                 }
             }
+
             if(Metadata.MAM != null)
             {
-                chkMAM.Checked = true;
+                chkMAM.Checked  = true;
                 treeMAM.Visible = true;
                 lstMAM.Add(Metadata.MAM);
             }
-            if(Metadata.HeadsSpecified)
-                spHeads.Value = Metadata.Heads;
-            if(Metadata.CylindersSpecified)
-                spCylinders.Value = Metadata.Cylinders;
-            if(Metadata.SectorsPerTrackSpecified)
-                spSectors.Value = Metadata.SectorsPerTrack;
+
+            if(Metadata.HeadsSpecified) spHeads.Value             = Metadata.Heads;
+            if(Metadata.CylindersSpecified) spCylinders.Value     = Metadata.Cylinders;
+            if(Metadata.SectorsPerTrackSpecified) spSectors.Value = Metadata.SectorsPerTrack;
             if(Metadata.Track != null)
             {
-                chkTracks.Checked = true;
-                treeTracks.Visible = true;
-                lstTracks = new ObservableCollection<BlockTrackType>(Metadata.Track);
+                chkTracks.Checked    = true;
+                treeTracks.Visible   = true;
+                lstTracks            = new ObservableCollection<BlockTrackType>(Metadata.Track);
                 treeTracks.DataStore = lstTracks; // TODO: Really needed?
             }
-            if(Metadata.CopyProtection != null)
-                txtCopyProtection.Text = Metadata.CopyProtection;
-            if(Metadata.Dimensions != null)
+
+            if(Metadata.CopyProtection != null) txtCopyProtection.Text = Metadata.CopyProtection;
+            if(Metadata.Dimensions     != null)
             {
                 chkDimensions.Checked = true;
                 if(Metadata.Dimensions.DiameterSpecified)
                 {
-                    chkRound.Checked = true;
+                    chkRound.Checked    = true;
                     stkDiameter.Visible = true;
-                    stkHeight.Visible = false;
-                    stkWidth.Visible = false;
-                    spDiameter.Value = Metadata.Dimensions.Diameter;
+                    stkHeight.Visible   = false;
+                    stkWidth.Visible    = false;
+                    spDiameter.Value    = Metadata.Dimensions.Diameter;
                 }
                 else
                 {
                     stkDiameter.Visible = false;
-                    stkHeight.Visible = true;
-                    stkWidth.Visible = true;
-                    spHeight.Value = Metadata.Dimensions.Height;
-                    spWidth.Value = Metadata.Dimensions.Width;
+                    stkHeight.Visible   = true;
+                    stkWidth.Visible    = true;
+                    spHeight.Value      = Metadata.Dimensions.Height;
+                    spWidth.Value       = Metadata.Dimensions.Width;
                 }
+
                 stkThickness.Visible = true;
-                spThickness.Value = Metadata.Dimensions.Thickness;
+                spThickness.Value    = Metadata.Dimensions.Thickness;
             }
+
             if(Metadata.FileSystemInformation != null)
             {
-                lstPartitions = new ObservableCollection<PartitionType>(Metadata.FileSystemInformation);
+                lstPartitions            = new ObservableCollection<PartitionType>(Metadata.FileSystemInformation);
                 treePartitions.DataStore = lstPartitions; // TODO: Really needed?
             }
+
             if(Metadata.DumpHardwareArray != null)
             {
-                chkDumpHardware.Checked = true;
-                treeDumpHardware.Visible = true;
-                btnAddHardware.Visible = true;
-                btnEditHardware.Visible = true;
+                chkDumpHardware.Checked   = true;
+                treeDumpHardware.Visible  = true;
+                btnAddHardware.Visible    = true;
+                btnEditHardware.Visible   = true;
                 btnRemoveHardware.Visible = true;
 
-                lstDumpHw = new ObservableCollection<DumpHardwareType>(Metadata.DumpHardwareArray);
+                lstDumpHw                  = new ObservableCollection<DumpHardwareType>(Metadata.DumpHardwareArray);
                 treeDumpHardware.DataStore = lstDumpHw; // TODO: Really needed?
             }
-            if(Metadata.DiskType != null)
-                txtMediaType.Text = Metadata.DiskType;
-            if(Metadata.DiskSubType != null)
-                txtMediaSubtype.Text = Metadata.DiskSubType;
+
+            if(Metadata.DiskType    != null) txtMediaType.Text    = Metadata.DiskType;
+            if(Metadata.DiskSubType != null) txtMediaSubtype.Text = Metadata.DiskSubType;
         }
 
         protected void OnChkSequenceToggled(object sender, EventArgs e)
         {
             lblMediaTitle.Visible = chkSequence.Checked.Value;
             txtMediaTitle.Visible = chkSequence.Checked.Value;
-            lblSequence.Visible = chkSequence.Checked.Value;
-            spSequence.Visible = chkSequence.Checked.Value;
+            lblSequence.Visible   = chkSequence.Checked.Value;
+            spSequence.Visible    = chkSequence.Checked.Value;
             lblTotalMedia.Visible = chkSequence.Checked.Value;
-            spTotalMedia.Visible = chkSequence.Checked.Value;
-            lblSide.Visible = chkSequence.Checked.Value;
-            spSide.Visible = chkSequence.Checked.Value;
-            lblLayer.Visible = chkSequence.Checked.Value;
-            spLayer.Visible = chkSequence.Checked.Value;
+            spTotalMedia.Visible  = chkSequence.Checked.Value;
+            lblSide.Visible       = chkSequence.Checked.Value;
+            spSide.Visible        = chkSequence.Checked.Value;
+            lblLayer.Visible      = chkSequence.Checked.Value;
+            spLayer.Visible       = chkSequence.Checked.Value;
         }
 
         protected void OnChkDimensionsToggled(object sender, EventArgs e)
         {
-            chkRound.Visible = chkDimensions.Checked.Value;
+            chkRound.Visible     = chkDimensions.Checked.Value;
             stkThickness.Visible = chkDimensions.Checked.Value;
-            if(chkDimensions.Checked.Value)
-                OnChkRoundToggled(sender, e);
+            if(chkDimensions.Checked.Value) OnChkRoundToggled(sender, e);
             else
             {
                 stkDiameter.Visible = false;
-                stkHeight.Visible = false;
-                stkWidth.Visible = false;
+                stkHeight.Visible   = false;
+                stkWidth.Visible    = false;
             }
         }
 
         protected void OnChkRoundToggled(object sender, EventArgs e)
         {
             stkDiameter.Visible = chkRound.Checked.Value;
-            stkHeight.Visible = !chkRound.Checked.Value;
-            stkWidth.Visible = !chkRound.Checked.Value;
+            stkHeight.Visible   = !chkRound.Checked.Value;
+            stkWidth.Visible    = !chkRound.Checked.Value;
         }
 
         protected void OnChkPCMCIAToggled(object sender, EventArgs e)
         {
-            chkCIS.Visible = chkPCMCIA.Checked.Value;
-            treeCIS.Visible = chkPCMCIA.Checked.Value;
-            lblPCMCIAManufacturer.Visible = chkPCMCIA.Checked.Value;
-            txtPCMCIAManufacturer.Visible = chkPCMCIA.Checked.Value;
-            lblMfgCode.Visible = chkPCMCIA.Checked.Value;
-            txtMfgCode.Visible = chkPCMCIA.Checked.Value;
-            lblPCMCIAProductName.Visible = chkPCMCIA.Checked.Value;
-            txtPCMCIAProductName.Visible = chkPCMCIA.Checked.Value;
-            lblCardCode.Visible = chkPCMCIA.Checked.Value;
-            txtCardCode.Visible = chkPCMCIA.Checked.Value;
-            lblCompliance.Visible = chkPCMCIA.Checked.Value;
-            txtCompliance.Visible = chkPCMCIA.Checked.Value;
-            lblAdditionalInformation.Visible = false;
+            chkCIS.Visible                    = chkPCMCIA.Checked.Value;
+            treeCIS.Visible                   = chkPCMCIA.Checked.Value;
+            lblPCMCIAManufacturer.Visible     = chkPCMCIA.Checked.Value;
+            txtPCMCIAManufacturer.Visible     = chkPCMCIA.Checked.Value;
+            lblMfgCode.Visible                = chkPCMCIA.Checked.Value;
+            txtMfgCode.Visible                = chkPCMCIA.Checked.Value;
+            lblPCMCIAProductName.Visible      = chkPCMCIA.Checked.Value;
+            txtPCMCIAProductName.Visible      = chkPCMCIA.Checked.Value;
+            lblCardCode.Visible               = chkPCMCIA.Checked.Value;
+            txtCardCode.Visible               = chkPCMCIA.Checked.Value;
+            lblCompliance.Visible             = chkPCMCIA.Checked.Value;
+            txtCompliance.Visible             = chkPCMCIA.Checked.Value;
+            lblAdditionalInformation.Visible  = false;
             treeAdditionalInformation.Visible = false;
         }
 
         protected void OnBtnCancelPartitionClicked(object sender, EventArgs e)
         {
-            btnCancelPartition.Visible = false;
-            btnApplyPartition.Visible = false;
-            btnRemovePartition.Visible = true;
-            btnEditPartition.Visible = true;
-            btnAddPartition.Visible = true;
+            btnCancelPartition.Visible  = false;
+            btnApplyPartition.Visible   = false;
+            btnRemovePartition.Visible  = true;
+            btnEditPartition.Visible    = true;
+            btnAddPartition.Visible     = true;
             stkPartitionFields1.Visible = false;
             stkPartitionFields2.Visible = false;
-            frmFilesystems.Visible = false;
+            frmFilesystems.Visible      = false;
         }
 
         protected void OnBtnRemovePartitionClicked(object sender, EventArgs e)
         {
-            if(treePartitions.SelectedItem != null)
-                lstPartitions.Remove((PartitionType)treePartitions.SelectedItem);
+            if(treePartitions.SelectedItem != null) lstPartitions.Remove((PartitionType)treePartitions.SelectedItem);
         }
 
         protected void OnBtnEditPartitionClicked(object sender, EventArgs e)
         {
-            if(treePartitions.SelectedItem == null)
-                return;
+            if(treePartitions.SelectedItem == null) return;
 
             partitionIter = (PartitionType)treePartitions.SelectedItem;
 
-            spPartitionSequence.Value = partitionIter.Sequence;
-            txtPartitionStart.Text = partitionIter.StartSector.ToString();
-            txtPartitionEnd.Text = partitionIter.EndSector.ToString();
-            txtPartitionType.Text = partitionIter.Type;
-            txtPartitionName.Text = partitionIter.Name;
+            spPartitionSequence.Value    = partitionIter.Sequence;
+            txtPartitionStart.Text       = partitionIter.StartSector.ToString();
+            txtPartitionEnd.Text         = partitionIter.EndSector.ToString();
+            txtPartitionType.Text        = partitionIter.Type;
+            txtPartitionName.Text        = partitionIter.Name;
             txtPartitionDescription.Text = partitionIter.Description;
-            treeFilesystems.DataStore = new ObservableCollection<FileSystemType>(partitionIter.FileSystems);
+            treeFilesystems.DataStore    = new ObservableCollection<FileSystemType>(partitionIter.FileSystems);
 
-            btnCancelPartition.Visible = true;
-            btnApplyPartition.Visible = true;
-            btnRemovePartition.Visible = false;
-            btnEditPartition.Visible = false;
-            btnAddPartition.Visible = false;
+            btnCancelPartition.Visible  = true;
+            btnApplyPartition.Visible   = true;
+            btnRemovePartition.Visible  = false;
+            btnEditPartition.Visible    = false;
+            btnAddPartition.Visible     = false;
             stkPartitionFields1.Visible = true;
             stkPartitionFields2.Visible = true;
-            frmFilesystems.Visible = true;
+            frmFilesystems.Visible      = true;
 
             editingPartition = true;
         }
 
         protected void OnBtnApplyPartitionClicked(object sender, EventArgs e)
         {
-            int temp, temp2;
-
-            if(!int.TryParse(txtPartitionStart.Text, out temp))
+            if(!int.TryParse(txtPartitionStart.Text, out int temp))
             {
                 MessageBox.Show("Partition start must be a number", MessageBoxType.Error);
                 return;
             }
 
-            if(!int.TryParse(txtPartitionEnd.Text, out temp2))
+            if(!int.TryParse(txtPartitionEnd.Text, out int temp2))
             {
                 MessageBox.Show("Partition end must be a number", MessageBoxType.Error);
                 return;
@@ -1000,47 +956,48 @@ namespace osrepodbmgr.Eto
                 return;
             }
 
-            if(editingPartition)
-                lstPartitions.Remove(partitionIter);
+            if(editingPartition) lstPartitions.Remove(partitionIter);
 
-            partitionIter = new PartitionType();
-            partitionIter.Sequence = (int)spPartitionSequence.Value;
-            partitionIter.StartSector = int.Parse(txtPartitionStart.Text);
-            partitionIter.EndSector = int.Parse(txtPartitionEnd.Text);
-            partitionIter.Type = txtPartitionType.Text;
-            partitionIter.Name = txtPartitionName.Text;
-            partitionIter.Description = txtPartitionDescription.Text;
+            partitionIter = new PartitionType
+            {
+                Sequence    = (int)spPartitionSequence.Value,
+                StartSector = int.Parse(txtPartitionStart.Text),
+                EndSector   = int.Parse(txtPartitionEnd.Text),
+                Type        = txtPartitionType.Text,
+                Name        = txtPartitionName.Text,
+                Description = txtPartitionDescription.Text
+            };
             if(((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Count > 0)
                 partitionIter.FileSystems = ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).ToArray();
 
-            btnCancelPartition.Visible = false;
-            btnApplyPartition.Visible = false;
-            btnRemovePartition.Visible = true;
-            btnEditPartition.Visible = true;
-            btnAddPartition.Visible = true;
+            btnCancelPartition.Visible  = false;
+            btnApplyPartition.Visible   = false;
+            btnRemovePartition.Visible  = true;
+            btnEditPartition.Visible    = true;
+            btnAddPartition.Visible     = true;
             stkPartitionFields1.Visible = false;
             stkPartitionFields2.Visible = false;
-            frmFilesystems.Visible = false;
+            frmFilesystems.Visible      = false;
         }
 
         protected void OnBtnAddPartitionClicked(object sender, EventArgs e)
         {
-            spPartitionSequence.Value = 0;
-            txtPartitionStart.Text = "";
-            txtPartitionEnd.Text = "";
-            txtPartitionType.Text = "";
-            txtPartitionName.Text = "";
+            spPartitionSequence.Value    = 0;
+            txtPartitionStart.Text       = "";
+            txtPartitionEnd.Text         = "";
+            txtPartitionType.Text        = "";
+            txtPartitionName.Text        = "";
             txtPartitionDescription.Text = "";
-            treeFilesystems.DataStore = new ObservableCollection<FileSystemType>();
+            treeFilesystems.DataStore    = new ObservableCollection<FileSystemType>();
 
-            btnCancelPartition.Visible = true;
-            btnApplyPartition.Visible = true;
-            btnRemovePartition.Visible = false;
-            btnEditPartition.Visible = false;
-            btnAddPartition.Visible = false;
+            btnCancelPartition.Visible  = true;
+            btnApplyPartition.Visible   = true;
+            btnRemovePartition.Visible  = false;
+            btnEditPartition.Visible    = false;
+            btnAddPartition.Visible     = false;
             stkPartitionFields1.Visible = true;
             stkPartitionFields2.Visible = true;
-            frmFilesystems.Visible = true;
+            frmFilesystems.Visible      = true;
 
             editingPartition = false;
         }
@@ -1048,26 +1005,24 @@ namespace osrepodbmgr.Eto
         protected void OnBtnRemoveFilesystemClicked(object sender, EventArgs e)
         {
             if(treeFilesystems.SelectedItem != null)
-                ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Remove((FileSystemType)treeFilesystems.SelectedItem);
+                ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Remove((FileSystemType)treeFilesystems
+                                                                                            .SelectedItem);
         }
 
         protected void OnBtnEditFilesystemClicked(object sender, EventArgs e)
         {
-            if(treeFilesystems.SelectedItem == null)
-                return;
+            if(treeFilesystems.SelectedItem == null) return;
 
             filesystemIter = (FileSystemType)treeFilesystems.SelectedItem;
 
-            dlgFilesystem _dlgFilesystem = new dlgFilesystem();
-            _dlgFilesystem.Metadata = filesystemIter;
+            dlgFilesystem _dlgFilesystem = new dlgFilesystem {Metadata = filesystemIter};
             _dlgFilesystem.FillFields();
             _dlgFilesystem.ShowModal(this);
 
-            if(_dlgFilesystem.Modified)
-            {
-                ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Remove(filesystemIter);
-                ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Add(_dlgFilesystem.Metadata);
-            }
+            if(!_dlgFilesystem.Modified) return;
+
+            ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Remove(filesystemIter);
+            ((ObservableCollection<FileSystemType>)treeFilesystems.DataStore).Add(_dlgFilesystem.Metadata);
         }
 
         protected void OnBtnAddFilesystemClicked(object sender, EventArgs e)
@@ -1081,111 +1036,112 @@ namespace osrepodbmgr.Eto
 
         protected void OnChkDumpHardwareToggled(object sender, EventArgs e)
         {
-            treeDumpHardware.Visible = chkDumpHardware.Checked.Value;
-            btnAddHardware.Visible = chkDumpHardware.Checked.Value;
+            treeDumpHardware.Visible  = chkDumpHardware.Checked.Value;
+            btnAddHardware.Visible    = chkDumpHardware.Checked.Value;
             btnRemoveHardware.Visible = chkDumpHardware.Checked.Value;
-            btnEditHardware.Visible = chkDumpHardware.Checked.Value;
+            btnEditHardware.Visible   = chkDumpHardware.Checked.Value;
 
             btnCancelHardware.Visible = false;
-            btnApplyHardware.Visible = false;
-            frmHardware.Visible = false;
+            btnApplyHardware.Visible  = false;
+            frmHardware.Visible       = false;
         }
 
         protected void OnBtnCancelHardwareClicked(object sender, EventArgs e)
         {
-            btnAddHardware.Visible = true;
+            btnAddHardware.Visible    = true;
             btnRemoveHardware.Visible = true;
             btnCancelHardware.Visible = false;
-            btnEditHardware.Visible = true;
-            btnApplyHardware.Visible = false;
-            frmHardware.Visible = false;
+            btnEditHardware.Visible   = true;
+            btnApplyHardware.Visible  = false;
+            frmHardware.Visible       = false;
         }
 
         protected void OnBtnRemoveHardwareClicked(object sender, EventArgs e)
         {
-            if(treeDumpHardware.SelectedItem != null)
-                lstDumpHw.Remove((DumpHardwareType)treeDumpHardware.SelectedItem);
+            if(treeDumpHardware.SelectedItem != null) lstDumpHw.Remove((DumpHardwareType)treeDumpHardware.SelectedItem);
         }
 
         protected void OnBtnEditHardwareClicked(object sender, EventArgs e)
         {
-            if(treeDumpHardware.SelectedItem == null)
-                return;
+            if(treeDumpHardware.SelectedItem == null) return;
 
             dumpHwIter = (DumpHardwareType)treeDumpHardware.SelectedItem;
 
             txtHWManufacturer.Text = dumpHwIter.Manufacturer;
-            txtHWModel.Text = dumpHwIter.Model;
-            txtHWRevision.Text = dumpHwIter.Revision;
-            txtHWFirmware.Text = dumpHwIter.Firmware;
-            txtHWSerial.Text = dumpHwIter.Serial;
+            txtHWModel.Text        = dumpHwIter.Model;
+            txtHWRevision.Text     = dumpHwIter.Revision;
+            txtHWFirmware.Text     = dumpHwIter.Firmware;
+            txtHWSerial.Text       = dumpHwIter.Serial;
             if(dumpHwIter.Software != null)
             {
-                txtDumpName.Text = dumpHwIter.Software.Name;
+                txtDumpName.Text    = dumpHwIter.Software.Name;
                 txtDumpVersion.Text = dumpHwIter.Software.Version;
-                txtDumpOS.Text = dumpHwIter.Software.OperatingSystem;
+                txtDumpOS.Text      = dumpHwIter.Software.OperatingSystem;
             }
+
             treeExtents.DataStore = new ObservableCollection<ExtentType>(dumpHwIter.Extents);
 
-            btnAddHardware.Visible = false;
+            btnAddHardware.Visible    = false;
             btnRemoveHardware.Visible = false;
             btnCancelHardware.Visible = true;
-            btnEditHardware.Visible = false;
-            btnApplyHardware.Visible = true;
-            frmHardware.Visible = true;
+            btnEditHardware.Visible   = false;
+            btnApplyHardware.Visible  = true;
+            frmHardware.Visible       = true;
 
             editingDumpHw = true;
         }
 
         protected void OnBtnApplyHardwareClicked(object sender, EventArgs e)
         {
-            if(editingDumpHw)
-                lstDumpHw.Remove(dumpHwIter);
+            if(editingDumpHw) lstDumpHw.Remove(dumpHwIter);
 
-            dumpHwIter = new DumpHardwareType();
-            dumpHwIter.Manufacturer = txtHWManufacturer.Text;
-            dumpHwIter.Model = txtHWModel.Text;
-            dumpHwIter.Revision = txtHWRevision.Text;
-            dumpHwIter.Firmware = txtHWFirmware.Text;
-            dumpHwIter.Serial = txtHWSerial.Text;
-            if(!string.IsNullOrWhiteSpace(txtDumpName.Text) || !string.IsNullOrWhiteSpace(txtDumpVersion.Text) || !string.IsNullOrWhiteSpace(txtDumpOS.Text))
+            dumpHwIter = new DumpHardwareType
             {
-                dumpHwIter.Software = new SoftwareType();
-                dumpHwIter.Software.Name = txtDumpName.Text;
-                dumpHwIter.Software.Version = txtDumpVersion.Text;
-                dumpHwIter.Software.OperatingSystem = txtDumpOS.Text;
-            }
+                Manufacturer = txtHWManufacturer.Text,
+                Model        = txtHWModel.Text,
+                Revision     = txtHWRevision.Text,
+                Firmware     = txtHWFirmware.Text,
+                Serial       = txtHWSerial.Text
+            };
+            if(!string.IsNullOrWhiteSpace(txtDumpName.Text) || !string.IsNullOrWhiteSpace(txtDumpVersion.Text) ||
+               !string.IsNullOrWhiteSpace(txtDumpOS.Text))
+                dumpHwIter.Software = new SoftwareType
+                {
+                    Name            = txtDumpName.Text,
+                    Version         = txtDumpVersion.Text,
+                    OperatingSystem = txtDumpOS.Text
+                };
             if(((ObservableCollection<ExtentType>)treeExtents.DataStore).Count > 0)
                 dumpHwIter.Extents = ((ObservableCollection<ExtentType>)treeExtents.DataStore).ToArray();
 
             lstDumpHw.Add(dumpHwIter);
 
-            btnAddHardware.Visible = true;
+            btnAddHardware.Visible    = true;
             btnRemoveHardware.Visible = true;
             btnCancelHardware.Visible = false;
-            btnEditHardware.Visible = true;
-            btnApplyHardware.Visible = false;
-            frmHardware.Visible = false;
+            btnEditHardware.Visible   = true;
+            btnApplyHardware.Visible  = false;
+            frmHardware.Visible       = false;
         }
 
         protected void OnBtnAddHardwareClicked(object sender, EventArgs e)
         {
             txtHWManufacturer.Text = "";
-            txtHWModel.Text = "";
-            txtHWRevision.Text = "";
-            txtHWFirmware.Text = "";
-            txtHWSerial.Text = "";
-            txtDumpName.Text = "";
-            txtDumpVersion.Text = "";
-            txtDumpOS.Text = "";
-            treeExtents.DataStore = new ObservableCollection<ExtentType>();
+            txtHWModel.Text        = "";
+            txtHWRevision.Text     = "";
+            txtHWFirmware.Text     = "";
+            txtHWSerial.Text       = "";
+            txtDumpName.Text       = "";
+            txtDumpVersion.Text    = "";
+            txtDumpOS.Text         = "";
+            treeExtents.DataStore  = new ObservableCollection<ExtentType>();
 
-            btnAddHardware.Visible = false;
+            btnAddHardware.Visible    = false;
             btnRemoveHardware.Visible = false;
             btnCancelHardware.Visible = true;
-            btnEditHardware.Visible = false;
-            btnApplyHardware.Visible = true;
-            frmHardware.Visible = true;
+            btnEditHardware.Visible   = false;
+            btnApplyHardware.Visible  = true;
+            frmHardware.Visible       = true;
 
             editingDumpHw = false;
         }
@@ -1198,7 +1154,11 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnAddExtentClicked(object sender, EventArgs e)
         {
-            ((ObservableCollection<ExtentType>)treeExtents.DataStore).Add(new ExtentType { Start = (ulong)spExtentStart.Value, End = (ulong)spExtentEnd.Value });
+            ((ObservableCollection<ExtentType>)treeExtents.DataStore).Add(new ExtentType
+            {
+                Start = (ulong)spExtentStart.Value,
+                End   = (ulong)spExtentEnd.Value
+            });
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -1208,8 +1168,6 @@ namespace osrepodbmgr.Eto
 
         protected void OnBtnSaveClicked(object sender, EventArgs e)
         {
-            long ltmp;
-
             #region Sanity checks
             if(string.IsNullOrEmpty(txtFormat.Text))
             {
@@ -1238,7 +1196,7 @@ namespace osrepodbmgr.Eto
                 }
             }
 
-            if(string.IsNullOrEmpty(txtBlocks.Text) || !long.TryParse(txtBlocks.Text, out ltmp))
+            if(string.IsNullOrEmpty(txtBlocks.Text) || !long.TryParse(txtBlocks.Text, out long ltmp))
             {
                 MessageBox.Show("Blocks must be a number", MessageBoxType.Error);
                 return;
@@ -1285,12 +1243,14 @@ namespace osrepodbmgr.Eto
                         MessageBox.Show("Height must be bigger than 0", MessageBoxType.Error);
                         return;
                     }
+
                     if(spWidth.Value <= 0)
                     {
                         MessageBox.Show("Width must be bigger than 0", MessageBoxType.Error);
                         return;
                     }
                 }
+
                 if(spThickness.Value <= 0)
                 {
                     MessageBox.Show("Thickness must be bigger than 0", MessageBoxType.Error);
@@ -1369,13 +1329,15 @@ namespace osrepodbmgr.Eto
                 {
                     if(Convert.ToInt32(txtMfgCode.Text, 16) < 0 || Convert.ToInt32(txtMfgCode.Text, 16) > 0xFFFF)
                     {
-                        MessageBox.Show("PCMCIA Manufacturer Code must be between 0x0000 and 0xFFFF", MessageBoxType.Error);
+                        MessageBox.Show("PCMCIA Manufacturer Code must be between 0x0000 and 0xFFFF",
+                                        MessageBoxType.Error);
                         return;
                     }
                 }
                 catch(FormatException)
                 {
-                    MessageBox.Show("PCMCIA Manufacturer Code must be a number in hexadecimal format", MessageBoxType.Error);
+                    MessageBox.Show("PCMCIA Manufacturer Code must be a number in hexadecimal format",
+                                    MessageBoxType.Error);
                     return;
                 }
                 catch(OverflowException)
@@ -1458,93 +1420,81 @@ namespace osrepodbmgr.Eto
             }
 
             if(chkDumpHardware.Checked.Value)
-            {
                 if(lstDumpHw.Count < 1)
                 {
                     MessageBox.Show("If dump hardware is known at least an entry must be created");
                     return;
                 }
-            }
             #endregion Sanity checks
 
-            Metadata = new BlockMediaType();
+            Metadata = new BlockMediaType {Image = new ImageType {Value = txtImage.Text, format = txtFormat.Text}};
 
-            Metadata.Image = new ImageType();
-            Metadata.Image.Value = txtImage.Text;
-            Metadata.Image.format = txtFormat.Text;
             if(!string.IsNullOrWhiteSpace(txtOffset.Text) && long.TryParse(txtOffset.Text, out ltmp))
             {
                 Metadata.Image.offsetSpecified = true;
-                Metadata.Image.offset = long.Parse(txtOffset.Text);
+                Metadata.Image.offset          = long.Parse(txtOffset.Text);
             }
-            Metadata.Size = long.Parse(txtSize.Text);
-            Metadata.Checksums = checksums;
+
+            Metadata.Size             = long.Parse(txtSize.Text);
+            Metadata.Checksums        = checksums;
             Metadata.ContentChecksums = contentChks;
 
             if(chkSequence.Checked.Value)
             {
-                Metadata.Sequence = new SequenceType();
-                Metadata.Sequence.MediaTitle = txtMediaTitle.Text;
-                Metadata.Sequence.MediaSequence = (int)spSequence.Value;
-                Metadata.Sequence.TotalMedia = (int)spTotalMedia.Value;
+                Metadata.Sequence = new SequenceType
+                {
+                    MediaTitle    = txtMediaTitle.Text,
+                    MediaSequence = (int)spSequence.Value,
+                    TotalMedia    = (int)spTotalMedia.Value
+                };
                 if(spSide.Value > 0)
                 {
                     Metadata.Sequence.SideSpecified = true;
-                    Metadata.Sequence.Side = (int)spSide.Value;
+                    Metadata.Sequence.Side          = (int)spSide.Value;
                 }
+
                 if(spLayer.Value > 0)
                 {
                     Metadata.Sequence.LayerSpecified = true;
-                    Metadata.Sequence.Layer = (int)spLayer.Value;
+                    Metadata.Sequence.Layer          = (int)spLayer.Value;
                 }
             }
 
-            if(!string.IsNullOrWhiteSpace(txtManufacturer.Text))
-                Metadata.Manufacturer = txtManufacturer.Text;
-            if(!string.IsNullOrWhiteSpace(txtModel.Text))
-                Metadata.Model = txtModel.Text;
-            if(!string.IsNullOrWhiteSpace(txtSerial.Text))
-                Metadata.Serial = txtSerial.Text;
-            if(!string.IsNullOrWhiteSpace(txtFirmware.Text))
-                Metadata.Firmware = txtFirmware.Text;
-            if(!string.IsNullOrWhiteSpace(txtInterface.Text))
-                Metadata.Interface = txtInterface.Text;
+            if(!string.IsNullOrWhiteSpace(txtManufacturer.Text)) Metadata.Manufacturer = txtManufacturer.Text;
+            if(!string.IsNullOrWhiteSpace(txtModel.Text)) Metadata.Model               = txtModel.Text;
+            if(!string.IsNullOrWhiteSpace(txtSerial.Text)) Metadata.Serial             = txtSerial.Text;
+            if(!string.IsNullOrWhiteSpace(txtFirmware.Text)) Metadata.Firmware         = txtFirmware.Text;
+            if(!string.IsNullOrWhiteSpace(txtInterface.Text)) Metadata.Interface       = txtInterface.Text;
 
             Metadata.PhysicalBlockSize = (int)spPhysicalBlockSize.Value;
-            Metadata.LogicalBlockSize = (int)spLogicalBlockSize.Value;
-            Metadata.LogicalBlocks = long.Parse(txtBlocks.Text);
+            Metadata.LogicalBlockSize  = (int)spLogicalBlockSize.Value;
+            Metadata.LogicalBlocks     = long.Parse(txtBlocks.Text);
             Metadata.VariableBlockSize = variableBlockSize;
-            Metadata.TapeInformation = tapeInformation;
-            Metadata.Scans = scans;
+            Metadata.TapeInformation   = tapeInformation;
+            Metadata.Scans             = scans;
 
-            if(chkATA.Checked.Value && lstAta.Count == 1)
-            {
-                Metadata.ATA = new ATAType();
-                Metadata.ATA.Identify = lstAta[0];
-            }
+            if(chkATA.Checked.Value && lstAta.Count == 1) Metadata.ATA = new ATAType {Identify = lstAta[0]};
 
             if(chkPCI.Checked.Value)
             {
-                Metadata.PCI = new PCIType();
-                Metadata.PCI.VendorID = Convert.ToUInt16(txtPCIVendor.Text, 16);
-                Metadata.PCI.DeviceID = Convert.ToUInt16(txtPCIProduct.Text, 16);
+                Metadata.PCI = new PCIType
+                {
+                    VendorID = Convert.ToUInt16(txtPCIVendor.Text,  16),
+                    DeviceID = Convert.ToUInt16(txtPCIProduct.Text, 16)
+                };
 
-                if(lstPCIConfiguration.Count == 1)
-                    Metadata.PCI.Configuration = lstPCIConfiguration[0];
+                if(lstPCIConfiguration.Count == 1) Metadata.PCI.Configuration = lstPCIConfiguration[0];
 
-                if(lstPCIOptionROM.Count == 1)
-                    Metadata.PCI.ExpansionROM = lstPCIOptionROM[0];
+                if(lstPCIOptionROM.Count == 1) Metadata.PCI.ExpansionROM = lstPCIOptionROM[0];
             }
 
             if(chkPCMCIA.Checked.Value)
             {
                 Metadata.PCMCIA = new PCMCIAType();
 
-                if(lstPCMCIACIS.Count == 1)
-                    Metadata.PCMCIA.CIS = lstPCMCIACIS[0];
+                if(lstPCMCIACIS.Count == 1) Metadata.PCMCIA.CIS = lstPCMCIACIS[0];
 
-                if(!string.IsNullOrWhiteSpace(txtCompliance.Text))
-                    Metadata.PCMCIA.Compliance = txtCompliance.Text;
+                if(!string.IsNullOrWhiteSpace(txtCompliance.Text)) Metadata.PCMCIA.Compliance = txtCompliance.Text;
                 if(!string.IsNullOrWhiteSpace(txtPCMCIAManufacturer.Text))
                     Metadata.PCMCIA.Manufacturer = txtPCMCIAManufacturer.Text;
                 if(!string.IsNullOrWhiteSpace(txtPCMCIAProductName.Text))
@@ -1552,19 +1502,19 @@ namespace osrepodbmgr.Eto
                 if(!string.IsNullOrWhiteSpace(txtMfgCode.Text))
                 {
                     Metadata.PCMCIA.ManufacturerCodeSpecified = true;
-                    Metadata.PCMCIA.ManufacturerCode = Convert.ToUInt16(txtMfgCode.Text, 16);
+                    Metadata.PCMCIA.ManufacturerCode          = Convert.ToUInt16(txtMfgCode.Text, 16);
                 }
+
                 if(!string.IsNullOrWhiteSpace(txtCardCode.Text))
                 {
                     Metadata.PCMCIA.CardCodeSpecified = true;
-                    Metadata.PCMCIA.CardCode = Convert.ToUInt16(txtCardCode.Text, 16);
+                    Metadata.PCMCIA.CardCode          = Convert.ToUInt16(txtCardCode.Text, 16);
                 }
 
                 if(lstAdditionalInformation.Count > 0)
                 {
                     List<string> addinfos = new List<string>();
-                    foreach(StringEntry entry in lstAdditionalInformation)
-                        addinfos.Add(entry.str);
+                    foreach(StringEntry entry in lstAdditionalInformation) addinfos.Add(entry.str);
                     Metadata.PCMCIA.AdditionalInformation = addinfos.ToArray();
                 }
             }
@@ -1573,58 +1523,48 @@ namespace osrepodbmgr.Eto
             {
                 Metadata.SecureDigital = new SecureDigitalType();
 
-                if(lstCID.Count == 1)
-                    Metadata.SecureDigital.CID = lstCID[0];
-                if(lstCSD.Count == 1)
-                    Metadata.SecureDigital.CSD = lstCSD[0];
-                if(lstECSD.Count == 1)
-                    Metadata.MultiMediaCard.ExtendedCSD = lstECSD[0];
+                if(lstCID.Count  == 1) Metadata.SecureDigital.CID          = lstCID[0];
+                if(lstCSD.Count  == 1) Metadata.SecureDigital.CSD          = lstCSD[0];
+                if(lstECSD.Count == 1) Metadata.MultiMediaCard.ExtendedCSD = lstECSD[0];
             }
 
             if(chkSCSI.Checked.Value)
             {
                 Metadata.SCSI = new SCSIType();
 
-                if(lstInquiry.Count == 1)
-                    Metadata.SCSI.Inquiry = lstInquiry[0];
-                if(lstModeSense.Count == 1)
-                    Metadata.SCSI.ModeSense = lstModeSense[0];
-                if(lstModeSense10.Count == 1)
-                    Metadata.SCSI.ModeSense10 = lstModeSense10[0];
-                if(lstLogSense.Count == 1)
-                    Metadata.SCSI.LogSense = lstLogSense[0];
-                if(lstEVPDs.Count > 0)
-                    Metadata.SCSI.EVPD = lstEVPDs.ToArray();
+                if(lstInquiry.Count     == 1) Metadata.SCSI.Inquiry     = lstInquiry[0];
+                if(lstModeSense.Count   == 1) Metadata.SCSI.ModeSense   = lstModeSense[0];
+                if(lstModeSense10.Count == 1) Metadata.SCSI.ModeSense10 = lstModeSense10[0];
+                if(lstLogSense.Count    == 1) Metadata.SCSI.LogSense    = lstLogSense[0];
+                if(lstEVPDs.Count       > 0) Metadata.SCSI.EVPD         = lstEVPDs.ToArray();
             }
 
             if(chkUSB.Checked.Value)
             {
-                Metadata.USB = new USBType();
-                Metadata.USB.VendorID = Convert.ToUInt16(txtUSBVendor.Text, 16);
-                Metadata.USB.ProductID = Convert.ToUInt16(txtUSBProduct.Text, 16);
+                Metadata.USB = new USBType
+                {
+                    VendorID  = Convert.ToUInt16(txtUSBVendor.Text,  16),
+                    ProductID = Convert.ToUInt16(txtUSBProduct.Text, 16)
+                };
 
-                if(lstUSBDescriptors.Count == 1)
-                    Metadata.USB.Descriptors = lstUSBDescriptors[0];
+                if(lstUSBDescriptors.Count == 1) Metadata.USB.Descriptors = lstUSBDescriptors[0];
             }
 
-            if(chkMAM.Checked.Value && lstMAM.Count == 1)
-                Metadata.MAM = lstMAM[0];
+            if(chkMAM.Checked.Value && lstMAM.Count == 1) Metadata.MAM = lstMAM[0];
 
             if(spHeads.Value > 0 && spCylinders.Value > 0 && spSectors.Value > 0)
             {
-                Metadata.HeadsSpecified = true;
-                Metadata.CylindersSpecified = true;
+                Metadata.HeadsSpecified           = true;
+                Metadata.CylindersSpecified       = true;
                 Metadata.SectorsPerTrackSpecified = true;
-                Metadata.Heads = (long)spHeads.Value;
-                Metadata.Cylinders = (long)spCylinders.Value;
-                Metadata.SectorsPerTrack = (long)spSectors.Value;
+                Metadata.Heads                    = (long)spHeads.Value;
+                Metadata.Cylinders                = (long)spCylinders.Value;
+                Metadata.SectorsPerTrack          = (long)spSectors.Value;
             }
 
-            if(lstTracks.Count > 0)
-                Metadata.Track = lstTracks.ToArray();
+            if(lstTracks.Count > 0) Metadata.Track = lstTracks.ToArray();
 
-            if(!string.IsNullOrWhiteSpace(txtCopyProtection.Text))
-                Metadata.CopyProtection = txtCopyProtection.Text;
+            if(!string.IsNullOrWhiteSpace(txtCopyProtection.Text)) Metadata.CopyProtection = txtCopyProtection.Text;
 
             if(chkDimensions.Checked.Value)
             {
@@ -1632,31 +1572,167 @@ namespace osrepodbmgr.Eto
                 if(chkRound.Checked.Value)
                 {
                     Metadata.Dimensions.DiameterSpecified = true;
-                    Metadata.Dimensions.Diameter = spDiameter.Value;
+                    Metadata.Dimensions.Diameter          = spDiameter.Value;
                 }
                 else
                 {
                     Metadata.Dimensions.HeightSpecified = true;
-                    Metadata.Dimensions.WidthSpecified = true;
-                    Metadata.Dimensions.Height = spHeight.Value;
-                    Metadata.Dimensions.Width = spWidth.Value;
+                    Metadata.Dimensions.WidthSpecified  = true;
+                    Metadata.Dimensions.Height          = spHeight.Value;
+                    Metadata.Dimensions.Width           = spWidth.Value;
                 }
+
                 Metadata.Dimensions.Thickness = spThickness.Value;
             }
 
-            if(lstPartitions.Count > 0)
-                Metadata.FileSystemInformation = lstPartitions.ToArray();
+            if(lstPartitions.Count > 0) Metadata.FileSystemInformation = lstPartitions.ToArray();
 
-            if(chkDumpHardware.Checked.Value && lstDumpHw.Count > 0)
-                Metadata.DumpHardwareArray = lstDumpHw.ToArray();
+            if(chkDumpHardware.Checked.Value && lstDumpHw.Count > 0) Metadata.DumpHardwareArray = lstDumpHw.ToArray();
 
-            if(!string.IsNullOrWhiteSpace(txtMediaType.Text))
-                Metadata.DiskType = txtMediaType.Text;
-            if(!string.IsNullOrWhiteSpace(txtMediaSubtype.Text))
-                Metadata.DiskSubType = txtMediaSubtype.Text;
+            if(!string.IsNullOrWhiteSpace(txtMediaType.Text)) Metadata.DiskType       = txtMediaType.Text;
+            if(!string.IsNullOrWhiteSpace(txtMediaSubtype.Text)) Metadata.DiskSubType = txtMediaSubtype.Text;
 
             Modified = true;
             Close();
         }
+
+        class StringEntry
+        {
+            public string str;
+        }
+
+        #region XAML UI elements
+        #pragma warning disable 0649
+        TextBox       txtImage;
+        TextBox       txtFormat;
+        TextBox       txtOffset;
+        TextBox       txtSize;
+        TextBox       txtManufacturer;
+        TextBox       txtModel;
+        TextBox       txtSerial;
+        TextBox       txtFirmware;
+        TextBox       txtInterface;
+        TextBox       txtCopyProtection;
+        TextBox       txtMediaType;
+        TextBox       txtMediaSubtype;
+        CheckBox      chkSequence;
+        Label         lblMediaTitle;
+        TextBox       txtMediaTitle;
+        Label         lblSequence;
+        NumericUpDown spSequence;
+        Label         lblTotalMedia;
+        NumericUpDown spTotalMedia;
+        Label         lblSide;
+        NumericUpDown spSide;
+        Label         lblLayer;
+        NumericUpDown spLayer;
+        TextBox       txtBlocks;
+        NumericUpDown spPhysicalBlockSize;
+        NumericUpDown spLogicalBlockSize;
+        NumericUpDown spCylinders;
+        NumericUpDown spHeads;
+        NumericUpDown spSectors;
+        CheckBox      chkDimensions;
+        CheckBox      chkRound;
+        StackLayout   stkDiameter;
+        NumericUpDown spDiameter;
+        StackLayout   stkHeight;
+        NumericUpDown spHeight;
+        StackLayout   stkWidth;
+        NumericUpDown spWidth;
+        StackLayout   stkThickness;
+        NumericUpDown spThickness;
+        CheckBox      chkATA;
+        GridView      treeATA;
+        CheckBox      chkPCI;
+        Label         lblPCIVendor;
+        TextBox       txtPCIVendor;
+        Label         lblPCIProduct;
+        TextBox       txtPCIProduct;
+        GroupBox      frmPCIConfiguration;
+        GridView      treeConfiguration;
+        GroupBox      frmOptionROM;
+        GridView      treeOptionROM;
+        CheckBox      chkPCMCIA;
+        CheckBox      chkCIS;
+        GridView      treeCIS;
+        Label         lblPCMCIAManufacturer;
+        Label         lblMfgCode;
+        Label         lblPCMCIAProductName;
+        Label         lblCardCode;
+        Label         lblCompliance;
+        TextBox       txtPCMCIAManufacturer;
+        TextBox       txtMfgCode;
+        TextBox       txtPCMCIAProductName;
+        TextBox       txtCardCode;
+        TextBox       txtCompliance;
+        GroupBox      lblAdditionalInformation;
+        GridView      treeAdditionalInformation;
+        CheckBox      chkSecureDigital;
+        GridView      treeCID;
+        CheckBox      chkCSD;
+        GridView      treeCSD;
+        CheckBox      chkECSD;
+        GridView      treeECSD;
+        CheckBox      chkSCSI;
+        GroupBox      frmInquiry;
+        GridView      treeInquiry;
+        GroupBox      frmModeSense;
+        GridView      treeModeSense;
+        GroupBox      frmModeSense10;
+        GridView      treeModeSense10;
+        GroupBox      frmLogSense;
+        GridView      treeLogSense;
+        GroupBox      frmEVPDs;
+        GridView      treeEVPDs;
+        CheckBox      chkUSB;
+        TextBox       txtUSBVendor;
+        TextBox       txtUSBProduct;
+        GridView      treeDescriptors;
+        CheckBox      chkMAM;
+        GridView      treeMAM;
+        CheckBox      chkTracks;
+        GridView      treeTracks;
+        GridView      treePartitions;
+        Button        btnCancelPartition;
+        Button        btnRemovePartition;
+        Button        btnEditPartition;
+        Button        btnApplyPartition;
+        Button        btnAddPartition;
+        NumericUpDown spPartitionSequence;
+        TextBox       txtPartitionStart;
+        TextBox       txtPartitionEnd;
+        TextBox       txtPartitionType;
+        TextBox       txtPartitionName;
+        TextBox       txtPartitionDescription;
+        GroupBox      frmFilesystems;
+        GridView      treeFilesystems;
+        CheckBox      chkDumpHardware;
+        GridView      treeDumpHardware;
+        Button        btnCancelHardware;
+        Button        btnRemoveHardware;
+        Button        btnEditHardware;
+        Button        btnApplyHardware;
+        Button        btnAddHardware;
+        GroupBox      frmHardware;
+        TextBox       txtHWManufacturer;
+        TextBox       txtHWModel;
+        TextBox       txtHWRevision;
+        TextBox       txtHWFirmware;
+        TextBox       txtHWSerial;
+        GridView      treeExtents;
+        NumericUpDown spExtentStart;
+        NumericUpDown spExtentEnd;
+        TextBox       txtDumpName;
+        TextBox       txtDumpVersion;
+        TextBox       txtDumpOS;
+        Label         lblCID;
+        Label         lblUSBVendor;
+        Label         lblUSBProduct;
+        GroupBox      frmDescriptors;
+        StackLayout   stkPartitionFields1;
+        StackLayout   stkPartitionFields2;
+        #pragma warning restore 0649
+        #endregion XAML UI elements
     }
 }

@@ -25,11 +25,13 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
+using Gtk;
 
 namespace osrepodbmgr
 {
-    public partial class dlgHelp : Gtk.Dialog
+    public partial class dlgHelp : Dialog
     {
         public dlgHelp()
         {

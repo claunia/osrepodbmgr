@@ -25,11 +25,15 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using nClam;
+using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
@@ -44,7 +48,7 @@ namespace osrepodbmgr.Core
         {
             if(!Settings.Current.UseClamd || !Settings.Current.UseAntivirus)
             {
-                Context.clamdVersion = null;
+                Context.ClamdVersion = null;
                 return;
             }
 
@@ -57,62 +61,51 @@ namespace osrepodbmgr.Core
             {
                 try
                 {
-                    clam = new ClamClient(Settings.Current.ClamdHost, Settings.Current.ClamdPort);
-                    Context.clamdVersion = await clam.GetVersionAsync();
+                    clam                 = new ClamClient(Settings.Current.ClamdHost, Settings.Current.ClamdPort);
+                    Context.ClamdVersion = await clam.GetVersionAsync();
                 }
-                catch(System.Net.Sockets.SocketException)
-                {
-
-                }
+                catch(SocketException) { }
             }).Wait();
         }
 
-        public static void ClamScanFileFromRepo(DBFile file)
+        public static void ClamScanFileFromRepo(DbFile file)
         {
             try
             {
-                if(Context.clamdVersion == null)
+                if(Context.ClamdVersion == null)
                 {
-                    if(Failed != null)
-                        Failed("clamd is not usable");
+                    Failed?.Invoke("clamd is not usable");
                     return;
                 }
 
-                if(clam == null)
-                {
-                    if(Failed != null)
-                        Failed("clamd is not initalized");
-                }
+                if(clam == null) Failed?.Invoke("clamd is not initalized");
 
-                string repoPath;
+                string   repoPath;
                 AlgoEnum algorithm;
 
                 if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                             file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".gz")))
+                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(), file.Sha256 + ".gz")))
                 {
                     repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                             file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".gz");
+                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(), file.Sha256 + ".gz");
                     algorithm = AlgoEnum.GZip;
                 }
                 else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
-                                            file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".bz2")))
+                                                 file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                 file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                 file.Sha256 + ".bz2")))
                 {
                     repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                             file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".bz2");
+                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(), file.Sha256 + ".bz2");
                     algorithm = AlgoEnum.BZip2;
                 }
                 else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
-                                            file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".lzma")))
+                                                 file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                 file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                 file.Sha256 + ".lzma")))
                 {
                     repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                             file.Sha256[1].ToString(), file.Sha256[2].ToString(),
@@ -121,34 +114,30 @@ namespace osrepodbmgr.Core
                     algorithm = AlgoEnum.LZMA;
                 }
                 else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
-                                            file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".lz")))
+                                                 file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                 file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                 file.Sha256 + ".lz")))
                 {
                     repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                             file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                            file.Sha256 + ".lz");
+                                            file.Sha256[3].ToString(), file.Sha256[4].ToString(), file.Sha256 + ".lz");
                     algorithm = AlgoEnum.LZip;
                 }
                 else
                 {
-                    if(Failed != null)
-                        Failed(string.Format("Cannot find file with hash {0} in the repository", file.Sha256));
+                    Failed?.Invoke($"Cannot find file with hash {file.Sha256} in the repository");
                     return;
                 }
 
-                ClamScanResult result = null;
-                Stream zStream = null;
+                ClamScanResult result  = null;
+                Stream         zStream = null;
 
                 if(Settings.Current.ClamdIsLocal)
-                {
-                    // clamd supports gzip and bzip2 but not lzma
                     if(algorithm == AlgoEnum.LZMA || algorithm == AlgoEnum.LZip)
                     {
-                        string tmpFile = Path.Combine(Settings.Current.TemporaryFolder, Path.GetTempFileName());
-                        FileStream outFs = new FileStream(tmpFile, FileMode.Create, FileAccess.Write);
-                        FileStream inFs = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
+                        string     tmpFile = Path.Combine(Settings.Current.TemporaryFolder, Path.GetTempFileName());
+                        FileStream outFs   = new FileStream(tmpFile,  FileMode.Create, FileAccess.Write);
+                        FileStream inFs    = new FileStream(repoPath, FileMode.Open,   FileAccess.Read);
 
                         if(algorithm == AlgoEnum.LZMA)
                         {
@@ -157,58 +146,52 @@ namespace osrepodbmgr.Core
                             inFs.Seek(8, SeekOrigin.Current);
                             zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
                         }
-                        else
-                            zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                        else zStream = new LZipStream(inFs, CompressionMode.Decompress);
 
-                        if(UpdateProgress != null)
-                            UpdateProgress("Uncompressing file...", null, 0, 0);
+                        UpdateProgress?.Invoke("Uncompressing file...", null, 0, 0);
 
-#if DEBUG
+                        #if DEBUG
                         stopwatch.Restart();
-#endif
+                        #endif
                         zStream.CopyTo(outFs);
                         zStream.Close();
                         outFs.Close();
-#if DEBUG
+                        #if DEBUG
                         stopwatch.Stop();
-                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Uncompressing took {1} seconds", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Uncompressing took {1} seconds", file,
+                                          stopwatch.Elapsed.TotalSeconds);
+                        #endif
 
-                        if(UpdateProgress != null)
-                            UpdateProgress("Requesting local scan to clamd server...", null, 0, 0);
+                        UpdateProgress?.Invoke("Requesting local scan to clamd server...", null, 0, 0);
 
-#if DEBUG
+                        #if DEBUG
                         stopwatch.Restart();
-#endif
-                        Task.Run(async () =>
-                        {
-                            result = await clam.ScanFileOnServerMultithreadedAsync(tmpFile);
-                        }).Wait();
-#if DEBUG
+                        #endif
+                        Task.Run(async () => { result = await clam.ScanFileOnServerMultithreadedAsync(tmpFile); })
+                            .Wait();
+                        #if DEBUG
                         stopwatch.Stop();
-                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file,
+                                          stopwatch.Elapsed.TotalSeconds);
+                        #endif
 
                         File.Delete(tmpFile);
                     }
                     else
                     {
-                        if(UpdateProgress != null)
-                            UpdateProgress("Requesting local scan to clamd server...", null, 0, 0);
+                        UpdateProgress?.Invoke("Requesting local scan to clamd server...", null, 0, 0);
 
-#if DEBUG
+                        #if DEBUG
                         stopwatch.Restart();
-#endif
-                        Task.Run(async () =>
-                        {
-                            result = await clam.ScanFileOnServerMultithreadedAsync(repoPath);
-                        }).Wait();
-#if DEBUG
+                        #endif
+                        Task.Run(async () => { result = await clam.ScanFileOnServerMultithreadedAsync(repoPath); })
+                            .Wait();
+                        #if DEBUG
                         stopwatch.Stop();
-                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                        Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file,
+                                          stopwatch.Elapsed.TotalSeconds);
+                        #endif
                     }
-                }
                 else
                 {
                     FileStream inFs = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
@@ -216,10 +199,10 @@ namespace osrepodbmgr.Core
                     switch(algorithm)
                     {
                         case AlgoEnum.GZip:
-                            zStream = new GZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            zStream = new GZipStream(inFs, CompressionMode.Decompress);
                             break;
                         case AlgoEnum.BZip2:
-                            zStream = new BZip2Stream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            zStream = new BZip2Stream(inFs, CompressionMode.Decompress);
                             break;
                         case AlgoEnum.LZMA:
                             byte[] properties = new byte[5];
@@ -228,97 +211,85 @@ namespace osrepodbmgr.Core
                             zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
                             break;
                         case AlgoEnum.LZip:
-                            zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            zStream = new LZipStream(inFs, CompressionMode.Decompress);
                             break;
                     }
 
-                    if(UpdateProgress != null)
-                        UpdateProgress("Uploading file to clamd server...", null, 0, 0);
+                    UpdateProgress?.Invoke("Uploading file to clamd server...", null, 0, 0);
 
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Restart();
-#endif
-                    Task.Run(async () =>
-                    {
-                        result = await clam.SendAndScanFileAsync(zStream);
-                    }).Wait();
-#if DEBUG
+                    #endif
+                    Task.Run(async () => { result = await clam.SendAndScanFileAsync(zStream); }).Wait();
+                    #if DEBUG
                     stopwatch.Stop();
-                    Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                    Console.WriteLine("Core.ClamScanFileFromRepo({0}): Clamd took {1} seconds to scan", file,
+                                      stopwatch.Elapsed.TotalSeconds);
+                    #endif
                     zStream.Close();
                 }
 
                 if(result.InfectedFiles != null && result.InfectedFiles.Count > 0)
                 {
                     file.HasVirus = true;
-                    file.Virus = result.InfectedFiles[0].VirusName;
+                    file.Virus    = result.InfectedFiles[0].VirusName;
                 }
                 else if(file.HasVirus == null)
                 {
                     // If no scan has been done, mark as false.
                     // If a positive has already existed don't overwrite it.
                     file.HasVirus = false;
-                    file.Virus = null;
+                    file.Virus    = null;
                 }
+
                 file.ClamTime = DateTime.UtcNow;
 
-                dbCore.DBOps.UpdateFile(file);
+                dbCore.DbOps.UpdateFile(file);
 
-                if(ScanFinished != null)
-                    ScanFinished(file);
-
-                return;
+                ScanFinished?.Invoke(file);
             }
-            catch(System.Threading.ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Failed != null)
-                    Failed(string.Format("Exception {0} when calling clamd", ex.Message));
-#if DEBUG
+                Failed?.Invoke($"Exception {ex.Message} when calling clamd");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
         public static void ClamScanAllFiles()
         {
-            if(UpdateProgress2 != null)
-                UpdateProgress2("Asking database for files", null, 0, 0);
+            UpdateProgress2?.Invoke("Asking database for files", null, 0, 0);
 
-#if DEBUG
+            #if DEBUG
             stopwatch.Restart();
-#endif
-            List<DBFile> files;
+            #endif
 
-            if(!dbCore.DBOps.GetNotAvFiles(out files))
-            {
-                if(Failed != null)
-                    Failed("Could not get files from database.");
-            }
-#if DEBUG
+            if(!dbCore.DbOps.GetNotAvFiles(out List<DbFile> files))
+                Failed?.Invoke("Could not get files from database.");
+            #if DEBUG
             stopwatch.Stop();
-            Console.WriteLine("Core.ClamScanAllFiles(): Took {0} seconds to get files from database", stopwatch.Elapsed.TotalSeconds);
+            Console.WriteLine("Core.ClamScanAllFiles(): Took {0} seconds to get files from database",
+                              stopwatch.Elapsed.TotalSeconds);
             stopwatch.Restart();
-#endif
+            #endif
             int counter = 0;
-            foreach(DBFile file in files)
+            foreach(DbFile file in files)
             {
-                if(UpdateProgress2 != null)
-                    UpdateProgress2(string.Format("Scanning file {0} of {1}", counter, files.Count), null, counter, files.Count);
+                UpdateProgress2?.Invoke($"Scanning file {counter} of {files.Count}", null, counter, files.Count);
 
                 ClamScanFileFromRepo(file);
 
                 counter++;
             }
-#if DEBUG
+            #if DEBUG
             stopwatch.Stop();
-            Console.WriteLine("Core.ClamScanAllFiles(): Took {0} seconds scan all pending files", stopwatch.Elapsed.TotalSeconds);
-#endif
+            Console.WriteLine("Core.ClamScanAllFiles(): Took {0} seconds scan all pending files",
+                              stopwatch.Elapsed.TotalSeconds);
+            #endif
 
-            if(Finished != null)
-                Finished();
+            Finished?.Invoke();
         }
     }
 }

@@ -25,8 +25,10 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using Gtk;
 using osrepodbmgr.Core;
+using Settings = osrepodbmgr.Core.Settings;
 
 namespace osrepodbmgr
 {
@@ -34,16 +36,16 @@ namespace osrepodbmgr
     {
         public static void Main(string[] args)
         {
-            Core.Settings.LoadSettings();
+            Settings.LoadSettings();
             Context.CheckUnar();
-            Context.usableDotNetZip = true;
-            if(Core.Settings.Current.UseAntivirus)
+            Context.UsableDotNetZip = true;
+            if(Settings.Current.UseAntivirus)
             {
-                if(Core.Settings.Current.UseClamd)
-                    Workers.InitClamd();
-                if(Core.Settings.Current.UseVirusTotal)
-                    Context.virusTotalEnabled = Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
+                if(Settings.Current.UseClamd) Workers.InitClamd();
+                if(Settings.Current.UseVirusTotal)
+                    Context.VirusTotalEnabled = Workers.InitVirusTotal(Settings.Current.VirusTotalKey);
             }
+
             Application.Init();
             frmMain win = new frmMain();
             win.Show();

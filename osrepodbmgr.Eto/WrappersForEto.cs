@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using osrepodbmgr.Core;
 using Schemas;
 
@@ -32,32 +33,109 @@ namespace osrepodbmgr.Eto
 {
     class DBEntryForEto
     {
-        DBEntry _item;
-        public DBEntryForEto(DBEntry item)
+        DbEntry _item;
+
+        public DBEntryForEto(DbEntry item)
         {
             _item = item;
         }
 
-        public long id { get { return _item.id; } set { } }
-        public string developer { get { return _item.developer; } set { } }
-        public string product { get { return _item.product; } set { } }
-        public string version { get { return _item.version; } set { } }
-        public string languages { get { return _item.languages; } set { } }
-        public string architecture { get { return _item.architecture; } set { } }
-        public string machine { get { return _item.machine; } set { } }
-        public string format { get { return _item.format; } set { } }
-        public string description { get { return _item.description; } set { } }
-        public bool oem { get { return _item.oem; } set { } }
-        public bool upgrade { get { return _item.upgrade; } set { } }
-        public bool update { get { return _item.update; } set { } }
-        public bool source { get { return _item.source; } set { } }
-        public bool files { get { return _item.files; } set { } }
-        public bool netinstall { get { return _item.netinstall; } set { } }
-        public byte[] xml { get { return _item.xml; } set { } }
-        public byte[] json { get { return _item.json; } set { } }
-        public string mdid { get { return _item.mdid; } set { } }
+        public long id
+        {
+            get { return _item.Id; }
+            set { }
+        }
+        public string developer
+        {
+            get { return _item.Developer; }
+            set { }
+        }
+        public string product
+        {
+            get { return _item.Product; }
+            set { }
+        }
+        public string version
+        {
+            get { return _item.Version; }
+            set { }
+        }
+        public string languages
+        {
+            get { return _item.Languages; }
+            set { }
+        }
+        public string architecture
+        {
+            get { return _item.Architecture; }
+            set { }
+        }
+        public string machine
+        {
+            get { return _item.Machine; }
+            set { }
+        }
+        public string format
+        {
+            get { return _item.Format; }
+            set { }
+        }
+        public string description
+        {
+            get { return _item.Description; }
+            set { }
+        }
+        public bool oem
+        {
+            get { return _item.Oem; }
+            set { }
+        }
+        public bool upgrade
+        {
+            get { return _item.Upgrade; }
+            set { }
+        }
+        public bool update
+        {
+            get { return _item.Update; }
+            set { }
+        }
+        public bool source
+        {
+            get { return _item.Source; }
+            set { }
+        }
+        public bool files
+        {
+            get { return _item.Files; }
+            set { }
+        }
+        public bool netinstall
+        {
+            get { return _item.Netinstall; }
+            set { }
+        }
+        public byte[] xml
+        {
+            get { return _item.Xml; }
+            set { }
+        }
+        public byte[] json
+        {
+            get { return _item.Json; }
+            set { }
+        }
+        public string mdid
+        {
+            get { return _item.Mdid; }
+            set { }
+        }
 
-        public DBEntry original { get { return _item; } set { } }
+        public DbEntry original
+        {
+            get { return _item; }
+            set { }
+        }
     }
 
     class StringEntry
@@ -67,19 +145,19 @@ namespace osrepodbmgr.Eto
 
     class BarcodeEntry
     {
-        public string code { get; set; }
+        public string          code { get; set; }
         public BarcodeTypeType type { get; set; }
     }
 
     class DiscEntry
     {
-        public string path { get; set; }
+        public string          path { get; set; }
         public OpticalDiscType disc { get; set; }
     }
 
     class DiskEntry
     {
-        public string path { get; set; }
+        public string         path { get; set; }
         public BlockMediaType disk { get; set; }
     }
 }

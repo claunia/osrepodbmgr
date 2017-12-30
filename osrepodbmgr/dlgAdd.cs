@@ -25,11 +25,13 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Xml.Serialization;
+using Gdk;
 using Gtk;
 using Newtonsoft.Json;
 using osrepodbmgr;
@@ -38,22 +40,21 @@ using Schemas;
 
 public partial class dlgAdd : Dialog
 {
-    Thread thdPulseProgress;
-    Thread thdFindFiles;
-    Thread thdHashFiles;
-    Thread thdCheckFiles;
-    Thread thdAddFiles;
-    Thread thdPackFiles;
-    Thread thdOpenArchive;
-    Thread thdExtractArchive;
-    Thread thdRemoveTemp;
-    bool stopped;
-    ListStore fileView;
-    ListStore osView;
-    int knownFiles;
+    public delegate void OnAddedOSDelegate(DbEntry os);
 
-    public delegate void OnAddedOSDelegate(DBEntry os);
-    public event OnAddedOSDelegate OnAddedOS;
+    ListStore fileView;
+    int       knownFiles;
+    ListStore osView;
+    bool      stopped;
+    Thread    thdAddFiles;
+    Thread    thdCheckFiles;
+    Thread    thdExtractArchive;
+    Thread    thdFindFiles;
+    Thread    thdHashFiles;
+    Thread    thdOpenArchive;
+    Thread    thdPackFiles;
+    Thread    thdPulseProgress;
+    Thread    thdRemoveTemp;
 
     public dlgAdd()
     {
@@ -62,17 +63,21 @@ public partial class dlgAdd : Dialog
         Context.UnarChangeStatus += UnarChangeStatus;
         Context.CheckUnar();
 
-        CellRendererText filenameCell = new CellRendererText();
-        CellRendererToggle crackCell = new CellRendererToggle();
-        CellRendererText hashCell = new CellRendererText();
-        CellRendererToggle dbCell = new CellRendererToggle();
+        CellRendererText   filenameCell = new CellRendererText();
+        CellRendererToggle crackCell    = new CellRendererToggle();
+        CellRendererText   hashCell     = new CellRendererText();
+        CellRendererToggle dbCell       = new CellRendererToggle();
 
-        TreeViewColumn filenameColumn = new TreeViewColumn("Path", filenameCell, "text", 0, "background", 3, "foreground", 4);
+        TreeViewColumn filenameColumn =
+            new TreeViewColumn("Path", filenameCell, "text", 0, "background", 3,
+                               "foreground", 4);
         TreeViewColumn crackColumn = new TreeViewColumn("Crack?", crackCell, "active", 5);
-        TreeViewColumn hashColumn = new TreeViewColumn("SHA256", hashCell, "text", 1, "background", 3, "foreground", 4);
-        TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell, "active", 2);
+        TreeViewColumn hashColumn  =
+            new TreeViewColumn("SHA256",                       hashCell, "text",   1, "background", 3, "foreground", 4);
+        TreeViewColumn dbColumn = new TreeViewColumn("Known?", dbCell,   "active", 2);
 
-        fileView = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string), typeof(bool));
+        fileView = new ListStore(typeof(string), typeof(string), typeof(bool), typeof(string), typeof(string),
+                                 typeof(bool));
 
         treeFiles.Model = fileView;
         treeFiles.AppendColumn(filenameColumn);
@@ -82,38 +87,39 @@ public partial class dlgAdd : Dialog
 
         tabTabs.GetNthPage(1).Visible = false;
 
-        CellRendererText developerCell = new CellRendererText();
-        CellRendererText productCell = new CellRendererText();
-        CellRendererText versionCell = new CellRendererText();
-        CellRendererText languagesCell = new CellRendererText();
-        CellRendererText architectureCell = new CellRendererText();
-        CellRendererText machineCell = new CellRendererText();
-        CellRendererText formatCell = new CellRendererText();
-        CellRendererText descriptionCell = new CellRendererText();
-        CellRendererToggle oemCell = new CellRendererToggle();
-        CellRendererToggle upgradeCell = new CellRendererToggle();
-        CellRendererToggle updateCell = new CellRendererToggle();
-        CellRendererToggle sourceCell = new CellRendererToggle();
-        CellRendererToggle filesCell = new CellRendererToggle();
-        CellRendererToggle netinstallCell = new CellRendererToggle();
+        CellRendererText   developerCell    = new CellRendererText();
+        CellRendererText   productCell      = new CellRendererText();
+        CellRendererText   versionCell      = new CellRendererText();
+        CellRendererText   languagesCell    = new CellRendererText();
+        CellRendererText   architectureCell = new CellRendererText();
+        CellRendererText   machineCell      = new CellRendererText();
+        CellRendererText   formatCell       = new CellRendererText();
+        CellRendererText   descriptionCell  = new CellRendererText();
+        CellRendererToggle oemCell          = new CellRendererToggle();
+        CellRendererToggle upgradeCell      = new CellRendererToggle();
+        CellRendererToggle updateCell       = new CellRendererToggle();
+        CellRendererToggle sourceCell       = new CellRendererToggle();
+        CellRendererToggle filesCell        = new CellRendererToggle();
+        CellRendererToggle netinstallCell   = new CellRendererToggle();
 
-        TreeViewColumn developerColumn = new TreeViewColumn("Developer", developerCell, "text", 0);
-        TreeViewColumn productColumn = new TreeViewColumn("Product", productCell, "text", 1);
-        TreeViewColumn versionColumn = new TreeViewColumn("Version", versionCell, "text", 2);
-        TreeViewColumn languagesColumn = new TreeViewColumn("Languages", languagesCell, "text", 3);
-        TreeViewColumn architectureColumn = new TreeViewColumn("Architecture", architectureCell, "text", 4);
-        TreeViewColumn machineColumn = new TreeViewColumn("Machine", machineCell, "text", 5);
-        TreeViewColumn formatColumn = new TreeViewColumn("Format", formatCell, "text", 6);
-        TreeViewColumn descriptionColumn = new TreeViewColumn("Description", descriptionCell, "text", 7);
-        TreeViewColumn oemColumn = new TreeViewColumn("OEM?", oemCell, "active", 8);
-        TreeViewColumn upgradeColumn = new TreeViewColumn("Upgrade?", upgradeCell, "active", 9);
-        TreeViewColumn updateColumn = new TreeViewColumn("Update?", updateCell, "active", 10);
-        TreeViewColumn sourceColumn = new TreeViewColumn("Source?", sourceCell, "active", 11);
-        TreeViewColumn filesColumn = new TreeViewColumn("Files?", filesCell, "active", 12);
-        TreeViewColumn netinstallColumn = new TreeViewColumn("NetInstall?", netinstallCell, "active", 13);
+        TreeViewColumn developerColumn    = new TreeViewColumn("Developer",    developerCell,    "text",   0);
+        TreeViewColumn productColumn      = new TreeViewColumn("Product",      productCell,      "text",   1);
+        TreeViewColumn versionColumn      = new TreeViewColumn("Version",      versionCell,      "text",   2);
+        TreeViewColumn languagesColumn    = new TreeViewColumn("Languages",    languagesCell,    "text",   3);
+        TreeViewColumn architectureColumn = new TreeViewColumn("Architecture", architectureCell, "text",   4);
+        TreeViewColumn machineColumn      = new TreeViewColumn("Machine",      machineCell,      "text",   5);
+        TreeViewColumn formatColumn       = new TreeViewColumn("Format",       formatCell,       "text",   6);
+        TreeViewColumn descriptionColumn  = new TreeViewColumn("Description",  descriptionCell,  "text",   7);
+        TreeViewColumn oemColumn          = new TreeViewColumn("OEM?",         oemCell,          "active", 8);
+        TreeViewColumn upgradeColumn      = new TreeViewColumn("Upgrade?",     upgradeCell,      "active", 9);
+        TreeViewColumn updateColumn       = new TreeViewColumn("Update?",      updateCell,       "active", 10);
+        TreeViewColumn sourceColumn       = new TreeViewColumn("Source?",      sourceCell,       "active", 11);
+        TreeViewColumn filesColumn        = new TreeViewColumn("Files?",       filesCell,        "active", 12);
+        TreeViewColumn netinstallColumn   = new TreeViewColumn("NetInstall?",  netinstallCell,   "active", 13);
 
-        osView = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string),
-                                 typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool));
+        osView = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string), typeof(string),
+                               typeof(string), typeof(string), typeof(string), typeof(bool), typeof(bool), typeof(bool),
+                               typeof(bool), typeof(bool), typeof(bool));
 
         treeOSes.Model = osView;
         treeOSes.AppendColumn(developerColumn);
@@ -134,20 +140,17 @@ public partial class dlgAdd : Dialog
         treeFiles.Selection.Changed += treeFilesSelectionChanged;
     }
 
+    public event OnAddedOSDelegate OnAddedOS;
+
     void UnarChangeStatus()
     {
-        Application.Invoke(delegate
-        {
-            btnArchive.Sensitive = Context.unarUsable;
-        });
+        Application.Invoke(delegate { btnArchive.Sensitive = Context.UnarUsable; });
     }
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
     {
-        if(btnStop.Visible)
-            btnStop.Click();
-        if(btnClose.Sensitive)
-            btnClose.Click();
+        if(btnStop.Visible) btnStop.Click();
+        if(btnClose.Sensitive) btnClose.Click();
 
         Application.Quit();
         a.RetVal = true;
@@ -155,37 +158,34 @@ public partial class dlgAdd : Dialog
 
     protected void OnBtnFolderClicked(object sender, EventArgs e)
     {
-        FileChooserDialog dlgFolder = new FileChooserDialog("Open folder", this, FileChooserAction.SelectFolder,
-                                                             "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
-        dlgFolder.SelectMultiple = false;
+        FileChooserDialog dlgFolder =
+            new FileChooserDialog("Open folder", this, FileChooserAction.SelectFolder, "Cancel", ResponseType.Cancel,
+                                  "Choose", ResponseType.Accept) {SelectMultiple = false};
 
         if(dlgFolder.Run() == (int)ResponseType.Accept)
         {
-            knownFiles = 0;
-            stopped = false;
-            lblProgress.Text = "Finding files";
+            knownFiles          = 0;
+            stopped             = false;
+            lblProgress.Text    = "Finding files";
             lblProgress.Visible = true;
             prgProgress.Visible = true;
-            btnExit.Sensitive = false;
-            btnFolder.Visible = false;
-            btnArchive.Visible = false;
-            thdPulseProgress = new Thread(() =>
+            btnExit.Sensitive   = false;
+            btnFolder.Visible   = false;
+            btnArchive.Visible  = false;
+            thdPulseProgress    = new Thread(() =>
             {
                 while(true)
                 {
-                    Application.Invoke(delegate
-                    {
-                        prgProgress.Pulse();
-                    });
+                    Application.Invoke(delegate { prgProgress.Pulse(); });
                     Thread.Sleep(66);
                 }
             });
 
-            thdFindFiles = new Thread(Workers.FindFiles);
-            Context.path = dlgFolder.Filename;
-            Workers.Failed += FindFilesFailed;
+            thdFindFiles     =  new Thread(Workers.FindFiles);
+            Context.Path     =  dlgFolder.Filename;
+            Workers.Failed   += FindFilesFailed;
             Workers.Finished += FindFilesFinished;
-            btnStop.Visible = true;
+            btnStop.Visible  =  true;
             thdPulseProgress.Start();
             thdFindFiles.Start();
         }
@@ -199,21 +199,22 @@ public partial class dlgAdd : Dialog
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            lblProgress.Visible = false;
-            prgProgress.Visible = false;
-            btnExit.Sensitive = true;
-            btnFolder.Visible = true;
-            btnArchive.Visible = true;
-            btnStop.Visible = false;
-            Workers.Failed -= FindFilesFailed;
-            Workers.Finished -= FindFilesFinished;
-            thdFindFiles = null;
+
+            thdPulseProgress?.Abort();
+            lblProgress.Visible =  false;
+            prgProgress.Visible =  false;
+            btnExit.Sensitive   =  true;
+            btnFolder.Visible   =  true;
+            btnArchive.Visible  =  true;
+            btnStop.Visible     =  false;
+            Workers.Failed      -= FindFilesFailed;
+            Workers.Finished    -= FindFilesFinished;
+            thdFindFiles        =  null;
         });
     }
 
@@ -221,22 +222,21 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
+            thdPulseProgress?.Abort();
 
-            Workers.Failed -= FindFilesFailed;
+            Workers.Failed   -= FindFilesFailed;
             Workers.Finished -= FindFilesFinished;
 
-            lblProgress.Visible = true;
-            prgProgress.Visible = true;
+            lblProgress.Visible  = true;
+            prgProgress.Visible  = true;
             lblProgress2.Visible = true;
             prgProgress2.Visible = true;
 
-            thdFindFiles = null;
-            thdHashFiles = new Thread(Workers.HashFiles);
-            Workers.Failed += HashFilesFailed;
-            Workers.Finished += HashFilesFinished;
-            Workers.UpdateProgress += UpdateProgress;
+            thdFindFiles            =  null;
+            thdHashFiles            =  new Thread(Workers.HashFiles);
+            Workers.Failed          += HashFilesFailed;
+            Workers.Finished        += HashFilesFinished;
+            Workers.UpdateProgress  += UpdateProgress;
             Workers.UpdateProgress2 += UpdateProgress2;
             thdHashFiles.Start();
         });
@@ -248,25 +248,26 @@ public partial class dlgAdd : Dialog
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            lblProgress.Visible = false;
-            prgProgress.Visible = false;
-            lblProgress2.Visible = false;
-            prgProgress2.Visible = false;
-            btnStop.Visible = false;
-            Workers.Failed -= HashFilesFailed;
-            Workers.Finished -= HashFilesFinished;
-            Workers.UpdateProgress -= UpdateProgress;
+
+            thdPulseProgress?.Abort();
+            lblProgress.Visible     =  false;
+            prgProgress.Visible     =  false;
+            lblProgress2.Visible    =  false;
+            prgProgress2.Visible    =  false;
+            btnStop.Visible         =  false;
+            Workers.Failed          -= HashFilesFailed;
+            Workers.Finished        -= HashFilesFinished;
+            Workers.UpdateProgress  -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            btnExit.Sensitive = true;
-            btnFolder.Visible = true;
-            btnArchive.Visible = true;
-            thdHashFiles = null;
+            btnExit.Sensitive       =  true;
+            btnFolder.Visible       =  true;
+            btnArchive.Visible      =  true;
+            thdHashFiles            =  null;
         });
     }
 
@@ -274,29 +275,28 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            lblProgress.Visible = false;
-            prgProgress.Visible = false;
-            lblProgress.Visible = false;
-            prgProgress.Visible = false;
-            lblProgress2.Visible = false;
-            prgProgress2.Visible = false;
-            Workers.Failed -= HashFilesFailed;
-            Workers.Finished -= HashFilesFinished;
-            Workers.UpdateProgress -= UpdateProgress;
+            thdPulseProgress?.Abort();
+            lblProgress.Visible     =  false;
+            prgProgress.Visible     =  false;
+            lblProgress.Visible     =  false;
+            prgProgress.Visible     =  false;
+            lblProgress2.Visible    =  false;
+            prgProgress2.Visible    =  false;
+            Workers.Failed          -= HashFilesFailed;
+            Workers.Finished        -= HashFilesFinished;
+            Workers.UpdateProgress  -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            thdHashFiles = null;
+            thdHashFiles            =  null;
 
             prgProgress.Visible = true;
 
-            thdCheckFiles = new Thread(Workers.CheckDbForFiles);
-            Workers.Failed += ChkFilesFailed;
-            Workers.Finished += ChkFilesFinished;
-            Workers.UpdateProgress += UpdateProgress;
+            thdCheckFiles           =  new Thread(Workers.CheckDbForFiles);
+            Workers.Failed          += ChkFilesFailed;
+            Workers.Finished        += ChkFilesFinished;
+            Workers.UpdateProgress  += UpdateProgress;
             Workers.UpdateProgress2 += UpdateProgress2;
-            Workers.AddFileForOS += AddFile;
-            Workers.AddOS += AddOS;
+            Workers.AddFileForOS    += AddFile;
+            Workers.AddOS           += AddOS;
             thdCheckFiles.Start();
         });
     }
@@ -307,32 +307,30 @@ public partial class dlgAdd : Dialog
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
-            prgProgress.Visible = false;
-            btnStop.Visible = false;
-            btnClose.Visible = false;
-            btnExit.Sensitive = true;
-            Workers.Failed -= ChkFilesFailed;
-            Workers.Finished -= ChkFilesFinished;
-            Workers.UpdateProgress -= UpdateProgress;
+
+            prgProgress.Visible     =  false;
+            btnStop.Visible         =  false;
+            btnClose.Visible        =  false;
+            btnExit.Sensitive       =  true;
+            Workers.Failed          -= ChkFilesFailed;
+            Workers.Finished        -= ChkFilesFinished;
+            Workers.UpdateProgress  -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            Workers.AddFileForOS -= AddFile;
-            Workers.AddOS -= AddOS;
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            if(thdCheckFiles != null)
-                thdCheckFiles.Abort();
+            Workers.AddFileForOS    -= AddFile;
+            Workers.AddOS           -= AddOS;
+            thdPulseProgress?.Abort();
+            thdCheckFiles?.Abort();
             thdHashFiles = null;
-            if(fileView != null)
-                fileView.Clear();
-            if(osView != null)
-            {
-                tabTabs.GetNthPage(1).Visible = false;
-                osView.Clear();
-            }
+            fileView?.Clear();
+            if(osView == null) return;
+
+            tabTabs.GetNthPage(1).Visible = false;
+            osView.Clear();
         });
     }
 
@@ -340,99 +338,82 @@ public partial class dlgAdd : Dialog
     {
         Application.Invoke(delegate
         {
-            Workers.Failed -= ChkFilesFailed;
-            Workers.Finished -= ChkFilesFinished;
-            Workers.UpdateProgress -= UpdateProgress;
+            Workers.Failed          -= ChkFilesFailed;
+            Workers.Finished        -= ChkFilesFinished;
+            Workers.UpdateProgress  -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            Workers.AddFileForOS -= AddFile;
-            Workers.AddOS -= AddOS;
+            Workers.AddFileForOS    -= AddFile;
+            Workers.AddOS           -= AddOS;
 
-            if(thdCheckFiles != null)
-                thdCheckFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            thdHashFiles = null;
-            prgProgress.Visible = false;
-            btnStop.Visible = false;
-            btnClose.Visible = true;
-            btnExit.Sensitive = true;
-            btnPack.Visible = true;
-            btnPack.Sensitive = true;
-            btnRemoveFile.Visible = true;
-            btnToggleCrack.Visible = true;
-            btnRemoveFile.Sensitive = true;
+            thdCheckFiles?.Abort();
+            thdPulseProgress?.Abort();
+            thdHashFiles             = null;
+            prgProgress.Visible      = false;
+            btnStop.Visible          = false;
+            btnClose.Visible         = true;
+            btnExit.Sensitive        = true;
+            btnPack.Visible          = true;
+            btnPack.Sensitive        = true;
+            btnRemoveFile.Visible    = true;
+            btnToggleCrack.Visible   = true;
+            btnRemoveFile.Sensitive  = true;
             btnToggleCrack.Sensitive = true;
 
-            txtFormat.IsEditable = true;
-            txtMachine.IsEditable = true;
-            txtProduct.IsEditable = true;
-            txtVersion.IsEditable = true;
-            txtLanguages.IsEditable = true;
-            txtDeveloper.IsEditable = true;
-            txtDescription.IsEditable = true;
+            txtFormat.IsEditable       = true;
+            txtMachine.IsEditable      = true;
+            txtProduct.IsEditable      = true;
+            txtVersion.IsEditable      = true;
+            txtLanguages.IsEditable    = true;
+            txtDeveloper.IsEditable    = true;
+            txtDescription.IsEditable  = true;
             txtArchitecture.IsEditable = true;
-            chkOem.Sensitive = true;
-            chkFiles.Sensitive = true;
-            chkUpdate.Sensitive = true;
-            chkUpgrade.Sensitive = true;
-            chkNetinstall.Sensitive = true;
-            chkSource.Sensitive = true;
+            chkOem.Sensitive           = true;
+            chkFiles.Sensitive         = true;
+            chkUpdate.Sensitive        = true;
+            chkUpgrade.Sensitive       = true;
+            chkNetinstall.Sensitive    = true;
+            chkSource.Sensitive        = true;
 
             btnMetadata.Visible = true;
-            if(Context.metadata != null)
+            if(Context.Metadata != null)
             {
-                if(Context.metadata.Developer != null)
-                {
-                    foreach(string developer in Context.metadata.Developer)
+                if(Context.Metadata.Developer != null)
+                    foreach(string developer in Context.Metadata.Developer)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
-                            txtDeveloper.Text += ",";
-                        txtDeveloper.Text += developer;
+                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text)) txtDeveloper.Text += ",";
+                        txtDeveloper.Text                                                   += developer;
                     }
-                }
 
-                if(!string.IsNullOrWhiteSpace(Context.metadata.Name))
-                    txtProduct.Text = Context.metadata.Name;
-                if(!string.IsNullOrWhiteSpace(Context.metadata.Version))
-                    txtVersion.Text = Context.metadata.Version;
+                if(!string.IsNullOrWhiteSpace(Context.Metadata.Name)) txtProduct.Text    = Context.Metadata.Name;
+                if(!string.IsNullOrWhiteSpace(Context.Metadata.Version)) txtVersion.Text = Context.Metadata.Version;
 
-                if(Context.metadata.Languages != null)
-                {
-                    foreach(LanguagesTypeLanguage language in Context.metadata.Languages)
+                if(Context.Metadata.Languages != null)
+                    foreach(LanguagesTypeLanguage language in Context.Metadata.Languages)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
-                            txtLanguages.Text += ",";
-                        txtLanguages.Text += language;
+                        if(!string.IsNullOrWhiteSpace(txtLanguages.Text)) txtLanguages.Text += ",";
+                        txtLanguages.Text                                                   += language;
                     }
-                }
 
-                if(Context.metadata.Architectures != null)
-                {
-                    foreach(ArchitecturesTypeArchitecture architecture in Context.metadata.Architectures)
+                if(Context.Metadata.Architectures != null)
+                    foreach(ArchitecturesTypeArchitecture architecture in Context.Metadata.Architectures)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
-                            txtArchitecture.Text += ",";
-                        txtArchitecture.Text += architecture;
+                        if(!string.IsNullOrWhiteSpace(txtArchitecture.Text)) txtArchitecture.Text += ",";
+                        txtArchitecture.Text                                                      += architecture;
                     }
-                }
 
-                if(Context.metadata.Systems != null)
-                {
-                    foreach(string machine in Context.metadata.Systems)
+                if(Context.Metadata.Systems != null)
+                    foreach(string machine in Context.Metadata.Systems)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtMachine.Text))
-                            txtMachine.Text += ",";
-                        txtMachine.Text += machine;
+                        if(!string.IsNullOrWhiteSpace(txtMachine.Text)) txtMachine.Text += ",";
+                        txtMachine.Text                                                 += machine;
                     }
-                }
 
-                btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(0, 127, 0));
+                btnMetadata.ModifyBg(StateType.Normal, new Color(0, 127, 0));
             }
-            else
-                btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(127, 0, 0));
+            else btnMetadata.ModifyBg(StateType.Normal, new Color(127, 0, 0));
 
             lblStatus.Visible = true;
-            lblStatus.Text = string.Format("{0} files ({1} already known)", fileView.IterNChildren(), knownFiles);
+            lblStatus.Text    = $"{fileView.IterNChildren()} files ({knownFiles} already known)";
         });
     }
 
@@ -443,128 +424,119 @@ public partial class dlgAdd : Dialog
             string color = known ? "green" : "red";
             fileView.AppendValues(filename, hash, known, color, "black", isCrack);
             btnPack.Sensitive |= !known;
-            if(known)
-                knownFiles++;
+            if(known) knownFiles++;
         });
     }
 
-    void AddOS(DBEntry os)
+    void AddOS(DbEntry os)
     {
         Application.Invoke(delegate
         {
             tabTabs.GetNthPage(1).Visible = true;
-            osView.AppendValues(os.developer, os.product, os.version, os.languages, os.architecture, os.machine,
-                                os.format, os.description, os.oem, os.upgrade, os.update, os.source,
-                                os.files, os.netinstall);
+            osView.AppendValues(os.Developer, os.Product, os.Version, os.Languages, os.Architecture, os.Machine,
+                                os.Format, os.Description, os.Oem, os.Upgrade, os.Update, os.Source, os.Files,
+                                os.Netinstall);
         });
     }
 
     protected void OnBtnExitClicked(object sender, EventArgs e)
     {
-        if(btnClose.Sensitive)
-            btnClose.Click();
+        if(btnClose.Sensitive) btnClose.Click();
 
         btnDialog.Click();
     }
 
     protected void OnBtnCloseClicked(object sender, EventArgs e)
     {
-        btnFolder.Visible = true;
-        btnArchive.Visible = true;
-        Context.path = "";
-        Context.files = null;
-        Context.hashes = null;
-        btnStop.Visible = false;
-        btnPack.Visible = false;
-        btnClose.Visible = false;
-        btnRemoveFile.Visible = false;
+        btnFolder.Visible      = true;
+        btnArchive.Visible     = true;
+        Context.Path           = "";
+        Context.Files          = null;
+        Context.Hashes         = null;
+        btnStop.Visible        = false;
+        btnPack.Visible        = false;
+        btnClose.Visible       = false;
+        btnRemoveFile.Visible  = false;
         btnToggleCrack.Visible = false;
-        if(fileView != null)
-            fileView.Clear();
+        fileView?.Clear();
         if(osView != null)
         {
             tabTabs.GetNthPage(1).Visible = false;
             osView.Clear();
         }
-        txtFormat.IsEditable = false;
-        txtMachine.IsEditable = false;
-        txtProduct.IsEditable = false;
-        txtVersion.IsEditable = false;
-        txtLanguages.IsEditable = false;
-        txtDeveloper.IsEditable = false;
-        txtDescription.IsEditable = false;
-        txtArchitecture.IsEditable = false;
-        chkOem.Sensitive = false;
-        chkFiles.Sensitive = false;
-        chkUpdate.Sensitive = false;
-        chkUpgrade.Sensitive = false;
-        chkNetinstall.Sensitive = false;
-        chkSource.Sensitive = false;
-        txtFormat.Text = "";
-        txtMachine.Text = "";
-        txtProduct.Text = "";
-        txtVersion.Text = "";
-        txtLanguages.Text = "";
-        txtDeveloper.Text = "";
-        txtDescription.Text = "";
-        txtArchitecture.Text = "";
-        chkOem.Active = false;
-        chkFiles.Active = false;
-        chkUpdate.Active = false;
-        chkUpgrade.Active = false;
-        chkNetinstall.Active = false;
-        chkSource.Active = false;
 
-        if(Context.tmpFolder != null)
+        txtFormat.IsEditable       = false;
+        txtMachine.IsEditable      = false;
+        txtProduct.IsEditable      = false;
+        txtVersion.IsEditable      = false;
+        txtLanguages.IsEditable    = false;
+        txtDeveloper.IsEditable    = false;
+        txtDescription.IsEditable  = false;
+        txtArchitecture.IsEditable = false;
+        chkOem.Sensitive           = false;
+        chkFiles.Sensitive         = false;
+        chkUpdate.Sensitive        = false;
+        chkUpgrade.Sensitive       = false;
+        chkNetinstall.Sensitive    = false;
+        chkSource.Sensitive        = false;
+        txtFormat.Text             = "";
+        txtMachine.Text            = "";
+        txtProduct.Text            = "";
+        txtVersion.Text            = "";
+        txtLanguages.Text          = "";
+        txtDeveloper.Text          = "";
+        txtDescription.Text        = "";
+        txtArchitecture.Text       = "";
+        chkOem.Active              = false;
+        chkFiles.Active            = false;
+        chkUpdate.Active           = false;
+        chkUpgrade.Active          = false;
+        chkNetinstall.Active       = false;
+        chkSource.Active           = false;
+
+        if(Context.TmpFolder != null)
         {
-            btnStop.Visible = false;
+            btnStop.Visible     = false;
             prgProgress.Visible = true;
-            prgProgress.Text = "Removing temporary files";
-            thdPulseProgress = new Thread(() =>
+            prgProgress.Text    = "Removing temporary files";
+            thdPulseProgress    = new Thread(() =>
             {
                 while(true)
                 {
-                    Application.Invoke(delegate
-                    {
-                        prgProgress.Pulse();
-                    });
+                    Application.Invoke(delegate { prgProgress.Pulse(); });
                     Thread.Sleep(66);
                 }
             });
-            Workers.Failed += RemoveTempFilesFailed;
+            Workers.Failed   += RemoveTempFilesFailed;
             Workers.Finished += RemoveTempFilesFinished;
-            thdRemoveTemp = new Thread(Workers.RemoveTempFolder);
+            thdRemoveTemp    =  new Thread(Workers.RemoveTempFolder);
             thdRemoveTemp.Start();
         }
 
         btnMetadata.Visible = false;
-        Context.metadata = null;
-        lblStatus.Visible = false;
+        Context.Metadata    = null;
+        lblStatus.Visible   = false;
     }
 
-    public void UpdateProgress(string text, string inner, long current, long maximum)
+    void UpdateProgress(string text, string inner, long current, long maximum)
     {
         Application.Invoke(delegate
         {
-            lblProgress.Text = text;
-            prgProgress.Text = inner;
-            if(maximum > 0)
-                prgProgress.Fraction = current / (double)maximum;
-            else
-                prgProgress.Pulse();
+            lblProgress.Text                     = text;
+            prgProgress.Text                     = inner;
+            if(maximum > 0) prgProgress.Fraction = current / (double)maximum;
+            else prgProgress.Pulse();
         });
     }
 
-    public void UpdateProgress2(string text, string inner, long current, long maximum)
+    void UpdateProgress2(string text, string inner, long current, long maximum)
     {
         Application.Invoke(delegate
         {
-            lblProgress2.Text = text;
-            prgProgress2.Text = inner;
-            if(maximum > 0)
-                prgProgress2.Fraction = current / (double)maximum;
-            else
-                prgProgress2.Pulse();
+            lblProgress2.Text                     = text;
+            prgProgress2.Text                     = inner;
+            if(maximum > 0) prgProgress2.Fraction = current / (double)maximum;
+            else prgProgress2.Pulse();
         });
     }
 
@@ -572,26 +544,26 @@ public partial class dlgAdd : Dialog
     {
         stopped = true;
 
-        Workers.AddFileForOS -= AddFile;
-        Workers.AddOS -= AddOS;
-        Workers.Failed -= AddFilesToDbFailed;
-        Workers.Failed -= ChkFilesFailed;
-        Workers.Failed -= ExtractArchiveFailed;
-        Workers.Failed -= FindFilesFailed;
-        Workers.Failed -= HashFilesFailed;
-        Workers.Failed -= OpenArchiveFailed;
-        Workers.Failed -= PackFilesFailed;
-        Workers.Failed -= RemoveTempFilesFailed;
-        Workers.Finished -= AddFilesToDbFinished;
-        Workers.Finished -= ChkFilesFinished;
-        Workers.Finished -= ExtractArchiveFinished;
-        Workers.Finished -= FindFilesFinished;
-        Workers.Finished -= HashFilesFinished;
-        Workers.Finished -= OpenArchiveFinished;
-        Workers.Finished -= RemoveTempFilesFinished;
+        Workers.AddFileForOS     -= AddFile;
+        Workers.AddOS            -= AddOS;
+        Workers.Failed           -= AddFilesToDbFailed;
+        Workers.Failed           -= ChkFilesFailed;
+        Workers.Failed           -= ExtractArchiveFailed;
+        Workers.Failed           -= FindFilesFailed;
+        Workers.Failed           -= HashFilesFailed;
+        Workers.Failed           -= OpenArchiveFailed;
+        Workers.Failed           -= PackFilesFailed;
+        Workers.Failed           -= RemoveTempFilesFailed;
+        Workers.Finished         -= AddFilesToDbFinished;
+        Workers.Finished         -= ChkFilesFinished;
+        Workers.Finished         -= ExtractArchiveFinished;
+        Workers.Finished         -= FindFilesFinished;
+        Workers.Finished         -= HashFilesFinished;
+        Workers.Finished         -= OpenArchiveFinished;
+        Workers.Finished         -= RemoveTempFilesFinished;
         Workers.FinishedWithText -= PackFilesFinished;
-        Workers.UpdateProgress -= UpdateProgress;
-        Workers.UpdateProgress2 -= UpdateProgress2;
+        Workers.UpdateProgress   -= UpdateProgress;
+        Workers.UpdateProgress2  -= UpdateProgress2;
 
         if(thdPulseProgress != null)
         {
@@ -635,79 +607,73 @@ public partial class dlgAdd : Dialog
             thdOpenArchive = null;
         }
 
-        if(Context.unarProcess != null)
+        if(Context.UnarProcess != null)
         {
-            Context.unarProcess.Kill();
-            Context.unarProcess = null;
+            Context.UnarProcess.Kill();
+            Context.UnarProcess = null;
         }
 
-        if(Context.tmpFolder != null)
+        if(Context.TmpFolder != null)
         {
-            btnStop.Visible = false;
+            btnStop.Visible  = false;
             prgProgress.Text = "Removing temporary files";
             thdPulseProgress = new Thread(() =>
             {
                 while(true)
                 {
-                    Application.Invoke(delegate
-                    {
-                        prgProgress.Pulse();
-                    });
+                    Application.Invoke(delegate { prgProgress.Pulse(); });
                     Thread.Sleep(66);
                 }
             });
-            Workers.Failed += RemoveTempFilesFailed;
+            Workers.Failed   += RemoveTempFilesFailed;
             Workers.Finished += RemoveTempFilesFinished;
-            thdRemoveTemp = new Thread(Workers.RemoveTempFolder);
+            thdRemoveTemp    =  new Thread(Workers.RemoveTempFolder);
             thdRemoveTemp.Start();
         }
-        else
-            RestoreUI();
+        else RestoreUi();
     }
 
-    public void RestoreUI()
+    void RestoreUi()
     {
-        lblProgress.Visible = false;
-        prgProgress.Visible = false;
-        lblProgress2.Visible = false;
-        prgProgress2.Visible = false;
-        btnExit.Sensitive = true;
-        btnFolder.Visible = true;
-        btnArchive.Visible = true;
-        lblProgress.Visible = false;
-        prgProgress.Visible = false;
-        btnExit.Sensitive = true;
-        btnFolder.Visible = true;
-        btnArchive.Visible = true;
-        Workers.Failed -= FindFilesFailed;
-        Workers.Failed -= HashFilesFailed;
-        Workers.Failed -= ChkFilesFailed;
-        Workers.Failed -= OpenArchiveFailed;
-        Workers.Failed -= AddFilesToDbFailed;
-        Workers.Failed -= PackFilesFailed;
-        Workers.Failed -= ExtractArchiveFailed;
-        Workers.Failed -= RemoveTempFilesFailed;
-        Workers.Finished -= FindFilesFinished;
-        Workers.Finished -= HashFilesFinished;
-        Workers.Finished -= ChkFilesFinished;
-        Workers.Finished -= OpenArchiveFinished;
-        Workers.Finished -= AddFilesToDbFinished;
-        Workers.Finished -= ExtractArchiveFinished;
-        Workers.Finished -= RemoveTempFilesFinished;
+        lblProgress.Visible      =  false;
+        prgProgress.Visible      =  false;
+        lblProgress2.Visible     =  false;
+        prgProgress2.Visible     =  false;
+        btnExit.Sensitive        =  true;
+        btnFolder.Visible        =  true;
+        btnArchive.Visible       =  true;
+        lblProgress.Visible      =  false;
+        prgProgress.Visible      =  false;
+        btnExit.Sensitive        =  true;
+        btnFolder.Visible        =  true;
+        btnArchive.Visible       =  true;
+        Workers.Failed           -= FindFilesFailed;
+        Workers.Failed           -= HashFilesFailed;
+        Workers.Failed           -= ChkFilesFailed;
+        Workers.Failed           -= OpenArchiveFailed;
+        Workers.Failed           -= AddFilesToDbFailed;
+        Workers.Failed           -= PackFilesFailed;
+        Workers.Failed           -= ExtractArchiveFailed;
+        Workers.Failed           -= RemoveTempFilesFailed;
+        Workers.Finished         -= FindFilesFinished;
+        Workers.Finished         -= HashFilesFinished;
+        Workers.Finished         -= ChkFilesFinished;
+        Workers.Finished         -= OpenArchiveFinished;
+        Workers.Finished         -= AddFilesToDbFinished;
+        Workers.Finished         -= ExtractArchiveFinished;
+        Workers.Finished         -= RemoveTempFilesFinished;
         Workers.FinishedWithText -= PackFilesFinished;
-        Workers.UpdateProgress -= UpdateProgress;
-        Workers.UpdateProgress2 -= UpdateProgress2;
-        btnStop.Visible = false;
-        if(fileView != null)
-            fileView.Clear();
-        if(osView != null && tabTabs != null && tabTabs.GetNthPage(1) != null)
-        {
-            tabTabs.GetNthPage(1).Visible = false;
-            osView.Clear();
-        }
+        Workers.UpdateProgress   -= UpdateProgress;
+        Workers.UpdateProgress2  -= UpdateProgress2;
+        btnStop.Visible          =  false;
+        fileView?.Clear();
+        if(osView == null || tabTabs?.GetNthPage(1) == null) return;
+
+        tabTabs.GetNthPage(1).Visible = false;
+        osView.Clear();
     }
 
-    public void RemoveTempFilesFailed(string text)
+    void RemoveTempFilesFailed(string text)
     {
         Application.Invoke(delegate
         {
@@ -719,15 +685,16 @@ public partial class dlgAdd : Dialog
                 thdPulseProgress.Abort();
                 thdPulseProgress = null;
             }
-            Workers.Failed -= RemoveTempFilesFailed;
-            Workers.Finished -= RemoveTempFilesFinished;
-            Context.path = null;
-            Context.tmpFolder = null;
-            RestoreUI();
+
+            Workers.Failed    -= RemoveTempFilesFailed;
+            Workers.Finished  -= RemoveTempFilesFinished;
+            Context.Path      =  null;
+            Context.TmpFolder =  null;
+            RestoreUi();
         });
     }
 
-    public void RemoveTempFilesFinished()
+    void RemoveTempFilesFinished()
     {
         Application.Invoke(delegate
         {
@@ -736,128 +703,125 @@ public partial class dlgAdd : Dialog
                 thdPulseProgress.Abort();
                 thdPulseProgress = null;
             }
-            Workers.Failed -= RemoveTempFilesFailed;
-            Workers.Finished -= RemoveTempFilesFinished;
-            Context.path = null;
-            Context.tmpFolder = null;
-            RestoreUI();
+
+            Workers.Failed    -= RemoveTempFilesFailed;
+            Workers.Finished  -= RemoveTempFilesFinished;
+            Context.Path      =  null;
+            Context.TmpFolder =  null;
+            RestoreUi();
         });
     }
 
     void AddToDatabase()
     {
-        btnRemoveFile.Sensitive = false;
-        btnToggleCrack.Sensitive = false;
-        btnPack.Sensitive = false;
-        btnClose.Sensitive = false;
-        prgProgress.Visible = true;
-        txtFormat.IsEditable = false;
-        txtMachine.IsEditable = false;
-        txtProduct.IsEditable = false;
-        txtVersion.IsEditable = false;
-        txtLanguages.IsEditable = false;
-        txtDeveloper.IsEditable = false;
-        txtDescription.IsEditable = false;
+        btnRemoveFile.Sensitive    = false;
+        btnToggleCrack.Sensitive   = false;
+        btnPack.Sensitive          = false;
+        btnClose.Sensitive         = false;
+        prgProgress.Visible        = true;
+        txtFormat.IsEditable       = false;
+        txtMachine.IsEditable      = false;
+        txtProduct.IsEditable      = false;
+        txtVersion.IsEditable      = false;
+        txtLanguages.IsEditable    = false;
+        txtDeveloper.IsEditable    = false;
+        txtDescription.IsEditable  = false;
         txtArchitecture.IsEditable = false;
-        chkOem.Sensitive = false;
-        chkFiles.Sensitive = false;
-        chkUpdate.Sensitive = false;
-        chkUpgrade.Sensitive = false;
-        chkNetinstall.Sensitive = false;
-        chkSource.Sensitive = false;
+        chkOem.Sensitive           = false;
+        chkFiles.Sensitive         = false;
+        chkUpdate.Sensitive        = false;
+        chkUpgrade.Sensitive       = false;
+        chkNetinstall.Sensitive    = false;
+        chkSource.Sensitive        = false;
 
         Workers.UpdateProgress += UpdateProgress;
-        Workers.Finished += AddFilesToDbFinished;
-        Workers.Failed += AddFilesToDbFailed;
+        Workers.Finished       += AddFilesToDbFinished;
+        Workers.Failed         += AddFilesToDbFailed;
 
-        Context.dbInfo.architecture = txtArchitecture.Text;
-        Context.dbInfo.description = txtDescription.Text;
-        Context.dbInfo.developer = txtDeveloper.Text;
-        Context.dbInfo.format = txtFormat.Text;
-        Context.dbInfo.languages = txtLanguages.Text;
-        Context.dbInfo.machine = txtMachine.Text;
-        Context.dbInfo.product = txtProduct.Text;
-        Context.dbInfo.version = txtVersion.Text;
-        Context.dbInfo.files = chkFiles.Active;
-        Context.dbInfo.netinstall = chkNetinstall.Active;
-        Context.dbInfo.oem = chkOem.Active;
-        Context.dbInfo.source = chkSource.Active;
-        Context.dbInfo.update = chkUpdate.Active;
-        Context.dbInfo.upgrade = chkUpgrade.Active;
+        Context.DbInfo.Architecture = txtArchitecture.Text;
+        Context.DbInfo.Description  = txtDescription.Text;
+        Context.DbInfo.Developer    = txtDeveloper.Text;
+        Context.DbInfo.Format       = txtFormat.Text;
+        Context.DbInfo.Languages    = txtLanguages.Text;
+        Context.DbInfo.Machine      = txtMachine.Text;
+        Context.DbInfo.Product      = txtProduct.Text;
+        Context.DbInfo.Version      = txtVersion.Text;
+        Context.DbInfo.Files        = chkFiles.Active;
+        Context.DbInfo.Netinstall   = chkNetinstall.Active;
+        Context.DbInfo.Oem          = chkOem.Active;
+        Context.DbInfo.Source       = chkSource.Active;
+        Context.DbInfo.Update       = chkUpdate.Active;
+        Context.DbInfo.Upgrade      = chkUpgrade.Active;
 
-        if(Context.metadata != null)
+        if(Context.Metadata != null)
         {
-            MemoryStream ms = new MemoryStream();
+            MemoryStream  ms = new MemoryStream();
             XmlSerializer xs = new XmlSerializer(typeof(CICMMetadataType));
-            xs.Serialize(ms, Context.metadata);
-            Context.dbInfo.xml = ms.ToArray();
-            JsonSerializer js = new JsonSerializer();
-            ms = new MemoryStream();
-            StreamWriter sw = new StreamWriter(ms);
-            js.Serialize(sw, Context.metadata, typeof(CICMMetadataType));
-            Context.dbInfo.json = ms.ToArray();
+            xs.Serialize(ms, Context.Metadata);
+            Context.DbInfo.Xml = ms.ToArray();
+            JsonSerializer js  = new JsonSerializer();
+            ms                 = new MemoryStream();
+            StreamWriter sw    = new StreamWriter(ms);
+            js.Serialize(sw, Context.Metadata, typeof(CICMMetadataType));
+            Context.DbInfo.Json = ms.ToArray();
         }
         else
         {
-            Context.dbInfo.xml = null;
-            Context.dbInfo.json = null;
+            Context.DbInfo.Xml  = null;
+            Context.DbInfo.Json = null;
         }
 
         thdAddFiles = new Thread(Workers.AddFilesToDb);
         thdAddFiles.Start();
     }
 
-    public void AddFilesToDbFinished()
+    void AddFilesToDbFinished()
     {
         Application.Invoke(delegate
         {
             Workers.UpdateProgress -= UpdateProgress;
-            Workers.Finished -= AddFilesToDbFinished;
-            Workers.Failed -= AddFilesToDbFailed;
+            Workers.Finished       -= AddFilesToDbFinished;
+            Workers.Failed         -= AddFilesToDbFailed;
 
-            if(thdAddFiles != null)
-                thdAddFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
+            thdAddFiles?.Abort();
+            thdPulseProgress?.Abort();
 
             long counter = 0;
             fileView.Clear();
-            foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
+            foreach(KeyValuePair<string, DbOsFile> kvp in Context.Hashes)
             {
-                UpdateProgress(null, "Updating table", counter, Context.hashes.Count);
+                UpdateProgress(null, "Updating table", counter, Context.Hashes.Count);
                 fileView.AppendValues(kvp.Key, kvp.Value.Sha256, true, "green", "black");
                 counter++;
             }
 
             // TODO: Update OS table
 
-            if(OnAddedOS != null)
-                OnAddedOS(Context.dbInfo);
+            OnAddedOS?.Invoke(Context.DbInfo);
 
             prgProgress.Visible = false;
-            btnClose.Sensitive = true;
+            btnClose.Sensitive  = true;
         });
     }
 
-    public void AddFilesToDbFailed(string text)
+    void AddFilesToDbFailed(string text)
     {
         Application.Invoke(delegate
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
 
             Workers.UpdateProgress -= UpdateProgress;
-            Workers.Finished -= AddFilesToDbFinished;
-            Workers.Failed -= AddFilesToDbFailed;
+            Workers.Finished       -= AddFilesToDbFinished;
+            Workers.Failed         -= AddFilesToDbFailed;
 
-            if(thdAddFiles != null)
-                thdAddFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
+            thdAddFiles?.Abort();
+            thdPulseProgress?.Abort();
 
             ChkFilesFinished();
         });
@@ -865,73 +829,74 @@ public partial class dlgAdd : Dialog
 
     protected void OnBtnPackClicked(object sender, EventArgs e)
     {
-        btnRemoveFile.Sensitive = false;
-        btnToggleCrack.Sensitive = false;
-        btnPack.Sensitive = false;
-        btnClose.Sensitive = false;
-        prgProgress.Visible = true;
-        prgProgress2.Visible = true;
-        lblProgress.Visible = true;
-        lblProgress2.Visible = true;
-        txtFormat.IsEditable = false;
-        txtMachine.IsEditable = false;
-        txtProduct.IsEditable = false;
-        txtVersion.IsEditable = false;
-        txtLanguages.IsEditable = false;
-        txtDeveloper.IsEditable = false;
-        txtDescription.IsEditable = false;
+        btnRemoveFile.Sensitive    = false;
+        btnToggleCrack.Sensitive   = false;
+        btnPack.Sensitive          = false;
+        btnClose.Sensitive         = false;
+        prgProgress.Visible        = true;
+        prgProgress2.Visible       = true;
+        lblProgress.Visible        = true;
+        lblProgress2.Visible       = true;
+        txtFormat.IsEditable       = false;
+        txtMachine.IsEditable      = false;
+        txtProduct.IsEditable      = false;
+        txtVersion.IsEditable      = false;
+        txtLanguages.IsEditable    = false;
+        txtDeveloper.IsEditable    = false;
+        txtDescription.IsEditable  = false;
         txtArchitecture.IsEditable = false;
-        chkOem.Sensitive = false;
-        chkFiles.Sensitive = false;
-        chkUpdate.Sensitive = false;
-        chkUpgrade.Sensitive = false;
-        chkNetinstall.Sensitive = false;
-        chkSource.Sensitive = false;
+        chkOem.Sensitive           = false;
+        chkFiles.Sensitive         = false;
+        chkUpdate.Sensitive        = false;
+        chkUpgrade.Sensitive       = false;
+        chkNetinstall.Sensitive    = false;
+        chkSource.Sensitive        = false;
 
-        Workers.UpdateProgress += UpdateProgress;
-        Workers.UpdateProgress2 += UpdateProgress2;
+        Workers.UpdateProgress   += UpdateProgress;
+        Workers.UpdateProgress2  += UpdateProgress2;
         Workers.FinishedWithText += PackFilesFinished;
-        Workers.Failed += PackFilesFailed;
+        Workers.Failed           += PackFilesFailed;
 
-        Context.dbInfo = new DBEntry();
-        Context.dbInfo.architecture = txtArchitecture.Text;
-        Context.dbInfo.description = txtDescription.Text;
-        Context.dbInfo.developer = txtDeveloper.Text;
-        Context.dbInfo.format = txtFormat.Text;
-        Context.dbInfo.languages = txtLanguages.Text;
-        Context.dbInfo.machine = txtMachine.Text;
-        Context.dbInfo.product = txtProduct.Text;
-        Context.dbInfo.version = txtVersion.Text;
-        Context.dbInfo.files = chkFiles.Active;
-        Context.dbInfo.netinstall = chkNetinstall.Active;
-        Context.dbInfo.oem = chkOem.Active;
-        Context.dbInfo.source = chkSource.Active;
-        Context.dbInfo.update = chkUpdate.Active;
-        Context.dbInfo.upgrade = chkUpgrade.Active;
+        Context.DbInfo = new DbEntry
+        {
+            Architecture = txtArchitecture.Text,
+            Description  = txtDescription.Text,
+            Developer    = txtDeveloper.Text,
+            Format       = txtFormat.Text,
+            Languages    = txtLanguages.Text,
+            Machine      = txtMachine.Text,
+            Product      = txtProduct.Text,
+            Version      = txtVersion.Text,
+            Files        = chkFiles.Active,
+            Netinstall   = chkNetinstall.Active,
+            Oem          = chkOem.Active,
+            Source       = chkSource.Active,
+            Update       = chkUpdate.Active,
+            Upgrade      = chkUpgrade.Active
+        };
 
         thdPackFiles = new Thread(Workers.CompressFiles);
         thdPackFiles.Start();
     }
 
-    public void PackFilesFinished(string text)
+    void PackFilesFinished(string text)
     {
         Application.Invoke(delegate
         {
-            Workers.UpdateProgress -= UpdateProgress;
-            Workers.UpdateProgress2 -= UpdateProgress2;
+            Workers.UpdateProgress   -= UpdateProgress;
+            Workers.UpdateProgress2  -= UpdateProgress2;
             Workers.FinishedWithText -= PackFilesFinished;
-            Workers.Failed -= PackFilesFailed;
-            prgProgress2.Visible = false;
-            lblProgress2.Visible = false;
+            Workers.Failed           -= PackFilesFailed;
+            prgProgress2.Visible     =  false;
+            lblProgress2.Visible     =  false;
 
-            if(thdPackFiles != null)
-                thdPackFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
+            thdPackFiles?.Abort();
+            thdPulseProgress?.Abort();
 
             AddToDatabase();
 
-            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, "Correctly packed to " + text);
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok,
+                                                     "Correctly packed to " + text);
             dlgMsg.Run();
             dlgMsg.Destroy();
         });
@@ -943,87 +908,84 @@ public partial class dlgAdd : Dialog
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
 
-            Workers.UpdateProgress -= UpdateProgress;
-            Workers.UpdateProgress2 -= UpdateProgress2;
+            Workers.UpdateProgress   -= UpdateProgress;
+            Workers.UpdateProgress2  -= UpdateProgress2;
             Workers.FinishedWithText -= PackFilesFinished;
-            Workers.Failed -= PackFilesFailed;
+            Workers.Failed           -= PackFilesFailed;
 
-            if(thdPackFiles != null)
-                thdPackFiles.Abort();
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
+            thdPackFiles?.Abort();
+            thdPulseProgress?.Abort();
 
-            btnRemoveFile.Sensitive = true;
-            btnToggleCrack.Sensitive = true;
-            btnPack.Sensitive = true;
-            btnClose.Sensitive = true;
-            prgProgress.Visible = false;
-            prgProgress2.Visible = false;
-            lblProgress.Visible = false;
-            lblProgress2.Visible = false;
-            txtFormat.IsEditable = true;
-            txtMachine.IsEditable = true;
-            txtProduct.IsEditable = true;
-            txtVersion.IsEditable = true;
-            txtLanguages.IsEditable = true;
-            txtDeveloper.IsEditable = true;
-            txtDescription.IsEditable = true;
+            btnRemoveFile.Sensitive    = true;
+            btnToggleCrack.Sensitive   = true;
+            btnPack.Sensitive          = true;
+            btnClose.Sensitive         = true;
+            prgProgress.Visible        = false;
+            prgProgress2.Visible       = false;
+            lblProgress.Visible        = false;
+            lblProgress2.Visible       = false;
+            txtFormat.IsEditable       = true;
+            txtMachine.IsEditable      = true;
+            txtProduct.IsEditable      = true;
+            txtVersion.IsEditable      = true;
+            txtLanguages.IsEditable    = true;
+            txtDeveloper.IsEditable    = true;
+            txtDescription.IsEditable  = true;
             txtArchitecture.IsEditable = true;
-            chkOem.Sensitive = true;
-            chkFiles.Sensitive = true;
-            chkUpdate.Sensitive = true;
-            chkUpgrade.Sensitive = true;
-            chkNetinstall.Sensitive = true;
-            chkSource.Sensitive = true;
+            chkOem.Sensitive           = true;
+            chkFiles.Sensitive         = true;
+            chkUpdate.Sensitive        = true;
+            chkUpgrade.Sensitive       = true;
+            chkNetinstall.Sensitive    = true;
+            chkSource.Sensitive        = true;
         });
     }
 
     protected void OnBtnArchiveClicked(object sender, EventArgs e)
     {
-        if(!Context.unarUsable)
+        if(!Context.UnarUsable)
         {
-            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot open archives without a working unar installation.");
+            MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                                     "Cannot open archives without a working unar installation.");
             dlgMsg.Run();
             dlgMsg.Destroy();
             return;
         }
 
-        FileChooserDialog dlgFolder = new FileChooserDialog("Open archive", this, FileChooserAction.Open,
-                                                     "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
-        dlgFolder.SelectMultiple = false;
+        FileChooserDialog dlgFolder =
+            new FileChooserDialog("Open archive", this, FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open",
+                                  ResponseType.Accept) {SelectMultiple = false};
 
         if(dlgFolder.Run() == (int)ResponseType.Accept)
         {
-            knownFiles = 0;
-            stopped = false;
-            prgProgress.Text = "Opening archive";
+            knownFiles          = 0;
+            stopped             = false;
+            prgProgress.Text    = "Opening archive";
             lblProgress.Visible = false;
             prgProgress.Visible = true;
-            btnExit.Sensitive = false;
-            btnFolder.Visible = false;
-            btnArchive.Visible = false;
-            thdPulseProgress = new Thread(() =>
+            btnExit.Sensitive   = false;
+            btnFolder.Visible   = false;
+            btnArchive.Visible  = false;
+            thdPulseProgress    = new Thread(() =>
             {
                 while(true)
                 {
-                    Application.Invoke(delegate
-                    {
-                        prgProgress.Pulse();
-                    });
+                    Application.Invoke(delegate { prgProgress.Pulse(); });
                     Thread.Sleep(66);
                 }
             });
 
-            thdOpenArchive = new Thread(Workers.OpenArchive);
-            Context.path = dlgFolder.Filename;
-            Workers.Failed += OpenArchiveFailed;
+            thdOpenArchive   =  new Thread(Workers.OpenArchive);
+            Context.Path     =  dlgFolder.Filename;
+            Workers.Failed   += OpenArchiveFailed;
             Workers.Finished += OpenArchiveFinished;
-            btnStop.Visible = true;
+            btnStop.Visible  =  true;
             thdPulseProgress.Start();
             thdOpenArchive.Start();
         }
@@ -1031,139 +993,131 @@ public partial class dlgAdd : Dialog
         dlgFolder.Destroy();
     }
 
-    public void OpenArchiveFailed(string text)
+    void OpenArchiveFailed(string text)
     {
         Application.Invoke(delegate
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            lblProgress.Visible = false;
-            prgProgress.Visible = false;
-            btnExit.Sensitive = true;
-            btnFolder.Visible = true;
-            btnArchive.Visible = true;
-            btnStop.Visible = false;
-            Workers.Failed -= OpenArchiveFailed;
-            Workers.Finished -= OpenArchiveFinished;
-            thdOpenArchive = null;
+
+            thdPulseProgress?.Abort();
+            lblProgress.Visible =  false;
+            prgProgress.Visible =  false;
+            btnExit.Sensitive   =  true;
+            btnFolder.Visible   =  true;
+            btnArchive.Visible  =  true;
+            btnStop.Visible     =  false;
+            Workers.Failed      -= OpenArchiveFailed;
+            Workers.Finished    -= OpenArchiveFinished;
+            thdOpenArchive      =  null;
         });
     }
 
-    public void OpenArchiveFinished()
+    void OpenArchiveFinished()
     {
         Application.Invoke(delegate
         {
-            stopped = false;
-            prgProgress.Text = "Extracting archive";
-            prgProgress.Visible = true;
+            stopped              = false;
+            prgProgress.Text     = "Extracting archive";
+            prgProgress.Visible  = true;
             prgProgress2.Visible = true;
-            btnExit.Sensitive = false;
-            btnFolder.Visible = false;
-            btnArchive.Visible = false;
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            Workers.UpdateProgress += UpdateProgress;
-            lblProgress.Visible = true;
-            lblProgress2.Visible = true;
-            Workers.Failed -= OpenArchiveFailed;
-            Workers.Finished -= OpenArchiveFinished;
-            thdOpenArchive = null;
-            Workers.Failed += ExtractArchiveFailed;
-            Workers.Finished += ExtractArchiveFinished;
+            btnExit.Sensitive    = false;
+            btnFolder.Visible    = false;
+            btnArchive.Visible   = false;
+            thdPulseProgress?.Abort();
+            Workers.UpdateProgress  += UpdateProgress;
+            lblProgress.Visible     =  true;
+            lblProgress2.Visible    =  true;
+            Workers.Failed          -= OpenArchiveFailed;
+            Workers.Finished        -= OpenArchiveFinished;
+            thdOpenArchive          =  null;
+            Workers.Failed          += ExtractArchiveFailed;
+            Workers.Finished        += ExtractArchiveFinished;
             Workers.UpdateProgress2 += UpdateProgress2;
-            thdExtractArchive = new Thread(Workers.ExtractArchive);
+            thdExtractArchive       =  new Thread(Workers.ExtractArchive);
             thdExtractArchive.Start();
         });
     }
 
-    public void ExtractArchiveFailed(string text)
+    void ExtractArchiveFailed(string text)
     {
         Application.Invoke(delegate
         {
             if(!stopped)
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             }
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
-            lblProgress.Visible = false;
-            lblProgress2.Visible = false;
-            prgProgress2.Visible = false;
-            btnExit.Sensitive = true;
-            btnFolder.Visible = true;
-            btnArchive.Visible = true;
-            Workers.Failed -= ExtractArchiveFailed;
-            Workers.Finished -= ExtractArchiveFinished;
-            Workers.UpdateProgress -= UpdateProgress;
-            Workers.UpdateProgress2 -= UpdateProgress2;
-            thdExtractArchive = null;
-            if(Context.tmpFolder != null)
-            {
-                btnStop.Visible = false;
-                prgProgress.Text = "Removing temporary files";
-                thdPulseProgress = new Thread(() =>
-                {
-                    while(true)
-                    {
-                        Application.Invoke(delegate
-                        {
-                            prgProgress.Pulse();
-                        });
-                        Thread.Sleep(66);
-                    }
-                });
-                Workers.Failed += RemoveTempFilesFailed;
-                Workers.Finished += RemoveTempFilesFinished;
-                thdRemoveTemp = new Thread(Workers.RemoveTempFolder);
-                thdRemoveTemp.Start();
-            }
-        });
-    }
 
-    public void ExtractArchiveFinished()
-    {
-        Application.Invoke(delegate
-        {
-            stopped = false;
-            lblProgress.Text = "Finding files";
-            lblProgress.Visible = true;
-            lblProgress2.Visible = false;
-            prgProgress.Visible = true;
-            btnExit.Sensitive = false;
-            btnFolder.Visible = false;
-            btnArchive.Visible = false;
-            Workers.Failed -= ExtractArchiveFailed;
-            Workers.Finished -= ExtractArchiveFinished;
-            Workers.UpdateProgress -= UpdateProgress;
+            thdPulseProgress?.Abort();
+            lblProgress.Visible     =  false;
+            lblProgress2.Visible    =  false;
+            prgProgress2.Visible    =  false;
+            btnExit.Sensitive       =  true;
+            btnFolder.Visible       =  true;
+            btnArchive.Visible      =  true;
+            Workers.Failed          -= ExtractArchiveFailed;
+            Workers.Finished        -= ExtractArchiveFinished;
+            Workers.UpdateProgress  -= UpdateProgress;
             Workers.UpdateProgress2 -= UpdateProgress2;
-            if(thdExtractArchive != null)
-                thdExtractArchive = null;
-            if(thdPulseProgress != null)
-                thdPulseProgress.Abort();
+            thdExtractArchive       =  null;
+            if(Context.TmpFolder == null) return;
+
+            btnStop.Visible  = false;
+            prgProgress.Text = "Removing temporary files";
             thdPulseProgress = new Thread(() =>
             {
                 while(true)
                 {
-                    Application.Invoke(delegate
-                    {
-                        prgProgress.Pulse();
-                    });
+                    Application.Invoke(delegate { prgProgress.Pulse(); });
+                    Thread.Sleep(66);
+                }
+            });
+            Workers.Failed   += RemoveTempFilesFailed;
+            Workers.Finished += RemoveTempFilesFinished;
+            thdRemoveTemp    =  new Thread(Workers.RemoveTempFolder);
+            thdRemoveTemp.Start();
+        });
+    }
+
+    void ExtractArchiveFinished()
+    {
+        Application.Invoke(delegate
+        {
+            stopped                                         =  false;
+            lblProgress.Text                                =  "Finding files";
+            lblProgress.Visible                             =  true;
+            lblProgress2.Visible                            =  false;
+            prgProgress.Visible                             =  true;
+            btnExit.Sensitive                               =  false;
+            btnFolder.Visible                               =  false;
+            btnArchive.Visible                              =  false;
+            Workers.Failed                                  -= ExtractArchiveFailed;
+            Workers.Finished                                -= ExtractArchiveFinished;
+            Workers.UpdateProgress                          -= UpdateProgress;
+            Workers.UpdateProgress2                         -= UpdateProgress2;
+            if(thdExtractArchive != null) thdExtractArchive =  null;
+            thdPulseProgress?.Abort();
+            thdPulseProgress = new Thread(() =>
+            {
+                while(true)
+                {
+                    Application.Invoke(delegate { prgProgress.Pulse(); });
                     Thread.Sleep(66);
                 }
             });
 
-            thdFindFiles = new Thread(Workers.FindFiles);
-            Workers.Failed += FindFilesFailed;
+            thdFindFiles     =  new Thread(Workers.FindFiles);
+            Workers.Failed   += FindFilesFailed;
             Workers.Finished += FindFilesFinished;
-            btnStop.Visible = true;
+            btnStop.Visible  =  true;
             thdPulseProgress.Start();
             thdFindFiles.Start();
         });
@@ -1171,79 +1125,54 @@ public partial class dlgAdd : Dialog
 
     protected void OnBtnMetadataClicked(object sender, EventArgs e)
     {
-        dlgMetadata _dlgMetadata = new dlgMetadata();
-        _dlgMetadata.Metadata = Context.metadata;
+        dlgMetadata _dlgMetadata = new dlgMetadata {Metadata = Context.Metadata};
         _dlgMetadata.FillFields();
 
         if(_dlgMetadata.Run() == (int)ResponseType.Ok)
         {
-            Context.metadata = _dlgMetadata.Metadata;
+            Context.Metadata = _dlgMetadata.Metadata;
 
             if(string.IsNullOrWhiteSpace(txtDeveloper.Text))
-            {
-                if(Context.metadata.Developer != null)
-                {
-                    foreach(string developer in Context.metadata.Developer)
+                if(Context.Metadata.Developer != null)
+                    foreach(string developer in Context.Metadata.Developer)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text))
-                            txtDeveloper.Text += ",";
-                        txtDeveloper.Text += developer;
+                        if(!string.IsNullOrWhiteSpace(txtDeveloper.Text)) txtDeveloper.Text += ",";
+                        txtDeveloper.Text                                                   += developer;
                     }
-                }
-            }
 
             if(string.IsNullOrWhiteSpace(txtProduct.Text))
-            {
-                if(!string.IsNullOrWhiteSpace(Context.metadata.Name))
-                    txtProduct.Text = Context.metadata.Name;
-            }
+                if(!string.IsNullOrWhiteSpace(Context.Metadata.Name))
+                    txtProduct.Text = Context.Metadata.Name;
 
             if(string.IsNullOrWhiteSpace(txtVersion.Text))
-            {
-                if(!string.IsNullOrWhiteSpace(Context.metadata.Version))
-                    txtVersion.Text = Context.metadata.Version;
-            }
+                if(!string.IsNullOrWhiteSpace(Context.Metadata.Version))
+                    txtVersion.Text = Context.Metadata.Version;
 
             if(string.IsNullOrWhiteSpace(txtLanguages.Text))
-            {
-                if(Context.metadata.Languages != null)
-                {
-                    foreach(LanguagesTypeLanguage language in Context.metadata.Languages)
+                if(Context.Metadata.Languages != null)
+                    foreach(LanguagesTypeLanguage language in Context.Metadata.Languages)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtLanguages.Text))
-                            txtLanguages.Text += ",";
-                        txtLanguages.Text += language;
+                        if(!string.IsNullOrWhiteSpace(txtLanguages.Text)) txtLanguages.Text += ",";
+                        txtLanguages.Text                                                   += language;
                     }
-                }
-            }
 
             if(string.IsNullOrWhiteSpace(txtArchitecture.Text))
-            {
-                if(Context.metadata.Architectures != null)
-                {
-                    foreach(ArchitecturesTypeArchitecture architecture in Context.metadata.Architectures)
+                if(Context.Metadata.Architectures != null)
+                    foreach(ArchitecturesTypeArchitecture architecture in Context.Metadata.Architectures)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtArchitecture.Text))
-                            txtArchitecture.Text += ",";
-                        txtArchitecture.Text += architecture;
+                        if(!string.IsNullOrWhiteSpace(txtArchitecture.Text)) txtArchitecture.Text += ",";
+                        txtArchitecture.Text                                                      += architecture;
                     }
-                }
-            }
 
             if(string.IsNullOrWhiteSpace(txtMachine.Text))
-            {
-                if(Context.metadata.Systems != null)
-                {
-                    foreach(string machine in Context.metadata.Systems)
+                if(Context.Metadata.Systems != null)
+                    foreach(string machine in Context.Metadata.Systems)
                     {
-                        if(!string.IsNullOrWhiteSpace(txtMachine.Text))
-                            txtMachine.Text += ",";
-                        txtMachine.Text += machine;
+                        if(!string.IsNullOrWhiteSpace(txtMachine.Text)) txtMachine.Text += ",";
+                        txtMachine.Text                                                 += machine;
                     }
-                }
-            }
 
-            btnMetadata.ModifyBg(StateType.Normal, new Gdk.Color(0, 127, 0));
+            btnMetadata.ModifyBg(StateType.Normal, new Color(0, 127, 0));
         }
 
         _dlgMetadata.Destroy();
@@ -1251,54 +1180,42 @@ public partial class dlgAdd : Dialog
 
     protected void OnBtnRemoveFileClicked(object sender, EventArgs e)
     {
-        TreeIter fileIter;
-        if(treeFiles.Selection.GetSelected(out fileIter))
-        {
-            string name = (string)fileView.GetValue(fileIter, 0);
-            string filesPath;
+        if(!treeFiles.Selection.GetSelected(out TreeIter fileIter)) return;
 
-            if(!string.IsNullOrEmpty(Context.tmpFolder) && Directory.Exists(Context.tmpFolder))
-                filesPath = Context.tmpFolder;
-            else
-                filesPath = Context.path;
+        string name = (string)fileView.GetValue(fileIter, 0);
+        string filesPath;
 
-            Context.hashes.Remove(name);
-            Context.files.Remove(System.IO.Path.Combine(filesPath, name));
-            fileView.Remove(ref fileIter);
-        }
+        if(!string.IsNullOrEmpty(Context.TmpFolder) && Directory.Exists(Context.TmpFolder))
+            filesPath  = Context.TmpFolder;
+        else filesPath = Context.Path;
+
+        Context.Hashes.Remove(name);
+        Context.Files.Remove(System.IO.Path.Combine(filesPath, name));
+        fileView.Remove(ref fileIter);
     }
 
     protected void OnBtnToggleCrackClicked(object sender, EventArgs e)
     {
-        TreeIter fileIter;
-        if(treeFiles.Selection.GetSelected(out fileIter))
-        {
-            string name = (string)fileView.GetValue(fileIter, 0);
-            bool known = (bool)fileView.GetValue(fileIter, 2);
-            string color = (string)fileView.GetValue(fileIter, 3);
+        if(!treeFiles.Selection.GetSelected(out TreeIter fileIter)) return;
 
-            DBOSFile osfile;
+        string name  = (string)fileView.GetValue(fileIter, 0);
+        bool   known = (bool)fileView.GetValue(fileIter,   2);
+        string color = (string)fileView.GetValue(fileIter, 3);
 
-            if(Context.hashes.TryGetValue(name, out osfile))
-            {
-                osfile.Crack = !osfile.Crack;
-                Context.hashes.Remove(name);
-                Context.hashes.Add(name, osfile);
-                fileView.Remove(ref fileIter);
-                fileView.AppendValues(name, osfile.Sha256, known, color, "black", osfile.Crack);
-            }
-        }
+        if(!Context.Hashes.TryGetValue(name, out DbOsFile osfile)) return;
+
+        osfile.Crack = !osfile.Crack;
+        Context.Hashes.Remove(name);
+        Context.Hashes.Add(name, osfile);
+        fileView.Remove(ref fileIter);
+        fileView.AppendValues(name, osfile.Sha256, known, color, "black", osfile.Crack);
     }
 
     void treeFilesSelectionChanged(object sender, EventArgs e)
     {
-        TreeIter fileIter;
-        if(treeFiles.Selection.GetSelected(out fileIter))
-        {
-            if((bool)fileView.GetValue(fileIter, 5))
-                btnToggleCrack.Label = "Mark as not crack";
-            else
-                btnToggleCrack.Label = "Mark as crack";
-        }
+        if(!treeFiles.Selection.GetSelected(out TreeIter fileIter)) return;
+
+        if((bool)fileView.GetValue(fileIter, 5)) btnToggleCrack.Label = "Mark as not crack";
+        else btnToggleCrack.Label                                     = "Mark as crack";
     }
 }

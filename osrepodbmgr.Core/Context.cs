@@ -1,4 +1,4 @@
-//
+﻿//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -34,36 +35,36 @@ namespace osrepodbmgr.Core
 {
     public static class Context
     {
-        public static List<string> files;
-        public static List<string> folders;
-        public static List<string> symlinks;
-        public static Dictionary<string, DBOSFile> hashes;
-        public static Dictionary<string, DBFolder> foldersDict;
-        public static Dictionary<string, string> symlinksDict;
-        public static string path;
-        public static DBEntry dbInfo;
-        public static bool unarUsable;
-        public static string tmpFolder;
-        public static long noFilesInArchive;
-        public static string archiveFormat;
-        public static Process unarProcess;
-        public static bool unzipWithUnAr;
-        public static string selectedFile;
-        public static OpticalDiscType workingDisc;
-        public static BlockMediaType workingDisk;
-        public static CICMMetadataType metadata;
-        public static bool userExtracting;
-        public static bool usableDotNetZip;
-        public static string clamdVersion;
-        public static bool virusTotalEnabled;
-
         public delegate void UnarChangeStatusDelegate();
-        public static event UnarChangeStatusDelegate UnarChangeStatus;
+
+        public static       List<string>                 Files;
+        public static       List<string>                 Folders;
+        public static       List<string>                 Symlinks;
+        public static       Dictionary<string, DbOsFile> Hashes;
+        public static       Dictionary<string, DbFolder> FoldersDict;
+        public static       Dictionary<string, string>   SymlinksDict;
+        public static       string                       Path;
+        public static       DbEntry                      DbInfo;
+        public static       bool                         UnarUsable;
+        public static       string                       TmpFolder;
+        public static       long                         NoFilesInArchive;
+        public static       string                       ArchiveFormat;
+        public static       Process                      UnarProcess;
+        public static       bool                         UnzipWithUnAr;
+        public static       string                       SelectedFile;
+        public static       OpticalDiscType              WorkingDisc;
+        public static       BlockMediaType               WorkingDisk;
+        public static       CICMMetadataType             Metadata;
+        public static       bool                         UserExtracting;
+        public static       bool                         UsableDotNetZip;
+        public static       string                       ClamdVersion;
+        public static       bool                         VirusTotalEnabled;
+        public static event UnarChangeStatusDelegate     UnarChangeStatus;
 
         public static void CheckUnar()
         {
             Workers.FinishedWithText += CheckUnarFinished;
-            Workers.Failed += CheckUnarFailed;
+            Workers.Failed           += CheckUnarFailed;
 
             Thread thdCheckUnar = new Thread(Workers.CheckUnar);
             thdCheckUnar.Start();
@@ -71,20 +72,18 @@ namespace osrepodbmgr.Core
 
         static void CheckUnarFinished(string text)
         {
-            unarUsable = true;
-            if(UnarChangeStatus != null)
-                UnarChangeStatus();
+            UnarUsable = true;
+            UnarChangeStatus?.Invoke();
             Workers.FinishedWithText -= CheckUnarFinished;
-            Workers.Failed -= CheckUnarFailed;
+            Workers.Failed           -= CheckUnarFailed;
         }
 
         static void CheckUnarFailed(string text)
         {
-            unarUsable = false;
-            if(UnarChangeStatus != null)
-                UnarChangeStatus();
+            UnarUsable = false;
+            UnarChangeStatus?.Invoke();
             Workers.FinishedWithText -= CheckUnarFinished;
-            Workers.Failed -= CheckUnarFailed;
+            Workers.Failed           -= CheckUnarFailed;
         }
     }
 }

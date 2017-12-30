@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -34,55 +35,48 @@ namespace osrepodbmgr.Core
 {
     public static partial class Workers
     {
-        static DBCore dbCore;
+        static DbCore dbCore;
 
-        static int zipCounter;
+        static int    zipCounter;
         static string zipCurrentEntryName;
 
-#if DEBUG
+        #if DEBUG
         static Stopwatch stopwatch = new Stopwatch();
-#endif
+        #endif
 
-        static string stringify(byte[] hash)
+        static string Stringify(byte[] hash)
         {
             StringBuilder hashOutput = new StringBuilder();
 
-            for(int i = 0; i < hash.Length; i++)
-            {
-                hashOutput.Append(hash[i].ToString("x2"));
-            }
+            foreach(byte h in hash) hashOutput.Append(h.ToString("x2"));
 
             return hashOutput.ToString();
         }
-
 
         public static void CheckUnar()
         {
             if(string.IsNullOrWhiteSpace(Settings.Current.UnArchiverPath))
             {
-                if(Failed != null)
-                    Failed("unar path is not set.");
+                Failed?.Invoke("unar path is not set.");
                 return;
             }
 
-            string unarFolder = Path.GetDirectoryName(Settings.Current.UnArchiverPath);
-            string extension = Path.GetExtension(Settings.Current.UnArchiverPath);
+            string unarFolder   = Path.GetDirectoryName(Settings.Current.UnArchiverPath);
+            string extension    = Path.GetExtension(Settings.Current.UnArchiverPath);
             string unarfilename = Path.GetFileNameWithoutExtension(Settings.Current.UnArchiverPath);
             string lsarfilename = unarfilename.Replace("unar", "lsar");
-            string unarPath = Path.Combine(unarFolder, unarfilename + extension);
-            string lsarPath = Path.Combine(unarFolder, lsarfilename + extension);
+            string unarPath     = Path.Combine(unarFolder, unarfilename + extension);
+            string lsarPath     = Path.Combine(unarFolder, lsarfilename + extension);
 
             if(!File.Exists(unarPath))
             {
-                if(Failed != null)
-                    Failed(string.Format("Cannot find unar executable at {0}.", unarPath));
+                Failed?.Invoke($"Cannot find unar executable at {unarPath}.");
                 return;
             }
 
             if(!File.Exists(lsarPath))
             {
-                if(Failed != null)
-                    Failed("Cannot find unar executable.");
+                Failed?.Invoke("Cannot find unar executable.");
                 return;
             }
 
@@ -90,65 +84,75 @@ namespace osrepodbmgr.Core
 
             try
             {
-                Process unarProcess = new Process();
-                unarProcess.StartInfo.FileName = unarPath;
-                unarProcess.StartInfo.CreateNoWindow = true;
-                unarProcess.StartInfo.RedirectStandardOutput = true;
-                unarProcess.StartInfo.UseShellExecute = false;
+                Process unarProcess = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName               = unarPath,
+                        CreateNoWindow         = true,
+                        RedirectStandardOutput = true,
+                        UseShellExecute        = false
+                    }
+                };
                 unarProcess.Start();
                 unarProcess.WaitForExit();
                 unarOut = unarProcess.StandardOutput.ReadToEnd();
             }
             catch
             {
-                if(Failed != null)
-                    Failed("Cannot run unar.");
+                Failed?.Invoke("Cannot run unar.");
                 return;
             }
 
             try
             {
-                Process lsarProcess = new Process();
-                lsarProcess.StartInfo.FileName = lsarPath;
-                lsarProcess.StartInfo.CreateNoWindow = true;
-                lsarProcess.StartInfo.RedirectStandardOutput = true;
-                lsarProcess.StartInfo.UseShellExecute = false;
+                Process lsarProcess = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName               = lsarPath,
+                        CreateNoWindow         = true,
+                        RedirectStandardOutput = true,
+                        UseShellExecute        = false
+                    }
+                };
                 lsarProcess.Start();
                 lsarProcess.WaitForExit();
                 lsarOut = lsarProcess.StandardOutput.ReadToEnd();
             }
             catch
             {
-                if(Failed != null)
-                    Failed("Cannot run lsar.");
+                Failed?.Invoke("Cannot run lsar.");
                 return;
             }
 
             if(!unarOut.StartsWith("unar ", StringComparison.CurrentCulture))
             {
-                if(Failed != null)
-                    Failed("Not the correct unar executable");
+                Failed?.Invoke("Not the correct unar executable");
                 return;
             }
 
             if(!lsarOut.StartsWith("lsar ", StringComparison.CurrentCulture))
             {
-                if(Failed != null)
-                    Failed("Not the correct unar executable");
+                Failed?.Invoke("Not the correct unar executable");
                 return;
             }
 
-            Process versionProcess = new Process();
-            versionProcess.StartInfo.FileName = unarPath;
-            versionProcess.StartInfo.CreateNoWindow = true;
-            versionProcess.StartInfo.RedirectStandardOutput = true;
-            versionProcess.StartInfo.UseShellExecute = false;
-            versionProcess.StartInfo.Arguments = "-v";
+            Process versionProcess = new Process
+            {
+                StartInfo =
+                {
+                    FileName               = unarPath,
+                    CreateNoWindow         = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute        = false,
+                    Arguments              = "-v"
+                }
+            };
             versionProcess.Start();
             versionProcess.WaitForExit();
 
-            if(FinishedWithText != null)
-                FinishedWithText(versionProcess.StandardOutput.ReadToEnd().TrimEnd(new char[] { '\n' }));
+            FinishedWithText?.Invoke(versionProcess.StandardOutput.ReadToEnd().TrimEnd('\n'));
         }
     }
 }

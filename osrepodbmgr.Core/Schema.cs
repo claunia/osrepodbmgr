@@ -1,4 +1,4 @@
-//
+﻿//
 //  Author:
 //    Natalia Portillo claunia@claunia.com
 //
@@ -25,61 +25,61 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 namespace osrepodbmgr.Core
 {
     public static class Schema
     {
-        public const string FilesTableSql = "-- -----------------------------------------------------\n" +
-            "-- Table `files`\n" +
-            "-- -----------------------------------------------------\n" +
-            "DROP TABLE IF EXISTS `files` ;\n\n" +
-            "CREATE TABLE IF NOT EXISTS `files` (\n" +
-            "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-            "  `sha256` VARCHAR(64) NOT NULL,\n" +
-            "  `crack` BOOLEAN NOT NULL,\n" +
-            "  `hasvirus` BOOLEAN NULL,\n" +
-            "  `clamtime` DATETIME NULL,\n" +
-            "  `vtotaltime` DATETIME NULL,\n" +
-            "  `virus` VARCHAR(128) NULL,\n" +
-            "  `length` BIGINT NOT NULL);\n\n" +
-            "CREATE UNIQUE INDEX `files_id_UNIQUE` ON `files` (`id` ASC);\n\n" +
-            "CREATE UNIQUE INDEX `files_sha256_UNIQUE` ON `files` (`sha256` ASC);\n\n" +
-            "CREATE INDEX `files_hasvirus_idx` ON `files` (`hasvirus` ASC);\n\n" +
-            "CREATE INDEX `files_virus_idx` ON `files` (`virus` ASC);\n\n" +
-            "CREATE INDEX `files_length_idx` ON `files` (`length` ASC);";
+        public const string FilesTableSql = "-- -----------------------------------------------------\n"               +
+                                            "-- Table `files`\n"                                                       +
+                                            "-- -----------------------------------------------------\n"               +
+                                            "DROP TABLE IF EXISTS `files` ;\n\n"                                       +
+                                            "CREATE TABLE IF NOT EXISTS `files` (\n"                                   +
+                                            "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n"                              +
+                                            "  `sha256` VARCHAR(64) NOT NULL,\n"                                       +
+                                            "  `crack` BOOLEAN NOT NULL,\n"                                            +
+                                            "  `hasvirus` BOOLEAN NULL,\n"                                             +
+                                            "  `clamtime` DATETIME NULL,\n"                                            +
+                                            "  `vtotaltime` DATETIME NULL,\n"                                          +
+                                            "  `virus` VARCHAR(128) NULL,\n"                                           +
+                                            "  `length` BIGINT NOT NULL);\n\n"                                         +
+                                            "CREATE UNIQUE INDEX `files_id_UNIQUE` ON `files` (`id` ASC);\n\n"         +
+                                            "CREATE UNIQUE INDEX `files_sha256_UNIQUE` ON `files` (`sha256` ASC);\n\n" +
+                                            "CREATE INDEX `files_hasvirus_idx` ON `files` (`hasvirus` ASC);\n\n"       +
+                                            "CREATE INDEX `files_virus_idx` ON `files` (`virus` ASC);\n\n"             +
+                                            "CREATE INDEX `files_length_idx` ON `files` (`length` ASC);";
 
-        public const string OSesTableSql = "-- -----------------------------------------------------\n" +
-            "-- Table `oses`\n" +
-            "-- -----------------------------------------------------\n" +
-            "DROP TABLE IF EXISTS `oses` ;\n\n" +
-            "CREATE TABLE IF NOT EXISTS `oses` (\n" +
-            "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-            "  `mdid` CHAR(40) NOT NULL,\n" +
-            "  `developer` VARCHAR(45) NOT NULL,\n" +
-            "  `product` VARCHAR(45) NOT NULL,\n" +
-            "  `version` VARCHAR(45) NULL,\n" +
-            "  `languages` VARCHAR(45) NULL,\n" +
-            "  `architecture` VARCHAR(45) NULL,\n" +
-            "  `machine` VARCHAR(45) NULL,\n" +
-            "  `format` VARCHAR(45) NULL,\n" +
-            "  `description` VARCHAR(45) NULL,\n" +
-            "  `oem` BOOLEAN NOT NULL,\n" +
-            "  `upgrade` BOOLEAN NOT NULL,\n" +
-            "  `update` BOOLEAN NOT NULL,\n" +
-            "  `source` BOOLEAN NOT NULL,\n" +
-            "  `files` BOOLEAN NOT NULL,\n" +
-            "  `netinstall` BOOLEAN NOT NULL,\n" +
-            "  `xml` BLOB NULL,\n" +
-            "  `json` BLOB NULL);\n\n" +
-            "CREATE UNIQUE INDEX `oses_id_UNIQUE` ON `oses` (`id` ASC);\n\n" +
-            "CREATE UNIQUE INDEX `oses_mdid_UNIQUE` ON `oses` (`mdid` ASC);\n\n" +
-            "CREATE INDEX `oses_developer_idx` ON `oses` (`developer` ASC);\n\n" +
-            "CREATE INDEX `oses_product_idx` ON `oses` (`product` ASC);\n\n" +
-            "CREATE INDEX `oses_version_idx` ON `oses` (`version` ASC);\n\n" +
-            "CREATE INDEX `oses_architecture_idx` ON `oses` (`architecture` ASC);\n\n" +
-            "CREATE INDEX `oses_format_idx` ON `oses` (`format` ASC);\n\n" +
-            "CREATE INDEX `oses_machine_idx` ON `oses` (`machine` ASC);\n\n" +
-            "CREATE INDEX `oses_description_idx` ON `oses` (`description` ASC);";
+        public const string OSesTableSql = "-- -----------------------------------------------------\n"               +
+                                           "-- Table `oses`\n"                                                        +
+                                           "-- -----------------------------------------------------\n"               +
+                                           "DROP TABLE IF EXISTS `oses` ;\n\n"                                        +
+                                           "CREATE TABLE IF NOT EXISTS `oses` (\n"                                    +
+                                           "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n"                              +
+                                           "  `mdid` CHAR(40) NOT NULL,\n"                                            +
+                                           "  `developer` VARCHAR(45) NOT NULL,\n"                                    +
+                                           "  `product` VARCHAR(45) NOT NULL,\n"                                      +
+                                           "  `version` VARCHAR(45) NULL,\n"                                          +
+                                           "  `languages` VARCHAR(45) NULL,\n"                                        +
+                                           "  `architecture` VARCHAR(45) NULL,\n"                                     +
+                                           "  `machine` VARCHAR(45) NULL,\n"                                          +
+                                           "  `format` VARCHAR(45) NULL,\n"                                           +
+                                           "  `description` VARCHAR(45) NULL,\n"                                      +
+                                           "  `oem` BOOLEAN NOT NULL,\n"                                              +
+                                           "  `upgrade` BOOLEAN NOT NULL,\n"                                          +
+                                           "  `update` BOOLEAN NOT NULL,\n"                                           +
+                                           "  `source` BOOLEAN NOT NULL,\n"                                           +
+                                           "  `files` BOOLEAN NOT NULL,\n"                                            +
+                                           "  `netinstall` BOOLEAN NOT NULL,\n"                                       +
+                                           "  `xml` BLOB NULL,\n"                                                     +
+                                           "  `json` BLOB NULL);\n\n"                                                 +
+                                           "CREATE UNIQUE INDEX `oses_id_UNIQUE` ON `oses` (`id` ASC);\n\n"           +
+                                           "CREATE UNIQUE INDEX `oses_mdid_UNIQUE` ON `oses` (`mdid` ASC);\n\n"       +
+                                           "CREATE INDEX `oses_developer_idx` ON `oses` (`developer` ASC);\n\n"       +
+                                           "CREATE INDEX `oses_product_idx` ON `oses` (`product` ASC);\n\n"           +
+                                           "CREATE INDEX `oses_version_idx` ON `oses` (`version` ASC);\n\n"           +
+                                           "CREATE INDEX `oses_architecture_idx` ON `oses` (`architecture` ASC);\n\n" +
+                                           "CREATE INDEX `oses_format_idx` ON `oses` (`format` ASC);\n\n"             +
+                                           "CREATE INDEX `oses_machine_idx` ON `oses` (`machine` ASC);\n\n"           +
+                                           "CREATE INDEX `oses_description_idx` ON `oses` (`description` ASC);";
     }
 }
-

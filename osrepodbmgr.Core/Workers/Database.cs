@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -39,56 +40,54 @@ namespace osrepodbmgr.Core
         {
             try
             {
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
-                List<DBEntry> oses;
-                dbCore.DBOps.GetAllOSes(out oses);
-#if DEBUG
+                #endif
+                dbCore.DbOps.GetAllOSes(out List<DbEntry> oses);
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.GetAllOSes(): Took {0} seconds to get OSes from database", stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.GetAllOSes(): Took {0} seconds to get OSes from database",
+                                  stopwatch.Elapsed.TotalSeconds);
+                #endif
 
                 if(AddOS != null)
                 {
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Restart();
-#endif
+                    #endif
                     int counter = 0;
                     // TODO: Check file name and existence
-                    foreach(DBEntry os in oses)
+                    foreach(DbEntry os in oses)
                     {
-                        if(UpdateProgress != null)
-                            UpdateProgress("Populating OSes table", string.Format("{0} {1}", os.developer, os.product), counter, oses.Count);
-                        string destination = Path.Combine(Settings.Current.RepositoryPath, os.mdid[0].ToString(),
-                                                          os.mdid[1].ToString(), os.mdid[2].ToString(), os.mdid[3].ToString(),
-                                                          os.mdid[4].ToString(), os.mdid) + ".zip";
+                        UpdateProgress?.Invoke("Populating OSes table", $"{os.Developer} {os.Product}", counter,
+                                               oses.Count);
+                        string destination = Path.Combine(Settings.Current.RepositoryPath, os.Mdid[0].ToString(),
+                                                          os.Mdid[1].ToString(), os.Mdid[2].ToString(),
+                                                          os.Mdid[3].ToString(), os.Mdid[4].ToString(), os.Mdid) +
+                                             ".zip";
 
-                        if(AddOS != null)
-                            AddOS(os);
+                        AddOS?.Invoke(os);
 
                         counter++;
                     }
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Stop();
-                    Console.WriteLine("Core.GetAllOSes(): Took {0} seconds to add OSes to the GUI", stopwatch.Elapsed.TotalSeconds);
-#endif
+                    Console.WriteLine("Core.GetAllOSes(): Took {0} seconds to add OSes to the GUI",
+                                      stopwatch.Elapsed.TotalSeconds);
+                    #endif
                 }
 
-                if(Finished != null)
-                    Finished();
+                Finished?.Invoke();
             }
-            catch(ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-#if DEBUG
+                if(Debugger.IsAttached) throw;
+
+                Failed?.Invoke($"Exception {ex.Message}\n{ex.InnerException}");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
@@ -97,14 +96,14 @@ namespace osrepodbmgr.Core
             try
             {
                 long counter = 0;
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
-                Dictionary<string, DBOSFile> knownFiles = new Dictionary<string, DBOSFile>();
+                #endif
+                Dictionary<string, DbOsFile> knownFiles = new Dictionary<string, DbOsFile>();
 
                 bool unknownFile = false;
 
-                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
+                foreach(KeyValuePair<string, DbOsFile> kvp in Context.Hashes)
                 {
                     // Empty file with size zero
                     if(kvp.Value.Sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
@@ -114,66 +113,61 @@ namespace osrepodbmgr.Core
                         continue;
                     }
 
-                    if(UpdateProgress != null)
-                        UpdateProgress(null, "Checking files in database", counter, Context.hashes.Count);
+                    UpdateProgress?.Invoke(null, "Checking files in database", counter, Context.Hashes.Count);
 
-                    if(AddFileForOS != null)
-                        AddFileForOS(kvp.Key, kvp.Value.Sha256, dbCore.DBOps.ExistsFile(kvp.Value.Sha256), kvp.Value.Crack);
+                    AddFileForOS?.Invoke(kvp.Key, kvp.Value.Sha256, dbCore.DbOps.ExistsFile(kvp.Value.Sha256),
+                                         kvp.Value.Crack);
 
-                    if(dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
+                    if(dbCore.DbOps.ExistsFile(kvp.Value.Sha256))
                     {
                         counter++;
                         knownFiles.Add(kvp.Key, kvp.Value);
                     }
-                    else
-                        unknownFile = true;
+                    else unknownFile = true;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds to checks for file knowledge in the DB", stopwatch.Elapsed.TotalSeconds);
+                Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds to checks for file knowledge in the DB",
+                                  stopwatch.Elapsed.TotalSeconds);
                 stopwatch.Restart();
-#endif
+                #endif
                 if(knownFiles.Count == 0 || unknownFile)
                 {
-                    if(Finished != null)
-                        Finished();
+                    Finished?.Invoke();
                     return;
                 }
 
-                if(UpdateProgress != null)
-                    UpdateProgress(null, "Retrieving OSes from database", counter, Context.hashes.Count);
-                List<DBEntry> oses;
-                dbCore.DBOps.GetAllOSes(out oses);
-#if DEBUG
+                UpdateProgress?.Invoke(null, "Retrieving OSes from database", counter, Context.Hashes.Count);
+                dbCore.DbOps.GetAllOSes(out List<DbEntry> oses);
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds get all OSes from DB", stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds get all OSes from DB",
+                                  stopwatch.Elapsed.TotalSeconds);
+                #endif
 
                 if(oses != null && oses.Count > 0)
                 {
-                    DBEntry[] osesArray = new DBEntry[oses.Count];
+                    DbEntry[] osesArray = new DbEntry[oses.Count];
                     oses.CopyTo(osesArray);
 
                     long osCounter = 0;
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Restart();
-#endif
+                    #endif
 
-                    foreach(DBEntry os in osesArray)
+                    foreach(DbEntry os in osesArray)
                     {
-                        if(UpdateProgress != null)
-                            UpdateProgress(null, string.Format("Check OS id {0}", os.id), osCounter, osesArray.Length);
+                        UpdateProgress?.Invoke(null, $"Check OS id {os.Id}", osCounter, osesArray.Length);
 
                         counter = 0;
-                        foreach(KeyValuePair<string, DBOSFile> kvp in knownFiles)
+                        foreach(KeyValuePair<string, DbOsFile> kvp in knownFiles)
                         {
-                            if(UpdateProgress2 != null)
-                                UpdateProgress2(null, string.Format("Checking for file {0}", kvp.Value.Path), counter, knownFiles.Count);
+                            UpdateProgress2?.Invoke(null, $"Checking for file {kvp.Value.Path}", counter,
+                                                    knownFiles.Count);
 
-                            if(!dbCore.DBOps.ExistsFileInOS(kvp.Value.Sha256, os.id))
+                            if(!dbCore.DbOps.ExistsFileInOs(kvp.Value.Sha256, os.Id))
                             {
-                                if (oses.Contains(os))
-                                    oses.Remove(os);
+                                if(oses.Contains(os)) oses.Remove(os);
 
                                 // If one file is missing, the rest don't matter
                                 break;
@@ -182,43 +176,37 @@ namespace osrepodbmgr.Core
                             counter++;
                         }
 
-                        if(oses.Count == 0)
-                            break; // No OSes left
+                        if(oses.Count == 0) break; // No OSes left
                     }
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Stop();
-                    Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds correlate all files with all known OSes", stopwatch.Elapsed.TotalSeconds);
-#endif
+                    Console.WriteLine("Core.CheckDbForFiles(): Took {0} seconds correlate all files with all known OSes",
+                                      stopwatch.Elapsed.TotalSeconds);
+                    #endif
                 }
 
                 if(AddOS != null)
-                {
-                    // TODO: Check file name and existence
-                    foreach(DBEntry os in oses)
+                    foreach(DbEntry os in oses)
                     {
-                        string destination = Path.Combine(Settings.Current.RepositoryPath, os.mdid[0].ToString(),
-                                                          os.mdid[1].ToString(), os.mdid[2].ToString(), os.mdid[3].ToString(),
-                                                          os.mdid[4].ToString(), os.mdid) + ".zip";
+                        string destination = Path.Combine(Settings.Current.RepositoryPath, os.Mdid[0].ToString(),
+                                                          os.Mdid[1].ToString(), os.Mdid[2].ToString(),
+                                                          os.Mdid[3].ToString(), os.Mdid[4].ToString(), os.Mdid) +
+                                             ".zip";
 
-                        if(AddOS != null)
-                            AddOS(os);
+                        AddOS?.Invoke(os);
                     }
-                }
 
-                if(Finished != null)
-                    Finished();
+                Finished?.Invoke();
             }
-            catch(ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-#if DEBUG
+                if(Debugger.IsAttached) throw;
+
+                Failed?.Invoke($"Exception {ex.Message}\n{ex.InnerException}");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
@@ -227,106 +215,106 @@ namespace osrepodbmgr.Core
             try
             {
                 long counter = 0;
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
-                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
+                #endif
+                foreach(KeyValuePair<string, DbOsFile> kvp in Context.Hashes)
                 {
-                    if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding files to database", counter, Context.hashes.Count);
+                    UpdateProgress?.Invoke(null, "Adding files to database", counter, Context.Hashes.Count);
 
-                    if(!dbCore.DBOps.ExistsFile(kvp.Value.Sha256))
+                    if(!dbCore.DbOps.ExistsFile(kvp.Value.Sha256))
                     {
-                        DBFile file = new DBFile
+                        DbFile file = new DbFile
                         {
-                            Sha256 = kvp.Value.Sha256, ClamTime = null, Crack = kvp.Value.Crack,
-                            Length = kvp.Value.Length, Virus = null, HasVirus = null, VirusTotalTime = null
+                            Sha256         = kvp.Value.Sha256,
+                            ClamTime       = null,
+                            Crack          = kvp.Value.Crack,
+                            Length         = kvp.Value.Length,
+                            Virus          = null,
+                            HasVirus       = null,
+                            VirusTotalTime = null
                         };
-                        dbCore.DBOps.AddFile(file);
+                        dbCore.DbOps.AddFile(file);
 
-                        if(AddFile != null)
-                            AddFile(file);
+                        AddFile?.Invoke(file);
                     }
 
                     counter++;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all files to the database", stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all files to the database",
+                                  stopwatch.Elapsed.TotalSeconds);
+                #endif
 
-                if(UpdateProgress != null)
-                    UpdateProgress(null, "Adding OS information", counter, Context.hashes.Count);
-                dbCore.DBOps.AddOS(Context.dbInfo, out Context.dbInfo.id);
-                if(UpdateProgress != null)
-                    UpdateProgress(null, "Creating OS table", counter, Context.hashes.Count);
-                dbCore.DBOps.CreateTableForOS(Context.dbInfo.id);
+                UpdateProgress?.Invoke(null, "Adding OS information", counter, Context.Hashes.Count);
+                dbCore.DbOps.AddOs(Context.DbInfo, out Context.DbInfo.Id);
+                UpdateProgress?.Invoke(null, "Creating OS table", counter, Context.Hashes.Count);
+                dbCore.DbOps.CreateTableForOs(Context.DbInfo.Id);
 
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
+                #endif
                 counter = 0;
-                foreach(KeyValuePair<string, DBOSFile> kvp in Context.hashes)
+                foreach(KeyValuePair<string, DbOsFile> kvp in Context.Hashes)
                 {
-                    if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding files to OS in database", counter, Context.hashes.Count);
+                    UpdateProgress?.Invoke(null, "Adding files to OS in database", counter, Context.Hashes.Count);
 
-                    dbCore.DBOps.AddFileToOS(kvp.Value, Context.dbInfo.id);
+                    dbCore.DbOps.AddFileToOs(kvp.Value, Context.DbInfo.Id);
 
                     counter++;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all files to the OS in the database", stopwatch.Elapsed.TotalSeconds);
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all files to the OS in the database",
+                                  stopwatch.Elapsed.TotalSeconds);
                 stopwatch.Restart();
-#endif
+                #endif
                 counter = 0;
-                foreach(KeyValuePair<string, DBFolder> kvp in Context.foldersDict)
+                foreach(KeyValuePair<string, DbFolder> kvp in Context.FoldersDict)
                 {
-                    if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding folders to OS in database", counter, Context.foldersDict.Count);
+                    UpdateProgress?.Invoke(null, "Adding folders to OS in database", counter,
+                                           Context.FoldersDict.Count);
 
-                    dbCore.DBOps.AddFolderToOS(kvp.Value, Context.dbInfo.id);
+                    dbCore.DbOps.AddFolderToOs(kvp.Value, Context.DbInfo.Id);
 
                     counter++;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all folders to the database", stopwatch.Elapsed.TotalSeconds);
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all folders to the database",
+                                  stopwatch.Elapsed.TotalSeconds);
                 stopwatch.Restart();
-#endif
+                #endif
                 counter = 0;
-                if(Context.symlinksDict.Count > 0)
-                    dbCore.DBOps.CreateSymlinkTableForOS(Context.dbInfo.id);
-                
-                foreach(KeyValuePair<string, string> kvp in Context.symlinksDict)
-                {
-                    if(UpdateProgress != null)
-                        UpdateProgress(null, "Adding symbolic links to OS in database", counter, Context.symlinksDict.Count);
+                if(Context.SymlinksDict.Count > 0) dbCore.DbOps.CreateSymlinkTableForOs(Context.DbInfo.Id);
 
-                    dbCore.DBOps.AddSymlinkToOS(kvp.Key, kvp.Value, Context.dbInfo.id);
+                foreach(KeyValuePair<string, string> kvp in Context.SymlinksDict)
+                {
+                    UpdateProgress?.Invoke(null, "Adding symbolic links to OS in database", counter,
+                                           Context.SymlinksDict.Count);
+
+                    dbCore.DbOps.AddSymlinkToOs(kvp.Key, kvp.Value, Context.DbInfo.Id);
 
                     counter++;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all symbolic links to the database", stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.AddFilesToDb(): Took {0} seconds to add all symbolic links to the database",
+                                  stopwatch.Elapsed.TotalSeconds);
+                #endif
 
-                if(Finished != null)
-                    Finished();
+                Finished?.Invoke();
             }
-            catch(ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-#if DEBUG
+                if(Debugger.IsAttached) throw;
+
+                Failed?.Invoke($"Exception {ex.Message}\n{ex.InnerException}");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
@@ -339,123 +327,107 @@ namespace osrepodbmgr.Core
             {
                 if(string.IsNullOrEmpty(Settings.Current.DatabasePath))
                 {
-                    if(Failed != null)
-                        Failed("No database file specified");
+                    Failed?.Invoke("No database file specified");
                     return;
                 }
 
                 dbCore = new SQLite();
                 if(File.Exists(Settings.Current.DatabasePath))
                 {
-                    if(!dbCore.OpenDB(Settings.Current.DatabasePath, null, null, null))
+                    if(!dbCore.OpenDb(Settings.Current.DatabasePath, null, null, null))
                     {
-                        if(Failed != null)
-                            Failed("Could not open database, correct file selected?");
+                        Failed?.Invoke("Could not open database, correct file selected?");
                         dbCore = null;
                         return;
                     }
                 }
                 else
                 {
-                    if(!dbCore.CreateDB(Settings.Current.DatabasePath, null, null, null))
+                    if(!dbCore.CreateDb(Settings.Current.DatabasePath, null, null, null))
                     {
-                        if(Failed != null)
-                            Failed("Could not create database, correct file selected?");
+                        Failed?.Invoke("Could not create database, correct file selected?");
                         dbCore = null;
                         return;
                     }
-                    if(!dbCore.OpenDB(Settings.Current.DatabasePath, null, null, null))
+
+                    if(!dbCore.OpenDb(Settings.Current.DatabasePath, null, null, null))
                     {
-                        if(Failed != null)
-                            Failed("Could not open database, correct file selected?");
+                        Failed?.Invoke("Could not open database, correct file selected?");
                         dbCore = null;
                         return;
                     }
                 }
-                if(Finished != null)
-                    Finished();
+
+                Finished?.Invoke();
             }
-            catch(ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-#if DEBUG
+                if(Debugger.IsAttached) throw;
+
+                Failed?.Invoke($"Exception {ex.Message}\n{ex.InnerException}");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
         public static void CloseDB()
         {
-            if(dbCore != null)
-                dbCore.CloseDB();
+            dbCore?.CloseDb();
         }
 
         public static void RemoveOS(long id, string mdid)
         {
-            if(id == 0 || string.IsNullOrWhiteSpace(mdid))
-                return;
+            if(id == 0 || string.IsNullOrWhiteSpace(mdid)) return;
 
-            string destination = Path.Combine(Settings.Current.RepositoryPath, mdid[0].ToString(),
-                                  mdid[1].ToString(), mdid[2].ToString(), mdid[3].ToString(),
-                                  mdid[4].ToString(), mdid) + ".zip";
+            string destination = Path.Combine(Settings.Current.RepositoryPath, mdid[0].ToString(), mdid[1].ToString(),
+                                              mdid[2].ToString(), mdid[3].ToString(), mdid[4].ToString(),
+                                              mdid) + ".zip";
 
-            if(File.Exists(destination))
-                File.Delete(destination);
+            if(File.Exists(destination)) File.Delete(destination);
 
-            dbCore.DBOps.RemoveOS(id);
+            dbCore.DbOps.RemoveOs(id);
         }
 
         public static void GetFilesFromDb()
         {
             try
             {
-                ulong count = dbCore.DBOps.GetFilesCount();
-                const ulong page = 2500;
-                ulong offset = 0;
+                ulong       count  = dbCore.DbOps.GetFilesCount();
+                const ulong PAGE   = 2500;
+                ulong       offset = 0;
 
-                List<DBFile> files;
-
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
-                while(dbCore.DBOps.GetFiles(out files, offset, page))
+                #endif
+                while(dbCore.DbOps.GetFiles(out List<DbFile> files, offset, PAGE))
                 {
-                    if(files.Count == 0)
-                        break;
+                    if(files.Count == 0) break;
 
-                    if(UpdateProgress != null)
-                        UpdateProgress(null, string.Format("Loaded file {0} of {1}", offset, count), (long)offset, (long)count);
+                    UpdateProgress?.Invoke(null, $"Loaded file {offset} of {count}", (long)offset, (long)count);
 
-                    if(AddFiles != null)
+                    AddFiles?.Invoke(files);
 
-                        AddFiles(files);
-
-                    offset += page;
+                    offset += PAGE;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.GetFilesFromDb(): Took {0} seconds to get all files from the database", stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.GetFilesFromDb(): Took {0} seconds to get all files from the database",
+                                  stopwatch.Elapsed.TotalSeconds);
+                #endif
 
-                if(Finished != null)
-                    Finished();
+                Finished?.Invoke();
             }
-            catch(ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-#if DEBUG
+                if(Debugger.IsAttached) throw;
+
+                Failed?.Invoke($"Exception {ex.Message}\n{ex.InnerException}");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
@@ -463,28 +435,25 @@ namespace osrepodbmgr.Core
         {
             try
             {
-                dbCore.DBOps.ToggleCrack(hash, crack);
+                dbCore.DbOps.ToggleCrack(hash, crack);
 
-                if(Finished != null)
-                    Finished();
+                Finished?.Invoke();
             }
-            catch(ThreadAbortException)
-            { }
+            catch(ThreadAbortException) { }
             catch(Exception ex)
             {
-                if(Debugger.IsAttached)
-                    throw;
-                if(Failed != null)
-                    Failed(string.Format("Exception {0}\n{1}", ex.Message, ex.InnerException));
-#if DEBUG
+                if(Debugger.IsAttached) throw;
+
+                Failed?.Invoke($"Exception {ex.Message}\n{ex.InnerException}");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
 
-        public static DBFile GetDBFile(string hash)
+        public static DbFile GetDBFile(string hash)
         {
-            return dbCore.DBOps.GetFile(hash);
+            return dbCore.DbOps.GetFile(hash);
         }
     }
 }

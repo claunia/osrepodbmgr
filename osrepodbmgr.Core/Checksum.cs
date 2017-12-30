@@ -29,6 +29,7 @@
 // ----------------------------------------------------------------------------
 // Copyright © 2011-2016 Natalia Portillo
 // ****************************************************************************/
+
 using System.Collections.Generic;
 using System.Threading;
 using DiscImageChef.Checksums;
@@ -39,78 +40,78 @@ namespace osrepodbmgr.Core
     class Checksum
     {
         Adler32Context adler32ctx;
-        Crc16Context crc16ctx;
-        Crc32Context crc32ctx;
-        Crc64Context crc64ctx;
-        Md5Context md5ctx;
-        Ripemd160Context ripemd160ctx;
-        Sha1Context sha1ctx;
-        Sha256Context sha256ctx;
-        Sha384Context sha384ctx;
-        Sha512Context sha512ctx;
-        SpamSumContext ssctx;
-
-        Thread adlerThread;
-        Thread crc16Thread;
-        Thread crc32Thread;
-        Thread crc64Thread;
-        Thread md5Thread;
-        Thread ripemd160Thread;
-        Thread sha1Thread;
-        Thread sha256Thread;
-        Thread sha384Thread;
-        Thread sha512Thread;
-        Thread spamsumThread;
 
         adlerPacket adlerPkt;
-        crc16Packet crc16Pkt;
-        crc32Packet crc32Pkt;
-        crc64Packet crc64Pkt;
-        md5Packet md5Pkt;
-        ripemd160Packet ripemd160Pkt;
-        sha1Packet sha1Pkt;
-        sha256Packet sha256Pkt;
-        sha384Packet sha384Pkt;
-        sha512Packet sha512Pkt;
-        spamsumPacket spamsumPkt;
+
+        Thread           adlerThread;
+        Crc16Context     crc16ctx;
+        crc16Packet      crc16Pkt;
+        Thread           crc16Thread;
+        Crc32Context     crc32ctx;
+        crc32Packet      crc32Pkt;
+        Thread           crc32Thread;
+        Crc64Context     crc64ctx;
+        crc64Packet      crc64Pkt;
+        Thread           crc64Thread;
+        Md5Context       md5ctx;
+        md5Packet        md5Pkt;
+        Thread           md5Thread;
+        Ripemd160Context ripemd160ctx;
+        ripemd160Packet  ripemd160Pkt;
+        Thread           ripemd160Thread;
+        Sha1Context      sha1ctx;
+        sha1Packet       sha1Pkt;
+        Thread           sha1Thread;
+        Sha256Context    sha256ctx;
+        sha256Packet     sha256Pkt;
+        Thread           sha256Thread;
+        Sha384Context    sha384ctx;
+        sha384Packet     sha384Pkt;
+        Thread           sha384Thread;
+        Sha512Context    sha512ctx;
+        sha512Packet     sha512Pkt;
+        Thread           sha512Thread;
+        spamsumPacket    spamsumPkt;
+        Thread           spamsumThread;
+        SpamSumContext   ssctx;
 
         internal Checksum()
         {
-            adler32ctx = new Adler32Context();
-            crc16ctx = new Crc16Context();
-            crc32ctx = new Crc32Context();
-            crc64ctx = new Crc64Context();
-            md5ctx = new Md5Context();
+            adler32ctx   = new Adler32Context();
+            crc16ctx     = new Crc16Context();
+            crc32ctx     = new Crc32Context();
+            crc64ctx     = new Crc64Context();
+            md5ctx       = new Md5Context();
             ripemd160ctx = new Ripemd160Context();
-            sha1ctx = new Sha1Context();
-            sha256ctx = new Sha256Context();
-            sha384ctx = new Sha384Context();
-            sha512ctx = new Sha512Context();
-            ssctx = new SpamSumContext();
+            sha1ctx      = new Sha1Context();
+            sha256ctx    = new Sha256Context();
+            sha384ctx    = new Sha384Context();
+            sha512ctx    = new Sha512Context();
+            ssctx        = new SpamSumContext();
 
-            adlerThread = new Thread(updateAdler);
-            crc16Thread = new Thread(updateCRC16);
-            crc32Thread = new Thread(updateCRC32);
-            crc64Thread = new Thread(updateCRC64);
-            md5Thread = new Thread(updateMD5);
+            adlerThread     = new Thread(updateAdler);
+            crc16Thread     = new Thread(updateCRC16);
+            crc32Thread     = new Thread(updateCRC32);
+            crc64Thread     = new Thread(updateCRC64);
+            md5Thread       = new Thread(updateMD5);
             ripemd160Thread = new Thread(updateRIPEMD160);
-            sha1Thread = new Thread(updateSHA1);
-            sha256Thread = new Thread(updateSHA256);
-            sha384Thread = new Thread(updateSHA384);
-            sha512Thread = new Thread(updateSHA512);
-            spamsumThread = new Thread(updateSpamSum);
+            sha1Thread      = new Thread(updateSHA1);
+            sha256Thread    = new Thread(updateSHA256);
+            sha384Thread    = new Thread(updateSHA384);
+            sha512Thread    = new Thread(updateSHA512);
+            spamsumThread   = new Thread(updateSpamSum);
 
-            adlerPkt = new adlerPacket();
-            crc16Pkt = new crc16Packet();
-            crc32Pkt = new crc32Packet();
-            crc64Pkt = new crc64Packet();
-            md5Pkt = new md5Packet();
+            adlerPkt     = new adlerPacket();
+            crc16Pkt     = new crc16Packet();
+            crc32Pkt     = new crc32Packet();
+            crc64Pkt     = new crc64Packet();
+            md5Pkt       = new md5Packet();
             ripemd160Pkt = new ripemd160Packet();
-            sha1Pkt = new sha1Packet();
-            sha256Pkt = new sha256Packet();
-            sha384Pkt = new sha384Packet();
-            sha512Pkt = new sha512Packet();
-            spamsumPkt = new spamsumPacket();
+            sha1Pkt      = new sha1Packet();
+            sha256Pkt    = new sha256Packet();
+            sha384Pkt    = new sha384Packet();
+            sha512Pkt    = new sha512Packet();
+            spamsumPkt   = new spamsumPacket();
 
             adler32ctx.Init();
             adlerPkt.context = adler32ctx;
@@ -161,85 +162,58 @@ namespace osrepodbmgr.Core
             spamsumPkt.data = data;
             spamsumThread.Start(spamsumPkt);
 
-            while(adlerThread.IsAlive || crc16Thread.IsAlive ||
-                   crc32Thread.IsAlive || crc64Thread.IsAlive ||
-                   md5Thread.IsAlive || ripemd160Thread.IsAlive ||
-                   sha1Thread.IsAlive || sha256Thread.IsAlive ||
-                   sha384Thread.IsAlive || sha512Thread.IsAlive ||
-                   spamsumThread.IsAlive)
-            {
-            }
+            while(adlerThread.IsAlive  || crc16Thread.IsAlive     || crc32Thread.IsAlive || crc64Thread.IsAlive  ||
+                  md5Thread.IsAlive    || ripemd160Thread.IsAlive || sha1Thread.IsAlive  || sha256Thread.IsAlive ||
+                  sha384Thread.IsAlive || sha512Thread.IsAlive    || spamsumThread.IsAlive) { }
 
-            adlerThread = new Thread(updateAdler);
-            crc16Thread = new Thread(updateCRC16);
-            crc32Thread = new Thread(updateCRC32);
-            crc64Thread = new Thread(updateCRC64);
-            md5Thread = new Thread(updateMD5);
+            adlerThread     = new Thread(updateAdler);
+            crc16Thread     = new Thread(updateCRC16);
+            crc32Thread     = new Thread(updateCRC32);
+            crc64Thread     = new Thread(updateCRC64);
+            md5Thread       = new Thread(updateMD5);
             ripemd160Thread = new Thread(updateRIPEMD160);
-            sha1Thread = new Thread(updateSHA1);
-            sha256Thread = new Thread(updateSHA256);
-            sha384Thread = new Thread(updateSHA384);
-            sha512Thread = new Thread(updateSHA512);
-            spamsumThread = new Thread(updateSpamSum);
+            sha1Thread      = new Thread(updateSHA1);
+            sha256Thread    = new Thread(updateSHA256);
+            sha384Thread    = new Thread(updateSHA384);
+            sha512Thread    = new Thread(updateSHA512);
+            spamsumThread   = new Thread(updateSpamSum);
         }
 
         internal List<ChecksumType> End()
         {
             List<ChecksumType> chks = new List<ChecksumType>();
 
-            ChecksumType chk = new ChecksumType();
-            chk.type = ChecksumTypeType.adler32;
-            chk.Value = adler32ctx.End();
+            ChecksumType chk = new ChecksumType {type = ChecksumTypeType.adler32, Value = adler32ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.crc16;
-            chk.Value = crc16ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.crc16, Value = crc16ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.crc32;
-            chk.Value = crc32ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.crc32, Value = crc32ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.crc64;
-            chk.Value = crc64ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.crc64, Value = crc64ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.md5;
-            chk.Value = md5ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.md5, Value = md5ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.ripemd160;
-            chk.Value = ripemd160ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.ripemd160, Value = ripemd160ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha1;
-            chk.Value = sha1ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha1, Value = sha1ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha256;
-            chk.Value = sha256ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha256, Value = sha256ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha384;
-            chk.Value = sha384ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha384, Value = sha384ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha512;
-            chk.Value = sha512ctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha512, Value = sha512ctx.End()};
             chks.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.spamsum;
-            chk.Value = ssctx.End();
+            chk = new ChecksumType {type = ChecksumTypeType.spamsum, Value = ssctx.End()};
             chks.Add(chk);
 
             return chks;
@@ -247,41 +221,41 @@ namespace osrepodbmgr.Core
 
         internal static List<ChecksumType> GetChecksums(byte[] data)
         {
-            Adler32Context adler32ctxData = new Adler32Context();
-            Crc16Context crc16ctxData = new Crc16Context();
-            Crc32Context crc32ctxData = new Crc32Context();
-            Crc64Context crc64ctxData = new Crc64Context();
-            Md5Context md5ctxData = new Md5Context();
+            Adler32Context   adler32ctxData   = new Adler32Context();
+            Crc16Context     crc16ctxData     = new Crc16Context();
+            Crc32Context     crc32ctxData     = new Crc32Context();
+            Crc64Context     crc64ctxData     = new Crc64Context();
+            Md5Context       md5ctxData       = new Md5Context();
             Ripemd160Context ripemd160ctxData = new Ripemd160Context();
-            Sha1Context sha1ctxData = new Sha1Context();
-            Sha256Context sha256ctxData = new Sha256Context();
-            Sha384Context sha384ctxData = new Sha384Context();
-            Sha512Context sha512ctxData = new Sha512Context();
-            SpamSumContext ssctxData = new SpamSumContext();
+            Sha1Context      sha1ctxData      = new Sha1Context();
+            Sha256Context    sha256ctxData    = new Sha256Context();
+            Sha384Context    sha384ctxData    = new Sha384Context();
+            Sha512Context    sha512ctxData    = new Sha512Context();
+            SpamSumContext   ssctxData        = new SpamSumContext();
 
-            Thread adlerThreadData = new Thread(updateAdler);
-            Thread crc16ThreadData = new Thread(updateCRC16);
-            Thread crc32ThreadData = new Thread(updateCRC32);
-            Thread crc64ThreadData = new Thread(updateCRC64);
-            Thread md5ThreadData = new Thread(updateMD5);
+            Thread adlerThreadData     = new Thread(updateAdler);
+            Thread crc16ThreadData     = new Thread(updateCRC16);
+            Thread crc32ThreadData     = new Thread(updateCRC32);
+            Thread crc64ThreadData     = new Thread(updateCRC64);
+            Thread md5ThreadData       = new Thread(updateMD5);
             Thread ripemd160ThreadData = new Thread(updateRIPEMD160);
-            Thread sha1ThreadData = new Thread(updateSHA1);
-            Thread sha256ThreadData = new Thread(updateSHA256);
-            Thread sha384ThreadData = new Thread(updateSHA384);
-            Thread sha512ThreadData = new Thread(updateSHA512);
-            Thread spamsumThreadData = new Thread(updateSpamSum);
+            Thread sha1ThreadData      = new Thread(updateSHA1);
+            Thread sha256ThreadData    = new Thread(updateSHA256);
+            Thread sha384ThreadData    = new Thread(updateSHA384);
+            Thread sha512ThreadData    = new Thread(updateSHA512);
+            Thread spamsumThreadData   = new Thread(updateSpamSum);
 
-            adlerPacket adlerPktData = new adlerPacket();
-            crc16Packet crc16PktData = new crc16Packet();
-            crc32Packet crc32PktData = new crc32Packet();
-            crc64Packet crc64PktData = new crc64Packet();
-            md5Packet md5PktData = new md5Packet();
+            adlerPacket     adlerPktData     = new adlerPacket();
+            crc16Packet     crc16PktData     = new crc16Packet();
+            crc32Packet     crc32PktData     = new crc32Packet();
+            crc64Packet     crc64PktData     = new crc64Packet();
+            md5Packet       md5PktData       = new md5Packet();
             ripemd160Packet ripemd160PktData = new ripemd160Packet();
-            sha1Packet sha1PktData = new sha1Packet();
-            sha256Packet sha256PktData = new sha256Packet();
-            sha384Packet sha384PktData = new sha384Packet();
-            sha512Packet sha512PktData = new sha512Packet();
-            spamsumPacket spamsumPktData = new spamsumPacket();
+            sha1Packet      sha1PktData      = new sha1Packet();
+            sha256Packet    sha256PktData    = new sha256Packet();
+            sha384Packet    sha384PktData    = new sha384Packet();
+            sha512Packet    sha512PktData    = new sha512Packet();
+            spamsumPacket   spamsumPktData   = new spamsumPacket();
 
             adler32ctxData.Init();
             adlerPktData.context = adler32ctxData;
@@ -329,142 +303,114 @@ namespace osrepodbmgr.Core
             spamsumPktData.data = data;
             spamsumThreadData.Start(spamsumPktData);
 
-            while(adlerThreadData.IsAlive || crc16ThreadData.IsAlive ||
-                crc32ThreadData.IsAlive || crc64ThreadData.IsAlive ||
-                md5ThreadData.IsAlive || ripemd160ThreadData.IsAlive ||
-                sha1ThreadData.IsAlive || sha256ThreadData.IsAlive ||
-                sha384ThreadData.IsAlive || sha512ThreadData.IsAlive ||
-                spamsumThreadData.IsAlive)
-            {
-            }
+            while(adlerThreadData.IsAlive  || crc16ThreadData.IsAlive  || crc32ThreadData.IsAlive     ||
+                  crc64ThreadData.IsAlive  || md5ThreadData.IsAlive    || ripemd160ThreadData.IsAlive ||
+                  sha1ThreadData.IsAlive   || sha256ThreadData.IsAlive || sha384ThreadData.IsAlive    ||
+                  sha512ThreadData.IsAlive || spamsumThreadData.IsAlive) { }
 
             List<ChecksumType> dataChecksums = new List<ChecksumType>();
-            ChecksumType chk;
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.adler32;
-            chk.Value = adler32ctxData.End();
+            ChecksumType chk = new ChecksumType {type = ChecksumTypeType.adler32, Value = adler32ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.crc16;
-            chk.Value = crc16ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.crc16, Value = crc16ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.crc32;
-            chk.Value = crc32ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.crc32, Value = crc32ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.crc64;
-            chk.Value = crc64ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.crc64, Value = crc64ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.md5;
-            chk.Value = md5ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.md5, Value = md5ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.ripemd160;
-            chk.Value = ripemd160ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.ripemd160, Value = ripemd160ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha1;
-            chk.Value = sha1ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha1, Value = sha1ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha256;
-            chk.Value = sha256ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha256, Value = sha256ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha384;
-            chk.Value = sha384ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha384, Value = sha384ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.sha512;
-            chk.Value = sha512ctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.sha512, Value = sha512ctxData.End()};
             dataChecksums.Add(chk);
 
-            chk = new ChecksumType();
-            chk.type = ChecksumTypeType.spamsum;
-            chk.Value = ssctxData.End();
+            chk = new ChecksumType {type = ChecksumTypeType.spamsum, Value = ssctxData.End()};
             dataChecksums.Add(chk);
 
             return dataChecksums;
         }
 
         #region Threading helpers
-
         struct adlerPacket
         {
             public Adler32Context context;
-            public byte[] data;
+            public byte[]         data;
         }
 
         struct crc16Packet
         {
             public Crc16Context context;
-            public byte[] data;
+            public byte[]       data;
         }
 
         struct crc32Packet
         {
             public Crc32Context context;
-            public byte[] data;
+            public byte[]       data;
         }
 
         struct crc64Packet
         {
             public Crc64Context context;
-            public byte[] data;
+            public byte[]       data;
         }
 
         struct md5Packet
         {
             public Md5Context context;
-            public byte[] data;
+            public byte[]     data;
         }
 
         struct ripemd160Packet
         {
             public Ripemd160Context context;
-            public byte[] data;
+            public byte[]           data;
         }
 
         struct sha1Packet
         {
             public Sha1Context context;
-            public byte[] data;
+            public byte[]      data;
         }
 
         struct sha256Packet
         {
             public Sha256Context context;
-            public byte[] data;
+            public byte[]        data;
         }
 
         struct sha384Packet
         {
             public Sha384Context context;
-            public byte[] data;
+            public byte[]        data;
         }
 
         struct sha512Packet
         {
             public Sha512Context context;
-            public byte[] data;
+            public byte[]        data;
         }
 
         struct spamsumPacket
         {
             public SpamSumContext context;
-            public byte[] data;
+            public byte[]         data;
         }
 
         static void updateAdler(object packet)
@@ -521,8 +467,6 @@ namespace osrepodbmgr.Core
         {
             ((spamsumPacket)packet).context.Update(((spamsumPacket)packet).data);
         }
-
         #endregion Threading helpers
     }
 }
-

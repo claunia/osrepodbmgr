@@ -25,16 +25,19 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Deflate;
 using SharpCompress.Compressors.LZMA;
 using VirusTotalNET;
 using VirusTotalNET.Objects;
+using VirusTotalNET.ResponseCodes;
 using VirusTotalNET.Results;
 
 namespace osrepodbmgr.Core
@@ -52,14 +55,14 @@ namespace osrepodbmgr.Core
             {
                 Task.Run(async () =>
                 {
-                    vt = new VirusTotal(key);
-                    report = await vt.GetFileReportAsync("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
+                    vt     = new VirusTotal(key);
+                    report =
+                        await vt.GetFileReportAsync("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
                 }).Wait();
             }
             catch(Exception ex)
             {
-                if(Failed != null)
-                    Failed(ex.InnerException.Message);
+                Failed?.Invoke(ex.InnerException?.Message);
                 return false;
             }
 
@@ -68,117 +71,99 @@ namespace osrepodbmgr.Core
 
         public static bool InitVirusTotal(string key)
         {
-            VirusTotal vt = null;
+            VirusTotal vt     = null;
             FileReport report = null;
 
             try
             {
                 Task.Run(async () =>
                 {
-                    vt = new VirusTotal(key);
-                    report = await vt.GetFileReportAsync("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
+                    vt     = new VirusTotal(key);
+                    report =
+                        await vt.GetFileReportAsync("b82758fc5f737a58078d3c60e2798a70d895443a86aa39adf52dec70e98c2bed");
                 }).Wait();
             }
             catch(Exception ex)
             {
-                if(Failed != null)
-                    Failed(ex.InnerException.Message);
+                Failed?.Invoke(ex.InnerException?.Message);
                 return false;
             }
 
-            if(report != null && report.MD5 == "0bf60adb1435639a42b490e7e80d25c7")
-            {
-                vTotal = vt;
-                Context.virusTotalEnabled = true;
-                return true;
-            }
-            return false;
+            if(report == null || report.MD5 != "0bf60adb1435639a42b490e7e80d25c7") return false;
+
+            vTotal                    = vt;
+            Context.VirusTotalEnabled = true;
+            return true;
         }
 
-        public static void VirusTotalFileFromRepo(DBFile file)
+        public static void VirusTotalFileFromRepo(DbFile file)
         {
             try
             {
-                if(!Context.virusTotalEnabled)
+                if(!Context.VirusTotalEnabled)
                 {
-                    if(Failed != null)
-                        Failed("VirusTotal is not usable");
+                    Failed?.Invoke("VirusTotal is not usable");
                     return;
                 }
 
-                if(vTotal == null)
-                {
-                    if(Failed != null)
-                        Failed("VirusTotal is not initalized");
-                }
+                if(vTotal == null) Failed?.Invoke("VirusTotal is not initalized");
 
                 FileReport fResult = null;
 
-                if(UpdateProgress != null)
-                    UpdateProgress("Requesting existing report to VirusTotal", null, 0, 0);
+                UpdateProgress?.Invoke("Requesting existing report to VirusTotal", null, 0, 0);
 
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
-                Task.Run(async () =>
-                {
-                    fResult = await vTotal.GetFileReportAsync(file.Sha256);
-                }).Wait();
-#if DEBUG
+                #endif
+                Task.Run(async () => { fResult = await vTotal.GetFileReportAsync(file.Sha256); }).Wait();
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.VirusTotalFileFromRepo({0}): VirusTotal took {1} seconds to answer for SHA256 request", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.VirusTotalFileFromRepo({0}): VirusTotal took {1} seconds to answer for SHA256 request",
+                                  file, stopwatch.Elapsed.TotalSeconds);
+                #endif
 
-                if(fResult.ResponseCode == VirusTotalNET.ResponseCodes.FileReportResponseCode.NotPresent)
+                if(fResult.ResponseCode == FileReportResponseCode.NotPresent)
                 {
-                    if(Failed != null)
-                        Failed(fResult.VerboseMsg);
+                    Failed?.Invoke(fResult.VerboseMsg);
                     return;
                 }
 
-                if(fResult.ResponseCode != VirusTotalNET.ResponseCodes.FileReportResponseCode.Queued)
+                if(fResult.ResponseCode != FileReportResponseCode.Queued)
                 {
-                    if(fResult.ResponseCode == VirusTotalNET.ResponseCodes.FileReportResponseCode.Present)
-                    {
+                    if(fResult.ResponseCode  == FileReportResponseCode.Present)
                         if(fResult.Positives > 0)
                         {
                             file.HasVirus = true;
                             if(fResult.Scans != null)
-                            {
                                 foreach(KeyValuePair<string, ScanEngine> engine in fResult.Scans)
                                 {
-                                    if(engine.Value.Detected)
-                                    {
-                                        file.Virus = engine.Value.Result;
-                                        file.VirusTotalTime = engine.Value.Update;
-                                        dbCore.DBOps.UpdateFile(file);
+                                    if(!engine.Value.Detected) continue;
 
-                                        if(ScanFinished != null)
-                                            ScanFinished(file);
+                                    file.Virus          = engine.Value.Result;
+                                    file.VirusTotalTime = engine.Value.Update;
+                                    dbCore.DbOps.UpdateFile(file);
 
-                                        return;
-                                    }
+                                    ScanFinished?.Invoke(file);
+
+                                    return;
                                 }
-                            }
                         }
                         else
                         {
                             // If no scan has been done, mark as false.
                             // If a positive has already existed don't overwrite it.
-                            file.HasVirus = false;
-                            file.Virus = null;
+                            file.HasVirus       = false;
+                            file.Virus          = null;
                             file.VirusTotalTime = DateTime.UtcNow;
 
-                            dbCore.DBOps.UpdateFile(file);
+                            dbCore.DbOps.UpdateFile(file);
 
-                            if(ScanFinished != null)
-                                ScanFinished(file);
+                            ScanFinished?.Invoke(file);
 
                             return;
                         }
-                    }
 
-                    string repoPath;
+                    string   repoPath;
                     AlgoEnum algorithm;
 
                     if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
@@ -193,9 +178,9 @@ namespace osrepodbmgr.Core
                         algorithm = AlgoEnum.GZip;
                     }
                     else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
-                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                                file.Sha256 + ".bz2")))
+                                                     file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                     file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                     file.Sha256 + ".bz2")))
                     {
                         repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                                 file.Sha256[1].ToString(), file.Sha256[2].ToString(),
@@ -204,9 +189,9 @@ namespace osrepodbmgr.Core
                         algorithm = AlgoEnum.BZip2;
                     }
                     else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
-                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                                file.Sha256 + ".lzma")))
+                                                     file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                     file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                     file.Sha256 + ".lzma")))
                     {
                         repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                                 file.Sha256[1].ToString(), file.Sha256[2].ToString(),
@@ -215,9 +200,9 @@ namespace osrepodbmgr.Core
                         algorithm = AlgoEnum.LZMA;
                     }
                     else if(File.Exists(Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
-                                                file.Sha256[1].ToString(), file.Sha256[2].ToString(),
-                                                file.Sha256[3].ToString(), file.Sha256[4].ToString(),
-                                                file.Sha256 + ".lz")))
+                                                     file.Sha256[1].ToString(), file.Sha256[2].ToString(),
+                                                     file.Sha256[3].ToString(), file.Sha256[4].ToString(),
+                                                     file.Sha256 + ".lz")))
                     {
                         repoPath = Path.Combine(Settings.Current.RepositoryPath, file.Sha256[0].ToString(),
                                                 file.Sha256[1].ToString(), file.Sha256[2].ToString(),
@@ -227,24 +212,22 @@ namespace osrepodbmgr.Core
                     }
                     else
                     {
-                        if(Failed != null)
-                            Failed(string.Format("Cannot find file with hash {0} in the repository", file.Sha256));
+                        Failed?.Invoke($"Cannot find file with hash {file.Sha256} in the repository");
                         return;
                     }
 
-                    if(UpdateProgress != null)
-                        UpdateProgress("Uncompressing file...", null, 0, 0);
+                    UpdateProgress?.Invoke("Uncompressing file...", null, 0, 0);
 
-                    FileStream inFs = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
-                    Stream zStream = null;
+                    FileStream inFs    = new FileStream(repoPath, FileMode.Open, FileAccess.Read);
+                    Stream     zStream = null;
 
                     switch(algorithm)
                     {
                         case AlgoEnum.GZip:
-                            zStream = new GZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            zStream = new GZipStream(inFs, CompressionMode.Decompress);
                             break;
                         case AlgoEnum.BZip2:
-                            zStream = new BZip2Stream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            zStream = new BZip2Stream(inFs, CompressionMode.Decompress);
                             break;
                         case AlgoEnum.LZMA:
                             byte[] properties = new byte[5];
@@ -253,53 +236,49 @@ namespace osrepodbmgr.Core
                             zStream = new LzmaStream(properties, inFs, inFs.Length - 13, file.Length);
                             break;
                         case AlgoEnum.LZip:
-                            zStream = new LZipStream(inFs, SharpCompress.Compressors.CompressionMode.Decompress);
+                            zStream = new LZipStream(inFs, CompressionMode.Decompress);
                             break;
                     }
 
                     ScanResult sResult = null;
 
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Restart();
-#endif
+                    #endif
                     // Cannot use zStream directly, VirusTotal.NET requests the size *sigh*
-                    string tmpFile = Path.Combine(Settings.Current.TemporaryFolder, Path.GetTempFileName());
-                    FileStream outFs = new FileStream(tmpFile, FileMode.Create, FileAccess.ReadWrite);
-                    zStream.CopyTo(outFs);
-                    zStream.Close();
+                    string     tmpFile = Path.Combine(Settings.Current.TemporaryFolder, Path.GetTempFileName());
+                    FileStream outFs   = new FileStream(tmpFile, FileMode.Create, FileAccess.ReadWrite);
+                    zStream?.CopyTo(outFs);
+                    zStream?.Close();
                     outFs.Seek(0, SeekOrigin.Begin);
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Stop();
-                    Console.WriteLine("Core.VirusTotalFileFromRepo({0}): Uncompressing took {1} seconds", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                    Console.WriteLine("Core.VirusTotalFileFromRepo({0}): Uncompressing took {1} seconds", file,
+                                      stopwatch.Elapsed.TotalSeconds);
+                    #endif
 
-                    if(UpdateProgress != null)
-                        UpdateProgress("Uploading file to VirusTotal...", null, 0, 0);
+                    UpdateProgress?.Invoke("Uploading file to VirusTotal...", null, 0, 0);
 
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Restart();
-#endif
+                    #endif
                     Task.Run(async () =>
                     {
                         sResult = await vTotal.ScanFileAsync(outFs, file.Sha256); // Keep filename private, sorry!
                     }).Wait();
-#if DEBUG
+                    #if DEBUG
                     stopwatch.Stop();
-                    Console.WriteLine("Core.VirusTotalFileFromRepo({0}): Upload to VirusTotal took {1} seconds", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                    Console.WriteLine("Core.VirusTotalFileFromRepo({0}): Upload to VirusTotal took {1} seconds", file,
+                                      stopwatch.Elapsed.TotalSeconds);
+                    #endif
                     outFs.Close();
 
                     File.Delete(tmpFile);
 
-                    if(sResult == null || sResult.ResponseCode == VirusTotalNET.ResponseCodes.ScanFileResponseCode.Error)
+                    if(sResult == null || sResult.ResponseCode == ScanFileResponseCode.Error)
                     {
-                        if(sResult == null)
-                        {
-                            if(Failed != null)
-                                Failed("Cannot send file to VirusTotal");
-                        }
-                        else
-                            Failed(sResult.VerboseMsg);
+                        if(sResult == null) Failed?.Invoke("Cannot send file to VirusTotal");
+                        else Failed(sResult.VerboseMsg);
 
                         return;
                     }
@@ -307,91 +286,76 @@ namespace osrepodbmgr.Core
                     // Seems that we are faster than them, getting a lot of "not queued" responses...
                     Thread.Sleep(2500);
 
-                    Task.Run(async () =>
-                    {
-                        fResult = await vTotal.GetFileReportAsync(file.Sha256);
-                    }).Wait();
+                    Task.Run(async () => { fResult = await vTotal.GetFileReportAsync(file.Sha256); }).Wait();
                 }
 
-                if(UpdateProgress != null)
-                    UpdateProgress("Waiting for VirusTotal analysis...", null, 0, 0);
+                UpdateProgress?.Invoke("Waiting for VirusTotal analysis...", null, 0, 0);
 
-#if DEBUG
+                #if DEBUG
                 stopwatch.Restart();
-#endif
+                #endif
                 int counter = 0;
-                while(fResult.ResponseCode == VirusTotalNET.ResponseCodes.FileReportResponseCode.Queued)
+                while(fResult.ResponseCode == FileReportResponseCode.Queued)
                 {
                     // Timeout...
-                    if(counter == 10)
-                        break;
+                    if(counter == 10) break;
 
                     // Wait 15 seconds so we fall in the 4 requests/minute
                     Thread.Sleep(15000);
 
-                    Task.Run(async () =>
-                    {
-                        fResult = await vTotal.GetFileReportAsync(file.Sha256);
-                    }).Wait();
+                    Task.Run(async () => { fResult = await vTotal.GetFileReportAsync(file.Sha256); }).Wait();
 
                     counter++;
                 }
-#if DEBUG
+                #if DEBUG
                 stopwatch.Stop();
-                Console.WriteLine("Core.VirusTotalFileFromRepo({0}): VirusTotal took {1} seconds to do the analysis", file, stopwatch.Elapsed.TotalSeconds);
-#endif
+                Console.WriteLine("Core.VirusTotalFileFromRepo({0}): VirusTotal took {1} seconds to do the analysis",
+                                  file, stopwatch.Elapsed.TotalSeconds);
+                #endif
 
-                if(fResult.ResponseCode != VirusTotalNET.ResponseCodes.FileReportResponseCode.Present)
+                if(fResult.ResponseCode != FileReportResponseCode.Present)
                 {
-                    if(Failed != null)
-                        Failed(fResult.VerboseMsg);
+                    Failed?.Invoke(fResult.VerboseMsg);
                     return;
                 }
 
                 if(fResult.Positives > 0)
                 {
                     file.HasVirus = true;
-                    if(fResult.Scans != null)
+                    if(fResult.Scans == null) return;
+
+                    foreach(KeyValuePair<string, ScanEngine> engine in fResult.Scans)
                     {
-                        foreach(KeyValuePair<string, ScanEngine> engine in fResult.Scans)
-                        {
-                            if(engine.Value.Detected)
-                            {
-                                file.Virus = engine.Value.Result;
-                                file.VirusTotalTime = engine.Value.Update;
-                                dbCore.DBOps.UpdateFile(file);
+                        if(!engine.Value.Detected) continue;
 
-                                if(ScanFinished != null)
-                                    ScanFinished(file);
+                        file.Virus          = engine.Value.Result;
+                        file.VirusTotalTime = engine.Value.Update;
+                        dbCore.DbOps.UpdateFile(file);
 
-                                return;
-                            }
-                        }
+                        ScanFinished?.Invoke(file);
+
+                        return;
                     }
                 }
                 else
                 {
                     // If no scan has been done, mark as false.
                     // If a positive has already existed don't overwrite it.
-                    file.HasVirus = false;
-                    file.Virus = null;
+                    file.HasVirus       = false;
+                    file.Virus          = null;
                     file.VirusTotalTime = DateTime.UtcNow;
 
-                    dbCore.DBOps.UpdateFile(file);
+                    dbCore.DbOps.UpdateFile(file);
 
-                    if(ScanFinished != null)
-                        ScanFinished(file);
-
-                    return;
+                    ScanFinished?.Invoke(file);
                 }
             }
             catch(Exception ex)
             {
-                if(Failed != null)
-                    Failed(string.Format("Exception {0} when calling VirusTotal", ex.InnerException.Message));
-#if DEBUG
+                Failed?.Invoke($"Exception {ex.InnerException.Message} when calling VirusTotal");
+                #if DEBUG
                 Console.WriteLine("Exception {0}\n{1}", ex.Message, ex.InnerException);
-#endif
+                #endif
             }
         }
     }

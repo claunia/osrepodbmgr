@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.IO;
 using System.Threading;
@@ -40,13 +41,12 @@ namespace osrepodbmgr
         public dlgSettings()
         {
             Build();
-            txtTmp.Text = Core.Settings.Current.TemporaryFolder;
-            txtUnar.Text = Core.Settings.Current.UnArchiverPath;
-            txtDatabase.Text = Core.Settings.Current.DatabasePath;
+            txtTmp.Text        = Core.Settings.Current.TemporaryFolder;
+            txtUnar.Text       = Core.Settings.Current.UnArchiverPath;
+            txtDatabase.Text   = Core.Settings.Current.DatabasePath;
             txtRepository.Text = Core.Settings.Current.RepositoryPath;
 
-            if(!string.IsNullOrWhiteSpace(txtUnar.Text))
-                CheckUnar();
+            if(!string.IsNullOrWhiteSpace(txtUnar.Text)) CheckUnar();
 
             CellRendererText textCell = new CellRendererText();
             cmbCompAlg.Clear();
@@ -56,45 +56,43 @@ namespace osrepodbmgr
             cmbCompAlg.Model = lstCompAlgs;
 
             lstCompAlgs.Clear();
-            foreach(AlgoEnum type in Enum.GetValues(typeof(AlgoEnum)))
-                lstCompAlgs.AppendValues(type.ToString());
+            foreach(AlgoEnum type in Enum.GetValues(typeof(AlgoEnum))) lstCompAlgs.AppendValues(type.ToString());
 
             cmbCompAlg.Active = 0;
-            TreeIter iter;
-            cmbCompAlg.Model.GetIterFirst(out iter);
+            cmbCompAlg.Model.GetIterFirst(out TreeIter iter);
             do
             {
-                if((string)cmbCompAlg.Model.GetValue(iter, 0) == Core.Settings.Current.CompressionAlgorithm.ToString())
-                {
-                    cmbCompAlg.SetActiveIter(iter);
-                    break;
-                }
+                if((string)cmbCompAlg.Model.GetValue(iter, 0) !=
+                   Core.Settings.Current.CompressionAlgorithm.ToString()) continue;
+
+                cmbCompAlg.SetActiveIter(iter);
+                break;
             }
             while(cmbCompAlg.Model.IterNext(ref iter));
 
-            spClamdPort.Value = 3310;
+            spClamdPort.Value   = 3310;
             chkAntivirus.Active = Core.Settings.Current.UseAntivirus;
-            frmClamd.Visible = chkAntivirus.Active;
+            frmClamd.Visible    = chkAntivirus.Active;
             if(Core.Settings.Current.UseAntivirus && Core.Settings.Current.UseClamd)
             {
-                chkClamd.Active = Core.Settings.Current.UseClamd;
-                txtClamdHost.Text = Core.Settings.Current.ClamdHost;
-                spClamdPort.Value = Core.Settings.Current.ClamdPort;
-                chkClamdIsLocal.Active = Core.Settings.Current.ClamdIsLocal;
-                chkClamd.Sensitive = true;
+                chkClamd.Active           = Core.Settings.Current.UseClamd;
+                txtClamdHost.Text         = Core.Settings.Current.ClamdHost;
+                spClamdPort.Value         = Core.Settings.Current.ClamdPort;
+                chkClamdIsLocal.Active    = Core.Settings.Current.ClamdIsLocal;
+                chkClamd.Sensitive        = true;
                 chkClamdIsLocal.Sensitive = true;
-                txtClamdHost.Sensitive = true;
-                spClamdPort.Sensitive = true;
-                btnClamdTest.Sensitive = true;
+                txtClamdHost.Sensitive    = true;
+                spClamdPort.Sensitive     = true;
+                btnClamdTest.Sensitive    = true;
             }
-            if(Core.Settings.Current.UseAntivirus && Core.Settings.Current.UseVirusTotal)
-            {
-                chkVirusTotal.Active = true;
-                chkVirusTotal.Sensitive = true;
-                txtVirusTotal.Sensitive = true;
-                txtVirusTotal.Text = Core.Settings.Current.VirusTotalKey;
-                btnVirusTotal.Sensitive = true;
-            }
+
+            if(!Core.Settings.Current.UseAntivirus || !Core.Settings.Current.UseVirusTotal) return;
+
+            chkVirusTotal.Active    = true;
+            chkVirusTotal.Sensitive = true;
+            txtVirusTotal.Sensitive = true;
+            txtVirusTotal.Text      = Core.Settings.Current.VirusTotalKey;
+            btnVirusTotal.Sensitive = true;
         }
 
         protected void OnBtnCancelClicked(object sender, EventArgs e)
@@ -105,65 +103,65 @@ namespace osrepodbmgr
         protected void OnBtnApplyClicked(object sender, EventArgs e)
         {
             if(chkAntivirus.Active && chkClamd.Active)
-            {
                 if(string.IsNullOrEmpty(txtClamdHost.Text))
                 {
-                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "clamd host cannot be empty");
+                    MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                                             "clamd host cannot be empty");
                     dlgMsg.Run();
                     dlgMsg.Destroy();
                     return;
                 }
 
-            }
-
             // TODO: Check sanity
-            Core.Settings.Current.TemporaryFolder = txtTmp.Text;
-            Core.Settings.Current.UnArchiverPath = txtUnar.Text;
-            Core.Settings.Current.DatabasePath = txtDatabase.Text;
-            Core.Settings.Current.RepositoryPath = txtRepository.Text;
-            Core.Settings.Current.UseAntivirus = chkAntivirus.Active;
-            Core.Settings.Current.UseClamd = chkClamd.Active;
-            Core.Settings.Current.ClamdHost = txtClamdHost.Text;
-            Core.Settings.Current.ClamdPort = (ushort)spClamdPort.Value;
-            Core.Settings.Current.ClamdIsLocal = chkClamdIsLocal.Active;
+            Core.Settings.Current.TemporaryFolder      = txtTmp.Text;
+            Core.Settings.Current.UnArchiverPath       = txtUnar.Text;
+            Core.Settings.Current.DatabasePath         = txtDatabase.Text;
+            Core.Settings.Current.RepositoryPath       = txtRepository.Text;
+            Core.Settings.Current.UseAntivirus         = chkAntivirus.Active;
+            Core.Settings.Current.UseClamd             = chkClamd.Active;
+            Core.Settings.Current.ClamdHost            = txtClamdHost.Text;
+            Core.Settings.Current.ClamdPort            = (ushort)spClamdPort.Value;
+            Core.Settings.Current.ClamdIsLocal         = chkClamdIsLocal.Active;
             Core.Settings.Current.CompressionAlgorithm = (AlgoEnum)Enum.Parse(typeof(AlgoEnum), cmbCompAlg.ActiveText);
             if(!chkClamd.Active || !chkAntivirus.Active)
             {
-                Core.Settings.Current.UseClamd = false;
-                Core.Settings.Current.ClamdHost = null;
-                Core.Settings.Current.ClamdPort = 3310;
+                Core.Settings.Current.UseClamd     = false;
+                Core.Settings.Current.ClamdHost    = null;
+                Core.Settings.Current.ClamdPort    = 3310;
                 Core.Settings.Current.ClamdIsLocal = false;
             }
+
             if(chkVirusTotal.Active && chkAntivirus.Active)
             {
                 Core.Settings.Current.UseVirusTotal = true;
                 Core.Settings.Current.VirusTotalKey = txtVirusTotal.Text;
-                Core.Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
+                Workers.InitVirusTotal(Core.Settings.Current.VirusTotalKey);
             }
             else
             {
                 Core.Settings.Current.UseVirusTotal = false;
                 Core.Settings.Current.VirusTotalKey = null;
             }
+
             Core.Settings.SaveSettings();
-            Core.Workers.CloseDB();
-            Core.Workers.InitDB();
-            Context.clamdVersion = null;
-            Core.Workers.InitClamd();
+            Workers.CloseDB();
+            Workers.InitDB();
+            Context.ClamdVersion = null;
+            Workers.InitClamd();
             Context.CheckUnar();
             btnDialog.Click();
         }
 
         protected void OnBtnUnarClicked(object sender, EventArgs e)
         {
-            FileChooserDialog dlgFile = new FileChooserDialog("Choose UnArchiver executable", this, FileChooserAction.Open,
-                                                     "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
-            dlgFile.SelectMultiple = false;
+            FileChooserDialog dlgFile =
+                new FileChooserDialog("Choose UnArchiver executable", this, FileChooserAction.Open, "Cancel",
+                                      ResponseType.Cancel, "Choose", ResponseType.Accept) {SelectMultiple = false};
             dlgFile.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
 
             if(dlgFile.Run() == (int)ResponseType.Accept)
             {
-                txtUnar.Text = dlgFile.Filename;
+                txtUnar.Text           = dlgFile.Filename;
                 lblUnarVersion.Visible = false;
                 CheckUnar();
             }
@@ -173,39 +171,33 @@ namespace osrepodbmgr
 
         protected void OnBtnTmpClicked(object sender, EventArgs e)
         {
-            FileChooserDialog dlgFolder = new FileChooserDialog("Choose temporary folder", this, FileChooserAction.SelectFolder,
-                                                     "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
-            dlgFolder.SelectMultiple = false;
+            FileChooserDialog dlgFolder =
+                new FileChooserDialog("Choose temporary folder", this, FileChooserAction.SelectFolder, "Cancel",
+                                      ResponseType.Cancel, "Choose", ResponseType.Accept) {SelectMultiple = false};
             dlgFolder.SetCurrentFolder(System.IO.Path.GetTempPath());
 
-            if(dlgFolder.Run() == (int)ResponseType.Accept)
-            {
-                txtTmp.Text = dlgFolder.Filename;
-            }
+            if(dlgFolder.Run() == (int)ResponseType.Accept) txtTmp.Text = dlgFolder.Filename;
 
             dlgFolder.Destroy();
         }
 
         protected void OnBtnRepositoryClicked(object sender, EventArgs e)
         {
-            FileChooserDialog dlgFolder = new FileChooserDialog("Choose repository folder", this, FileChooserAction.SelectFolder,
-                                                     "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
-            dlgFolder.SelectMultiple = false;
+            FileChooserDialog dlgFolder =
+                new FileChooserDialog("Choose repository folder", this, FileChooserAction.SelectFolder, "Cancel",
+                                      ResponseType.Cancel, "Choose", ResponseType.Accept) {SelectMultiple = false};
             dlgFolder.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 
-            if(dlgFolder.Run() == (int)ResponseType.Accept)
-            {
-                txtRepository.Text = dlgFolder.Filename;
-            }
+            if(dlgFolder.Run() == (int)ResponseType.Accept) txtRepository.Text = dlgFolder.Filename;
 
             dlgFolder.Destroy();
         }
 
         protected void OnBtnDatabaseClicked(object sender, EventArgs e)
         {
-            FileChooserDialog dlgFile = new FileChooserDialog("Choose database to open/create", this, FileChooserAction.Save,
-                                                     "Cancel", ResponseType.Cancel, "Choose", ResponseType.Accept);
-            dlgFile.SelectMultiple = false;
+            FileChooserDialog dlgFile =
+                new FileChooserDialog("Choose database to open/create", this, FileChooserAction.Save, "Cancel",
+                                      ResponseType.Cancel, "Choose", ResponseType.Accept) {SelectMultiple = false};
             dlgFile.SetCurrentFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             dlgFile.SetFilename("Core.db");
 
@@ -213,50 +205,45 @@ namespace osrepodbmgr
             {
                 if(File.Exists(dlgFile.Filename))
                 {
-                    DBCore _dbCore = new SQLite();
-                    bool notDb = false;
+                    DbCore dbCore = new SQLite();
+                    bool   notDb  = false;
 
-                    try
-                    {
-                        notDb |= !_dbCore.OpenDB(dlgFile.Filename, null, null, null);
-                    }
-                    catch
-                    {
-                        notDb = true;
-                    }
+                    try { notDb   |= !dbCore.OpenDb(dlgFile.Filename, null, null, null); }
+                    catch { notDb =  true; }
 
                     if(notDb)
                     {
-                        MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot open specified file as a database, please choose another.");
+                        MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+                                                                 ButtonsType.Ok,
+                                                                 "Cannot open specified file as a database, please choose another.");
                         dlgMsg.Run();
                         dlgMsg.Destroy();
                         dlgFile.Destroy();
                         return;
                     }
-                    _dbCore.CloseDB();
+
+                    dbCore.CloseDb();
                 }
-                else {
-                    DBCore _dbCore = new SQLite();
-                    bool notDb = false;
+                else
+                {
+                    DbCore dbCore = new SQLite();
+                    bool   notDb  = false;
 
-                    try
-                    {
-                        notDb |= !_dbCore.CreateDB(dlgFile.Filename, null, null, null);
-                    }
-                    catch
-                    {
-                        notDb = true;
-                    }
+                    try { notDb   |= !dbCore.CreateDb(dlgFile.Filename, null, null, null); }
+                    catch { notDb =  true; }
 
                     if(notDb)
                     {
-                        MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot create a database in the specified file as a database.");
+                        MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error,
+                                                                 ButtonsType.Ok,
+                                                                 "Cannot create a database in the specified file as a database.");
                         dlgMsg.Run();
                         dlgMsg.Destroy();
                         dlgFile.Destroy();
                         return;
                     }
-                    _dbCore.CloseDB();
+
+                    dbCore.CloseDb();
                 }
 
                 txtDatabase.Text = dlgFile.Filename;
@@ -267,12 +254,12 @@ namespace osrepodbmgr
 
         void CheckUnar()
         {
-            Core.Workers.FinishedWithText += CheckUnarFinished;
-            Core.Workers.Failed += CheckUnarFailed;
+            Workers.FinishedWithText += CheckUnarFinished;
+            Workers.Failed           += CheckUnarFailed;
 
-            oldUnarPath = Core.Settings.Current.UnArchiverPath;
+            oldUnarPath                          = Core.Settings.Current.UnArchiverPath;
             Core.Settings.Current.UnArchiverPath = txtUnar.Text;
-            Thread thdCheckUnar = new Thread(Core.Workers.CheckUnar);
+            Thread thdCheckUnar                  = new Thread(Workers.CheckUnar);
             thdCheckUnar.Start();
         }
 
@@ -280,11 +267,11 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                Core.Workers.FinishedWithText -= CheckUnarFinished;
-                Core.Workers.Failed -= CheckUnarFailed;
+                Workers.FinishedWithText -= CheckUnarFinished;
+                Workers.Failed           -= CheckUnarFailed;
 
-                lblUnarVersion.Text = text;
-                lblUnarVersion.Visible = true;
+                lblUnarVersion.Text                  = text;
+                lblUnarVersion.Visible               = true;
                 Core.Settings.Current.UnArchiverPath = oldUnarPath;
             });
         }
@@ -293,15 +280,13 @@ namespace osrepodbmgr
         {
             Application.Invoke(delegate
             {
-                Core.Workers.FinishedWithText -= CheckUnarFinished;
-                Core.Workers.Failed -= CheckUnarFailed;
+                Workers.FinishedWithText -= CheckUnarFinished;
+                Workers.Failed           -= CheckUnarFailed;
 
-                if(string.IsNullOrWhiteSpace(oldUnarPath))
-                    txtUnar.Text = "";
-                else
-                    txtUnar.Text = oldUnarPath;
+                txtUnar.Text                         = string.IsNullOrWhiteSpace(oldUnarPath) ? "" : oldUnarPath;
                 Core.Settings.Current.UnArchiverPath = oldUnarPath;
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
+                MessageDialog dlgMsg                 =
+                    new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, text);
                 dlgMsg.Run();
                 dlgMsg.Destroy();
             });
@@ -309,16 +294,16 @@ namespace osrepodbmgr
 
         protected void OnChkAntivirusToggled(object sender, EventArgs e)
         {
-            frmClamd.Visible = chkAntivirus.Active;
+            frmClamd.Visible      = chkAntivirus.Active;
             frmVirusTotal.Visible = chkAntivirus.Active;
         }
 
         protected void OnChkClamdToggled(object sender, EventArgs e)
         {
-            txtClamdHost.Sensitive = chkClamd.Active;
-            spClamdPort.Sensitive = chkClamd.Active;
-            btnClamdTest.Sensitive = chkClamd.Active;
-            lblClamdVersion.Visible = false;
+            txtClamdHost.Sensitive    = chkClamd.Active;
+            spClamdPort.Sensitive     = chkClamd.Active;
+            btnClamdTest.Sensitive    = chkClamd.Active;
+            lblClamdVersion.Visible   = false;
             chkClamdIsLocal.Sensitive = chkClamd.Active;
         }
 
@@ -328,17 +313,18 @@ namespace osrepodbmgr
 
             if(string.IsNullOrEmpty(txtClamdHost.Text))
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "clamd host cannot be empty");
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                                         "clamd host cannot be empty");
                 dlgMsg.Run();
                 dlgMsg.Destroy();
                 return;
             }
 
-            string oldVersion = Context.clamdVersion;
-            Context.clamdVersion = null;
+            string oldVersion    = Context.ClamdVersion;
+            Context.ClamdVersion = null;
 
-            string oldHost = Core.Settings.Current.ClamdHost;
-            ushort oldPort = Core.Settings.Current.ClamdPort;
+            string oldHost                  = Core.Settings.Current.ClamdHost;
+            ushort oldPort                  = Core.Settings.Current.ClamdPort;
             Core.Settings.Current.ClamdHost = txtClamdHost.Text;
             Core.Settings.Current.ClamdPort = (ushort)spClamdPort.Value;
 
@@ -347,16 +333,17 @@ namespace osrepodbmgr
             Core.Settings.Current.ClamdHost = oldHost;
             Core.Settings.Current.ClamdPort = oldPort;
 
-            if(string.IsNullOrEmpty(Context.clamdVersion))
+            if(string.IsNullOrEmpty(Context.ClamdVersion))
             {
-                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Cannot connect to clamd");
+                MessageDialog dlgMsg = new MessageDialog(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok,
+                                                         "Cannot connect to clamd");
                 dlgMsg.Run();
                 dlgMsg.Destroy();
                 return;
             }
 
-            lblClamdVersion.Text = Context.clamdVersion;
-            Context.clamdVersion = oldVersion;
+            lblClamdVersion.Text    = Context.ClamdVersion;
+            Context.ClamdVersion    = oldVersion;
             lblClamdVersion.Visible = true;
         }
 
@@ -364,17 +351,16 @@ namespace osrepodbmgr
         {
             txtVirusTotal.Sensitive = chkVirusTotal.Active;
             btnVirusTotal.Sensitive = chkVirusTotal.Active;
-            lblVirusTotal.Visible = false;
+            lblVirusTotal.Visible   = false;
         }
 
         protected void OnBtnVirusTotalClicked(object sender, EventArgs e)
         {
             Workers.Failed += VirusTotalTestFailed;
-            if(Workers.TestVirusTotal(txtVirusTotal.Text))
-            {
-                lblVirusTotal.Visible = true;
-                lblVirusTotal.Text = "Working!";
-            }
+            if(!Workers.TestVirusTotal(txtVirusTotal.Text)) return;
+
+            lblVirusTotal.Visible = true;
+            lblVirusTotal.Text    = "Working!";
         }
 
         void VirusTotalTestFailed(string text)

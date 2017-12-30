@@ -25,32 +25,42 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System.Collections.Generic;
 
 namespace osrepodbmgr.Core
 {
     public static partial class Workers
     {
-        public delegate void UpdateProgressDelegate(string text, string inner, long current, long maximum);
-        public delegate void UpdateProgress2Delegate(string text, string inner, long current, long maximum);
-        public delegate void FailedDelegate(string text);
-        public delegate void FinishedWithoutErrorDelegate();
-        public delegate void FinishedWithTextDelegate(string text);
-        public delegate void AddFileForOSDelegate(string filename, string hash, bool known, bool isCrack);
-        public delegate void AddOSDelegate(DBEntry os);
-        public delegate void AddFileDelegate(DBFile file);
-        public delegate void AddFilesDelegate(List<DBFile> file);
-        public delegate void ScanFinishedDelegate(DBFile file);
+        public delegate void AddFileDelegate(DbFile file);
 
-        public static event UpdateProgressDelegate UpdateProgress;
-        public static event UpdateProgress2Delegate UpdateProgress2;
-        public static event FailedDelegate Failed;
+        public delegate void AddFileForOSDelegate(string filename, string hash, bool known, bool isCrack);
+
+        public delegate void AddFilesDelegate(List<DbFile> file);
+
+        public delegate void AddOSDelegate(DbEntry os);
+
+        public delegate void FailedDelegate(string text);
+
+        public delegate void FinishedWithoutErrorDelegate();
+
+        public delegate void FinishedWithTextDelegate(string text);
+
+        public delegate void ScanFinishedDelegate(DbFile file);
+
+        public delegate void UpdateProgress2Delegate(string text, string inner, long current, long maximum);
+
+        public delegate void UpdateProgressDelegate(string text, string inner, long current, long maximum);
+
+        public static event UpdateProgressDelegate       UpdateProgress;
+        public static event UpdateProgress2Delegate      UpdateProgress2;
+        public static event FailedDelegate               Failed;
         public static event FinishedWithoutErrorDelegate Finished;
-        public static event FinishedWithTextDelegate FinishedWithText;
-        public static event AddFileForOSDelegate AddFileForOS;
-        public static event AddOSDelegate AddOS;
-        public static event AddFileDelegate AddFile;
-        public static event AddFilesDelegate AddFiles;
-        public static event ScanFinishedDelegate ScanFinished;
+        public static event FinishedWithTextDelegate     FinishedWithText;
+        public static event AddFileForOSDelegate         AddFileForOS;
+        public static event AddOSDelegate                AddOS;
+        public static event AddFileDelegate              AddFile;
+        public static event AddFilesDelegate             AddFiles;
+        public static event ScanFinishedDelegate         ScanFinished;
     }
 }

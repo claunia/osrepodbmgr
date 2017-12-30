@@ -7,7 +7,7 @@ namespace osrepodbmgr.Core
     public static class Symlinks
     {
         [DllImport("libc", CharSet = CharSet.Ansi, SetLastError = true)]
-        internal static extern int readlink(string path, IntPtr buf, int bufsize);
+        static extern int readlink(string path, IntPtr buf, int bufsize);
 
         public static string ReadLink(string path)
         {
@@ -15,8 +15,7 @@ namespace osrepodbmgr.Core
 
             int ret = readlink(path, buf, 16384);
 
-            if(ret < 0)
-                return null;
+            if(ret < 0) return null;
 
             byte[] target = new byte[ret];
             Marshal.Copy(buf, target, 0, ret);
@@ -25,7 +24,7 @@ namespace osrepodbmgr.Core
         }
 
         [DllImport("libc", CharSet = CharSet.Ansi, SetLastError = true)]
-        internal static extern int symlink(string target, string path);
+        static extern int symlink(string target, string path);
 
         public static int Symlink(string target, string path)
         {

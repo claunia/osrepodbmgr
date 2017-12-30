@@ -25,6 +25,7 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,131 +33,131 @@ using System.IO;
 
 namespace osrepodbmgr.Core
 {
-    public struct DBEntry
+    public struct DbEntry
     {
-        public long id;
-        public string developer;
-        public string product;
-        public string version;
-        public string languages;
-        public string architecture;
-        public string machine;
-        public string format;
-        public string description;
-        public bool oem;
-        public bool upgrade;
-        public bool update;
-        public bool source;
-        public bool files;
-        public bool netinstall;
-        public byte[] xml;
-        public byte[] json;
-        public string mdid;
+        public long   Id;
+        public string Developer;
+        public string Product;
+        public string Version;
+        public string Languages;
+        public string Architecture;
+        public string Machine;
+        public string Format;
+        public string Description;
+        public bool   Oem;
+        public bool   Upgrade;
+        public bool   Update;
+        public bool   Source;
+        public bool   Files;
+        public bool   Netinstall;
+        public byte[] Xml;
+        public byte[] Json;
+        public string Mdid;
     }
 
-    public class DBFile
+    public class DbFile
     {
-        public ulong Id { get; set; }
-        public string Sha256 { get; set; }
-        public bool Crack { get; set; }
-        public bool? HasVirus { get; set; }
-        public DateTime? ClamTime { get; set; }
+        public ulong     Id             { get; set; }
+        public string    Sha256         { get; set; }
+        public bool      Crack          { get; set; }
+        public bool?     HasVirus       { get; set; }
+        public DateTime? ClamTime       { get; set; }
         public DateTime? VirusTotalTime { get; set; }
-        public string Virus { get; set; }
-        public long Length { get; set; }
+        public string    Virus          { get; set; }
+        public long      Length         { get; set; }
     }
 
-    public struct DBOSFile
+    public struct DbOsFile
     {
-        public ulong Id;
-        public string Path;
-        public string Sha256;
-        public long Length;
-        public DateTime CreationTimeUtc;
-        public DateTime LastAccessTimeUtc;
-        public DateTime LastWriteTimeUtc;
+        public ulong          Id;
+        public string         Path;
+        public string         Sha256;
+        public long           Length;
+        public DateTime       CreationTimeUtc;
+        public DateTime       LastAccessTimeUtc;
+        public DateTime       LastWriteTimeUtc;
         public FileAttributes Attributes;
-        public bool Crack;
+        public bool           Crack;
     }
 
-    public struct DBFolder
+    public struct DbFolder
     {
-        public ulong Id;
-        public string Path;
-        public DateTime CreationTimeUtc;
-        public DateTime LastAccessTimeUtc;
-        public DateTime LastWriteTimeUtc;
+        public ulong          Id;
+        public string         Path;
+        public DateTime       CreationTimeUtc;
+        public DateTime       LastAccessTimeUtc;
+        public DateTime       LastWriteTimeUtc;
         public FileAttributes Attributes;
     }
 
-    public class DBOps
+    public class DbOps
     {
         readonly IDbConnection dbCon;
-        readonly DBCore dbCore;
+        readonly DbCore        dbCore;
 
-        public DBOps(IDbConnection connection, DBCore core)
+        public DbOps(IDbConnection connection, DbCore core)
         {
-            dbCon = connection;
+            dbCon  = connection;
             dbCore = core;
         }
 
-        public bool GetAllOSes(out List<DBEntry> entries)
+        public bool GetAllOSes(out List<DbEntry> entries)
         {
-            entries = new List<DBEntry>();
+            entries = new List<DbEntry>();
 
-            const string sql = "SELECT * from oses";
+            const string SQL = "SELECT * from oses";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = SQL;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBEntry fEntry = new DBEntry();
-                fEntry.id = long.Parse(dRow["id"].ToString());
-                fEntry.developer = dRow["developer"].ToString();
-                fEntry.product = dRow["product"].ToString();
-                fEntry.version = dRow["version"].ToString();
-                fEntry.languages = dRow["languages"].ToString();
-                fEntry.architecture = dRow["architecture"].ToString();
-                fEntry.machine = dRow["machine"].ToString();
-                fEntry.format = dRow["format"].ToString();
-                fEntry.description = dRow["description"].ToString();
-                fEntry.oem = bool.Parse(dRow["oem"].ToString());
-                fEntry.upgrade = bool.Parse(dRow["upgrade"].ToString());
-                fEntry.update = bool.Parse(dRow["update"].ToString());
-                fEntry.source = bool.Parse(dRow["source"].ToString());
-                fEntry.files = bool.Parse(dRow["files"].ToString());
-                fEntry.netinstall = bool.Parse(dRow["netinstall"].ToString());
-                fEntry.mdid = dRow["mdid"].ToString();
+                DbEntry fEntry = new DbEntry
+                {
+                    Id           = long.Parse(dRow["id"].ToString()),
+                    Developer    = dRow["developer"].ToString(),
+                    Product      = dRow["product"].ToString(),
+                    Version      = dRow["version"].ToString(),
+                    Languages    = dRow["languages"].ToString(),
+                    Architecture = dRow["architecture"].ToString(),
+                    Machine      = dRow["machine"].ToString(),
+                    Format       = dRow["format"].ToString(),
+                    Description  = dRow["description"].ToString(),
+                    Oem          = bool.Parse(dRow["oem"].ToString()),
+                    Upgrade      = bool.Parse(dRow["upgrade"].ToString()),
+                    Update       = bool.Parse(dRow["update"].ToString()),
+                    Source       = bool.Parse(dRow["source"].ToString()),
+                    Files        = bool.Parse(dRow["files"].ToString()),
+                    Netinstall   = bool.Parse(dRow["netinstall"].ToString()),
+                    Mdid         = dRow["mdid"].ToString()
+                };
 
-                if(dRow["xml"] != DBNull.Value)
-                    fEntry.xml = (byte[])dRow["xml"];
-                if(dRow["json"] != DBNull.Value)
-                    fEntry.json = (byte[])dRow["json"];
+                if(dRow["xml"]  != DBNull.Value) fEntry.Xml  = (byte[])dRow["xml"];
+                if(dRow["json"] != DBNull.Value) fEntry.Json = (byte[])dRow["json"];
                 entries.Add(fEntry);
             }
 
             return true;
         }
 
-        IDbCommand GetOSCommand(DBEntry entry)
+        IDbCommand GetOsCommand(DbEntry entry)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
 
-            IDbDataParameter param1 = dbcmd.CreateParameter();
-            IDbDataParameter param2 = dbcmd.CreateParameter();
-            IDbDataParameter param3 = dbcmd.CreateParameter();
-            IDbDataParameter param4 = dbcmd.CreateParameter();
-            IDbDataParameter param5 = dbcmd.CreateParameter();
-            IDbDataParameter param6 = dbcmd.CreateParameter();
-            IDbDataParameter param7 = dbcmd.CreateParameter();
-            IDbDataParameter param8 = dbcmd.CreateParameter();
-            IDbDataParameter param9 = dbcmd.CreateParameter();
+            IDbDataParameter param1  = dbcmd.CreateParameter();
+            IDbDataParameter param2  = dbcmd.CreateParameter();
+            IDbDataParameter param3  = dbcmd.CreateParameter();
+            IDbDataParameter param4  = dbcmd.CreateParameter();
+            IDbDataParameter param5  = dbcmd.CreateParameter();
+            IDbDataParameter param6  = dbcmd.CreateParameter();
+            IDbDataParameter param7  = dbcmd.CreateParameter();
+            IDbDataParameter param8  = dbcmd.CreateParameter();
+            IDbDataParameter param9  = dbcmd.CreateParameter();
             IDbDataParameter param10 = dbcmd.CreateParameter();
             IDbDataParameter param11 = dbcmd.CreateParameter();
             IDbDataParameter param12 = dbcmd.CreateParameter();
@@ -166,15 +167,15 @@ namespace osrepodbmgr.Core
             IDbDataParameter param16 = dbcmd.CreateParameter();
             IDbDataParameter param17 = dbcmd.CreateParameter();
 
-            param1.ParameterName = "@developer";
-            param2.ParameterName = "@product";
-            param3.ParameterName = "@version";
-            param4.ParameterName = "@languages";
-            param5.ParameterName = "@architecture";
-            param6.ParameterName = "@machine";
-            param7.ParameterName = "@format";
-            param8.ParameterName = "@description";
-            param9.ParameterName = "@oem";
+            param1.ParameterName  = "@developer";
+            param2.ParameterName  = "@product";
+            param3.ParameterName  = "@version";
+            param4.ParameterName  = "@languages";
+            param5.ParameterName  = "@architecture";
+            param6.ParameterName  = "@machine";
+            param7.ParameterName  = "@format";
+            param8.ParameterName  = "@description";
+            param9.ParameterName  = "@oem";
             param10.ParameterName = "@upgrade";
             param11.ParameterName = "@update";
             param12.ParameterName = "@source";
@@ -184,14 +185,14 @@ namespace osrepodbmgr.Core
             param16.ParameterName = "@json";
             param17.ParameterName = "@mdid";
 
-            param1.DbType = DbType.String;
-            param2.DbType = DbType.String;
-            param3.DbType = DbType.String;
-            param4.DbType = DbType.String;
-            param5.DbType = DbType.String;
-            param7.DbType = DbType.String;
-            param8.DbType = DbType.String;
-            param9.DbType = DbType.Boolean;
+            param1.DbType  = DbType.String;
+            param2.DbType  = DbType.String;
+            param3.DbType  = DbType.String;
+            param4.DbType  = DbType.String;
+            param5.DbType  = DbType.String;
+            param7.DbType  = DbType.String;
+            param8.DbType  = DbType.String;
+            param9.DbType  = DbType.Boolean;
             param10.DbType = DbType.Boolean;
             param11.DbType = DbType.Boolean;
             param12.DbType = DbType.Boolean;
@@ -201,23 +202,23 @@ namespace osrepodbmgr.Core
             param16.DbType = DbType.Object;
             param17.DbType = DbType.String;
 
-            param1.Value = entry.developer;
-            param2.Value = entry.product;
-            param3.Value = entry.version;
-            param4.Value = entry.languages;
-            param5.Value = entry.architecture;
-            param6.Value = entry.machine;
-            param7.Value = entry.format;
-            param8.Value = entry.description;
-            param9.Value = entry.oem;
-            param10.Value = entry.upgrade;
-            param11.Value = entry.update;
-            param12.Value = entry.source;
-            param13.Value = entry.files;
-            param14.Value = entry.netinstall;
-            param15.Value = entry.xml;
-            param16.Value = entry.json;
-            param17.Value = entry.mdid;
+            param1.Value  = entry.Developer;
+            param2.Value  = entry.Product;
+            param3.Value  = entry.Version;
+            param4.Value  = entry.Languages;
+            param5.Value  = entry.Architecture;
+            param6.Value  = entry.Machine;
+            param7.Value  = entry.Format;
+            param8.Value  = entry.Description;
+            param9.Value  = entry.Oem;
+            param10.Value = entry.Upgrade;
+            param11.Value = entry.Update;
+            param12.Value = entry.Source;
+            param13.Value = entry.Files;
+            param14.Value = entry.Netinstall;
+            param15.Value = entry.Xml;
+            param16.Value = entry.Json;
+            param17.Value = entry.Mdid;
 
             dbcmd.Parameters.Add(param1);
             dbcmd.Parameters.Add(param2);
@@ -240,16 +241,17 @@ namespace osrepodbmgr.Core
             return dbcmd;
         }
 
-        public bool AddOS(DBEntry entry, out long id)
+        public bool AddOs(DbEntry entry, out long id)
         {
-            IDbCommand dbcmd = GetOSCommand(entry);
+            IDbCommand     dbcmd = GetOsCommand(entry);
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            const string sql = "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall, xml, json, mdid)" +
+            const string SQL =
+                "INSERT INTO oses (developer, product, version, languages, architecture, machine, format, description, oem, upgrade, `update`, source, files, netinstall, xml, json, mdid)" +
                 " VALUES (@developer, @product, @version, @languages, @architecture, @machine, @format, @description, @oem, @upgrade, @update, @source, @files, @netinstall, @xml, @json, @mdid)";
 
-            dbcmd.CommandText = sql;
+            dbcmd.CommandText = SQL;
 
             dbcmd.ExecuteNonQuery();
             trans.Commit();
@@ -260,7 +262,7 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        IDbCommand GetFileCommand(DBFile entry)
+        IDbCommand GetFileCommand(DbFile entry)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
 
@@ -290,14 +292,8 @@ namespace osrepodbmgr.Core
             param1.Value = entry.Sha256;
             param2.Value = entry.Crack;
             param3.Value = entry.HasVirus;
-            if(entry.ClamTime != null)
-                param4.Value = entry.ClamTime.Value.ToString("yyyy-MM-dd HH:mm");
-            else
-                param4.Value = null;
-            if(entry.VirusTotalTime != null)
-                param5.Value = entry.VirusTotalTime.Value.ToString("yyyy-MM-dd HH:mm");
-            else
-                param5.Value = null;
+            param4.Value = entry.ClamTime?.ToString("yyyy-MM-dd HH:mm");
+            param5.Value = entry.VirusTotalTime?.ToString("yyyy-MM-dd HH:mm");
             param6.Value = entry.Virus;
             param7.Value = entry.Length;
 
@@ -312,16 +308,17 @@ namespace osrepodbmgr.Core
             return dbcmd;
         }
 
-        public bool UpdateFile(DBFile file)
+        public bool UpdateFile(DbFile file)
         {
-            IDbCommand dbcmd = GetFileCommand(file);
+            IDbCommand     dbcmd = GetFileCommand(file);
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            const string sql = "UPDATE files SET crack = @crack, hasvirus = @hasvirus, clamtime = @clamtime, vtotaltime = @vtotaltime, virus = @virus, length = @length " +
+            const string SQL =
+                "UPDATE files SET crack = @crack, hasvirus = @hasvirus, clamtime = @clamtime, vtotaltime = @vtotaltime, virus = @virus, length = @length " +
                 "WHERE sha256 = @sha256";
 
-            dbcmd.CommandText = sql;
+            dbcmd.CommandText = SQL;
 
             dbcmd.ExecuteNonQuery();
             trans.Commit();
@@ -330,16 +327,17 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool AddFile(DBFile file)
+        public bool AddFile(DbFile file)
         {
-            IDbCommand dbcmd = GetFileCommand(file);
+            IDbCommand     dbcmd = GetFileCommand(file);
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            const string sql = "INSERT INTO `files` (`sha256`, `crack`, `hasvirus`, `clamtime`, `vtotaltime`, `virus`, `length`)" +
-                                       " VALUES (@sha256, @crack, @hasvirus, @clamtime, @vtotaltime, @virus, @length)";
+            const string SQL =
+                "INSERT INTO `files` (`sha256`, `crack`, `hasvirus`, `clamtime`, `vtotaltime`, `virus`, `length`)" +
+                " VALUES (@sha256, @crack, @hasvirus, @clamtime, @vtotaltime, @virus, @length)";
 
-            dbcmd.CommandText = sql;
+            dbcmd.CommandText = SQL;
 
             dbcmd.ExecuteNonQuery();
             trans.Commit();
@@ -350,74 +348,68 @@ namespace osrepodbmgr.Core
 
         public bool ExistsFile(string hash)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand       dbcmd  = dbCon.CreateCommand();
             IDbDataParameter param1 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@hash";
-            param1.DbType = DbType.String;
-            param1.Value = hash;
+            param1.DbType        = DbType.String;
+            param1.Value         = hash;
             dbcmd.Parameters.Add(param1);
-            dbcmd.CommandText = "SELECT * FROM files WHERE sha256 = @hash";
-            DataSet dataSet = new DataSet();
+            dbcmd.CommandText          = "SELECT * FROM files WHERE sha256 = @hash";
+            DataSet        dataSet     = new DataSet();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
-            foreach(DataRow dRow in dataTable.Rows)
-            {
-                return true;
-            }
+            foreach(DataRow dRow in dataTable.Rows) return true;
 
             return false;
         }
 
         public ulong GetFilesCount()
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand dbcmd  = dbCon.CreateCommand();
             dbcmd.CommandText = "SELECT COUNT(*) FROM files";
-            object count = dbcmd.ExecuteScalar();
+            object count      = dbcmd.ExecuteScalar();
             dbcmd.Dispose();
-            try
-            {
-                return Convert.ToUInt64(count);
-            }
+            try { return Convert.ToUInt64(count); }
             catch { return 0; }
         }
 
-        public DBFile GetFile(string hash)
+        public DbFile GetFile(string hash)
         {
-            string sql = string.Format("SELECT * FROM files WHERE sha256 = '{0}'", hash);
+            string sql = $"SELECT * FROM files WHERE sha256 = '{hash}'";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = sql;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBFile fEntry = new DBFile();
+                DbFile fEntry = new DbFile
+                {
+                    Id     = ulong.Parse(dRow["id"].ToString()),
+                    Sha256 = dRow["sha256"].ToString(),
+                    Crack  = bool.Parse(dRow["crack"].ToString()),
+                    Virus  = dRow["virus"].ToString(),
+                    Length = long.Parse(dRow["length"].ToString())
+                };
 
-                fEntry.Id = ulong.Parse(dRow["id"].ToString());
-                fEntry.Sha256 = dRow["sha256"].ToString();
-                fEntry.Crack = bool.Parse(dRow["crack"].ToString());
-                if(dRow["hasvirus"] == DBNull.Value)
-                    fEntry.HasVirus = null;
+                if(dRow["hasvirus"] == DBNull.Value) fEntry.HasVirus = null;
+                else fEntry.HasVirus                                 = bool.Parse(dRow["hasvirus"].ToString());
+                if(dRow["clamtime"] == DBNull.Value) fEntry.ClamTime = null;
                 else
-                    fEntry.HasVirus = bool.Parse(dRow["hasvirus"].ToString());
-                if(dRow["clamtime"] == DBNull.Value)
-                    fEntry.ClamTime = null;
+                    fEntry.ClamTime =
+                        DateTime.Parse(dRow["clamtime"].ToString());
+                if(dRow["vtotaltime"] == DBNull.Value) fEntry.VirusTotalTime = null;
                 else
-                    fEntry.ClamTime = DateTime.Parse(dRow["clamtime"].ToString());
-                if(dRow["vtotaltime"] == DBNull.Value)
-                    fEntry.VirusTotalTime = null;
-                else
-                    fEntry.VirusTotalTime = DateTime.Parse(dRow["vtotaltime"].ToString());
-                fEntry.Virus = dRow["virus"].ToString();
-                fEntry.Length = long.Parse(dRow["length"].ToString());
+                    fEntry.VirusTotalTime =
+                        DateTime.Parse(dRow["vtotaltime"].ToString());
 
                 return fEntry;
             }
@@ -425,41 +417,41 @@ namespace osrepodbmgr.Core
             return null;
         }
 
-        public bool GetFiles(out List<DBFile> entries, ulong start, ulong count)
+        public bool GetFiles(out List<DbFile> entries, ulong start, ulong count)
         {
-            entries = new List<DBFile>();
+            entries = new List<DbFile>();
 
-            string sql = string.Format("SELECT * FROM files ORDER BY sha256 LIMIT {0}, {1}", start, count);
+            string sql = $"SELECT * FROM files ORDER BY sha256 LIMIT {start}, {count}";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = sql;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBFile fEntry = new DBFile();
+                DbFile fEntry = new DbFile
+                {
+                    Id     = ulong.Parse(dRow["id"].ToString()),
+                    Sha256 = dRow["sha256"].ToString(),
+                    Crack  = bool.Parse(dRow["crack"].ToString()),
+                    Virus  = dRow["virus"].ToString(),
+                    Length = long.Parse(dRow["length"].ToString())
+                };
 
-                fEntry.Id = ulong.Parse(dRow["id"].ToString());
-                fEntry.Sha256 = dRow["sha256"].ToString();
-                fEntry.Crack = bool.Parse(dRow["crack"].ToString());
-                if(dRow["hasvirus"] == DBNull.Value)
-                    fEntry.HasVirus = null;
+                if(dRow["hasvirus"] == DBNull.Value) fEntry.HasVirus = null;
+                else fEntry.HasVirus                                 = bool.Parse(dRow["hasvirus"].ToString());
+                if(dRow["clamtime"] == DBNull.Value) fEntry.ClamTime = null;
                 else
-                    fEntry.HasVirus = bool.Parse(dRow["hasvirus"].ToString());
-                if(dRow["clamtime"] == DBNull.Value)
-                    fEntry.ClamTime = null;
+                    fEntry.ClamTime =
+                        DateTime.Parse(dRow["clamtime"].ToString());
+                if(dRow["vtotaltime"] == DBNull.Value) fEntry.VirusTotalTime = null;
                 else
-                    fEntry.ClamTime = DateTime.Parse(dRow["clamtime"].ToString());
-                if(dRow["vtotaltime"] == DBNull.Value)
-                    fEntry.VirusTotalTime = null;
-                else
-                    fEntry.VirusTotalTime = DateTime.Parse(dRow["vtotaltime"].ToString());
-                fEntry.Virus = dRow["virus"].ToString();
-                fEntry.Length = long.Parse(dRow["length"].ToString());
+                    fEntry.VirusTotalTime =
+                        DateTime.Parse(dRow["vtotaltime"].ToString());
 
                 entries.Add(fEntry);
             }
@@ -467,41 +459,41 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool GetNotAvFiles(out List<DBFile> entries)
+        public bool GetNotAvFiles(out List<DbFile> entries)
         {
-            entries = new List<DBFile>();
+            entries = new List<DbFile>();
 
-            const string sql = "SELECT * FROM files WHERE hasvirus IS NULL ORDER BY sha256";
+            const string SQL = "SELECT * FROM files WHERE hasvirus IS NULL ORDER BY sha256";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = SQL;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBFile fEntry = new DBFile();
+                DbFile fEntry = new DbFile
+                {
+                    Id     = ulong.Parse(dRow["id"].ToString()),
+                    Sha256 = dRow["sha256"].ToString(),
+                    Crack  = bool.Parse(dRow["crack"].ToString()),
+                    Virus  = dRow["virus"].ToString(),
+                    Length = long.Parse(dRow["length"].ToString())
+                };
 
-                fEntry.Id = ulong.Parse(dRow["id"].ToString());
-                fEntry.Sha256 = dRow["sha256"].ToString();
-                fEntry.Crack = bool.Parse(dRow["crack"].ToString());
-                if(dRow["hasvirus"] == DBNull.Value)
-                    fEntry.HasVirus = null;
+                if(dRow["hasvirus"] == DBNull.Value) fEntry.HasVirus = null;
+                else fEntry.HasVirus                                 = bool.Parse(dRow["hasvirus"].ToString());
+                if(dRow["clamtime"] == DBNull.Value) fEntry.ClamTime = null;
                 else
-                    fEntry.HasVirus = bool.Parse(dRow["hasvirus"].ToString());
-                if(dRow["clamtime"] == DBNull.Value)
-                    fEntry.ClamTime = null;
+                    fEntry.ClamTime =
+                        DateTime.Parse(dRow["clamtime"].ToString());
+                if(dRow["vtotaltime"] == DBNull.Value) fEntry.VirusTotalTime = null;
                 else
-                    fEntry.ClamTime = DateTime.Parse(dRow["clamtime"].ToString());
-                if(dRow["vtotaltime"] == DBNull.Value)
-                    fEntry.VirusTotalTime = null;
-                else
-                    fEntry.VirusTotalTime = DateTime.Parse(dRow["vtotaltime"].ToString());
-                fEntry.Virus = dRow["virus"].ToString();
-                fEntry.Length = long.Parse(dRow["length"].ToString());
+                    fEntry.VirusTotalTime =
+                        DateTime.Parse(dRow["vtotaltime"].ToString());
 
                 entries.Add(fEntry);
             }
@@ -509,7 +501,7 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        IDbCommand GetOSFileCommand(DBOSFile person)
+        IDbCommand GetOsFileCommand(DbOsFile person)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
 
@@ -556,14 +548,15 @@ namespace osrepodbmgr.Core
             return dbcmd;
         }
 
-        public bool AddFileToOS(DBOSFile file, long os)
+        public bool AddFileToOs(DbOsFile file, long os)
         {
-            IDbCommand dbcmd = GetOSFileCommand(file);
+            IDbCommand     dbcmd = GetOsFileCommand(file);
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            string sql = string.Format("INSERT INTO `os_{0}` (`path`, `sha256`, `length`, `creation`, `access`, `modification`, `attributes`)" +
-                                       " VALUES (@path, @sha256, @length, @creation, @access, @modification, @attributes)", os);
+            string sql =
+                $"INSERT INTO `os_{os}` (`path`, `sha256`, `length`, `creation`, `access`, `modification`, `attributes`)" +
+                " VALUES (@path, @sha256, @length, @creation, @access, @modification, @attributes)";
 
             dbcmd.CommandText = sql;
 
@@ -574,7 +567,7 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        IDbCommand GetFolderCommand(DBFolder person)
+        IDbCommand GetFolderCommand(DbFolder person)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
 
@@ -611,14 +604,14 @@ namespace osrepodbmgr.Core
             return dbcmd;
         }
 
-        public bool AddFolderToOS(DBFolder folder, long os)
+        public bool AddFolderToOs(DbFolder folder, long os)
         {
-            IDbCommand dbcmd = GetFolderCommand(folder);
+            IDbCommand     dbcmd = GetFolderCommand(folder);
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            string sql = string.Format("INSERT INTO `os_{0}_folders` (`path`, `creation`, `access`, `modification`, `attributes`)" +
-                                       " VALUES (@path, @creation, @access, @modification, @attributes)", os);
+            string sql = $"INSERT INTO `os_{os}_folders` (`path`, `creation`, `access`, `modification`, `attributes`)" +
+                         " VALUES (@path, @creation, @access, @modification, @attributes)";
 
             dbcmd.CommandText = sql;
 
@@ -629,25 +622,13 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool RemoveOS(long id)
+        public bool RemoveOs(long id)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd = dbCon.CreateCommand();
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;", id);
-
-            dbcmd.CommandText = sql;
-
-            dbcmd.ExecuteNonQuery();
-            trans.Commit();
-            dbcmd.Dispose();
-
-            dbcmd = dbCon.CreateCommand();
-            trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
-
-            sql = string.Format("DROP TABLE IF EXISTS `os_{0}_folders`;", id);
+            string sql = $"DROP TABLE IF EXISTS `os_{id}`;";
 
             dbcmd.CommandText = sql;
 
@@ -655,11 +636,11 @@ namespace osrepodbmgr.Core
             trans.Commit();
             dbcmd.Dispose();
 
-            dbcmd = dbCon.CreateCommand();
-            trans = dbCon.BeginTransaction();
+            dbcmd             = dbCon.CreateCommand();
+            trans             = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            sql = string.Format("DROP TABLE IF EXISTS `os_{0}_symlinks`;", id);
+            sql = $"DROP TABLE IF EXISTS `os_{id}_folders`;";
 
             dbcmd.CommandText = sql;
 
@@ -667,11 +648,23 @@ namespace osrepodbmgr.Core
             trans.Commit();
             dbcmd.Dispose();
 
-            dbcmd = dbCon.CreateCommand();
-            trans = dbCon.BeginTransaction();
+            dbcmd             = dbCon.CreateCommand();
+            trans             = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            sql = string.Format("DELETE FROM oses WHERE id = '{0}';", id);
+            sql = $"DROP TABLE IF EXISTS `os_{id}_symlinks`;";
+
+            dbcmd.CommandText = sql;
+
+            dbcmd.ExecuteNonQuery();
+            trans.Commit();
+            dbcmd.Dispose();
+
+            dbcmd             = dbCon.CreateCommand();
+            trans             = dbCon.BeginTransaction();
+            dbcmd.Transaction = trans;
+
+            sql = $"DELETE FROM oses WHERE id = '{id}';";
 
             dbcmd.CommandText = sql;
 
@@ -682,24 +675,15 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool CreateTableForOS(long id)
+        public bool CreateTableForOs(long id)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd = dbCon.CreateCommand();
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            string sql = string.Format("DROP TABLE IF EXISTS `os_{0}`;\n\n" +
-                                         "CREATE TABLE IF NOT EXISTS `os_{0}` (\n" +
-                                         "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                                         "  `path` VARCHAR(8192) NOT NULL,\n" +
-                                         "  `sha256` VARCHAR(64) NOT NULL,\n\n" +
-                                         "  `length` BIGINT NOT NULL,\n" +
-                                         "  `creation` DATETIME NULL,\n" +
-                                         "  `access` DATETIME NULL,\n" +
-                                         "  `modification` DATETIME NULL,\n" +
-                                         "  `attributes` INTEGER NULL);\n\n" +
-                                         "CREATE UNIQUE INDEX `os_{0}_id_UNIQUE` ON `os_{0}` (`id` ASC);\n\n" +
-                                         "CREATE INDEX `os_{0}_path_idx` ON `os_{0}` (`path` ASC);", id);
+            string sql =
+                string.Format("DROP TABLE IF EXISTS `os_{0}`;\n\n" + "CREATE TABLE IF NOT EXISTS `os_{0}` (\n" + "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" + "  `path` VARCHAR(8192) NOT NULL,\n" + "  `sha256` VARCHAR(64) NOT NULL,\n\n" + "  `length` BIGINT NOT NULL,\n" + "  `creation` DATETIME NULL,\n" + "  `access` DATETIME NULL,\n" + "  `modification` DATETIME NULL,\n" + "  `attributes` INTEGER NULL);\n\n" + "CREATE UNIQUE INDEX `os_{0}_id_UNIQUE` ON `os_{0}` (`id` ASC);\n\n" + "CREATE INDEX `os_{0}_path_idx` ON `os_{0}` (`path` ASC);",
+                              id);
 
             dbcmd.CommandText = sql;
 
@@ -707,20 +691,13 @@ namespace osrepodbmgr.Core
             trans.Commit();
             dbcmd.Dispose();
 
-            dbcmd = dbCon.CreateCommand();
-            trans = dbCon.BeginTransaction();
+            dbcmd             = dbCon.CreateCommand();
+            trans             = dbCon.BeginTransaction();
             dbcmd.Transaction = trans;
 
-            sql = string.Format("DROP TABLE IF EXISTS `os_{0}_folders`;\n\n" +
-                                 "CREATE TABLE IF NOT EXISTS `os_{0}_folders` (\n" +
-                                 "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                                 "  `path` VARCHAR(8192) NOT NULL,\n" +
-                                 "  `creation` DATETIME NULL,\n" +
-                                 "  `access` DATETIME NULL,\n" +
-                                 "  `modification` DATETIME NULL,\n" +
-                                 "  `attributes` INTEGER NULL);\n\n" +
-                                 "CREATE UNIQUE INDEX `os_{0}_folders_id_UNIQUE` ON `os_{0}_folders` (`id` ASC);\n\n" +
-                                 "CREATE INDEX `os_{0}_folders_path_idx` ON `os_{0}_folders` (`path` ASC);", id);
+            sql =
+                string.Format("DROP TABLE IF EXISTS `os_{0}_folders`;\n\n" + "CREATE TABLE IF NOT EXISTS `os_{0}_folders` (\n" + "  `id` INTEGER PRIMARY KEY AUTOINCREMENT,\n" + "  `path` VARCHAR(8192) NOT NULL,\n" + "  `creation` DATETIME NULL,\n" + "  `access` DATETIME NULL,\n" + "  `modification` DATETIME NULL,\n" + "  `attributes` INTEGER NULL);\n\n" + "CREATE UNIQUE INDEX `os_{0}_folders_id_UNIQUE` ON `os_{0}_folders` (`id` ASC);\n\n" + "CREATE INDEX `os_{0}_folders_path_idx` ON `os_{0}_folders` (`path` ASC);",
+                              id);
 
             dbcmd.CommandText = sql;
 
@@ -731,79 +708,75 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool ExistsFileInOS(string hash, long osId)
+        public bool ExistsFileInOs(string hash, long osId)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand       dbcmd  = dbCon.CreateCommand();
             IDbDataParameter param1 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@hash";
-            param1.DbType = DbType.String;
-            param1.Value = hash;
+            param1.DbType        = DbType.String;
+            param1.Value         = hash;
             dbcmd.Parameters.Add(param1);
-            dbcmd.CommandText = string.Format("SELECT * FROM `os_{0}` WHERE sha256 = @hash", osId);
-            DataSet dataSet = new DataSet();
+            dbcmd.CommandText          = $"SELECT * FROM `os_{osId}` WHERE sha256 = @hash";
+            DataSet        dataSet     = new DataSet();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
-            foreach(DataRow dRow in dataTable.Rows)
-            {
-                return true;
-            }
+            foreach(DataRow dRow in dataTable.Rows) return true;
 
             return false;
         }
 
-        public bool ExistsOS(string mdid)
+        public bool ExistsOs(string mdid)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand       dbcmd  = dbCon.CreateCommand();
             IDbDataParameter param1 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@mdid";
-            param1.DbType = DbType.String;
-            param1.Value = mdid;
+            param1.DbType        = DbType.String;
+            param1.Value         = mdid;
             dbcmd.Parameters.Add(param1);
-            dbcmd.CommandText = "SELECT * FROM `oses` WHERE mdid = @mdid";
-            DataSet dataSet = new DataSet();
+            dbcmd.CommandText          = "SELECT * FROM `oses` WHERE mdid = @mdid";
+            DataSet        dataSet     = new DataSet();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dataAdapter.SelectCommand = dbcmd;
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
-            foreach(DataRow dRow in dataTable.Rows)
-            {
-                return true;
-            }
+            foreach(DataRow dRow in dataTable.Rows) return true;
 
             return false;
         }
 
-        public bool GetAllFilesInOS(out List<DBOSFile> entries, long id)
+        public bool GetAllFilesInOs(out List<DbOsFile> entries, long id)
         {
-            entries = new List<DBOSFile>();
+            entries = new List<DbOsFile>();
 
-            string sql = string.Format("SELECT * from os_{0}", id);
+            string sql = $"SELECT * from os_{id}";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = sql;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBOSFile fEntry = new DBOSFile();
-                fEntry.Id = ulong.Parse(dRow["id"].ToString());
-                fEntry.Path = dRow["path"].ToString();
-                fEntry.Sha256 = dRow["sha256"].ToString();
-                fEntry.Length = long.Parse(dRow["length"].ToString());
-                fEntry.CreationTimeUtc = DateTime.Parse(dRow["creation"].ToString());
-                fEntry.LastAccessTimeUtc = DateTime.Parse(dRow["access"].ToString());
-                fEntry.LastWriteTimeUtc = DateTime.Parse(dRow["modification"].ToString());
-                fEntry.Attributes = (FileAttributes)int.Parse(dRow["attributes"].ToString());
+                DbOsFile fEntry = new DbOsFile
+                {
+                    Id                = ulong.Parse(dRow["id"].ToString()),
+                    Path              = dRow["path"].ToString(),
+                    Sha256            = dRow["sha256"].ToString(),
+                    Length            = long.Parse(dRow["length"].ToString()),
+                    CreationTimeUtc   = DateTime.Parse(dRow["creation"].ToString()),
+                    LastAccessTimeUtc = DateTime.Parse(dRow["access"].ToString()),
+                    LastWriteTimeUtc  = DateTime.Parse(dRow["modification"].ToString()),
+                    Attributes        = (FileAttributes)int.Parse(dRow["attributes"].ToString())
+                };
 
                 entries.Add(fEntry);
             }
@@ -811,29 +784,31 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool GetAllFolders(out List<DBFolder> entries, long id)
+        public bool GetAllFolders(out List<DbFolder> entries, long id)
         {
-            entries = new List<DBFolder>();
+            entries = new List<DbFolder>();
 
-            string sql = string.Format("SELECT * from os_{0}_folders", id);
+            string sql = $"SELECT * from os_{id}_folders";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = sql;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
             {
-                DBFolder fEntry = new DBFolder();
-                fEntry.Id = ulong.Parse(dRow["id"].ToString());
-                fEntry.Path = dRow["path"].ToString();
-                fEntry.CreationTimeUtc = DateTime.Parse(dRow["creation"].ToString());
-                fEntry.LastAccessTimeUtc = DateTime.Parse(dRow["access"].ToString());
-                fEntry.LastWriteTimeUtc = DateTime.Parse(dRow["modification"].ToString());
-                fEntry.Attributes = (FileAttributes)int.Parse(dRow["attributes"].ToString());
+                DbFolder fEntry = new DbFolder
+                {
+                    Id                = ulong.Parse(dRow["id"].ToString()),
+                    Path              = dRow["path"].ToString(),
+                    CreationTimeUtc   = DateTime.Parse(dRow["creation"].ToString()),
+                    LastAccessTimeUtc = DateTime.Parse(dRow["access"].ToString()),
+                    LastWriteTimeUtc  = DateTime.Parse(dRow["modification"].ToString()),
+                    Attributes        = (FileAttributes)int.Parse(dRow["attributes"].ToString())
+                };
 
                 entries.Add(fEntry);
             }
@@ -843,17 +818,17 @@ namespace osrepodbmgr.Core
 
         public bool ToggleCrack(string hash, bool crack)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
-            IDbTransaction trans = dbCon.BeginTransaction();
+            IDbCommand       dbcmd  = dbCon.CreateCommand();
+            IDbTransaction   trans  = dbCon.BeginTransaction();
             IDbDataParameter param1 = dbcmd.CreateParameter();
             IDbDataParameter param2 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@hash";
-            param1.DbType = DbType.String;
-            param1.Value = hash;
+            param1.DbType        = DbType.String;
+            param1.Value         = hash;
             param2.ParameterName = "@crack";
-            param2.DbType = DbType.Boolean;
-            param2.Value = crack;
+            param2.DbType        = DbType.Boolean;
+            param2.Value         = crack;
             dbcmd.Parameters.Add(param1);
             dbcmd.Parameters.Add(param2);
             dbcmd.CommandText = "UPDATE files SET crack = @crack WHERE sha256 = @hash";
@@ -866,12 +841,12 @@ namespace osrepodbmgr.Core
 
         public bool DeleteFile(string hash)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand       dbcmd  = dbCon.CreateCommand();
             IDbDataParameter param1 = dbcmd.CreateParameter();
 
             param1.ParameterName = "@sha256";
-            param1.DbType = DbType.String;
-            param1.Value = hash;
+            param1.DbType        = DbType.String;
+            param1.Value         = hash;
             dbcmd.Parameters.Add(param1);
             dbcmd.CommandText = "DELETE FROM `files` WHERE sha256 = @sha256";
             dbcmd.ExecuteNonQuery();
@@ -881,26 +856,24 @@ namespace osrepodbmgr.Core
 
         public bool HasSymlinks(long osId)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
-            dbcmd.CommandText = string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'os_{0}_symlinks'", osId);
+            IDbCommand dbcmd  = dbCon.CreateCommand();
+            dbcmd.CommandText =
+                $"SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'os_{osId}_symlinks'";
             object count = dbcmd.ExecuteScalar();
             dbcmd.Dispose();
 
             return Convert.ToUInt64(count) > 0;
         }
 
-        public bool CreateSymlinkTableForOS(long id)
+        public bool CreateSymlinkTableForOs(long id)
         {
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd = dbCon.CreateCommand();
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            string sql = string.Format("DROP TABLE IF EXISTS `os_{0}_symlinks`;\n\n" +
-                                         "CREATE TABLE IF NOT EXISTS `os_{0}_symlinks` (\n" +
-                                         "  `path` VARCHAR(8192) PRIMARY KEY,\n" +
-                                         "  `target` VARCHAR(8192) NOT NULL);\n\n" +
-                                         "CREATE UNIQUE INDEX `os_{0}_symlinks_path_UNIQUE` ON `os_{0}_symlinks` (`path` ASC);\n\n" +
-                                         "CREATE INDEX `os_{0}_symlinks_target_idx` ON `os_{0}_symlinks` (`target` ASC);", id);
+            string sql =
+                string.Format("DROP TABLE IF EXISTS `os_{0}_symlinks`;\n\n" + "CREATE TABLE IF NOT EXISTS `os_{0}_symlinks` (\n" + "  `path` VARCHAR(8192) PRIMARY KEY,\n" + "  `target` VARCHAR(8192) NOT NULL);\n\n" + "CREATE UNIQUE INDEX `os_{0}_symlinks_path_UNIQUE` ON `os_{0}_symlinks` (`path` ASC);\n\n" + "CREATE INDEX `os_{0}_symlinks_target_idx` ON `os_{0}_symlinks` (`target` ASC);",
+                              id);
 
             dbcmd.CommandText = sql;
 
@@ -911,7 +884,7 @@ namespace osrepodbmgr.Core
             return true;
         }
 
-        public bool AddSymlinkToOS(string path, string target, long os)
+        public bool AddSymlinkToOs(string path, string target, long os)
         {
             IDbCommand dbcmd = dbCon.CreateCommand();
 
@@ -931,10 +904,9 @@ namespace osrepodbmgr.Core
             dbcmd.Parameters.Add(param2);
 
             IDbTransaction trans = dbCon.BeginTransaction();
-            dbcmd.Transaction = trans;
+            dbcmd.Transaction    = trans;
 
-            string sql = string.Format("INSERT INTO `os_{0}_symlinks` (`path`, `target`)" +
-                                       " VALUES (@path, @target)", os);
+            string sql = $"INSERT INTO `os_{os}_symlinks` (`path`, `target`)" + " VALUES (@path, @target)";
 
             dbcmd.CommandText = sql;
 
@@ -949,24 +921,21 @@ namespace osrepodbmgr.Core
         {
             entries = new Dictionary<string, string>();
 
-            string sql = string.Format("SELECT * from os_{0}_symlinks", id);
+            string sql = $"SELECT * from os_{id}_symlinks";
 
-            IDbCommand dbcmd = dbCon.CreateCommand();
+            IDbCommand     dbcmd       = dbCon.CreateCommand();
             IDbDataAdapter dataAdapter = dbCore.GetNewDataAdapter();
-            dbcmd.CommandText = sql;
-            DataSet dataSet = new DataSet();
-            dataAdapter.SelectCommand = dbcmd;
+            dbcmd.CommandText          = sql;
+            DataSet dataSet            = new DataSet();
+            dataAdapter.SelectCommand  = dbcmd;
             dataAdapter.Fill(dataSet);
             DataTable dataTable = dataSet.Tables[0];
 
             foreach(DataRow dRow in dataTable.Rows)
-            {
                 if(!entries.ContainsKey(dRow["path"].ToString()))
                     entries.Add(dRow["path"].ToString(), dRow["target"].ToString());
-            }
 
             return true;
         }
     }
 }
-

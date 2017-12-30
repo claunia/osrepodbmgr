@@ -25,25 +25,23 @@
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System.Data;
 
 namespace osrepodbmgr.Core
 {
-    public abstract class DBCore
+    public abstract class DbCore
     {
-        public abstract bool OpenDB(string database, string server, string user, string password);
+        public DbOps DbOps;
 
-        public abstract void CloseDB();
+        public abstract long LastInsertRowId { get; }
 
-        public abstract bool CreateDB(string database, string server, string user, string password);
+        public abstract bool OpenDb(string database, string server, string user, string password);
 
-        public DBOps DBOps;
+        public abstract void CloseDb();
+
+        public abstract bool CreateDb(string database, string server, string user, string password);
 
         public abstract IDbDataAdapter GetNewDataAdapter();
-
-        public abstract long LastInsertRowId
-        {
-            get;
-        }
     }
 }
