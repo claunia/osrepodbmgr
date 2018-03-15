@@ -591,6 +591,38 @@ namespace osrepodbmgr.Eto
             });
             treeAdditionalInformation.DataStore              = lstAdditionalInformation;
             treeAdditionalInformation.AllowMultipleSelection = false;
+
+            txtImage.ToolTip = "This is the disk image containing this media.";
+            txtFormat.ToolTip = "This is the format of the disk image.";
+            txtOffset.ToolTip = "Byte offset where the media dump starts in the disk image.";
+            txtSize.ToolTip = "Size of the disk dump.";
+            txtManufacturer.ToolTip = "Disk manufacturer.";
+            txtModel.ToolTip = "Disk model.";
+            txtSerial.ToolTip = "Disk serial number.";
+            txtFirmware.ToolTip = "Disk firmware revision.";
+            txtInterface.ToolTip = "Disk interface.";
+            txtCopyProtection.ToolTip = "Disk copy protection.";
+            txtMediaType.ToolTip = "Disk type.";
+            txtMediaSubtype.ToolTip = "Disk subtype.";
+            chkSequence.ToolTip = "If checked means this disk is one in a sequence of several.";
+            txtMediaTitle.ToolTip = "Title of disk.";
+            spSequence.ToolTip = "Number of this disk in the sequence.";
+            spTotalMedia.ToolTip = "How many disks make the sequence.";
+            spSide.ToolTip = "On flippy disks, which side of the disk is represented by this dump.";
+            spLayer.ToolTip = "On PTP layered disks, which layer of the side of the disk is represented by this dump.";
+            txtBlocks.ToolTip = "How many individual blocks (sectors) are in this dump.";
+            spPhysicalBlockSize.ToolTip = "Size of the biggest physical block in bytes.";
+            spLogicalBlockSize.ToolTip = "Size of the biggest logical block in bytes.";
+            spCylinders.ToolTip = "Cylinders of disk.";
+            spHeads.ToolTip = "Heads of disk.";
+            spSectors.ToolTip = "Sectors per track of disk.";
+            chkDimensions.ToolTip = "If checked, physical dimensions of disk are known.";
+            chkRound.ToolTip = "If checked, disk is physicaly round.";
+            spDiameter.ToolTip = "Diameter in milimeters of disk.";
+            spHeight.ToolTip = "Height in milimeters of disk.";
+            spWidth.ToolTip = "Width in milimeters of disk.";
+            spThickness.ToolTip = "Thickness in milimeters of disk.";
+            chkATA.ToolTip = "If checked, disk dump contains ATA(PI) IDENTIFY information.";
         }
 
         public void FillFields()

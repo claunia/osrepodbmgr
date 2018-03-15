@@ -174,6 +174,28 @@ namespace osrepodbmgr.Eto
             });
 
             treeOSes.AllowMultipleSelection = false;
+            
+            txtArchitecture.ToolTip = "This field contains a comma separated list of architectures the operating system can run on. To edit its contents use the metadata editor.";
+            txtDescription.ToolTip = "This field contains a free-form text description of this operating system.";
+            txtDeveloper.ToolTip = "This field contains the developer of the operating system.";
+            txtFormat.ToolTip = "This field is contains the name of the format of the disk images, when it is not a byte-by-byte format like .iso or .img.";
+            txtLanguages.ToolTip = "This field contains a comma separated list of languages the operating sysetm includes.";
+            txtProduct.ToolTip = "This field contains the operating system name.";
+            txtMachine.ToolTip = "This field contains a comma separated list of computers this operating system can run on.";
+            txtVersion.ToolTip = "This field contains the operating system version.";
+            chkFiles.ToolTip = "If this field is checked it indicates the operating system is already installed.";
+            chkNetinstall.ToolTip = "If this field is checked it indicates the operating system comes as an installer (one or several files), but it's not installed neither disk images.";
+            chkOem.ToolTip = "If this field is checked it indicates the operating system came bundled with hardware (aka OEM distributed).";
+            chkSource.ToolTip = "If this field is checked it indicates this is the source code for the operating system.";
+            chkUpdate.ToolTip = "If this field is checked it indicates this version is a minor version update that requires a previous version of the operating system already installed.";
+            chkUpgrade.ToolTip = "If this field is checked it indicates this version is a major version upgrade that requires a previous version of the operating system already installed.";
+            txtArchitecture.ReadOnly = true;
+            txtDeveloper.ReadOnly = true;
+            txtFormat.ReadOnly = true;
+            txtLanguages.ReadOnly = true;
+            txtProduct.ReadOnly = true;
+            txtMachine.ReadOnly = true;
+            txtVersion.ReadOnly = true;
         }
 
         public event OnAddedOSDelegate OnAddedOS;

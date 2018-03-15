@@ -183,6 +183,16 @@ namespace osrepodbmgr.Eto
             FillLanguagesCombo();
             FillArchitecturesCombo();
             FillFilesCombos();
+
+            txtDeveloper.ToolTip = "Who developed the operating system.";
+            txtPublisher.ToolTip = "Who published the operating system.";
+            txtAuthor.ToolTip = "Author of the audiovisual media.";
+            txtPerformer.ToolTip = "Performer of the audiovisual media.";
+            txtName.ToolTip = "Operating system name.";
+            txtVersion.ToolTip = "Operating system version.";
+            txtPartNumber.ToolTip = "Part number of the operating system distribution.";
+            txtSerialNumber.ToolTip =
+                "Serial number of the operating system distribution. Not to be confused with serial number required to install.";
         }
 
         void FillBarcodeCombo()

@@ -822,6 +822,29 @@ namespace osrepodbmgr.Eto
 
             spExtentStart.MaxValue = double.MaxValue;
             spExtentEnd.MaxValue   = double.MaxValue;
+
+            txtImage.ToolTip = "This is the disc image containing this media.";
+            txtFormat.ToolTip = "This is the format of the disc image.";
+            txtOffset.ToolTip = "Byte offset where the media dump starts in the disc image.";
+            txtSize.ToolTip = "Size of the disc dump.";
+            txtWriteOffset.ToolTip = "Write offset in bytes (can be negative).";
+            txtMediaTracks.ToolTip = "How many tracks?";
+            txtMediaSessions.ToolTip = "How many sessions?";
+            txtCopyProtection.ToolTip = "Disc copy protection.";
+            txtDiscType.ToolTip = "Disc type.";
+            txtDiscSubtype.ToolTip = "Disc subtype.";
+            chkSequence.ToolTip = "If checked means this disc is one in a sequence of several.";
+            txtDiscTitle.ToolTip = "Title of disc.";
+            spSequence.ToolTip = "Number of this disc in the sequence.";
+            spTotalMedia.ToolTip = "How many diskc make the sequence.";
+            spSide.ToolTip = "On double sided discs, which side of the disc is represented by this dump.";
+            spLayer.ToolTip = "On PTP layered discs, which layer of the side of the disc is represented by this dump.";
+            chkDimensions.ToolTip = "If checked, physical dimensions of disk are known.";
+            chkRound.ToolTip = "If checked, disk is physicaly round.";
+            spDiameter.ToolTip = "Diameter in milimeters of disk.";
+            spHeight.ToolTip = "Height in milimeters of disk.";
+            spWidth.ToolTip = "Width in milimeters of disk.";
+            spThickness.ToolTip = "Thickness in milimeters of disk.";
         }
 
         public void FillFields()
