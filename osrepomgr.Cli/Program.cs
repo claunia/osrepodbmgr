@@ -130,9 +130,17 @@ file static class Program
 
             // Create progress bar for creating folders
             AnsiConsole.Progress()
+                       .AutoClear(true)
+                       .Columns(new ProgressBarColumn(),
+                                new PercentageColumn(),
+                                new RemainingTimeColumn(),
+                                new TaskDescriptionColumn
+                                {
+                                    Alignment = Justify.Left
+                                })
                        .Start(ctx =>
                         {
-                            ProgressTask task = ctx.AddTask("[green]creating folders[/]");
+                            ProgressTask task = ctx.AddTask("[cyan]Creating folders[/]");
 
                             try
                             {
@@ -254,9 +262,17 @@ file static class Program
 
                     // Create progress bar for processing symlinks
                     AnsiConsole.Progress()
+                               .AutoClear(true)
+                               .Columns(new ProgressBarColumn(),
+                                        new PercentageColumn(),
+                                        new RemainingTimeColumn(),
+                                        new TaskDescriptionColumn
+                                        {
+                                            Alignment = Justify.Left
+                                        })
                                .Start(ctx =>
                                 {
-                                    ProgressTask task = ctx.AddTask("[green]processing symlinks[/]");
+                                    ProgressTask task = ctx.AddTask("[magenta]Processing symlinks[/]");
 
                                     try
                                     {
@@ -347,17 +363,19 @@ file static class Program
 
             // Create progress bar for total file processing
             AnsiConsole.Progress()
+                       .AutoClear(true)
                        .Columns(new ProgressBarColumn(),
                                 new PercentageColumn(),
+                                new RemainingTimeColumn(),
                                 new TaskDescriptionColumn
                                 {
                                     Alignment = Justify.Left
                                 })
                        .Start(ctx =>
                         {
-                            ProgressTask filesTask = ctx.AddTask("[green]extracting files[/]", maxValue: totalFiles);
+                            ProgressTask filesTask = ctx.AddTask("[green]Extracting files[/]", maxValue: totalFiles);
 
-                            ProgressTask decompressionTask = ctx.AddTask("[yellow]decompressing[/]");
+                            ProgressTask decompressionTask = ctx.AddTask("[yellow]Decompressing[/]");
 
                             try
                             {
@@ -654,22 +672,15 @@ file static class Program
 
     static void ShowHelp()
     {
-        Console.WriteLine("osrepomgr CLI Application");
-        Console.WriteLine();
-        Console.WriteLine("Usage: osrepomgr [OPTIONS] <db-id> <destination>");
-        Console.WriteLine();
-        Console.WriteLine("Arguments:");
-        Console.WriteLine("  <db-id>                   Database ID (integer, required)");
-        Console.WriteLine("  <destination>             Destination path (string, required)");
-        Console.WriteLine();
-        Console.WriteLine("Options:");
-        Console.WriteLine("  --repository, -r <path>  Path to the repository folder (required)");
-        Console.WriteLine("  --database, -d <path>    Path to the database file (required)");
-        Console.WriteLine();
-        Console.WriteLine("Examples:");
-        Console.WriteLine("  osrepomgr --repository /path/to/repo --database /path/to/db.db 123 /path/to/dest");
-        Console.WriteLine("  osrepomgr -r /path/to/repo -d /path/to/db.db 456 /another/dest");
-        Console.WriteLine("  osrepomgr -d /path/to/db.db -r /path/to/repo 789 /final/dest");
+        var helpPanel = new Panel("[yellow]Usage:[/] osrepomgr [OPTIONS] <db-id> <destination>\n" +
+                                  "[yellow]Arguments:[/]\n  <[cyan]db-id[/]> Database ID (integer)\n  <[cyan]destination[/]> Destination path\n" +
+                                  "[yellow]Options:[/]\n  [cyan]--repository, -r[/] <path>  Repository folder\n  [cyan]--database, -d[/] <path>     Database file")
+        {
+            Header = new PanelHeader("[bold magenta]Help[/]"),
+            Border = BoxBorder.Rounded
+        };
+
+        AnsiConsole.Write(helpPanel);
     }
 
 
