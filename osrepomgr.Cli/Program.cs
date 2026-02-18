@@ -145,7 +145,7 @@ file static class Program
                                     totalFolders         = (long?)countCmd.ExecuteScalar() ?? 0;
                                 }
 
-                                Console.WriteLine($"Found {totalFolders} folders to enumerate");
+                                Console.WriteLine($"Found {totalFolders} folders to create");
 
                                 // Set progress bar to determinate with total count
                                 task.MaxValue = totalFolders;
@@ -228,6 +228,101 @@ file static class Program
                                 AnsiConsole.WriteException(ex);
                             }
                         });
+
+            // Check if symlinks table exists
+            var symlinksTableName = $"os_{dbId}_symlinks";
+
+            var checkSymlinksQuery =
+                $"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{symlinksTableName}'";
+
+            long symlinksTableExists = 0;
+
+            try
+            {
+                using(SqliteCommand checkCmd = connection.CreateCommand())
+                {
+                    checkCmd.CommandText = checkSymlinksQuery;
+                    symlinksTableExists  = (long?)checkCmd.ExecuteScalar() ?? 0;
+                }
+
+                if(symlinksTableExists > 0)
+                {
+                    Console.WriteLine($"Found symlinks table: {symlinksTableName}");
+
+                    // Create progress bar for processing symlinks
+                    AnsiConsole.Progress()
+                               .Start(ctx =>
+                                {
+                                    ProgressTask task = ctx.AddTask("[green]processing symlinks[/]");
+
+                                    try
+                                    {
+                                        // Get count of rows in the os_{id}_symlinks table
+                                        var countQuery = $"SELECT COUNT(*) FROM {symlinksTableName}";
+
+                                        long totalSymlinks = 0;
+
+                                        using(SqliteCommand countCmd = connection.CreateCommand())
+                                        {
+                                            countCmd.CommandText = countQuery;
+                                            totalSymlinks        = (long?)countCmd.ExecuteScalar() ?? 0;
+                                        }
+
+                                        Console.WriteLine($"Found {totalSymlinks} symlinks to process");
+
+                                        // Set progress bar to determinate with total count
+                                        task.MaxValue = totalSymlinks;
+
+                                        // Query symlinks from the os_{id}_symlinks table
+                                        var query = $"SELECT * FROM {symlinksTableName}";
+
+                                        using(SqliteCommand cmd = connection.CreateCommand())
+                                        {
+                                            cmd.CommandText = query;
+
+                                            using(SqliteDataReader reader = cmd.ExecuteReader())
+                                            {
+                                                while(reader.Read())
+                                                {
+                                                    string path   = reader.GetString(0);
+                                                    string target = reader.GetString(1);
+
+                                                    string fullSymlinkPath = Path.Combine(destination, path);
+
+                                                    try
+                                                    {
+                                                        // Ensure parent directory exists
+                                                        string? parentDir = Path.GetDirectoryName(fullSymlinkPath);
+
+                                                        if(!string.IsNullOrEmpty(parentDir) &&
+                                                           !Directory.Exists(parentDir))
+                                                            Directory.CreateDirectory(parentDir);
+
+                                                        // Create symbolic link
+                                                        File.CreateSymbolicLink(fullSymlinkPath, target);
+                                                    }
+                                                    catch(Exception ex)
+                                                    {
+                                                        Console.Error
+                                                               .WriteLine($"Failed to create symlink {fullSymlinkPath} -> {target}: {ex.Message}");
+                                                    }
+
+                                                    task.Increment(1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        AnsiConsole.WriteException(ex);
+                                    }
+                                });
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.Error.WriteLine($"Error: Failed to check symlinks table: {ex.Message}");
+            }
         }
         catch(Exception ex)
         {
