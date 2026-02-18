@@ -107,6 +107,127 @@ file static class Program
 
             // Validate and display OS information
             ValidateOs(connection, dbId.Value);
+
+            // Create destination folder if it doesn't exist
+            if(!Directory.Exists(destination))
+            {
+                try
+                {
+                    Directory.CreateDirectory(destination);
+                    Console.WriteLine($"Created destination folder: {destination}");
+                }
+                catch(Exception ex)
+                {
+                    Console.Error.WriteLine($"Error: Failed to create destination folder: {ex.Message}");
+                    Environment.Exit(1);
+                }
+            }
+            else
+                Console.WriteLine($"Destination folder already exists: {destination}");
+
+            // Create progress bar for creating folders
+            AnsiConsole.Progress()
+                       .Start(ctx =>
+                        {
+                            ProgressTask task = ctx.AddTask("[green]creating folders[/]");
+
+                            try
+                            {
+                                // First, get count of rows in the os_{id}_folders table
+                                var folderTableName = $"os_{dbId}_folders";
+                                var countQuery      = $"SELECT COUNT(*) FROM {folderTableName}";
+
+                                long totalFolders = 0;
+
+                                using(SqliteCommand countCmd = connection.CreateCommand())
+                                {
+                                    countCmd.CommandText = countQuery;
+                                    totalFolders         = (long?)countCmd.ExecuteScalar() ?? 0;
+                                }
+
+                                Console.WriteLine($"Found {totalFolders} folders to enumerate");
+
+                                // Set progress bar to determinate with total count
+                                task.MaxValue = totalFolders;
+
+                                // Query folders from the os_{id}_folders table
+                                var query =
+                                    $"SELECT id, path, creation, access, modification, attributes FROM {folderTableName}";
+
+                                using(SqliteCommand cmd = connection.CreateCommand())
+                                {
+                                    cmd.CommandText = query;
+
+                                    using(SqliteDataReader reader = cmd.ExecuteReader())
+                                    {
+                                        while(reader.Read())
+                                        {
+                                            int folderId =
+                                                reader["id"] != DBNull.Value ? Convert.ToInt32(reader["id"]) : 0;
+
+                                            string path = reader["path"]?.ToString() ?? "";
+
+                                            DateTime? creation = reader["creation"] != DBNull.Value
+                                                                     ? Convert.ToDateTime(reader["creation"])
+                                                                     : null;
+
+                                            DateTime? access = reader["access"] != DBNull.Value
+                                                                   ? Convert.ToDateTime(reader["access"])
+                                                                   : null;
+
+                                            DateTime? modification =
+                                                reader["modification"] != DBNull.Value
+                                                    ? Convert.ToDateTime(reader["modification"])
+                                                    : null;
+
+                                            int attributes = reader["attributes"] != DBNull.Value
+                                                                 ? Convert.ToInt32(reader["attributes"])
+                                                                 : 0;
+
+                                            // Create folder in destination
+                                            string fullPath = Path.Combine(destination, path);
+
+                                            try
+                                            {
+                                                // Create the directory if it doesn't exist
+                                                Directory.CreateDirectory(fullPath);
+
+                                                // Apply creation time
+                                                if(creation.HasValue)
+                                                    Directory.SetCreationTime(fullPath, creation.Value);
+
+                                                // Apply access time
+                                                if(access.HasValue) Directory.SetLastAccessTime(fullPath, access.Value);
+
+                                                // Apply modification time
+                                                if(modification.HasValue)
+                                                    Directory.SetLastWriteTime(fullPath, modification.Value);
+
+                                                // Apply attributes if provided (excluding ReadOnly)
+                                                if(attributes != 0)
+                                                {
+                                                    var attrs = (FileAttributes)attributes;
+
+                                                    // Remove readonly attribute
+                                                    attrs &= ~FileAttributes.ReadOnly;
+                                                    if(attrs != 0) File.SetAttributes(fullPath, attrs);
+                                                }
+                                            }
+                                            catch(Exception ex)
+                                            {
+                                                AnsiConsole.WriteException(ex);
+                                            }
+
+                                            task.Increment(1);
+                                        }
+                                    }
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                AnsiConsole.WriteException(ex);
+                            }
+                        });
         }
         catch(Exception ex)
         {
