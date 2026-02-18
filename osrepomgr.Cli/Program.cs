@@ -1,6 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 
+using System.IO.Compression;
 using Microsoft.Data.Sqlite;
+using SharpCompress.Compressors.BZip2;
+using SharpCompress.Compressors.LZMA;
 using Spectre.Console;
 
 namespace osrepomgr.Cli;
@@ -323,6 +326,138 @@ file static class Program
             {
                 Console.Error.WriteLine($"Error: Failed to check symlinks table: {ex.Message}");
             }
+
+            // Process files from os_{id}_files table
+            var filesTableName = $"os_{dbId}";
+
+            Console.WriteLine($"Found files table: {filesTableName}");
+
+            // Get count of files to process
+            long totalFiles = 0;
+
+            using(SqliteCommand countCmd = connection.CreateCommand())
+            {
+                countCmd.CommandText = $"SELECT COUNT(*) FROM {filesTableName}";
+                totalFiles           = (long?)countCmd.ExecuteScalar() ?? 0;
+            }
+
+            if(totalFiles <= 0) return;
+
+            Console.WriteLine($"Found {totalFiles} files to process");
+
+            // Create progress bar for total file processing
+            AnsiConsole.Progress()
+                       .Columns(new ProgressBarColumn(),
+                                new PercentageColumn(),
+                                new TaskDescriptionColumn
+                                {
+                                    Alignment = Justify.Left
+                                })
+                       .Start(ctx =>
+                        {
+                            ProgressTask filesTask = ctx.AddTask("[green]extracting files[/]", maxValue: totalFiles);
+
+                            ProgressTask decompressionTask = ctx.AddTask("[yellow]decompressing[/]");
+
+                            try
+                            {
+                                var query =
+                                    $"SELECT path, sha256, length, creation, access, modification, attributes FROM {filesTableName}";
+
+                                using SqliteCommand cmd = connection.CreateCommand();
+
+                                cmd.CommandText = query;
+
+                                using SqliteDataReader reader = cmd.ExecuteReader();
+
+                                while(reader.Read())
+                                {
+                                    string filePath = reader["path"]?.ToString()   ?? "";
+                                    string sha256   = reader["sha256"]?.ToString() ?? "";
+
+                                    long fileSize = reader["length"] != DBNull.Value ? (long)reader["length"] : 0;
+
+                                    var     createdStr = reader["creation"]?.ToString();
+                                    var     accessStr  = reader["access"]?.ToString();
+                                    var     modifyStr  = reader["modification"]?.ToString();
+                                    object? attrObj    = reader["attributes"];
+
+                                    int attributes = attrObj != DBNull.Value ? Convert.ToInt32(attrObj) : 0;
+
+                                    filesTask.Description =
+                                        $"[green]extracting:[/] [purple]{Path.GetFileName(filePath)}[/]";
+
+                                    try
+                                    {
+                                        // Find the compressed file in the repository
+                                        string? compressed = FindCompressedFile(repositoryPath, sha256);
+
+                                        if(string.IsNullOrEmpty(compressed))
+                                        {
+                                            Console.Error
+                                                   .WriteLine($"Failed to find compressed file for {filePath} (SHA256: {sha256})");
+
+                                            filesTask.Increment(1);
+
+                                            continue;
+                                        }
+
+                                        // Determine compression format from extension
+                                        string ext = Path.GetExtension(compressed).ToLowerInvariant().TrimStart('.');
+
+                                        // Create output directory
+                                        string  fullFilePath = Path.Combine(destination, filePath);
+                                        string? outputDir    = Path.GetDirectoryName(fullFilePath);
+
+                                        if(!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+                                            Directory.CreateDirectory(outputDir);
+
+                                        // Decompress file with progress tracking
+                                        DecompressFile(compressed, fullFilePath, ext, fileSize, decompressionTask);
+
+                                        // Apply timestamps and attributes
+                                        try
+                                        {
+                                            if(!string.IsNullOrEmpty(createdStr) &&
+                                               DateTime.TryParse(createdStr, out DateTime createdTime))
+                                                File.SetCreationTime(fullFilePath, createdTime);
+
+                                            if(!string.IsNullOrEmpty(modifyStr) &&
+                                               DateTime.TryParse(modifyStr, out DateTime modifyTime))
+                                                File.SetLastWriteTime(fullFilePath, modifyTime);
+
+                                            if(!string.IsNullOrEmpty(accessStr) &&
+                                               DateTime.TryParse(accessStr, out DateTime accessTime))
+                                                File.SetLastAccessTime(fullFilePath, accessTime);
+
+                                            // Apply attributes (including ReadOnly)
+                                            if(attributes != 0)
+                                            {
+                                                var attrs = (FileAttributes)attributes;
+                                                File.SetAttributes(fullFilePath, attrs);
+                                            }
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            Console.Error
+                                                   .WriteLine($"Failed to apply metadata to {fullFilePath}: {ex.Message}");
+                                        }
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        Console.Error.WriteLine($"Failed to extract file {filePath}: {ex.Message}");
+                                    }
+
+                                    filesTask.Increment(1);
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                AnsiConsole.WriteException(ex);
+                            }
+                        });
+
+            Console.WriteLine("Finished successfully!");
         }
         catch(Exception ex)
         {
@@ -331,24 +466,134 @@ file static class Program
         }
     }
 
-    static void ShowHelp()
+    static string? FindCompressedFile(string repositoryPath, string sha256)
     {
-        Console.WriteLine("osrepomgr CLI Application");
-        Console.WriteLine();
-        Console.WriteLine("Usage: osrepomgr [OPTIONS] <db-id> <destination>");
-        Console.WriteLine();
-        Console.WriteLine("Arguments:");
-        Console.WriteLine("  <db-id>                   Database ID (integer, required)");
-        Console.WriteLine("  <destination>             Destination path (string, required)");
-        Console.WriteLine();
-        Console.WriteLine("Options:");
-        Console.WriteLine("  --repository, -r <path>  Path to the repository folder (required)");
-        Console.WriteLine("  --database, -d <path>    Path to the database file (required)");
-        Console.WriteLine();
-        Console.WriteLine("Examples:");
-        Console.WriteLine("  osrepomgr --repository /path/to/repo --database /path/to/db.db 123 /path/to/dest");
-        Console.WriteLine("  osrepomgr -r /path/to/repo -d /path/to/db.db 456 /another/dest");
-        Console.WriteLine("  osrepomgr -d /path/to/db.db -r /path/to/repo 789 /final/dest");
+        // Pattern: Repository/a/a/a/a/a/aaaaa24f2b309959c0e5c7d70a274f677237ca6b086f0f08b2e911200e0c0c56.{ext}
+        if(sha256.Length < 5) return null;
+
+        string folderPath = Path.Combine(repositoryPath,
+                                         sha256[0].ToString(),
+                                         sha256[1].ToString(),
+                                         sha256[2].ToString(),
+                                         sha256[3].ToString(),
+                                         sha256[4].ToString());
+
+        if(!Directory.Exists(folderPath)) return null;
+
+        // Look for files starting with the SHA256 hash
+        string[] files = Directory.GetFiles(folderPath, $"{sha256}.*");
+
+        return files.Length > 0 ? files[0] : null;
+    }
+
+    static void DecompressFile(string       compressedPath, string outputPath, string compressionFormat, long fileSize,
+                               ProgressTask decompressionTask)
+    {
+        const int bufferSize = 65536; // 64KB chunks
+
+        decompressionTask.MaxValue = fileSize;
+
+        switch(compressionFormat)
+        {
+            case "gz":
+                DecompressGzip(compressedPath, outputPath, bufferSize, decompressionTask);
+
+                break;
+
+            case "bz2":
+                DecompressBzip2(compressedPath, outputPath, bufferSize, decompressionTask);
+
+                break;
+
+            case "lzma":
+                DecompressLzma(compressedPath, outputPath, bufferSize, decompressionTask);
+
+                break;
+
+            case "lz":
+                DecompressLzip(compressedPath, outputPath, bufferSize, decompressionTask);
+
+                break;
+
+            default:
+                throw new NotSupportedException($"Unsupported compression format: {compressionFormat}");
+        }
+    }
+
+    static void DecompressGzip(string compressedPath, string outputPath, int bufferSize, ProgressTask fileTask)
+    {
+        using FileStream fileStream = File.OpenRead(compressedPath);
+
+        using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+
+        using FileStream outputStream = File.Create(outputPath);
+
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+
+        while((bytesRead = gzipStream.Read(buffer, 0, bufferSize)) > 0)
+        {
+            outputStream.Write(buffer, 0, bytesRead);
+            fileTask.Increment(bytesRead);
+        }
+    }
+
+    static void DecompressLzip(string compressedPath, string outputPath, int bufferSize, ProgressTask fileTask)
+    {
+        using FileStream fileStream = File.OpenRead(compressedPath);
+
+        using var lzipStream = new LZipStream(fileStream, SharpCompress.Compressors.CompressionMode.Decompress);
+
+        using FileStream outputStream = File.Create(outputPath);
+
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+
+        while((bytesRead = lzipStream.Read(buffer, 0, bufferSize)) > 0)
+        {
+            outputStream.Write(buffer, 0, bytesRead);
+            fileTask.Increment(bytesRead);
+        }
+    }
+
+    static void DecompressBzip2(string compressedPath, string outputPath, int bufferSize, ProgressTask fileTask)
+    {
+        using FileStream fileStream = File.OpenRead(compressedPath);
+
+        using var bzip2Stream =
+            new BZip2Stream(fileStream, SharpCompress.Compressors.CompressionMode.Decompress, false);
+
+        using FileStream outputStream = File.Create(outputPath);
+
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+
+        while((bytesRead = bzip2Stream.Read(buffer, 0, bufferSize)) > 0)
+        {
+            outputStream.Write(buffer, 0, bytesRead);
+            fileTask.Increment(bytesRead);
+        }
+    }
+
+    static void DecompressLzma(string compressedPath, string outputPath, int bufferSize, ProgressTask fileTask)
+    {
+        using FileStream fileStream = File.OpenRead(compressedPath);
+        var              properties = new byte[5];
+        fileStream.ReadExactly(properties, 0, 5);
+        fileStream.Seek(8, SeekOrigin.Current);
+
+        using var lzmaStream = new LzmaStream(properties, fileStream);
+
+        using FileStream outputStream = File.Create(outputPath);
+
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+
+        while((bytesRead = lzmaStream.Read(buffer, 0, bufferSize)) > 0)
+        {
+            outputStream.Write(buffer, 0, bytesRead);
+            fileTask.Increment(bytesRead);
+        }
     }
 
     static void ValidateDatabase(SqliteConnection connection, int dbId)
@@ -406,6 +651,27 @@ file static class Program
             Environment.Exit(1);
         }
     }
+
+    static void ShowHelp()
+    {
+        Console.WriteLine("osrepomgr CLI Application");
+        Console.WriteLine();
+        Console.WriteLine("Usage: osrepomgr [OPTIONS] <db-id> <destination>");
+        Console.WriteLine();
+        Console.WriteLine("Arguments:");
+        Console.WriteLine("  <db-id>                   Database ID (integer, required)");
+        Console.WriteLine("  <destination>             Destination path (string, required)");
+        Console.WriteLine();
+        Console.WriteLine("Options:");
+        Console.WriteLine("  --repository, -r <path>  Path to the repository folder (required)");
+        Console.WriteLine("  --database, -d <path>    Path to the database file (required)");
+        Console.WriteLine();
+        Console.WriteLine("Examples:");
+        Console.WriteLine("  osrepomgr --repository /path/to/repo --database /path/to/db.db 123 /path/to/dest");
+        Console.WriteLine("  osrepomgr -r /path/to/repo -d /path/to/db.db 456 /another/dest");
+        Console.WriteLine("  osrepomgr -d /path/to/db.db -r /path/to/repo 789 /final/dest");
+    }
+
 
     static void ValidateOs(SqliteConnection connection, int dbId)
     {
