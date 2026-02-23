@@ -403,7 +403,7 @@ file static class Program
                                     int attributes = attrObj != DBNull.Value ? Convert.ToInt32(attrObj) : 0;
 
                                     filesTask.Description =
-                                        $"[green]extracting:[/] [purple]{Path.GetFileName(filePath)}[/]";
+                                        $"[green]extracting:[/] [purple]{Markup.Escape(Path.GetFileName(filePath))}[/]";
 
                                     try
                                     {
@@ -509,6 +509,7 @@ file static class Program
     {
         const int bufferSize = 65536; // 64KB chunks
 
+        decompressionTask.Value    = 0;
         decompressionTask.MaxValue = fileSize;
 
         switch(compressionFormat)
@@ -672,9 +673,9 @@ file static class Program
 
     static void ShowHelp()
     {
-        var helpPanel = new Panel("[yellow]Usage:[/] osrepomgr [OPTIONS] <db-id> <destination>\n" +
-                                  "[yellow]Arguments:[/]\n  <[cyan]db-id[/]> Database ID (integer)\n  <[cyan]destination[/]> Destination path\n" +
-                                  "[yellow]Options:[/]\n  [cyan]--repository, -r[/] <path>  Repository folder\n  [cyan]--database, -d[/] <path>     Database file")
+        var helpPanel = new Panel("[yellow]Usage:[/] osrepomgr [[OPTIONS]] [cyan]<db-id>[/] [cyan]<destination>[/]\n" +
+                                  "[yellow]Arguments:[/]\n  [cyan]<db-id>[/] Database ID (integer)\n  [cyan]<destination>[/] Destination path\n" +
+                                  "[yellow]Options:[/]\n  [cyan]--repository, -r[/] [cyan]<path>[/]  Repository folder\n  [cyan]--database, -d[/] [cyan]<path>[/]     Database file")
         {
             Header = new PanelHeader("[bold magenta]Help[/]"),
             Border = BoxBorder.Rounded
